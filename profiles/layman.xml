@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<layman>
+	<overlay
+		type = "svn"
+		src  = "http://opensvn.csie.org/maggu2810_overlay"
+		contact = "maggu2810@gentooforum.de"
+		status  = "unofficial"
+		name = "maggu2810_overlay">
+		<link>
+			http://opensvn.csie.org/maggu2810_overlay
+		</link>
+		<description>
+			maggu2810's test overlay
+			contains for example ebuild from: bugs.gentoo.org
+		</description>
+	</overlay>
+</layman>
+
