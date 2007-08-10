@@ -1,0 +1,33 @@
+These source files don't prototype some functions before 
+attempting to use them.  On older GCC's, that was acceptable, 
+but newer ones complain and cause build failure:
+
+fi1236.c:371: error: conflicting types for 'MT2032_dump_status'
+fi1236.c:170: error: previous implicit declaration of 'MT2032_dump_status' was here
+
+Patch doesn't seem to be in upstream cvs:
+http://cvs.sourceforge.net/viewcvs.py/gatos/ati.4.4.0/fi1236.c
+http://cvs.sourceforge.net/viewcvs.py/gatos/ati.4.4.0/theatre.c
+
+Patch author: vapier@gentoo.org
+
+--- ati-gatos-4.4.0/fi1236.c.orig	2004-12-23 23:16:06.256187928 -0500
++++ ati-gatos-4.4.0/fi1236.c	2004-12-23 23:17:46.030020000 -0500
+@@ -112,6 +112,7 @@
+ }
+ 
+ 
++static void MT2032_dump_status(FI1236Ptr f);
+ static void MT2032_init(FI1236Ptr f)
+ {
+ CARD8 data[10];
+--- ati-gatos-4.4.0/theatre.c.orig	2004-12-23 23:17:50.433350592 -0500
++++ ati-gatos-4.4.0/theatre.c	2004-12-23 23:18:10.858245536 -0500
+@@ -24,6 +24,7 @@
+ #define VIP_TYPE      "ATI VIP BUS"
+ 
+ 
++void DumpRageTheatreRegsByName(TheatrePtr t);
+ TheatrePtr DetectTheatre(GENERIC_BUS_Ptr b)
+ {
+    TheatrePtr t;  

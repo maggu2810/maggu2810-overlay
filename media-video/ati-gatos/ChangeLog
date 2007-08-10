@@ -1,0 +1,80 @@
+# ChangeLog for media-video/ati-gatos
+# Copyright 2002-2005 Gentoo Foundation; Distributed under the GPL v2
+# $Header: /var/cvsroot/gentoo-x86/media-video/ati-gatos/ChangeLog,v 1.21 2005/04/25 06:08:14 spyderous Exp $
+
+  25 Apr 2005; Donnie Berkholz <spyderous@gentoo.org>; metadata.xml:
+  Update herd to x11-drivers.
+
+  19 Jan 2005; Bryan Stine <battousai@gentoo.org> -ati-gatos-4.3.0.ebuild:
+  Nuke ati-gatos-4.3.0. XFree 4.3, upon which this depends, is no longer in
+  portage.
+
+  23 Dec 2004; Mike Frysinger <vapier@gentoo.org>
+  +files/ati-gatos-4.4.0-prototypes.patch, ati-gatos-4.4.0.ebuild:
+  Patch to fix compiling with gcc-3.4.x.
+
+  03 Oct 2004; Donnie Berkholz <spyderous@gentoo.org>; ati-gatos-4.4.0.ebuild:
+  Update XFree references to Xorg.
+
+*ati-gatos-4.4.0 (30 Sep 2004)
+
+  30 Sep 2004; Bryan Stine <battousai@gentoo.org>; +ati-gatos-4.4.0.ebuild:
+  Version bump to xorg-ready ati.4.4.0. This ebuild also includes a patch to
+  apply when using xorg-x11 6.8.0.
+
+  11 Jun 2004; Donnie Berkholz <spyderous@gentoo.org>; ati-gatos-4.3.0.ebuild:
+  xfree -r6 became -r7.
+
+  21 Mar 2004; Donnie Berkholz <spyderous@gentoo.org>; ati-gatos-4.3.0.ebuild:
+  Add check for xfree version.
+
+  14 Feb 2004; Donnie Berkholz <spyderous@gentoo.org>; ati-gatos-4.3.0.ebuild:
+  Change dep to xfree-4.3.0-r6, another security fix in -r5.
+
+  09 Feb 2004; Bryan Stine <battousai@gentoo.org>; ati-gatos-4.3.0.ebuild:
+  Change xfree dependency to 4.3.0-r5, reflecting new release plan.
+
+  08 Feb 2004; <bryan@gentoo.org> ati-gatos-4.3.0.ebuild:
+  Now depends on xfree >=4.3.0-r4 for the gatos-SDK patch
+
+  05 Feb 2004; Bryan Stine <battousai@gentoo.org>; :
+  Fix globbing in xfree sdk USE detection. If sdk was in USE when emerging
+  xfree-drm, this would catch that and accept it, which would allow it to
+  install without an actual SDK present.
+
+*ati-gatos-4.3.0 (13 Jan 2004)
+
+  15 Jan 2004; Bryan Stine <battousai@gentoo.org> ati-gatos-4.3.0.ebuild:
+  Add quotes around the ModulePath example paths to avoid confusion.
+
+  13 Jan 2004; <battousai@gentoo.org> ChangeLog, ati-gatos-4.3.0.ebuild:
+  Warn user about SDK only if XFree was merged without the sdk USE flag. Also,
+  fix the SRC_URI, making it use the Gentoo mirrors.
+
+  13 Jan 2004; <battousai@gentoo.org> ati-gatos-4.3.0.ebuild:
+  Updated ebuild. This will build against xfree 4.3.0 with the sdk installed,
+  putting drivers in an alternate location so as not to interfere with the
+  original ati drivers.
+
+  18 Nov 2003; Martin Holzer <mholzer@gentoo.org>
+  ati-gatos-4.2.0.11-r1.ebuild:
+  added RESTRICT="nomirror"
+
+*ati-gatos-4.2.0.11-r1 (19 August 2002)
+
+  19 August 2002; Sascha Schwabbauer <cybersystem@gentoo.org> ChangeLog, ati-gatos-4.2.0.11-r1.ebuild :
+
+  Added -ppc to the keywords.
+
+*ati-gatos-4.2.0.11-r1 (3 Jun 2002)
+
+  3 Jun 2002; Martin Schlemmer <azarah@gentoo.org> :
+
+  Resolve bug #1947.
+
+*ati-gatos-4.2.0.11 (5 Apr 2002)
+
+  5 Apr 2002; Seemant Kulleen <seemant@gentoo.org> ati-gatos-4.2.0.11.ebuild
+  files/digest-ati-gatos-4.2.0.11 ChangeLog:
+
+  Updated version, submitted by pardsbane@offthehill.org (bug #1537)

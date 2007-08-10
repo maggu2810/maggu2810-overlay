@@ -1,0 +1,148 @@
+diff -u any2dvd-0.34.old/any2dvd any2dvd-0.34/any2dvd
+--- any2dvd-0.34.old/any2dvd	2007-05-12 22:32:11.000000000 -0500
++++ any2dvd-0.34/any2dvd	2007-05-12 22:32:50.000000000 -0500
+@@ -622,7 +622,7 @@
+ 	SUB_NUM=`tcprobe -H300 -i "$1" 2>&1 | grep subtitle | cut -d\( -f2 | cut -d\) -f1`
+ 	TOTAL_DURATION=`ffmpeg -i "$1" 2>&1 | grep Duration | cut -d, -f1 | awk '{print $2}'`
+ 	if [ -z "$TOTAL_DURATION" ] || [ "$TOTAL_DURATION" = "N/A" ]; then
+-		TOTAL_DURATION=`mplayer -vo dummy -identify "$1" 2>&1 | grep ID_LENGTH | cut -d= -f2`
++		TOTAL_DURATION=`mplayer -vo null -ao null -identify "$1" 2>&1 | grep ID_LENGTH | cut -d= -f2`
+ 		DURATION_SECS=`perl -le "print int($TOTAL_DURATION)"`
+ 	else
+ 		DURATION_HOURS=`echo "$TOTAL_DURATION" | cut -d, -f1 | cut -d: -f1 | awk '{print $1}' | sed -e 's/^0//'`
+@@ -650,7 +650,7 @@
+ }
+ 
+ audio_probe () {					# Extract audio info from VOB files
+-	mplayer -vo dummy -identify "$1" 2>&1 | grep ID_AUDIO_ID | cut -d= -f2 > "$WORKDIR"/src_audio.dat
++	mplayer -vo null -ao null -identify "$1" 2>&1 | grep ID_AUDIO_ID | cut -d= -f2 > "$WORKDIR"/src_audio.dat
+ 	astring=	# Reset
+ 	acount=		# Reset
+ 	for j in `cat "$WORKDIR"/src_audio.dat`; do
+diff -u any2dvd-0.34.old/any2vob any2dvd-0.34/any2vob
+--- any2dvd-0.34.old/any2vob	2007-05-12 22:32:11.000000000 -0500
++++ any2dvd-0.34/any2vob	2007-05-12 22:32:54.000000000 -0500
+@@ -461,13 +461,13 @@
+ 	if [ ! -z "`echo "$file" | grep -E "mms:|http:|rtsp:"`" ]; then file_type="Streaming Media"
+ 	elif [ ! -z "`file -Lk "$file" | grep "ASCII"`" ] && [ ! -z "`grep -E "mms:|http:|rtsp:" "$file"`" ]; then file_type="Streaming Media"
+ 	elif [ ! -z "`file -Lk "$file" | grep AVI`" ]; then
+-		if [ "$BITRATE_CALC" != "yes" ] && [ ! -z "`mplayer -demuxer 35 -vo dummy -identify "$file" 2>&1 | grep ID_VIDEO_FORMAT | grep dvsd`" ]; then
++		if [ "$BITRATE_CALC" != "yes" ] && [ ! -z "`mplayer -demuxer 35 -vo null -ao null -frames 0 -identify "$file" 2>&1 | grep ID_VIDEO_FORMAT | grep dvsd`" ]; then
+ 			if [ "`tcprobe -i "$file" 2>&1 | grep "DV AVI Type 1"`" ]; then
+ 				file_type="DV Avi Video (Type 1)"
+ 			else
+ 				file_type="DV Avi Video (Type 2)"
+ 			fi
+-		elif [ "$BITRATE_CALC" != "yes" ] && [ ! -z "`mplayer -vo dummy -identify "$file" 2>&1 | grep "\[VP62\]"`" ]; then file_type="VP62 AVI Video"
++		elif [ "$BITRATE_CALC" != "yes" ] && [ ! -z "`mplayer -vo null -ao null -frames 0 -identify "$file" 2>&1 | grep "\[VP62\]"`" ]; then file_type="VP62 AVI Video"
+ 		else
+ 			file_type="AVI"
+ 		fi
+@@ -485,9 +485,9 @@
+ 		else
+ 			file_type="MPEG"
+ 		fi
+-	elif [ "$BITRATE_CALC" != "yes" ] && [ ! -z "`mplayer -vo dummy -identify "$file" 2>&1 | grep "TS file format"`" ]; then file_type="MPEG Transport Stream"
+-	elif [ "$BITRATE_CALC" != "yes" ] && [ ! -z "`mplayer -vo dummy -identify "$file" 2>&1 | grep MPEG-PS`" ]; then file_type="(S)VCD video"
+-	elif [ "$BITRATE_CALC" != "yes" ] && [ ! -z "`mplayer -vo dummy -identify "$file" 2>&1 | grep "Nullsoft Stream"`" ]; then file_type="Nullsoft Streaming Video"
++	elif [ "$BITRATE_CALC" != "yes" ] && [ ! -z "`mplayer -vo null -ao null -frames 0 -identify "$file" 2>&1 | grep "TS file format"`" ]; then file_type="MPEG Transport Stream"
++	elif [ "$BITRATE_CALC" != "yes" ] && [ ! -z "`mplayer -vo null -ao null -frames 0 -identify "$file" 2>&1 | grep MPEG-PS`" ]; then file_type="(S)VCD video"
++	elif [ "$BITRATE_CALC" != "yes" ] && [ ! -z "`mplayer -vo null -ao null -frames 0 -identify "$file" 2>&1 | grep "Nullsoft Stream"`" ]; then file_type="Nullsoft Streaming Video"
+ 	elif [ ! -z "`head "$file" 2> /dev/null | grep MythTVVideo`" ]; then file_type="MythTV Nuppelvideo"
+ 	else
+ 		file_type="Unknown :("
+@@ -540,16 +540,16 @@
+ 	else
+ 		if [ "$BITRATE_CALC" != "yes" ]; then
+ 			eval ffmpeg -i \""$file"\" 2>&1 | grep Stream | grep Audio: > "$WORKDIR"/ffmpeg_audio_streams.dat
+-			mplayer -vo dummy -identify "$file" 2>&1 | grep ID_AUDIO_ID | cut -d= -f2 | sort | uniq > "$WORKDIR"/mplayer_audio_streams.dat
++			mplayer -vo null -ao null -frames 0 -identify "$file" 2>&1 | grep ID_AUDIO_ID | cut -d= -f2 | sort | uniq > "$WORKDIR"/mplayer_audio_streams.dat
+ 			if [ "$file_type" = "AVI" ] || [ "$file_type" = "Apple QuickTime" ] || [ "$file_type" = "Microsoft ASF" ] || [ "$file_type" = "Matroska" ] || [ "$file_type" = "OGM video" ] || [ "$file_type" = "MP4/3GP/3G2 ISO Media" ] || [ "$file_type" = "Real Media" ]; then
+-				CODEC=`mplayer -vo dummy -identify "$file" 2>&1 | grep ID_VIDEO_FORMAT | cut -d= -f2`
++				CODEC=`mplayer -vo null -ao null -frames 0 -identify "$file" 2>&1 | grep ID_VIDEO_FORMAT | cut -d= -f2`
+ 				[ "$file_type" = "MP4/3GP/3G2 ISO Media" ] && [ ! -z "`mplayer -vo null -ao null -msglevel all=4:decaudio=6 -frames 1 "$file" 2>&1 | grep " (AMR "`" ] && AMR="yes"
+ 			fi
+-			SRC_FPS=`mplayer -vo dummy -identify "$file" 2>&1 | grep ID_VIDEO_FPS | cut -d= -f2`
++			SRC_FPS=`mplayer -vo null -ao null -frames 0 -identify "$file" 2>&1 | grep ID_VIDEO_FPS | cut -d= -f2`
+ 			if [ "$file_type" = "Microsoft ASF" ]; then
+ 				WMV_ARGS="-mc 0"
+ 				SRC_FPS=`ffmpeg -i "$file" 2>&1 | grep "\->" | cut -d">" -f2 | awk '{print $1}' | head -n1`
+-				[ -z "$SRC_FPS" ] && SRC_FPS=`mplayer -vo dummy -identify "$file" 2>&1 | grep ID_VIDEO_FPS | cut -d= -f2`
++				[ -z "$SRC_FPS" ] && SRC_FPS=`mplayer -vo null -ao null -frames 0 -identify "$file" 2>&1 | grep ID_VIDEO_FPS | cut -d= -f2`
+ 			fi
+ 			## Only use the visible part of the movie frame to calculate aspect, this handles letterboxed sources ##
+ 			CROP_SRC_RES=`eval mplayer -vo null -ao null -benchmark -vf cropdetect -frames 200 \""$file"\" 2>&1 | sed 's/-//g' | grep -e "[[:digit:]]*\:[[:digit:]]*\:[[:digit:]]" | perl -ne '($a) = /([0-9]{3,4}:[0-9]{3,4})/; print "$a\n"' | sed '/^$/d' | tail -n1`
+@@ -920,7 +920,7 @@
+ 			DUR_SECS=`ffmpeg -i "$file" 2>&1 | grep Duration | cut -d: -f4 | cut -d. -f1 | sed 's/ //' | sed -e 's/^0//'`
+ 			DURATION=`perl -le "print ( (($DUR_HOURS*60)*60) + ($DUR_MINS*60) + $DUR_SECS )"`
+ 		else
+-			[ "$file_type" != "MythTV Nuppelvideo" ] && DURATION=`mplayer -vo dummy -identify "$file" 2>&1 | grep ID_LENGTH | cut -d= -f2`
++			[ "$file_type" != "MythTV Nuppelvideo" ] && DURATION=`mplayer -vo null -ao null -frames 0 -identify "$file" 2>&1 | grep ID_LENGTH | cut -d= -f2`
+ 		fi
+ 		SRC_AVG_BITRATE=`ffmpeg -i "$file" 2>&1 | grep Duration: | awk -F"bitrate:" '{print $2}' | cut -d" " -f2`
+ 		[ -z "$SRC_AVG_BITRATE" ] || [ "$SRC_AVG_BITRATE" = "N/A" ] && SRC_AVG_BITRATE=250
+@@ -1275,7 +1275,7 @@
+ 	TOOLKIT=([0]=mkvextract)
+ 	TOOLURL=([0]=http://www.bunkus.org/videotools/mkvtoolnix/)
+ 	check_tools
+-	mplayer -vo dummy -ao null "$file" 2> /dev/null | grep "Track ID" | sed 's/^.*\[mkv\]//g' > "$WORKDIR"/matroska.dat
++	mplayer -vo null -ao null -frames 0 "$file" 2> /dev/null | grep "Track ID" | sed 's/^.*\[mkv\]//g' > "$WORKDIR"/matroska.dat
+ 	echo
+ 	echo "Number of VIDEO tracks detected: `cat "$WORKDIR"/matroska.dat | grep video | wc -l`"
+ 	echo "Number of AUDIO tracks detected: `cat "$WORKDIR"/matroska.dat | grep audio | wc -l`"
+@@ -1415,7 +1415,7 @@
+ 	TOOLKIT=([0]=replex)
+ 	TOOLURL=([0]=http://www.metzlerbros.org/dvb/)
+ 	check_tools
+-	mplayer -vo dummy -identify "$file" 2>&1 | sort | uniq | grep ID_VIDEO_ID > "$WORKDIR"/mts.dat
++	mplayer -vo null -ao null -frames 0 -identify "$file" 2>&1 | sort | uniq | grep ID_VIDEO_ID > "$WORKDIR"/mts.dat
+ 	# Probe & extract relevant video streams #
+ 	VID_NUM=`grep ID_VIDEO_ID "$WORKDIR"/mts.dat | wc -l`
+ 	real_file="$file"
+@@ -1435,7 +1435,7 @@
+ 		else
+ 			# Match first video stream to the correct audio stream for replexing #
+ 			MTS_VID_ID=`cat "$WORKDIR"/mts.dat | head -n1 | cut -d= -f2`
+-			AUD_ID=`mplayer -vo dummy -vid $MTS_VID_ID "$file" 2>&1 | grep "VIDEO MPEG2" | cut -d= -f3 | cut -d\) -f1`	# Replex cannot handle H264/MPA
++			AUD_ID=`mplayer -vo null -ao null -frames 0 -vid $MTS_VID_ID "$file" 2>&1 | grep "VIDEO MPEG2" | cut -d= -f3 | cut -d\) -f1`	# Replex cannot handle H264/MPA
+ 			VID_HEX=`replex --scan -o "$file" 2>&1 | grep "("$MTS_VID_ID")" | cut -d: -f2 | awk '{print $1}'`
+ 			AUD_HEX=`replex --scan -o "$file" 2>&1 | grep "("$AUD_ID")" | cut -d: -f2 | awk '{print $1}'`
+ 			if [ ! -z "`replex --scan -o "$file" 2>&1 | grep "("$AUD_ID")" | grep ac3pid`" ]; then	# Handle 5:1 extraction
+@@ -1511,7 +1511,7 @@
+ 		for i in `cat "$WORKDIR"/mts.dat`; do
+ 			file="$real_file"
+ 			MTS_VID_ID=`echo $i | cut -d= -f2`
+-			AUD_ID=`mplayer -vo dummy -vid $MTS_VID_ID "$file" 2>&1 | grep "VIDEO MPEG2" | cut -d= -f3 | cut -d\) -f1`	# Replex cannot handle H264/MPA
++			AUD_ID=`mplayer -vo null -ao null -frames 0 -vid $MTS_VID_ID "$file" 2>&1 | grep "VIDEO MPEG2" | cut -d= -f3 | cut -d\) -f1`	# Replex cannot handle H264/MPA
+ 			VID_HEX=`replex --scan -o "$file" 2>&1 | grep "("$MTS_VID_ID")" | cut -d: -f2 | awk '{print $1}'`
+ 			AUD_HEX=`replex --scan -o "$file" 2>&1 | grep "("$AUD_ID")" | cut -d: -f2 | awk '{print $1}'`
+ 			if [ ! -z "`replex --scan -o "$file" 2>&1 | grep "("$AUD_ID")" | grep ac3pid`" ]; then	# Handle 5:1 extraction
+@@ -1721,8 +1721,8 @@
+ }
+ 
+ multi_format () {	# Processes filetypes with multiple Video and/or Audio tracks
+-	mplayer -vo dummy -identify "$file" 2>&1 | grep ID_VIDEO_ID | cut -d= -f2 > "$WORKDIR"/mplayer_video_streams.dat
+-	mplayer -vo dummy -identify "$file" 2>&1 | grep ID_AUDIO_ID | cut -d= -f2 > "$WORKDIR"/mplayer_audio_streams.dat
++	mplayer -vo null -ao null -frames 0 -identify "$file" 2>&1 | grep ID_VIDEO_ID | cut -d= -f2 > "$WORKDIR"/mplayer_video_streams.dat
++	mplayer -vo null -ao null -frames 0 -identify "$file" 2>&1 | grep ID_AUDIO_ID | cut -d= -f2 > "$WORKDIR"/mplayer_audio_streams.dat
+ 	echo
+ 	echo " Number of VIDEO tracks detected: `cat "$WORKDIR"/mplayer_video_streams.dat | wc -l`"
+ 	echo " Number of AUDIO tracks detected: `cat "$WORKDIR"/mplayer_audio_streams.dat | wc -l`"
+@@ -1733,7 +1733,7 @@
+ 		file_type="multi-format"
+ 		pref_name="$name"
+ 		for VID_ID in `cat "$WORKDIR"/mplayer_video_streams.dat`; do
+-			SRC_FPS=`mplayer -vo dummy -identify -vid $VID_ID "$file" 2>&1 | grep VIDEO_FPS | cut -d= -f2`
++			SRC_FPS=`mplayer -vo null -ao null -frames 0 -identify -vid $VID_ID "$file" 2>&1 | grep VIDEO_FPS | cut -d= -f2`
+ 			eval mplayer -vfm ffmpeg -vo jpeg:outdir=\""$WORKDIR"/\" -ao null -vid $VID_ID -frames 1 \""$file"\" &> /dev/null
+ 			SRC_WIDTH=`eval identify \""$WORKDIR"/00000001.jpg\" | awk -F" JPEG " '{print $2}' | awk '{print $1}' | cut -dx -f1`
+ 			SRC_HEIGHT=`eval identify \""$WORKDIR"/00000001.jpg\" | awk -F" JPEG " '{print $2}' | awk '{print $1}' | cut -dx -f2`
+@@ -1941,7 +1941,7 @@
+ 	killall -9 mplayer &> /dev/null
+ 	killall -9 transcode &> /dev/null	# Kill off stray transcode/mplayer processes & fifos
+ 	rm stream.yuv 2> /dev/null
+-	[ -z "`mplayer -vo dummy -identify "$file" 2>&1 | grep ID_AUDIO_ID`" ] || [ "$HAS_SURROUND" = yes ] || [ "$file_type" = "multi-format" ] || [ "$file_type" = "DVD Vob" ] && SKIP_AUDIOENC="yes"
++	[ -z "`mplayer -vo null -ao null -frames 0 -identify "$file" 2>&1 | grep ID_AUDIO_ID`" ] || [ "$HAS_SURROUND" = yes ] || [ "$file_type" = "multi-format" ] || [ "$file_type" = "DVD Vob" ] && SKIP_AUDIOENC="yes"
+ 	if [ "$file_type" = "multi-format" ]; then
+ 		VID_ID_ARGS="=\"-vid $VID_ID -mc 0\""
+ 	else

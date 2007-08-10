@@ -1,0 +1,19 @@
+--- sip/QtGui/qpolygon.sip
++++ sip/QtGui/qpolygon.sip
+@@ -284,7 +284,7 @@ else
+ int __contains__(const QPoint &value);
+ %MethodCode
+ // It looks like you can't assign QBool to int.
+-sipRes = bool(sipCpp->contains(*a0));
++sipRes = bool(sipCpp->contains(*a0, Qt::OddEvenFill));
+ %End
+ };
+ 
+@@ -461,7 +461,7 @@ else
+ int __contains__(const QPointF &value);
+ %MethodCode
+ // It looks like you can't assign QBool to int.
+-sipRes = bool(sipCpp->contains(*a0));
++sipRes = bool(sipCpp->contains(*a0, Qt::OddEvenFill));
+ %End
+ };

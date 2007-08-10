@@ -1,0 +1,27 @@
+--- any2dvd-0.34/any2vob.orig	2007-04-24 17:10:13.000000000 -0500
++++ any2dvd-0.34/any2vob	2007-04-24 17:11:03.000000000 -0500
+@@ -291,7 +291,7 @@
+ 		--preformat=yes) PREFORMAT_FRC="yes"; shift ;;
+ 		--calc) shift; CALC="yes" ;;
+ 		--workdir=*) WORKDIR=`echo "$1" | sed 's/--workdir=/ /' | sed 's/^[ \t]*//'`
+-				FILESYS=`df -Th "$WORKDIR" | tail -n1 | awk '{print $2}'`
++				FILESYS=`df -TPh "$WORKDIR" | tail -n1 | awk '{print $2}'`
+ 				if [ "$FILESYS" = "vfat" ]; then
+ 					warn WARNING: Your workdir \'"$WORKDIR"\' resides on a FAT Windows partition
+ 					echo -e "\e[33;01m Be aware that this may well cause problems as there is a 2GB filesize limit\e[m"
+@@ -984,13 +984,13 @@
+ 			echo
+ 		fi
+ 	fi
+-	DISKSPACE_AVAIL_MB=`df -Tm "$WORKDIR" | tail -n1 | awk '{print $5}'`
++	DISKSPACE_AVAIL_MB=`df -TPm "$WORKDIR" | tail -n1 | awk '{print $5}'`
+ 	DISKSPACE_AVAIL_GB=`perl -le "printf ('%.2f', $DISKSPACE_AVAIL_MB / 1024)"`
+ 	DISKSPACE_NEEDED_MB=`perl -le "print int($TOTAL_SIZEMB * 2)"`
+ 	DISKSPACE_NEEDED_GB=`perl -le "printf ('%.2f', $DISKSPACE_NEEDED_MB / 1024)"`
+ 	[ "$ISO" != "no" ] && [ "$ANY2DVD" = "yes" ] && DISKSPACE_NEEDED_MB=`perl -le "print int($TOTAL_SIZEMB * 3)"`
+ 	if [ "$DISKSPACE_NEEDED_MB" -ge "$DISKSPACE_AVAIL_MB" ]; then
+-		errmsg WARNING: "Not enough diskspace available, $DISKSPACE_NEEDED_GB GB needed, but only $DISKSPACE_AVAIL_GB GB available on `df -T "$WORKDIR" | tail -n1 | awk '{print $1}'`"
++		errmsg WARNING: "Not enough diskspace available, $DISKSPACE_NEEDED_GB GB needed, but only $DISKSPACE_AVAIL_GB GB available on `df -TP "$WORKDIR" | tail -n1 | awk '{print $1}'`"
+ 		echo -en "     Are you sure you want to continue ? \033[1m(yes/no)\e[m "
+ 		read continue
+ 		[ "$continue" != "yes" ] && echo -e "\nENCODING ERROR" >> $VAR_DATAFILE && exit

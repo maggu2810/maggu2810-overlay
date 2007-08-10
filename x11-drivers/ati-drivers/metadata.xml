@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<herd>x11-drivers</herd>
+<maintainer>
+  <email>lu_zero@gentoo.org</email>
+</maintainer>
+<maintainer>
+  <email>marienz@gentoo.org</email>
+  <description>
+    Not a very active maintainer, and only using the ~x86 version. CC
+    me on bugs but if you can fix them without me don't bother waiting
+    for approval or anything.
+  </description>
+</maintainer>
+</pkgmetadata>

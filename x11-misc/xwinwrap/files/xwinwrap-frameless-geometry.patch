@@ -1,0 +1,142 @@
+--- xwinwrap.c-orig	2006-04-09 14:40:07.000000000 -0400
++++ xwinwrap.c	2006-04-11 03:11:51.000000000 -0400
+@@ -46,12 +46,19 @@
+ #define OPAQUE 0xffffffff
+ 
+ #define NAME "xwinwrap"
++#define MwmHintsDecorations (1L << 1)
+ 
+ static pid_t pid = 0;
+ 
+ static char **childArgv = 0;
+ static int  nChildArgv  = 0;
+ 
++typedef struct {
++    unsigned long flags;
++    unsigned long functions;
++    unsigned long decorations;
++} MwmHints;
++
+ static int
+ addArguments (char **argv,
+ 	      int  n)
+@@ -135,7 +142,7 @@
+ usage (void)
+ {
+     fprintf (stderr, "Usage: %s [-g] [-ni] [-argb] [-fs] [-s] [-st] [-sp] [-a] "
+-	     "[-b] [-nf]\n       [-o OPACITY] -- COMMAND ARG1...\n", NAME);
++	     "[-b] [-nf]\n       [-fl] [-o OPACITY] -- COMMAND ARG1...\n", NAME);
+ }
+ 
+ int
+@@ -163,6 +170,8 @@
+     int		 noFocus = 0;
+     Atom	 state[256];
+     int		 nState = 0;
++    int          frameless = 0;
++    
+ 
+     dpy = XOpenDisplay (NULL);
+     if (!dpy)
+@@ -179,7 +188,17 @@
+ 	if (strcmp (argv[i], "-g") == 0)
+ 	{
+ 	    if (++i < argc)
+-		XParseGeometry (argv[i], &x, &y, &width, &height);
++	    {
++		int  status;
++		status = XParseGeometry (argv[i], &x, &y, &width, &height);
++
++		if (status & XNegative)
++		    x = DisplayWidth (dpy, screen) - (width - x);
++		
++		if (status & YNegative) 
++		    y = DisplayHeight (dpy, screen) - (height - y);
++
++  	    }
+ 	}
+ 	else if (strcmp (argv[i], "-ni") == 0)
+ 	{
+@@ -223,6 +242,10 @@
+ 	    if (++i < argc)
+ 		opacity = (unsigned int) (atof (argv[i]) * OPAQUE);
+ 	}
++        else if (strcmp (argv[i], "-fl") == 0)
++        {
++            frameless = 1;
++        }
+ 	else if (strcmp (argv[i], "--") == 0)
+ 	{
+ 	    break;
+@@ -258,12 +281,16 @@
+ 	xsh.flags  = PSize | PPosition;
+ 	xsh.width  = DisplayWidth (dpy, screen);
+ 	xsh.height = DisplayHeight (dpy, screen);
++        xsh.x = 0;
++        xsh.y = 0;
+     }
+     else
+     {
+-	xsh.flags  = PSize;
++	xsh.flags  = PSize | PPosition;
+ 	xsh.width  = width;
+ 	xsh.height = height;
++	xsh.x 	   = x;
++	xsh.y      = y;
+     }
+ 
+     xwmh.flags = InputHint;
+@@ -285,19 +312,33 @@
+ 	attr.border_pixel     = 0;
+ 	attr.colormap	      = XCreateColormap (dpy, root, visual, AllocNone);
+ 
+-	win = XCreateWindow (dpy, root, 0, 0, xsh.width, xsh.height, 0,
++	win = XCreateWindow (dpy, root, xsh.x, xsh.y, xsh.width, xsh.height, 0,
+ 			     32, InputOutput, visual,
+ 			     CWBackPixel | CWBorderPixel | CWColormap, &attr);
+     }
+     else
+     {
+-	win = XCreateWindow (dpy, root, 0, 0, xsh.width, xsh.height, 0,
++	win = XCreateWindow (dpy, root, xsh.x, xsh.y, xsh.width, xsh.height, 0,
+ 			     CopyFromParent, InputOutput, CopyFromParent,
+ 			     0, NULL);
+     }
+ 
+     XSetWMProperties (dpy, win, NULL, NULL, argv, argc, &xsh, &xwmh, NULL);
+ 
++    if (frameless)
++    {
++        Atom mwmHintsAtom;
++        MwmHints mwmHints;
++        memset (&mwmHints, 0, sizeof (mwmHints));
++        mwmHints.flags = MwmHintsDecorations;
++	mwmHints.decorations = 0;
++        mwmHintsAtom = XInternAtom (dpy, "_MOTIF_WM_HINTS", 0);
++
++        XChangeProperty (dpy, win, mwmHintsAtom, mwmHintsAtom,
++                    8, PropModeReplace, (unsigned char *) &mwmHints, sizeof (mwmHints));
++
++    }
++
+     if (opacity != OPAQUE)
+ 	setWindowOpacity (dpy, win, opacity);
+ 
+@@ -342,6 +383,8 @@
+     signal (SIGTERM, sigHandler);
+     signal (SIGINT,  sigHandler);
+ 
++    
++
+     for (;;)
+     {
+ 	if (waitpid (pid, &status, 0) != -1)
+@@ -352,6 +395,7 @@
+ 
+ 	    break;
+ 	}
++
+     }
+ 
+     XDestroyWindow (dpy, win);
+
