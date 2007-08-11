@@ -1,0 +1,221 @@
+diff -purN kdebase-3.5.4.orig/kicker/applets/menu/menuapplet.cpp kdebase-3.5.4/kicker/applets/menu/menuapplet.cpp
+--- kdebase-3.5.4.orig/kicker/applets/menu/menuapplet.cpp	2005-09-10 03:25:31.000000000 -0500
++++ kdebase-3.5.4/kicker/applets/menu/menuapplet.cpp	2006-08-13 13:29:02.000000000 -0500
+@@ -354,7 +354,7 @@ int Applet::widthForHeight( int ) const
+     {
+     if (active_menu)
+         return active_menu->width();
+-    return 0; // we're stretch applet
++    return 50; // we're stretch applet
+     }
+ 
+ int Applet::heightForWidth( int ) const
+diff -purN kdebase-3.5.4.orig/kicker/kicker/buttons/kbutton.cpp kdebase-3.5.4/kicker/kicker/buttons/kbutton.cpp
+--- kdebase-3.5.4.orig/kicker/kicker/buttons/kbutton.cpp	2005-09-10 03:25:31.000000000 -0500
++++ kdebase-3.5.4/kicker/kicker/buttons/kbutton.cpp	2006-08-13 13:29:02.000000000 -0500
+@@ -37,6 +37,23 @@ CONNECTION WITH THE SOFTWARE OR THE USE 
+ #include "kbutton.h"
+ #include "kbutton.moc"
+ 
++#include <kiconloader.h>
++#include <qvariant.h>
++#include <qlabel.h>
++#include <qlayout.h>
++#include <qwhatsthis.h>
++#include <qaction.h>
++#include <qmenubar.h>
++#include <qpopupmenu.h>
++#include <qtoolbar.h>
++#include <qimage.h>
++#include <qpixmap.h>
++#include <krootpixmap.h>
++#include <qcolor.h>
++#include <qpainter.h>
++#include <qdragobject.h>
++#include <kglobalsettings.h>
++
+ KButton::KButton( QWidget* parent )
+     : PanelPopupButton( parent, "KButton" )
+ {
+@@ -45,7 +62,24 @@ KButton::KButton( QWidget* parent )
+ 
+     setPopup(MenuManager::the()->kmenu());
+     MenuManager::the()->registerKButton(this);
+-    setIcon("kmenu");
++
++    KIconLoader * skin_loader = KGlobal::iconLoader ();
++    skin = skin_loader->iconPath ("klauncher", KIcon::Small, true);
++    normal = QImage (skin);
++
++    if(normal.isNull())
++    {
++       setIcon("kmenu");
++    }
++    else
++    {
++        int applet_width = normal.width ();
++        int applet_height = normal.height ();
++        setIcon("klauncher");
++        mainView = new QLabel (this);
++        mainView->setFixedSize (applet_width, applet_height);
++        mainView->setPixmap (normal);
++    }
+ 
+     if (KickerSettings::showKMenuText())
+     {
+diff -purN kdebase-3.5.4.orig/kicker/kicker/buttons/kbutton.h kdebase-3.5.4/kicker/kicker/buttons/kbutton.h
+--- kdebase-3.5.4.orig/kicker/kicker/buttons/kbutton.h	2005-09-10 03:25:31.000000000 -0500
++++ kdebase-3.5.4/kicker/kicker/buttons/kbutton.h	2006-08-13 13:29:02.000000000 -0500
+@@ -26,6 +26,13 @@ CONNECTION WITH THE SOFTWARE OR THE USE 
+ 
+ #include "panelbutton.h"
+ 
++#include <qwidget.h>
++#include <qlabel.h>
++#include <qstring.h>
++#include <qpixmap.h>
++
++class QLabel;
++
+ /**
+  * Button that contains the PanelKMenu and client menu manager.
+  */
+@@ -41,6 +48,10 @@ public:
+ 
+     virtual void properties();
+ 
++    QPixmap normal;
++    QString skin;
++    QLabel *mainView;
++
+ protected:
+     virtual QString tileName() { return "KMenu"; }
+     virtual void initPopup();
+diff -purN kdebase-3.5.4.orig/kicker/kicker/core/container_button.cpp kdebase-3.5.4/kicker/kicker/core/container_button.cpp
+--- kdebase-3.5.4.orig/kicker/kicker/core/container_button.cpp	2006-03-17 15:48:32.000000000 -0600
++++ kdebase-3.5.4/kicker/kicker/core/container_button.cpp	2006-08-13 13:29:02.000000000 -0500
+@@ -33,9 +33,17 @@ CONNECTION WITH THE SOFTWARE OR THE USE 
+ #include <kpanelapplet.h>
+ #include <kurldrag.h>
+ 
++#include <kiconloader.h>
++#include <kimageeffect.h>
++#include <kpixmapeffect.h>
++
+ #include "global.h"
+ #include "appletop_mnu.h"
+ 
++#include <qimage.h>
++#include <qlabel.h>
++#include <qstring.h>
++
+ #include "containerarea.h"
+ #include "panelbutton.h"
+ #include "bookmarksbutton.h"
+@@ -366,9 +374,25 @@ void ButtonContainer::checkImmutability(
+ KMenuButtonContainer::KMenuButtonContainer(const KConfigGroup& config, QPopupMenu *opMenu, QWidget* parent)
+   : ButtonContainer(opMenu, parent)
+ {
+-    checkImmutability(config);
+-    embedButton( new KButton(this) );
+-    _actions = PanelAppletOpMenu::KMenuEditor;
++    KIconLoader * skin_loader = KGlobal::iconLoader ();
++    skin = skin_loader->iconPath ("klauncher", KIcon::Small, true);
++    normal = QImage (skin);
++
++    if(normal.isNull())
++    {
++        checkImmutability(config);
++        embedButton( new KButton(this) );
++        _actions = PanelAppletOpMenu::KMenuEditor;
++    }
++    else
++    {
++        applet_width = normal.width ();
++        applet_height = normal.height ();
++
++        checkImmutability(config);
++        embedButton( new KButton(this) );
++        _actions = PanelAppletOpMenu::KMenuEditor;
++    }
+ }
+ 
+ KMenuButtonContainer::KMenuButtonContainer(QPopupMenu *opMenu, QWidget* parent)
+@@ -378,12 +402,40 @@ KMenuButtonContainer::KMenuButtonContain
+     _actions = PanelAppletOpMenu::KMenuEditor;
+ }
+ 
++int KMenuButtonContainer::widthForHeight( int height ) const
++{
++    if(normal.isNull())
++    {
++        if ( height < 32 )
++            return height + 10;
++        else
++            return height;
++    }
++    else
++    {
++        if ( height < 32 )
++            return applet_width + 1;
++        else
++            return applet_width;
++    }
++}
++
+ int KMenuButtonContainer::heightForWidth( int width ) const
+ {
+-    if ( width < 32 )
+-        return width + 10;
++    if(normal.isNull())
++    {
++        if ( width < 32 )
++            return width + 10;
++        else
++            return width;
++    }
+     else
+-        return ButtonContainer::heightForWidth(width);
++    {
++        if ( width < 32 )
++            return applet_height + 1;
++        else
++            return applet_height;
++    }
+ }
+ 
+ // DesktopButton container
+diff -purN kdebase-3.5.4.orig/kicker/kicker/core/container_button.h kdebase-3.5.4/kicker/kicker/core/container_button.h
+--- kdebase-3.5.4.orig/kicker/kicker/core/container_button.h	2005-09-10 03:25:30.000000000 -0500
++++ kdebase-3.5.4/kicker/kicker/core/container_button.h	2006-08-13 13:29:53.000000000 -0500
+@@ -28,6 +28,9 @@ CONNECTION WITH THE SOFTWARE OR THE USE 
+ #include <kservice.h>
+ #include <kurl.h>
+ 
++#include "global.h"
++#include <qlabel.h>
++
+ #include "container_base.h"
+ 
+ class QLayout;
+@@ -56,6 +59,12 @@ public:
+ 
+     PanelButton* button() const { return _button; }
+ 
++    QPixmap normal;
++    QString skin;
++    QLabel *mainView;
++    int applet_width;
++    int applet_height;
++
+ public slots:
+     void setPopupDirection(KPanelApplet::Direction d);
+     void setOrientation(KPanelExtension::Orientation o);
+@@ -88,6 +97,7 @@ public:
+     virtual QString icon() const { return "kmenu"; }
+     virtual QString visibleName() const { return i18n("K Menu"); }
+ 
++    virtual int widthForHeight( int width )  const;
+     virtual int heightForWidth( int width )  const;
+     bool isAMenu() const { return true; }
+ };

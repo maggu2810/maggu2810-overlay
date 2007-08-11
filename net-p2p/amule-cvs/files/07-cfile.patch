@@ -1,0 +1,735 @@
+--- src.org/CFile.cpp	2007-06-18 19:07:57.000000000 +0200
++++ src/CFile.cpp	2007-08-10 18:13:01.000000000 +0200
+@@ -27,6 +27,7 @@
+ #include "CFile.h"		// Interface declarations.
+ #include "FileFunctions.h"	// Needed for CheckFileExists
+ #include "Logger.h"		// Needed for AddDebugLogLineM
++#include "Preferences.h"	// Needed for thePrefs
+ 
+ 
+ #ifdef HAVE_CONFIG_H
+@@ -154,13 +155,61 @@ CSeekFailureException::CSeekFailureExcep
+ {}
+ 
+ 
++#define MIN_MOF_VALUE 10
++
++static CFileOpenList s_fol;
++static wxMutex s_static_mutex;
++
++CFileOpenList& CFileOpenList::Instance()
++{
++	return s_fol;
++}
++
++CFileOpenList::CFileOpenList() {
++	m_pos = 0;
++	m_count = thePrefs::GetDFOMaxOpenFiles();
++	if (m_count < MIN_MOF_VALUE) m_count = MIN_MOF_VALUE;
++	m_list = (CFile**) calloc(m_count, sizeof (CFile*));
++#ifdef OH_FILE_OPEN_STATS
++	m_reopen_cnt = m_reuse_cnt = m_assign_cnt =
++	m_replace_cnt = m_max_fd = m_max_checks = 0;
++#endif
++};
++
++#ifdef OH_FILE_OPEN_STATS
++void CFileOpenList::GetStats(uint64& reopen_cnt, uint64& reuse_cnt, uint64& assign_cnt,
++	uint64& replace_cnt, uint64& max_fd, uint64& max_checks, uint64& slot_cnt, wxString& slots_disp)
++{
++	reopen_cnt = m_reopen_cnt;
++	reuse_cnt = m_reuse_cnt;
++	assign_cnt = m_assign_cnt;
++	replace_cnt = m_replace_cnt;
++	max_fd = m_max_fd;
++	max_checks = m_max_checks;
++	slot_cnt = 0;
++	slots_disp = wxT("");
++	const uint16 mof = thePrefs::GetDFOMaxOpenFiles();
++	for (int i = 0; i < mof && i < m_count; i++) {
++		if (!m_list[i]) {
++			slots_disp += wxT("-");
++		} else if (m_list[i]->IsFDAssigned()) {
++			slots_disp += m_list[i]->GetOpenRec() ? wxT("#") : wxT("X");
++			slot_cnt++;
++		} else {
++			slots_disp += wxT("+");
++		}
++	}
++}
++#endif
++
++
+ CFile::CFile()
+-	: m_fd(fd_invalid)
++	: m_fd(fd_invalid), m_opened(false), m_open_rec(0)
+ {}
+ 
+ 
+ CFile::CFile(const wxString& fileName, OpenMode mode)
+-	: m_fd(fd_invalid)
++	: m_fd(fd_invalid), m_opened(false), m_open_rec(0)
+ {
+ 	Open(fileName, mode);
+ }
+@@ -174,15 +223,15 @@ CFile::~CFile()
+ }
+ 
+ 
+-int CFile::fd() const
+-{
+-	return m_fd;
+-}
++//int CFile::fd() const
++//{
++//	throw CIOFailureException(wxT("CFile: Returning fd is impossible."));
++//}
+ 
+ 
+ bool CFile::IsOpened() const
+ {
+-	return m_fd != fd_invalid;
++	return m_opened;
+ }
+ 
+ 
+@@ -207,18 +256,78 @@ bool CFile::Create(const wxString& path,
+ bool CFile::Open(const wxString& fileName, OpenMode mode, int accessMode)
+ {
+ 	MULE_VALIDATE_PARAMS(!fileName.IsEmpty(), wxT("CFile: Cannot open, empty path."));
++	
++	if (IsOpened()) {
++		Close();
++	}
++
++	m_mode = mode;
++	m_accessMode = accessMode;
++	m_pos = 0;
++	m_first_open = true;
++    
++	m_filePath = fileName;
++	
++	m_opened = true;
++	
++	// we should call EnsureOpen() at least one time
++	// (for example: Open() with O_CREAT should have the chance to 
++	// really create the file)
++	const bool res = EnsureOpen();
++	CanClose();
++	return res;
++}
++
++#define OH_SET \
++	s_fol.m_list[i] = this; \
++	m_my_l_pos = i; \
++	s_fol.m_pos = (i + 1) % mof; \
++	return true;
++		
++inline bool CFile::CheckSlot(uint16 i, uint16& check_cnt, uint16 mof) {
++	check_cnt++;
++	if (!s_fol.m_list[i]) {
++#ifdef OH_FILE_OPEN_STATS
++		s_fol.m_assign_cnt++;
++#endif
++		OH_SET
++	} else if (!s_fol.m_list[i]->m_open_rec) {
++#ifdef OH_FILE_OPEN_STATS
++		s_fol.m_replace_cnt++;
++#endif
++		s_fol.m_list[i]->CloseFDNow();
++		OH_SET
++	}
++	return false;
++}
++
++bool CFile::EnsureOpen()
++{
++	MULE_VALIDATE_STATE(m_opened, wxT("CFile: EnsureOpen but not called Open before."));
++	if (m_open_rec++) {
++		// this is a recursive call to EnsureOpen() so fd is already assigned
++		return true;
++	}
++	if (m_fd != fd_invalid) {
++		// filedes already assigned, because no CloseFDNow() has been called.
++#ifdef OH_FILE_OPEN_STATS
++		s_fol.m_reuse_cnt++;
++#endif
++		return true;
++	}
++
+ #ifdef __linux__
+ 	int flags = O_BINARY | O_LARGEFILE;
+ #else
+ 	int flags = O_BINARY;
+ #endif
+-	switch ( mode ) {
++	switch ( m_mode ) {
+ 		case read:
+ 			flags |= O_RDONLY;
+ 			break;
+ 		
+ 		case write_append:
+-			if (CheckFileExists(fileName))
++			if (CheckFileExists(m_filePath))
+ 			{
+ 				flags |= O_WRONLY | O_APPEND;
+ 				break;
+@@ -239,21 +348,101 @@ bool CFile::Open(const wxString& fileNam
+         	break;
+ 	}
+ 	
+-	if (IsOpened()) {
+-		Close();	
++	if (!m_first_open) {
++#ifdef OH_FILE_OPEN_STATS
++		s_fol.m_reopen_cnt++;
++#endif
++		// Remove all flags which should be used only the first time we open the file.
++		flags &= ~(O_CREAT | O_EXCL | O_TRUNC);
+ 	}
+ 	
+ 	// Test if it is possible to use an ANSI name, otherwise use UTF-8
+-	Unicode2CharBuf tmpFileName = unicode_2_broken(fileName);
++	Unicode2CharBuf tmpFileName = unicode_2_broken(m_filePath);
+ 	if (tmpFileName) {
+-		m_fd = open(tmpFileName, flags, accessMode);
++		m_fd = open(tmpFileName, flags, m_accessMode);
+ 	} 
+ 	
+-	m_filePath = fileName;
+ 	
+ 	syscall_check(m_fd != fd_invalid, m_filePath, wxT("opening file"));
++	if (m_fd == fd_invalid) {
++		// Failed to open the file.
++		// Don't assign a slot in the ringbuffer.
++		// CanClose() has to be called anyway !!!
++		return false;
++	}
++
++	{
++		wxMutexLocker static_locker(s_static_mutex);
++		
++		// Resize the ring buffer if needed
++		uint16 mof = thePrefs::GetDFOMaxOpenFiles();
++		if (mof < MIN_MOF_VALUE) mof = MIN_MOF_VALUE;
++		if (mof > s_fol.m_count) {
++			// Enlarge ringbuffer
++			s_fol.m_list = (CFile**) realloc(s_fol.m_list, mof * sizeof (CFile*));
++			for (uint16 i = s_fol.m_count; i < mof; i++) {
++				s_fol.m_list[i] = NULL;
++			}
++			s_fol.m_count = mof;
++		} else if (mof < s_fol.m_count) {
++			// Reduce ringbuffer
++			// Untested code !!!
++			wxASSERT(false);
++			// (reducing is not required because s_DFOMaxOpenFiles cannot be changed
++			// at runtime anyway and is already initialized the first time EnsureOpen()
++			// gets called so we only need to enlarge from 0 to s_DFOMaxOpenFiles).
++			uint16 i;
++			for (i = s_fol.m_count - 1; i >= mof; i--) {
++				if (s_fol.m_list[i]) {
++					if (s_fol.m_list[i]->m_open_rec) {
++						// we cannot free this slot
++						// only reduce to i + 1
++						// the slots above mof will no longer be assigned
++						s_fol.m_count = i + 1;
++						break;
++					}
++					// we can free this slot
++					s_fol.m_list[i]->CloseFDNow();
++				}
++			}
++			if (i == mof - 1) s_fol.m_count = mof; // all slots above mof are free
++			s_fol.m_list = (CFile**) realloc(s_fol.m_list, s_fol.m_count * sizeof (CFile*));
++		}
++		
++		// Use the next free or unsed slot in the ringbuffer
++		// If we have to free a slot, call CloseFDNow() on the old CFile.
++		// We can nearly always use s_fol.m_pos without further checking for the other slots.
++		// (tested with 2.000 downloads and a ring buffer size of 100)
++		uint16 i, check_cnt = 0;
++		for (i = s_fol.m_pos; i < mof; i++) {
++			if (CheckSlot(i, check_cnt, mof)) break;
++		}
++		if (i == mof) {
++			for (i = 0; i < s_fol.m_pos; i++) {
++				if (CheckSlot(i, check_cnt, mof)) break;
++			}
++			MULE_VALIDATE_STATE(i < s_fol.m_pos, wxT("CFile: EnsureOpen: no empty slot in ring buffer found."));
++		}
++#ifdef OH_FILE_OPEN_STATS
++		if (s_fol.m_max_checks < check_cnt) s_fol.m_max_checks = check_cnt;
++#endif
++	}
+ 	
+-	return IsOpened();
++	if (!m_first_open) {
++		// seek to the last position before the file was closed
++		const sint64 result = SEEK_FD(m_fd, m_pos, SEEK_SET);
++		if (result == wxInvalidOffset) {
++			throw CSeekFailureException(wxString(wxT("Seeking failed: ")) + wxSysErrorMsg());
++		} else if (result != m_pos) {
++			throw CSeekFailureException(wxT("Seeking returned incorrect position"));        
++		}
++	}
++#ifdef OH_FILE_OPEN_STATS
++	if (s_fol.m_max_fd < m_fd) s_fol.m_max_fd = m_fd;
++#endif
++	
++	m_first_open = false;
++	return true;
+ }
+ 
+ 
+@@ -261,12 +450,49 @@ bool CFile::Close() 
+ {
+ 	MULE_VALIDATE_STATE(IsOpened(), wxT("CFile: Cannot close closed file."));
+ 
+-	bool closed = (close(m_fd) != -1);
+-	syscall_check(closed, m_filePath, wxT("closing file"));
++	if (m_fd != fd_invalid) {
++		wxMutexLocker static_locker(s_static_mutex);
++		// ensure the fd and the ringbuffer slot were freed
++		CloseFDNow();
++	}
++	
++	m_opened = false;
++	
++	return true;
++}
++
++
++void CFile::CanClose()
++{
++	MULE_VALIDATE_STATE(m_opened, wxT("CFile: CanClose but not called Open before."));
++	MULE_VALIDATE_STATE(m_open_rec, wxT("CFile: CanClose without corresponding EnsureOpen."));
++	// can occur if first EnsureOpen() failed
++	//MULE_VALIDATE_STATE(m_fd != fd_invalid, wxT("CFile: CanClose but not open."));
++	
++	m_open_rec--;
++}
++
++
++// call only with s_static_mutex !!!
++void CFile::CloseFDNow()
++{
++	MULE_VALIDATE_STATE(m_opened, wxT("CFile: CloseFDNow but not called Open before."));
++	MULE_VALIDATE_STATE(!m_open_rec, wxT("CFile: CloseFDNow but we have unfinished recursive EnsureOpen calls."));
++	
++	if (m_fd != fd_invalid) {
++		// remember the current file position first before we close the fd.
++		m_pos = TELL_FD(m_fd);
++		const bool closed = (close(m_fd) != -1);
++		syscall_check(closed, m_filePath, wxT("closing file"));
++	}
+ 	
+ 	m_fd = fd_invalid;	
+ 	
+-	return closed;
++	// we can free the slot in the ring buffer now
++	// because we will no longer need it.
++	if (m_my_l_pos < s_fol.m_count && s_fol.m_list[m_my_l_pos] == this) {
++		s_fol.m_list[m_my_l_pos] = NULL;
++	}
+ }
+ 
+ 
+@@ -274,8 +500,10 @@ bool CFile::Flush()
+ {
+ 	MULE_VALIDATE_STATE(IsOpened(), wxT("CFile: Cannot flush closed file."));
+ 	
++	EnsureOpen();
+ 	bool flushed = (FLUSH_FD(m_fd) != -1);
+ 	syscall_check(flushed, m_filePath, wxT("flushing file"));
++	CanClose();
+ 
+ 	return flushed;	
+ }
+@@ -286,12 +514,14 @@ sint64 CFile::doRead(void* buffer, size_
+ 	MULE_VALIDATE_PARAMS(buffer, wxT("CFile: Invalid buffer in read operation."));
+ 	MULE_VALIDATE_STATE(IsOpened(), wxT("CFile: Cannot read from closed file."));
+ 	
++	((CFile *) this)->EnsureOpen();
+ 	size_t totalRead = 0;
+ 	while (totalRead < count) {
+ 		int current = ::read(m_fd, (char*)buffer + totalRead, count - totalRead);
+ 		
+ 		if (current == -1) {
+ 			// Read error, nothing we can do other than abort.
++			((CFile *) this)->CanClose();
+ 			throw CIOFailureException(wxString(wxT("Error reading from file: ")) + wxSysErrorMsg());
+ 		} else if ((totalRead + current < count) && Eof()) {
+ 			// We may fail to read the specified count in a couple
+@@ -303,6 +533,7 @@ sint64 CFile::doRead(void* buffer, size_
+ 		totalRead += current;
+ 	}
+ 	
++	((CFile *) this)->CanClose();
+ 	return totalRead;
+ }
+ 
+@@ -312,8 +543,10 @@ sint64 CFile::doWrite(const void* buffer
+ 	MULE_VALIDATE_PARAMS(buffer, wxT("CFile: Invalid buffer in write operation."));
+ 	MULE_VALIDATE_STATE(IsOpened(), wxT("CFile: Cannot write to closed file."));
+ 
++	EnsureOpen();
+ 	sint64 result = ::write(m_fd, buffer, nCount);
+ 	
++	CanClose();
+ 	if (result != (sint64)nCount) {
+ 		throw CIOFailureException(wxString(wxT("Error writing to file: ")) + wxSysErrorMsg());
+ 	}
+@@ -327,7 +560,9 @@ sint64 CFile::doSeek(sint64 offset) cons
+ 	MULE_VALIDATE_STATE(IsOpened(), wxT("Cannot seek on closed file."));
+ 	MULE_VALIDATE_PARAMS(offset >= 0, wxT("Invalid position, must be positive."));
+ 	
++	((CFile *) this)->EnsureOpen();
+ 	sint64 result = SEEK_FD(m_fd, offset, SEEK_SET);
++	((CFile *) this)->CanClose();
+ 
+ 	if (result == offset) {
+ 		return result;
+@@ -343,7 +578,9 @@ uint64 CFile::GetPosition() const
+ {
+ 	MULE_VALIDATE_STATE(IsOpened(), wxT("Cannot get position in closed file."));
+ 	
++	((CFile *) this)->EnsureOpen();
+ 	sint64 pos = TELL_FD(m_fd);
++	((CFile *) this)->CanClose();
+ 	if (pos == wxInvalidOffset) {
+ 		throw CSeekFailureException(wxString(wxT("Failed to retrieve position in file: ")) + wxSysErrorMsg());
+ 	}
+@@ -357,9 +594,12 @@ uint64 CFile::GetLength() const
+ 	MULE_VALIDATE_STATE(IsOpened(), wxT("CFile: Cannot get length of closed file."));
+ 
+ 	STAT_STRUCT buf;
++	((CFile *) this)->EnsureOpen();
+ 	if (STAT_FD(m_fd, &buf) == -1) {
++		((CFile *) this)->CanClose();
+ 		throw CIOFailureException(wxString(wxT("Failed to retrieve length of file: ")) + wxSysErrorMsg());
+ 	}
++	((CFile *) this)->CanClose();
+ 	
+ 	return buf.st_size;
+ }
+@@ -384,11 +624,13 @@ bool CFile::SetLength(size_t new_len)
+ {
+ 	MULE_VALIDATE_STATE(IsOpened(), wxT("CFile: Cannot set length when no file is open."));
+ 
++	EnsureOpen();
+ #ifdef __WXMSW__
+ 	int result = chsize(m_fd, new_len);
+ #else
+ 	int result = ftruncate(m_fd, new_len);
+ #endif
++	CanClose();
+ 
+ 	syscall_check((result != -1), m_filePath, wxT("truncating file"));
+ 
+--- src.org/CFile.h	2007-06-18 19:07:57.000000000 +0200
++++ src/CFile.h	2007-08-10 18:13:01.000000000 +0200
+@@ -109,7 +109,7 @@ public:
+ 	 * Note that direct manipulation of the descriptor should
+ 	 * be avoided! That's what this class is for.
+ 	 */
+-	int  fd() const;
++	//int  fd() const;
+ 
+ 	/**
+ 	 * Flushes data not yet written.
+@@ -161,6 +161,16 @@ public:
+ 	 */
+ 	bool IsOpened() const;
+ 	
++	/**
++	 * Returns true if an fd is assigned to this CFile.
++	 */
++	bool IsFDAssigned() const { return m_fd != fd_invalid; }
++	
++	/**
++	 * Returns the number of currently active EnsureOpen() calls.
++	 */
++	int GetOpenRec() const { return m_open_rec; }
++	
+ protected:
+ 	/** @see CFileDataIO::doRead **/
+ 	virtual sint64 doRead(void* buffer, size_t count) const;
+@@ -181,8 +191,107 @@ private:
+ 	
+ 	//! The full path to the current file.
+ 	wxString m_filePath;
++
++	//! Mode from Open()
++	OpenMode m_mode;
++	
++	//! AccessMode from Open()
++	int m_accessMode;
++	
++	//! True if a call to EnsureOpen() would be the first one for this CFile.
++	bool m_first_open;
++	
++	//! True if Open() was called (regardless of wether we have an fd assigned).
++	bool m_opened;
++	
++	//! Position in file before closing it in CloseFDNow().
++	sint64 m_pos;
++	
++	//! Number of currenty active calls to EnsureOpen().
++	int m_open_rec;
++	
++	//! Index of the slot in CFileOpenList that was assigned to this CFile.
++	//! (the slot can already have been overwritten by another CFile object) 
++	int m_my_l_pos;
++
++	/**
++	 * Returns true if the given slot in the ring buffer is free
++	 * and sets CFile to it.
++	 * Returns false otherwise.
++	 */
++	inline bool CheckSlot(uint16 i, uint16& check_cnt, uint16 mof);
++	
++	/**
++	 * Ensures that a file descriptor is assigned to this CFile.
++	 * Every EnsureOpen() call must have an equivalent CanClose() call.
++	 * Returns true if successfull.
++	 */
++	bool EnsureOpen();
++
++	/**
++	 * Tells EnsureOpen() of other CFile objects that they can close
++	 * the file descriptor of this CFile if there are too many
++	 * (more than MAX_OPEN_FILES) open.
++	 */
++	void CanClose();
++
++	/**
++	 * Closes the file descriptor assigned to this CFile.
++	 * Call only with s_oh_static_mutex !!!
++	 */
++	void CloseFDNow();
+ };
+ 
++//! Generate and output statistics
++#define OH_FILE_OPEN_STATS
++
++class CFileOpenList
++{
++public:
++	CFileOpenList();
++	
++	/**
++	 * Returns the one instance of CFileOpenList for external access.
++	 */
++	static CFileOpenList& Instance();
++	
++	/**
++	 * Returns all collated statistics.
++	 */
++	void GetStats(uint64& reopen_cnt, uint64& reuse_cnt, uint64& assign_cnt,
++		uint64& replace_cnt, uint64& max_fd, uint64& max_checks, uint64& slot_cnt, wxString& slots_disp);
++	
++	//! Position of the next slot to check in the following ring buffer.
++    uint16 m_pos;
++    
++    //! Current number of slots in the ring buffer
++    uint16 m_count;
++    
++    //! List of slots for CFile objects (used as a ring buffer).
++    CFile** m_list;
++    
++#ifdef OH_FILE_OPEN_STATS
++    
++    //! Statistic: Number of reopenings.
++    int m_reopen_cnt;
++    
++    //! Statistic: Number of fds we have used for more than one native call.
++    int m_reuse_cnt;
++    
++    //! Statistic: Number of slot assignments.
++    int m_assign_cnt;
++    
++    //! Statistic: Number of slot replacements.
++    int m_replace_cnt;
++    
++    //! Statistic: Largest fd we had to use.
++    int m_max_fd;
++    
++    //! Statistic: Largest number of checks for free slots before we could find one.
++    int m_max_checks;
++    
++#endif
++};
+ 
+ /**
+  * This exception is thrown by CFile if a seek or tell fails.
+--- src.org/PartFile.cpp	2007-08-10 18:12:31.000000000 +0200
++++ src/PartFile.cpp	2007-08-10 18:13:01.000000000 +0200
+@@ -196,11 +196,11 @@ CPartFile::~CPartFile()
+ 	// So we just guess is < 0 on error and > 2 if ok (0 stdin, 1 stdout, 2 stderr)
+ 	// But, where does this wrong handle comes from?
+ 	
+-	if (m_hpartfile.IsOpened() && (m_hpartfile.fd() > 2)) { 
++	if (m_hpartfile.IsOpened() /*&& m_hpartfile.IsFDAssigned()*/) { 
+ 		FlushBuffer(true);
+ 	}
+ 	
+-	if (m_hpartfile.IsOpened() && (m_hpartfile.fd() > 2)) {
++	if (m_hpartfile.IsOpened() /*&& m_hpartfile.IsFDAssigned()*/) {
+ 		m_hpartfile.Close();
+ 		// Update met file (with current directory entry)
+ 		SavePartFile();			
+@@ -2360,7 +2360,7 @@ void CPartFile::Delete()
+ 	// eMule had same problem with lseek error ... and override with a simple 
+ 	// check for INVALID_HANDLE_VALUE (that, btw, does not exist on linux)
+ 	// So we just guess is < 0 on error and > 2 if ok (0 stdin, 1 stdout, 2 stderr)
+-	if (m_hpartfile.fd() > 2) {  // 0 stdin, 1 stdout, 2 stderr
++	if (true /*m_hpartfile.IsFDAssigned()*/) {
+ 		m_hpartfile.Close();
+ 	}
+ 
+--- src.org/Preferences.cpp	2007-08-07 22:49:52.000000000 +0200
++++ src/Preferences.cpp	2007-08-10 18:13:01.000000000 +0200
+@@ -67,6 +67,8 @@ COLORREF		CPreferences::s_colors_ref[cnt
+ CPreferences::CFGMap	CPreferences::s_CfgList;
+ CPreferences::CFGList	CPreferences::s_MiscList;
+ 
++/* Dynamic File Opening */
++uint16		CPreferences::s_DFOMaxOpenFiles;
+ 
+ /* Proxy */
+ CProxyData	CPreferences::s_ProxyData;
+@@ -1168,6 +1170,13 @@ void CPreferences::BuildItemList( const 
+ 	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/KadNodesUrl"),			s_KadURL, wxT("http://emule-inside.net/nodes.dat") ) );
+ 	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/Ed2kServersUrl"),			s_Ed2kURL, wxT("http://ocbmaurice.dyndns.org/pl/slist.pl/server.met?download/server-max.met") ) );
+ 	
++	/**
++	 * Dynamic File Opening
++	 **/
++	
++	s_MiscList.push_back( MkCfg_Int( wxT("/eMule/DFOMaxOpenFiles"), s_DFOMaxOpenFiles, 100 ) );
++	// ulimit -n should be at least s_DFOMaxOpenFiles + 200 for sockets, locks, etc.
++	
+ #ifndef AMULE_DAEMON
+ 	// Colors have been moved from global prefs to CStatisticsDlg
+ 	for ( int i = 0; i < cntStatColors; i++ ) {  
+--- src.org/Preferences.h	2007-07-29 15:12:09.000000000 +0200
++++ src/Preferences.h	2007-08-10 18:13:01.000000000 +0200
+@@ -486,6 +486,9 @@ public:
+ 	// Can't have it return a reference, will need a pointer later.
+ 	static const CProxyData *GetProxyData()			{ return &s_ProxyData; }
+ 	
++	// Dynamic File Opening
++	static uint16 GetDFOMaxOpenFiles() { return s_DFOMaxOpenFiles; }
++	
+ 	// Hidden files
+ 	
+ 	static bool ShareHiddenFiles() { return s_ShareHiddenFiles; }
+@@ -723,6 +726,9 @@ protected:
+ 	static bool		s_FilterAllMessages;
+ 	static bool		s_FilterSomeMessages;
+ 	
++	// Dynamic File Opening
++	static uint16		s_DFOMaxOpenFiles;
++	
+ 	// Hidden files sharing
+ 	static bool	s_ShareHiddenFiles;
+ 	
+--- src.org/Statistics.cpp	2007-06-18 19:07:57.000000000 +0200
++++ src/Statistics.cpp	2007-08-10 18:13:01.000000000 +0200
+@@ -41,6 +41,7 @@
+ 	#include "ServerList.h"		// Needed for CServerList (tree)
+ 	#include <cmath>		// Needed for std::floor
+ 	#include "updownclient.h"	// Needed for CUpDownClient
++	#include "CFile.h"		// Needed for CFileOpenList::Instance()
+ #else
+ 	#include "Preferences.h"
+ 	#include <ec/cpp/RemoteConnect.h>		// Needed for CRemoteConnect
+@@ -215,6 +216,17 @@ CStatTreeItemCounter*		CStatistics::s_si
+ uint64						CStatistics::s_kadNodesTotal;
+ uint16						CStatistics::s_kadNodesCur;
+ 
++#ifdef OH_FILE_OPEN_STATS
++// Dynamic File Opening
++CStatTreeItemSimple*		CStatistics::s_reopen_cnt;
++CStatTreeItemSimple*		CStatistics::s_reuse_cnt;
++CStatTreeItemSimple*		CStatistics::s_assign_cnt;
++CStatTreeItemSimple*		CStatistics::s_replace_cnt;
++CStatTreeItemSimple*		CStatistics::s_max_fd;
++CStatTreeItemSimple*		CStatistics::s_max_checks;
++CStatTreeItemSimple*		CStatistics::s_slot_cnt;
++CStatTreeItemSimple*		CStatistics::s_slots_disp;
++#endif
+ 
+ CStatistics::CStatistics()
+ 	: m_graphRunningAvgDown(thePrefs::GetStatsAverageMinutes() * 60 * 1000, true),
+@@ -718,6 +730,19 @@ void CStatistics::InitStatsTree()
+ 	s_serverOccupation = (CStatTreeItemSimple*)tmpRoot1->AddChild(new CStatTreeItemSimple(wxTRANSLATE("Server Occupation: %.2f%%")));
+ 	s_serverOccupation->SetValue(0.0);
+ 
++#ifdef OH_FILE_OPEN_STATS
++	tmpRoot1 = s_statTree->AddChild(new CStatTreeItemBase(wxTRANSLATE("Dynamic File Opening")));
++	s_reopen_cnt = (CStatTreeItemSimple*)tmpRoot1->AddChild(new CStatTreeItemSimple(wxTRANSLATE("Number of required reopenings: %i")));
++	s_reuse_cnt = (CStatTreeItemSimple*)tmpRoot1->AddChild(new CStatTreeItemSimple(wxTRANSLATE("Number of reused FDs: %i")));
++	s_assign_cnt = (CStatTreeItemSimple*)tmpRoot1->AddChild(new CStatTreeItemSimple(wxTRANSLATE("Number of FD slots assigned: %i")));
++	s_replace_cnt = (CStatTreeItemSimple*)tmpRoot1->AddChild(new CStatTreeItemSimple(wxTRANSLATE("Nummber of FD slots replaced: %i")));
++	s_max_fd = (CStatTreeItemSimple*)tmpRoot1->AddChild(new CStatTreeItemSimple(wxTRANSLATE("Maxmimum FD used: %i")));
++	s_max_checks = (CStatTreeItemSimple*)tmpRoot1->AddChild(new CStatTreeItemSimple(wxTRANSLATE("Maximum number of required checks for a free slot: %i")));
++	s_slot_cnt = (CStatTreeItemSimple*)tmpRoot1->AddChild(new CStatTreeItemSimple(wxTRANSLATE("Number of currently assigned slots: %i")));
++	s_slots_disp = (CStatTreeItemSimple*)tmpRoot1->AddChild(new CStatTreeItemSimple(wxTRANSLATE("Assigned slots: %s")));
++	s_slots_disp->SetValue(wxT("???"));
++#endif
++
+ 	tmpRoot1 = s_statTree->AddChild(new CStatTreeItemBase(wxTRANSLATE("Shared Files")));
+ 	s_numberOfShared = (CStatTreeItemCounter*)tmpRoot1->AddChild(new CStatTreeItemCounter(wxTRANSLATE("Number of Shared Files: %s")));
+ 	s_sizeOfShare = (CStatTreeItemCounter*)tmpRoot1->AddChild(new CStatTreeItemCounter(wxTRANSLATE("Total size of Shared Files: %s")));
+@@ -758,6 +783,20 @@ void CStatistics::UpdateStatsTree()
+ 	s_totalUsers->SetValue((uint64)servtuser);
+ 	s_totalFiles->SetValue((uint64)servtfile);
+ 	s_serverOccupation->SetValue(servocc);
++	
++#ifdef OH_FILE_OPEN_STATS
++	uint64 reopen_cnt, reuse_cnt, assign_cnt, replace_cnt, max_fd, max_checks, slot_cnt;
++	wxString slots_disp;
++	CFileOpenList::Instance().GetStats(reopen_cnt, reuse_cnt, assign_cnt, replace_cnt, max_fd, max_checks, slot_cnt, slots_disp);
++	s_reopen_cnt->SetValue(reopen_cnt);
++	s_reuse_cnt->SetValue(reuse_cnt);
++	s_assign_cnt->SetValue(assign_cnt);
++	s_replace_cnt->SetValue(replace_cnt);
++	s_max_fd->SetValue(max_fd);
++	s_max_checks->SetValue(max_checks);
++	s_slot_cnt->SetValue(slot_cnt);
++	s_slots_disp->SetValue(slots_disp);
++#endif
+ }
+ 
+ 
+--- src.org/Statistics.h	2007-06-18 19:07:57.000000000 +0200
++++ src/Statistics.h	2007-08-10 18:13:01.000000000 +0200
+@@ -30,6 +30,7 @@
+ #include "GetTickCount.h"	// Needed for GetTickCount64()
+ #include "StatTree.h"		// Needed for CStatTreeItem* classes
+ 
++#include "CFile.h"		// Needed for OH_FILE_OPEN_STATS define
+ 
+ #include <deque>		// Needed for std::deque
+ 
+@@ -465,6 +466,18 @@ class CStatistics {
+ 	// Kad nodes
+ 	static uint64 s_kadNodesTotal;
+ 	static uint16 s_kadNodesCur;
++
++#ifdef OH_FILE_OPEN_STATS
++	// Dynamic File Opening
++	static CStatTreeItemSimple*		s_reopen_cnt;
++	static CStatTreeItemSimple*		s_reuse_cnt;
++	static CStatTreeItemSimple*		s_assign_cnt;
++	static CStatTreeItemSimple*		s_replace_cnt;
++	static CStatTreeItemSimple*		s_max_fd;
++	static CStatTreeItemSimple*		s_max_checks;
++	static CStatTreeItemSimple*		s_slot_cnt;
++	static CStatTreeItemSimple*		s_slots_disp;
++#endif
+ };
+ 
+ #else /* EC_REMOTE == CLIENT_GUI */

@@ -1,0 +1,21 @@
+--- src.org/MuleNotebook.cpp	2007-06-18 19:07:57.000000000 +0200
++++ src/MuleNotebook.cpp	2007-08-10 18:12:50.000000000 +0200
+@@ -63,6 +63,8 @@ CMuleNotebook::~CMuleNotebook()
+ 
+ bool CMuleNotebook::DeletePage(int nPage)
+ {
++	return false; // amule crash on page close with older wxGTK versions
++	
+ 	// Send out close event
+ 	wxNotebookEvent evt( wxEVT_COMMAND_MULENOTEBOOK_PAGE_CLOSED, GetId(), nPage );
+ 	evt.SetEventObject(this);
+@@ -92,7 +94,8 @@ bool CMuleNotebook::DeleteAllPages()
+ 	Freeze();
+ 
+ 	bool result = true;
+-	while ( GetPageCount() ) {
++	// avoid deadlock if DeletePage() returns false
++	while ( result && GetPageCount() ) {
+ 		result &= DeletePage( 0 );
+ 	}
+ 	

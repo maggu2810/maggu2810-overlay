@@ -1,0 +1,12 @@
+--- src.org/PartFile.cpp	2007-08-10 18:13:37.000000000 +0200
++++ src/PartFile.cpp	2007-08-10 18:13:43.000000000 +0200
+@@ -261,6 +261,9 @@ void CPartFile::CreatePartFile()
+ 		#warning Code for full file alloc - should be done on thread.
+ 	}
+ 	
++	// create whole file as sparse
++	m_hpartfile.Seek(GetFileSize() - 1, wxFromStart);
++	m_hpartfile.WriteUInt8(0);
+ 	
+ 	m_hashsetneeded = GetED2KPartHashCount();
+ 	

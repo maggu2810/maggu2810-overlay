@@ -1,0 +1,363 @@
+--- src.org/amule-remote-gui.h	2007-07-27 16:27:10.000000000 +0200
++++ src/amule-remote-gui.h	2007-08-10 18:13:29.000000000 +0200
+@@ -569,6 +569,11 @@ public:
+ 		return m_shared_files->GetByID(id); 
+ 	}
+ 
++	bool FindCancelledFileByID(const CMD4Hash& id)
++	{
++		return false; //TODO access to CKnownFileList
++	}
++
+ 	uint16 requested;
+ 	uint32 transferred;
+ 	uint16 accepted;
+--- src.org/DownloadQueue.cpp	2007-08-10 18:13:17.000000000 +0200
++++ src/DownloadQueue.cpp	2007-08-10 18:13:29.000000000 +0200
+@@ -1392,7 +1392,7 @@ void CDownloadQueue::SetCatStatus(uint8 
+ 		
+ 	for ( ; it != files.end(); it++ ) {
+ 		switch ( newstatus ) {
+-			case MP_CANCEL:	(*it)->Delete(); 	break;
++			case MP_CANCEL:	(*it)->Delete(true); 	break;
+ 			case MP_PAUSE:	(*it)->PauseFile();	break;
+ 			case MP_STOP:	(*it)->StopFile();	break;
+ 			case MP_RESUME:	(*it)->ResumeFile();	break;
+--- src.org/ExternalConn.cpp	2007-08-10 18:13:11.000000000 +0200
++++ src/ExternalConn.cpp	2007-08-10 18:13:29.000000000 +0200
+@@ -560,7 +560,7 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
+ 				if ( thePrefs::StartNextFile() && (pfile->GetStatus() != PS_PAUSED) ) {
+ 					theApp->downloadqueue->StartNextFile(pfile);
+ 				}
+-				pfile->Delete();
++				pfile->Delete(true);
+ 				break;
+ 
+ 			case EC_OP_PARTFILE_REHASH:
+--- src.org/GuiEvents.cpp	2007-08-10 18:13:11.000000000 +0200
++++ src/GuiEvents.cpp	2007-08-10 18:13:29.000000000 +0200
+@@ -633,7 +633,7 @@ namespace MuleNotify
+ 	
+ 	void PartFile_Delete(CPartFile* file)
+ 	{
+-		file->Delete();
++		file->Delete(true);
+ 	}
+ 	
+ 	void PartFile_Rehash(CPartFile* file)
+--- src.org/KnownFile.cpp	2007-07-27 16:27:10.000000000 +0200
++++ src/KnownFile.cpp	2007-08-10 18:13:29.000000000 +0200
+@@ -610,6 +610,17 @@ bool CKnownFile::LoadFromFile(const CFil
+ }
+ 
+ 
++bool CKnownFile::LoadFromCancelledMet(const CFileDataIO* file)
++{
++	m_abyFileHash = file->ReadHash();
++	uint8 tagcount = file->ReadUInt8();
++	// for compatibility with future versions which may add more data than just the hash
++	for (uint32 i = 0; i < tagcount; ++i)
++		CTag newtag(*file, false);
++	return true;
++}
++
++
+ bool CKnownFile::WriteToFile(CFileDataIO* file)
+ {
+ 	wxCHECK(!IsPartFile(), false);
+--- src.org/KnownFile.h	2007-07-27 16:27:10.000000000 +0200
++++ src/KnownFile.h	2007-08-10 18:13:29.000000000 +0200
+@@ -307,6 +307,8 @@ public:
+ 	
+ 	void	ClearPriority();
+ 	
++	bool LoadFromCancelledMet(const CFileDataIO* file);
++	
+ protected:
+ 	bool	LoadTagsFromFile(const CFileDataIO* file);
+ 	bool	LoadDateFromFile(const CFileDataIO* file);
+--- src.org/KnownFileList.cpp	2007-07-27 16:27:10.000000000 +0200
++++ src/KnownFileList.cpp	2007-08-10 18:13:29.000000000 +0200
+@@ -51,47 +51,55 @@ CKnownFileList::~CKnownFileList()
+ 
+ bool CKnownFileList::Init()
+ {
++	const bool resK = Init0(true);
++	const bool resC = Init0(false);
++	return resK && resC;
++}
++
++bool CKnownFileList::Init0(bool knownMet)
++{
++	wxString name = knownMet ? wxT("known") : wxT("cancelled");
+ 	CFile file;
+ 	
+-	wxString fullpath = theApp->ConfigDir + wxT("known.met");
++	wxString fullpath = theApp->ConfigDir + name + wxT(".met");
+ 	if (!wxFileExists(fullpath)) {
+-		AddLogLineM(true, _("Warning: known.met does not exist."));
++		AddLogLineM(true, _("Warning: ") + name + _(".met does not exist."));
+ 		return false;
+ 	}
+ 
+ 	if (!file.Open(fullpath)) {
+-		AddLogLineM(true, _("Warning: known.met cannot be opened."));
++		AddLogLineM(true, _("Warning: ") + name + _(".met cannot be opened."));
+ 		return false;
+ 	}
+ 	
+ 	try {
+ 		uint8 version = file.ReadUInt8();
+ 		if ((version != MET_HEADER) && (version != MET_HEADER_WITH_LARGEFILES)) {
+-			AddLogLineM(true, _("Warning: Knownfile list corrupted, contains invalid header."));
++			AddLogLineM(true, _("Warning: ") + name + _("file list corrupted, contains invalid header."));
+ 			return false;
+ 		}
+ 		
+ 		wxMutexLocker sLock(list_mut);
+ 		uint32 RecordsNumber = file.ReadUInt32();
+-		AddDebugLogLineM(false, logKnownFiles, wxString::Format(wxT("Reading %i known files from file format 0x%2.2x."),RecordsNumber, version));
++		AddDebugLogLineM(false, logKnownFiles, wxString::Format(wxT("Reading %i %ls files from file format 0x%2.2x."),RecordsNumber, name.c_str(), version));
+ 		for (uint32 i = 0; i < RecordsNumber; i++) {
+ 			std::auto_ptr<CKnownFile> record(new CKnownFile());
+ 			
+-			if (record->LoadFromFile(&file)) {
+-				AddDebugLogLineM(false, logKnownFiles, wxT("Known file read: ") + record->GetFileName());
+-				Append(record.release());
++			if (knownMet ? record->LoadFromFile(&file) : record->LoadFromCancelledMet(&file)) {
++				AddDebugLogLineM(false, logKnownFiles, name + wxT(" file read: ") + record->GetFileName());
++				if (knownMet) AppendK(record.release()); else AppendC(record.release());
+ 			} else {
+-				AddLogLineM(true, wxT("Failed to load entry in knownfilelist, file may be corrupt"));
++				AddLogLineM(true, wxT("Failed to load entry in ") + name + wxT("filelist, file may be corrupt"));
+ 			}
+ 		}
+ 		
+-		AddDebugLogLineM(false, logKnownFiles, wxT("Finished reading known files"));
++		AddDebugLogLineM(false, logKnownFiles, wxT("Finished reading ") + name + wxT(" files"));
+ 	
+ 		return true;
+ 	} catch (const CInvalidPacket& e) {
+-		AddLogLineM(true, wxT("Invalid entry in knownfilelist, file may be corrupt: ") + e.what());
++		AddLogLineM(true, wxT("Invalid entry in ") + name + wxT("filelist, file may be corrupt: ") + e.what());
+ 	} catch (const CSafeIOException& e) {
+-		AddLogLineM(true, CFormat(_("IO error while reading known.met file: %s")) % e.what());
++		AddLogLineM(true, CFormat(_("IO error while reading ") + name + wxT(".met file: %s")) % e.what());
+ 	}	
+ 	
+ 	return false;
+@@ -99,6 +107,12 @@ bool CKnownFileList::Init()
+ 
+ void CKnownFileList::Save()
+ {
++	SaveK();
++	SaveC();
++}
++
++void CKnownFileList::SaveK()
++{
+ 	CFile file(theApp->ConfigDir + wxT("known.met"), CFile::write);
+ 	if (!file.IsOpened()) {
+ 		return;
+@@ -142,6 +156,32 @@ void CKnownFileList::Save()
+ }
+ 
+ 
++void CKnownFileList::SaveC()
++{
++	CFile file(theApp->ConfigDir + wxT("cancelled.met"), CFile::write);
++	if (!file.IsOpened()) {
++		return;
++	}
++
++	wxMutexLocker sLock(list_mut);
++
++	try {
++		file.WriteUInt8(MET_HEADER);
++		
++		file.WriteUInt32(m_map_cld.size());
++
++		CancelledFileMap::iterator it = m_map_cld.begin();
++		for (; it != m_map_cld.end(); ++it) {
++			file.WriteHash(it->first);
++			file.WriteUInt8(0);
++		}
++		
++	} catch (const CIOFailureException& e) {
++		AddLogLineM(true, CFormat(_("Error while saving cancelled.met file: %s")) % e.what());
++	}
++}
++
++
+ void CKnownFileList::Clear()
+ {	
+ 	wxMutexLocker sLock(list_mut);
+@@ -149,6 +189,8 @@ void CKnownFileList::Clear()
+ 		delete it->second;
+ 	m_map.clear();
+ 
++	m_map_cld.clear();
++
+ 	KnownFileList::iterator it = m_duplicates.begin();
+ 	for ( ; it != m_duplicates.end(); ++it ) {
+ 		delete *it;
+@@ -193,12 +235,27 @@ CKnownFile* CKnownFileList::FindKnownFil
+ 
+ }
+ 
++
++bool CKnownFileList::FindCancelledFileByID(const CMD4Hash& hash) {
++	
++	wxMutexLocker sLock(list_mut);
++
++	return !hash.IsEmpty() && (m_map_cld.find(hash) != m_map_cld.end());
++	
++}
++
++
+ bool CKnownFileList::SafeAddKFile(CKnownFile* toadd) {
+ 	wxMutexLocker sLock(list_mut);
+-	return Append(toadd);
++	return AppendK(toadd);
+ }
+ 
+-bool CKnownFileList::Append(CKnownFile* Record)
++bool CKnownFileList::SafeAddCancelledFile(CKnownFile* toadd) {
++	wxMutexLocker sLock(list_mut);
++	return AppendC(toadd);
++}
++
++bool CKnownFileList::AppendK(CKnownFile* Record)
+ {
+ 	if (Record->GetFileSize() > 0) {
+ 		const CMD4Hash& tkey = Record->GetFileHash();
+@@ -237,6 +294,19 @@ bool CKnownFileList::Append(CKnownFile* 
+ }
+ 
+ 
++bool CKnownFileList::AppendC(CKnownFile* Record)
++{
++	const CMD4Hash& tkey = Record->GetFileHash();
++	CancelledFileMap::iterator it = m_map_cld.find(tkey);
++	if ( it == m_map_cld.end() ) {
++		m_map_cld[tkey] = 1;
++		return true;
++	}
++	// The file is already on the list, ignore it.
++	return false;
++}
++
++
+ CKnownFile* CKnownFileList::IsOnDuplicates(wxString filename,uint32 in_date,uint64 in_size) const
+ {
+ 	KnownFileList::const_iterator it = m_duplicates.begin();
+--- src.org/KnownFileList.h	2007-07-27 16:27:10.000000000 +0200
++++ src/KnownFileList.h	2007-08-10 18:13:29.000000000 +0200
+@@ -46,6 +46,9 @@ public:
+ 	CKnownFile* FindKnownFileByID(const CMD4Hash& hash);
+ 	bool	IsKnownFile(const CKnownFile* file);
+ 
++	bool	SafeAddCancelledFile(CKnownFile* toadd);
++	bool	FindCancelledFileByID(const CMD4Hash& hash);
++	
+ 	uint16 requested;
+ 	uint32 transferred;
+ 	uint16 accepted;
+@@ -53,13 +56,19 @@ public:
+ private:
+ 	wxMutex	list_mut;
+ 
+-	bool	Append(CKnownFile*);
++	bool	AppendK(CKnownFile*);
++	bool	AppendC(CKnownFile*);
++	bool 	Init0(bool knownMet);
++	void	SaveK();
++	void	SaveC();
+ 
+ 	CKnownFile* IsOnDuplicates(wxString filename,uint32 in_date,uint64 in_size) const;
+ 
+ 	typedef std::list<CKnownFile*> KnownFileList;
++	typedef std::map<CMD4Hash, uint8> CancelledFileMap;
+ 	KnownFileList	m_duplicates;
+ 	CKnownFileMap	m_map;
++	CancelledFileMap	m_map_cld;
+ };
+ 
+ #endif // KNOWNFILELIST_H
+--- src.org/PartFileConvert.cpp	2007-07-27 16:27:10.000000000 +0200
++++ src/PartFileConvert.cpp	2007-08-10 18:13:29.000000000 +0200
+@@ -397,7 +397,7 @@ int CPartFileConvert::performConvertToeM
+ 			AddDebugLogLineM(true, logPfConvert, wxT("IO error while converting partfiles: ") + e.what());
+ 			
+ 			delete[] ba;
+-			file->Delete();
++			file->Delete(false);
+ 			return CONV_IOERROR;
+ 		}
+ 		
+@@ -445,7 +445,7 @@ int CPartFileConvert::performConvertToeM
+ 			ret = wxCopyFile(oldfile, newfilename.Left(newfilename.Length() - 4), false);
+ 		}
+ 		if (!ret) {
+-			file->Delete();
++			file->Delete(false);
+ 			//delete file;
+ 			return CONV_FAILED;
+ 		}
+@@ -467,7 +467,7 @@ int CPartFileConvert::performConvertToeM
+ 
+ 	if (!file->LoadPartFile(thePrefs::GetTempDir(), file->GetPartMetFileName(), false)) {
+ 		//delete file;
+-		file->Delete();
++		file->Delete(false);
+ 		return CONV_BADFORMAT;
+ 	}
+ 
+--- src.org/PartFile.cpp	2007-08-10 18:13:11.000000000 +0200
++++ src/PartFile.cpp	2007-08-10 18:13:29.000000000 +0200
+@@ -2358,7 +2358,7 @@ void  CPartFile::RemoveAllSources(bool b
+ }
+ 
+ 
+-void CPartFile::Delete()
++void CPartFile::Delete(bool setAsCancelled)
+ {
+ 	AddLogLineM(false, CFormat(_("Deleting file: %s")) % GetFileName());
+ 	// Barry - Need to tell any connected clients to stop sending the file
+@@ -2414,6 +2414,11 @@ void CPartFile::Delete()
+ 		}
+ 	}
+ 
++	if (setAsCancelled) {
++		theApp->knownfiles->SafeAddCancelledFile(this);
++		AddDebugLogLineM(false, logPartFile, wxT("\tAdded to cancelled file list"));
++	}
++	
+ 	AddDebugLogLineM(false, logPartFile, wxT("Done"));
+ 	
+ 	delete this;
+--- src.org/PartFile.h	2007-08-10 18:13:11.000000000 +0200
++++ src/PartFile.h	2007-08-10 18:13:29.000000000 +0200
+@@ -165,7 +165,7 @@ public:
+ 
+ 	void	RemoveBlockFromList(uint64 start,uint64 end);
+ 	void	RemoveAllSources(bool bTryToSwap);
+-	void	Delete();
++	void	Delete(bool setAsCancelled);
+ 	void	Rehash();
+ 	void	ForceCompletion();
+ 	void	StopFile(bool bCancel = false);
+--- src.org/SearchListCtrl.cpp	2007-07-22 06:06:21.000000000 +0200
++++ src/SearchListCtrl.cpp	2007-08-10 18:13:29.000000000 +0200
+@@ -270,6 +270,11 @@ void CSearchListCtrl::UpdateItemColor( l
+ 				green = 128;
+ 				blue = 128;
+ 			}
++		} else if (theApp->knownfiles->FindCancelledFileByID(file->GetFileHash())) {
++			// File has been cancelled. Mark as orange.
++			red = 255;
++			green = 170;
++			blue = 0;
+ 		} else {
+ 			// File is new, colour after number of files
+ 			blue += file->GetSourceCount() * 5;

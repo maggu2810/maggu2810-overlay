@@ -1,0 +1,27 @@
+Fixes makefiles to fail if building wxrc fails.
+Ensures wxrc will be present, for the applications that needs it, if emerge succeeds.
+
+Index: Makefile.in
+===================================================================
+RCS file: /pack/cvsroots/wxwidgets/wxWidgets/Makefile.in,v
+retrieving revision 1.521.2.10
+diff -u -B -r1.521.2.10 Makefile.in
+--- Makefile.in	2006/05/23 18:13:44	1.521.2.10
++++ Makefile.in	2006/09/24 07:44:55
+@@ -9933,13 +9933,13 @@
+ 	(cd samples && $(MAKE) all)
+ 
+ @COND_USE_XRC_1@wxrc: $(__monodll___depname) $(__monolib___depname) $(__basedll___depname) $(__baselib___depname) $(__xmldll___depname) $(__xmllib___depname)
+-@COND_USE_XRC_1@	(test -d utils/wxrc && cd utils/wxrc && $(MAKE) all) || true
++@COND_USE_XRC_1@	(if test -d utils/wxrc ; then cd utils/wxrc && $(MAKE) all ; fi)
+ 
+ @COND_USE_XRC_1@clean-wxrc: 
+-@COND_USE_XRC_1@	(test -d utils/wxrc && cd utils/wxrc && $(MAKE) clean) || true
++@COND_USE_XRC_1@	(if test -d utils/wxrc ; then cd utils/wxrc && $(MAKE) clean ; fi)
+ 
+ @COND_USE_XRC_1@install-wxrc: $(__wxrc___depname)
+-@COND_USE_XRC_1@	(test -d utils/wxrc && cd utils/wxrc && $(MAKE) install) || true
++@COND_USE_XRC_1@	(if test -d utils/wxrc ; then cd utils/wxrc && $(MAKE) install ; fi)
+ 
+ install-wxconfig: 
+ 	$(INSTALL_DIR) $(DESTDIR)$(bindir)

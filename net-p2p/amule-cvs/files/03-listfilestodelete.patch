@@ -1,0 +1,20 @@
+--- src.org/DownloadListCtrl.cpp	2007-08-10 18:12:31.000000000 +0200
++++ src/DownloadListCtrl.cpp	2007-08-10 18:12:41.000000000 +0200
+@@ -609,7 +609,16 @@ void CDownloadListCtrl::OnCancelFile(wxC
+ 	ItemList files = ::GetSelectedItems(this, itFILES);
+ 	if (files.size()) {	
+ 		wxString question = 
+-			_("Are you sure that you wish to delete the selected file(s)?");	
++			_("Are you sure that you wish to delete the selected file(s):\n");
++		int cnt = 0;
++		for (ItemList::iterator it = files.begin(); it != files.end(); ++it) {
++			if (++cnt == 5) {
++				question += wxT("...");
++				break;
++			}
++			CPartFile* file = (*it)->GetFile();
++			question += file->GetFileName() + wxT("\n");
++		}
+ 		if (wxMessageBox( question, _("Cancel"), wxICON_QUESTION | wxYES_NO, this) == wxYES) {
+ 			for (ItemList::iterator it = files.begin(); it != files.end(); ++it) {
+ 				CPartFile* file = (*it)->GetFile();

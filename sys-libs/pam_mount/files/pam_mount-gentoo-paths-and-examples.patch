@@ -1,0 +1,83 @@
+--- config/pam_mount.conf.orig	2006-08-11 12:44:04.000000000 +0200
++++ config/pam_mount.conf	2006-08-11 12:51:24.000000000 +0200
+@@ -79,7 +79,7 @@
+ # source in mount.c (it sends the password to the stdin file descriptor
+ # of the child process -- look for STDIN_FILENO).
+ #
+-lsof /usr/bin/lsof %(MNTPT)
++lsof /usr/sbin/lsof %(MNTPT)
+ fsck /sbin/fsck -p %(FSCKTARGET)
+ losetup /sbin/losetup -p0 "%(before=\"-e\" CIPHER)" "%(before=\"-k\" KEYBITS)" %(FSCKLOOP) %(VOLUME)
+ unlosetup /sbin/losetup -d %(FSCKLOOP)
+
+--- config/pam_mount.conf.orig	2006-08-11 12:44:04.000000000 +0200
++++ config/pam_mount.conf	2006-08-11 12:51:24.000000000 +0200
+@@ -197,6 +197,46 @@
+ # (thanks to Mike Hommey for this example)
+ # volume test local - /tmpfs/test /home/test "size=10M,uid=test,gid=users,mode=0700 -t tmpfs" - -
+ 
++# BEGIN GENTOO EXAMPLES FOR ENCRYPTED HOME
++# user1 has an encrypted home that uses his/her system passwd as the
++# encryption key
++# To create a USB dongle secured user see user2:
++# Define a user key and group key to use a USB dongle as an encrypted
++# file system for the key to the user2 file system - so user would need
++# the USB dongle, the password for user key and the password for user
++# user2. in order to access the encrypted home of user2. Note that
++# without the first two the user can still log in and create files
++# on his home directory mount point. However the security for the
++# encrypted volume is much better since a dictionary attack would need
++# the dongle. See http://www.counterpane.com/twofish-final.html
++# for a discussion on why twofish is a good choice. This setup works
++# with mm-sources-2.6.0_beta9-r5. So to login graphically as user2
++# insert key, ctrl-alt-f1 login as key, alt-f7, login as user2,
++# ctrl-alt-f1, logout key, remove dongle. This works for KDM. Modify
++# /etc/pam.d/login and /etc/pam.d/kde per docs
++#volume key local - /dev/sda2 /key loop,encryption=twofish - -
++#volume user1 local - /home/.user1 /home/user1 loop,encryption=twofish - -
++#volume user2 local - /home/.user2 - - bf-ecb /key/sp.key
++# /etc/fstab contains
++#/home/.user2  /home/user2  reiserfs    user,loop,encryption=twofish,noauto     0 0
++#/dev/sda2     /key         ext2        user,loop,encryption=twofish,noauto     0 0
++#
++# Device-Mapper based encryption (dm-crypt)
++# Since the introduction of dm-crypt in Linux 2.6.4, cryptoloop has been
++# deprecated. To use the new dm-crypt interface, you will have to adapt
++# the preceding examples to use "crypt" instead of "local" as filesystem
++# type. Additionally the cipher algorithm is specified via the "cipher"
++# option (to distinguish from cryptoloop's "encryption"). Thus, the
++# user1 example would look like this:
++#volume user1 crypt - /home/.user1 /home/user1 loop,cipher=twofish - -
++# An entry in /etc/fstab is not needed. A detailed HOWTO can be found in
++# the forums: http://forums.gentoo.org/viewtopic.php?t=274651
++# Note that pam_mount is LUKS (http://luks.endorphin.org) aware. To
++# use luks, you need to have cryptsetup-luks (get it at 
++# http://luks.endorphin.org/dm-cryp) installed. A config line would be
++#volume user1 crypt - /dev/yourpartition /yourmountpoint - - -
++# and cryptsetup will be told to read cypher/keysize/etc. from the luks-header.
++# END GENTOO EXAMPLES
+ 
+ # Details:
+ # Local user configuration (~/.pam_mount.conf) can extend this.
+--- scripts/umount.crypt	2005-12-28 11:26:51.000000000 +0100
++++ umount.crypt	2005-12-29 20:19:01.000000000 +0100
+@@ -28,7 +28,7 @@
+ export IFS=`echo -en " \t\n"`;
+ 
+ LOSETUP=/sbin/losetup
+-CRYPTSETUP=/sbin/cryptsetup
++CRYPTSETUP=/bin/cryptsetup
+ MOUNT=/bin/mount
+ UMOUNT=/bin/umount
+ READLINK="/usr/bin/readlink";
+--- scripts/mount.crypt	2005-12-24 13:07:42.000000000 +0100
++++ mount.crypt	2005-12-29 20:18:22.000000000 +0100
+@@ -28,7 +28,7 @@
+ 
+ # Commands
+ LOSETUP=/sbin/losetup
+-CRYPTSETUP=/sbin/cryptsetup
++CRYPTSETUP=/bin/cryptsetup
+ MOUNT=/bin/mount
+ FSCK="/sbin/fsck";
+ 

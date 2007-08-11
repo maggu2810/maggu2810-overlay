@@ -1,0 +1,11 @@
+--- src.org/SharedFileList.cpp	2007-06-18 19:07:57.000000000 +0200
++++ src/SharedFileList.cpp	2007-08-10 18:12:56.000000000 +0200
+@@ -519,6 +519,8 @@ unsigned CSharedFileList::AddFilesFromDi
+ 
+ bool CSharedFileList::AddFile(CKnownFile* pFile)
+ {
++	return false; //No shared files at all
++	
+ 	wxASSERT(pFile->GetHashCount() == pFile->GetED2KPartHashCount());
+ 	
+ 	wxMutexLocker lock(list_mut);

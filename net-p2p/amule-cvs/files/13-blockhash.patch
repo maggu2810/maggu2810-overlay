@@ -1,0 +1,345 @@
+--- src.org/DownloadQueue.cpp	2007-08-10 18:13:29.000000000 +0200
++++ src/DownloadQueue.cpp	2007-08-10 18:13:37.000000000 +0200
+@@ -86,6 +86,7 @@ CDownloadQueue::CDownloadQueue()
+ 	m_lastudpstattime = 0;
+ 	m_udcounter = 0;
+ 	m_nLastED2KLinkCheck = 0;
++	m_nLastSearchForDuplicateFiles = 0;
+ 	m_dwNextTCPSrcReq = 0;
+ 	m_cRequestsSentToServer = 0;
+ 	m_lastDiskCheck = 0;
+@@ -437,6 +438,13 @@ void CDownloadQueue::Process()
+ 		AddLinksFromFile();
+ 		m_nLastED2KLinkCheck = ::GetTickCount();
+ 	}
++	
++	// Search for duplicate files once per hour (per default)
++	uint32 sdf_intv = thePrefs::GetSDFInterval();
++	if (sdf_intv && (::GetTickCount() - m_nLastSearchForDuplicateFiles) >= sdf_intv) {
++		SearchForDuplicateFiles();
++		m_nLastSearchForDuplicateFiles = ::GetTickCount();
++	}
+ }
+ 
+ 
+@@ -1861,4 +1869,155 @@ bool CDownloadQueue::DoKademliaFileReque
+ {
+ 	return ((::GetTickCount() - lastkademliafilerequest) > KADEMLIAASKTIME);
+ }
++
++
++
++#define CLUSTER_SIZE 460
++void CDownloadQueue::SearchForDuplicateFiles()
++{
++	wxMutexLocker lock(m_mutex);
++	
++	CAICHHash blockHashFull, blockHashRest, blockHashZero;
++	blockHashFull.DecodeBase32(wxT("73MH2FDSJJRJDPC4FXVI2BMUVNG7XU7G")); // 184320 bytes
++	blockHashRest.DecodeBase32(wxT("3B7BKVSZHML4CD5MVWTY7Y5TUNOA65KS")); // 143360 bytes
++	blockHashZero.DecodeBase32(wxT("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"));
++	
++	AddDebugLogLineM(false, logDownloadQueue, wxT("Starting SearchForDuplicateFiles"));
++	
++	const wxString hashdirname = theApp->ConfigDir + wxT("HASHDIR");
++	if (!CheckFileExists(hashdirname)) {
++		AddDebugLogLineM(true, logDownloadQueue, wxT("SearchForDuplicateFiles: HashMap-File doesn't exist: ") + hashdirname);
++		return;
++	}
++	CFile hashdirfile;
++	hashdirfile.Open(hashdirname, CFile::read);
++	if (!hashdirfile.IsOpened()) {
++		AddDebugLogLineM(true, logDownloadQueue, wxT("SearchForDuplicateFiles: Cannot open ") + hashdirname);
++		return;
++	}
++	
++	for (int i = 0; i < m_filelist.size(); i++) {
++		CPartFile* file = m_filelist[i];
++		
++		if (file->GetPercentCompleted() < 10.0) {
++			continue;
++		}
++		
++		AddDebugLogLineM(false, logDownloadQueue, wxT("SearchForDuplicateFiles: processing ") + file->GetFileName());
++		std::map<CMD4Hash, uint32> dupfiles;
++		
++		const uint64 fileSize = file->GetFileSize();
++		const uint32 allBlocks = fileSize / PARTSIZE * 53 + fileSize % PARTSIZE / EMBLOCKSIZE +
++				(fileSize % PARTSIZE % EMBLOCKSIZE ? 1 : 0);
++		
++		wxString blkhashname = file->GetFullName() + wxT(".blkhash");
++		if (!CheckFileExists(blkhashname)) {
++			continue;
++		}
++		CFile blkhashfile(blkhashname, CFile::read);
++		if (!blkhashfile.IsOpened()) {
++			AddDebugLogLineM(true, logDownloadQueue, wxT("SearchForDuplicateFiles: Cannot open ") + blkhashname);
++			continue;
++		}
++		CAICHHash blockhash;
++		CAICHHash blkhash;
++		CMD4Hash fileHash = file->GetFileHash();
++		int blockindex = -1, emptyBlocks = 0, complBlocks = 0;
++		while (!blkhashfile.Eof()) {
++			blockindex++;
++			blockhash.Read(&blkhashfile);
++			if (blockhash == blockHashZero) {
++				continue;
++			}
++			complBlocks++;
++			if (blockhash == blockHashFull || blockhash == blockHashRest) {
++				emptyBlocks++; // is an empty hash
++			} else {
++				const byte *raw = blockhash.GetRawHash();
++				const uint32 hash = (raw[5] & 0xFF) | ((raw[15] & 0xFF) << 8) | ((raw[10] & 0x0F) << 16);
++				hashdirfile.Seek(hash * CLUSTER_SIZE, wxFromStart);
++				//bool write = true;
++				//int lastblkindex = -1;
++				//CMD4Hash lastflehash;
++				int cnt = CLUSTER_SIZE;
++				while (true) {
++					if (cnt == 4) {
++						// end of cluster
++						int pos = hashdirfile.ReadUInt32();
++						if (!pos) {
++							// create new cluster
++							uint64 length = hashdirfile.GetLength();
++							if (length >= 2147483647 - CLUSTER_SIZE) {
++								AddDebugLogLineM(true, logDownloadQueue, wxT("SearchForDuplicateFiles: HashMap-File too large."));
++								blkhashfile.Close();
++								hashdirfile.Close();
++								//write = false;
++								break; // break but don't allow writing because we could not create a new cluster
++							}
++							pos = (int) length;
++							hashdirfile.Seek(-4, wxFromCurrent);
++							hashdirfile.WriteUInt32(pos);
++							hashdirfile.Seek(pos, wxFromStart);
++							for (int i = 0; i < CLUSTER_SIZE; i++) hashdirfile.WriteUInt8(0);
++							hashdirfile.Seek(pos, wxFromStart);
++							break;
++						}
++						hashdirfile.Seek(pos, wxFromStart);
++						cnt = CLUSTER_SIZE;
++					}
++					wxASSERT(cnt > 4);
++					int blkindex = hashdirfile.ReadUInt16();
++					if (!blkindex) {
++						// end of list in current cluster
++						hashdirfile.Seek(-2, wxFromCurrent);
++						break;
++					}
++					blkindex--;
++					blkhash.Read(&hashdirfile);
++					const CMD4Hash flehash = hashdirfile.ReadHash();
++					if (blkhash == blockhash) {
++						if (false /*fileHash == flehash && blkindex == blockindex*/) {
++							//TODO we should allow finding ourself, to be able to detect "same size-all identical"-files
++							//write = false;
++						} else /*if (lastblkindex != blkindex && lastflehash != flehash)*/ {
++							//lastflehash = flehash;
++							//lastblkindex = blkindex;
++							AddDebugLogLineM(true, logDownloadQueue, CFormat(
++								wxT("SearchForDuplicateFiles: Found identical blocks in files %s and %s - index %d of %d")) %
++								fileHash.Encode() % flehash.Encode() % blockindex % blkindex);
++							dupfiles[flehash] += (blkindex == blockindex ? 3 : 1);
++						}
++					}
++					cnt -= 38;
++				}
++				if (/*write*/ false) {
++					AddDebugLogLineM(false, logDownloadQueue, wxT("SearchForDuplicateFiles: Writing hash to ") + hashdirname);
++					hashdirfile.WriteUInt16(blockindex + 1);
++					blockhash.Write(&hashdirfile);
++					hashdirfile.WriteHash(fileHash);
++				}
++			}
++		}
++		blkhashfile.Close();
++		
++		if (complBlocks < allBlocks * 0.1 || complBlocks < 10) {
++			continue;
++		}
++		
++		std::map<CMD4Hash, uint32>::iterator it;
++		for (it = dupfiles.begin(); it != dupfiles.end(); it++) {
++			CMD4Hash fleHash = (*it).first;
++			uint32 identBlocks = (*it).second / 3;
++			if (identBlocks >= complBlocks * 0.95) {
++				AddDebugLogLineM(true, logDownloadQueue, CFormat(
++					wxT("SearchForDuplicateFiles: Found duplicate to %s: %s - %d of %d blocks identical (%d blocks empty)")) %
++					file->GetFileName() % fleHash.Encode() % identBlocks % complBlocks % emptyBlocks);
++				//file->PauseFile(); //TODO enable
++			}
++		}
++	}
++	hashdirfile.Close();
++	
++}
++
+ // File_checked_for_headers
+--- src.org/DownloadQueue.h	2007-08-10 18:13:17.000000000 +0200
++++ src/DownloadQueue.h	2007-08-10 18:13:37.000000000 +0200
+@@ -502,6 +502,14 @@ private:
+ 	/* Kad Stuff */
+ 	uint32		lastkademliafilerequest;
+ 	
++	//! Last search for duplicate files
++	uint32		m_nLastSearchForDuplicateFiles;
++	
++	/**
++	 * Search for files which have identical blocks
++	 */
++	void SearchForDuplicateFiles();
++	
+ };
+ 
+ #endif // DOWNLOADQUEUE_H
+--- src.org/PartFile.cpp	2007-08-10 18:13:29.000000000 +0200
++++ src/PartFile.cpp	2007-08-10 18:13:37.000000000 +0200
+@@ -253,6 +253,9 @@ void CPartFile::CreatePartFile()
+ 	}
+ 
+ 	SetFilePath( thePrefs::GetTempDir() );
++	
++	// make sure we have no old .blkhash file laying around
++	wxRemoveFile(m_fullname + wxT(".blkhash"));
+ 			
+ 	if (thePrefs::GetAllocFullPart()) {
+ 		#warning Code for full file alloc - should be done on thread.
+@@ -3122,6 +3125,11 @@ void CPartFile::FlushBuffer(bool /*force
+ 		return;
+ 	}
+ 	
++	
++	uint32 maxBlockCount = partCount * 53; //evtl. less if last part is smaller than PARTSIZE
++	bool changedBlock[maxBlockCount];
++	memset(changedBlock, 0, maxBlockCount * sizeof(bool));
++	
+ 	// Loop through queue
+ 	while ( !m_BufferedData_list.empty() ) {
+ 		// Get top item and remove it from the queue
+@@ -3139,6 +3147,13 @@ void CPartFile::FlushBuffer(bool /*force
+ 		}
+ 		// SLUGFILLER: SafeHash
+ 		
++		// Set dirty flag on all block hashes covered by this data buffer
++		const uint32 firstblk = item->start / PARTSIZE * 53 + item->start % PARTSIZE / EMBLOCKSIZE;
++		const uint32 lastblk = item->end / PARTSIZE * 53 + item->end % PARTSIZE / EMBLOCKSIZE;
++		for (uint32 curblk = firstblk; curblk <= lastblk; ++curblk) {
++			changedBlock[curblk] = true;
++		}
++				
+ 		// Go to the correct position in file and write block of data			
+ 		try {
+ 			m_hpartfile.Seek(item->start);
+@@ -3155,6 +3170,59 @@ void CPartFile::FlushBuffer(bool /*force
+ 		delete item;
+ 	}
+ 	
++	CFile blkhash;
++	wxString blkhashname = m_fullname + wxT(".blkhash");
++	if (CheckFileExists(blkhashname)) {
++		blkhash.Open(blkhashname, CFile::read_write);
++	} else {
++		blkhash.Open(blkhashname, CFile::write);
++	}
++	if (blkhash.IsOpened()) {
++		CAICHHashAlgo *pHashAlg = m_pAICHHashSet->GetNewHashAlgo();
++		CAICHHash hash;
++		for (uint32 curblk = 0; curblk < maxBlockCount; ++curblk) if (changedBlock[curblk]) {
++			uint64 blkstart = curblk / 53 * PARTSIZE + curblk % 53 * EMBLOCKSIZE;
++			uint64 blkend = (curblk + 1) / 53 * PARTSIZE + (curblk + 1 ) % 53 * EMBLOCKSIZE;
++			uint32 blklen = blkend - blkstart;
++			wxASSERT(blklen <= EMBLOCKSIZE);
++			AddDebugLogLineM(false, logPartFile,
++				CFormat(_("Flushing buffer for block %d (from %Ld till %Ld - %d bytes)"))
++				% curblk % blkstart % blkend % blklen);
++			if (blkend < m_hpartfile.GetLength() && IsComplete(blkstart, blkend)) {
++				AddDebugLogLineM(false, logPartFile,
++					CFormat(_("Block %d is complete")) % curblk);
++				// create the aich hash for this block
++				char buf[blklen];
++				try {
++					m_hpartfile.Seek(blkstart);
++					m_hpartfile.Read(buf, blklen);
++					pHashAlg->Reset();
++					pHashAlg->Add(buf, blklen);
++					pHashAlg->Finish(hash);
++					// and write the new created hash
++					blkhash.Seek(20 * curblk);
++					hash.Write(&blkhash);
++				} catch (const CEOFException& eof_exc) {
++					// sometimes happens if we are receiving data for the last
++					// block that currently exists in the .part file
++					AddDebugLogLineM(true, logPartFile,
++						CFormat(_("Read past EOF in block %d (from %Ld till %Ld - %d bytes - filesize %Ld)"))
++						% curblk % blkstart % blkend % blklen % m_hpartfile.GetLength());
++				}
++			} else {
++				AddDebugLogLineM(false, logPartFile,
++					CFormat(_("Block %d is not complete")) % curblk);
++				// Only mark hash for this block as invalid
++				blkhash.Seek(20 * curblk);
++				blkhash.WriteUInt64(0);
++				blkhash.WriteUInt64(0);
++				blkhash.WriteUInt32(0);
++			}
++		}
++		delete pHashAlg;
++		blkhash.Close();
++	}
++	
+ 	
+ 	// Update last-changed date
+ 	m_lastDateChanged = wxDateTime().Now();
+--- src.org/Preferences.cpp	2007-08-10 18:13:17.000000000 +0200
++++ src/Preferences.cpp	2007-08-10 18:13:37.000000000 +0200
+@@ -141,6 +141,7 @@ bool		CPreferences::s_checkDiskspace;
+ uint32		CPreferences::s_uMinFreeDiskSpace;
+ wxString	CPreferences::s_yourHostname;
+ bool		CPreferences::s_bVerbose;
++uint32		CPreferences::s_SDFInterval;
+ bool		CPreferences::s_bmanualhighprio;
+ bool		CPreferences::s_btransferfullchunks;
+ bool		CPreferences::s_bstartnextfile;
+@@ -1172,6 +1173,8 @@ void CPreferences::BuildItemList( const 
+ 	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/YourHostname"),			s_yourHostname, wxEmptyString ) );
+ 	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/DateTimeFormat"),		s_datetimeformat, wxT("%A, %x, %X") ) );
+ 
++	s_MiscList.push_back( MkCfg_Int( wxT("/eMule/SDFInterval"), s_SDFInterval, 60 * 60 * 1000 ) );
++	
+ 	s_MiscList.push_back( new Cfg_Bool( wxT("/eMule/IndicateRatings"),		s_indicateratings, true ) );
+ 	s_MiscList.push_back(    MkCfg_Int( wxT("/eMule/AllcatType"),			s_allcatType, 0 ) );
+ 	s_MiscList.push_back( new Cfg_Bool( wxT("/eMule/ShowAllNotCats"),		s_showAllNotCats, false ) );
+--- src.org/Preferences.h	2007-08-10 18:13:17.000000000 +0200
++++ src/Preferences.h	2007-08-10 18:13:37.000000000 +0200
+@@ -465,6 +465,8 @@ public:
+ 	static void LoadAllItems(wxConfigBase* cfg);
+ 	static void SaveAllItems(wxConfigBase* cfg);
+ 
++	static uint32		GetSDFInterval()			{ return s_SDFInterval; }
++	
+ 	static bool 		GetShowRatesOnTitle()		{ return s_ShowRatesOnTitle; }
+ 	
+ 	// Message Filters
+@@ -661,6 +663,8 @@ protected:
+ 	static bool	s_bUAP;
+ 	static bool	s_bDisableKnownClientList;
+ 	static bool	s_bDisableQueueList;
++	
++	static uint32 s_SDFInterval;
+ 
+ 	static bool	s_ShowRatesOnTitle;
+ 
+--- src.org/ThreadTasks.cpp	2007-06-18 19:07:57.000000000 +0200
++++ src/ThreadTasks.cpp	2007-08-10 18:13:37.000000000 +0200
+@@ -480,7 +480,7 @@ void CCompletionTask::Entry()
+ 	}
+ 
+ 	// Removes the various other data-files	
+-	const wxChar* otherMetExt[] = { wxT(""), PARTMET_BAK_EXT, wxT(".seeds"), NULL };
++	const wxChar* otherMetExt[] = { wxT(""), PARTMET_BAK_EXT, wxT(".seeds"), wxT(".blkhash"), NULL };
+ 	for (size_t i = 0; otherMetExt[i]; ++i) {
+ 		wxString toRemove = m_metPath + otherMetExt[i];
+ 

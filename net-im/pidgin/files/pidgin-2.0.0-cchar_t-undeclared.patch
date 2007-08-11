@@ -1,0 +1,8 @@
+--- finch/libgnt/gntwm.c	5d51dec5c38fd91291465a55516f1c386ee237c2
++++ finch/libgnt/gntwm.c	6272fa78c7a3cb952e8dc9943e2e99cd6997f629
+@@ -1,5 +1,5 @@
+ #define _GNU_SOURCE
+-#if defined(__APPLE__)
++#if defined(__APPLE__) || defined(__unix__)
+ #define _XOPEN_SOURCE_EXTENDED
+ #endif
