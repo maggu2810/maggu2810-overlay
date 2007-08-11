@@ -3,7 +3,7 @@
 eouc=`grep -n "END-OF-USER-CONFIGURATION" proto.ebuild | cut -d ":" -f 1`
 
 for pkg in `find -mindepth 2 -maxdepth 2 -type d -not -name "CVS" -printf "%P\n"`; do
-	if grep -q "END-OF-USER-CONFIGURATION" $pkg/*.ebuild; then
+	if grep -q "END-OF-USER-CONFIGURATION" $pkg/*.ebuild 2>/dev/null; then
 		first=""
 		for ebuild in $pkg/*.ebuild; do
 			if [ ${#first} -eq 0 ]; then
