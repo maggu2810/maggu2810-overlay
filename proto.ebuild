@@ -37,7 +37,7 @@ MY_SRC=""
 MY_MAIN=""
 
 # additional arguments for JRE
-# (for example: -Xmx512M)
+# ( for example: -Xmx512M )
 MY_JAVA_ARGS=""
 
 # common dependencies
