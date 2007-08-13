@@ -1,0 +1,8 @@
+DIST python-Observable-0.1.0.tar.gz 10073 RMD160 823cc5a9bd15ba478e8557c132ddd6b3c3a11510 SHA1 9261f8c4248bb35ea669f1a387820e576db14826 SHA256 e486c6361291d7b0b512cb1358e279228c6076b209cb8b4d3ed10dd144bdbeed
+EBUILD python-Observable-0.1.0.ebuild 554 RMD160 25c8fc74ae6f5464973553bcd6ec82a77047ef88 SHA1 bef84a5807f63b339290269b18aae6681f8b4a89 SHA256 3f2bef5f34eaca5f9944b73ac30ef1d72ea8b2891e3057c3c3f4aff499651be8
+MD5 942b88e73eebdf0b0acfd6799012e2e9 python-Observable-0.1.0.ebuild 554
+RMD160 25c8fc74ae6f5464973553bcd6ec82a77047ef88 python-Observable-0.1.0.ebuild 554
+SHA256 3f2bef5f34eaca5f9944b73ac30ef1d72ea8b2891e3057c3c3f4aff499651be8 python-Observable-0.1.0.ebuild 554
+MD5 a44796e084c19f7896e3c53aeac2bd7e files/digest-python-Observable-0.1.0 268
+RMD160 5d3fb3bd9747c2dc2334ecce4b7d343105dd2b4c files/digest-python-Observable-0.1.0 268
+SHA256 b3374ca8e71e0439fa30de91414c88efe4e1f75191423e419d76c755c3ba57b9 files/digest-python-Observable-0.1.0 268
