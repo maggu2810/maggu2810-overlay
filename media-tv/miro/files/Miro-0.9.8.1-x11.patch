@@ -1,0 +1,11 @@
+--- Miro-2007-07-24.orig/platform/gtk-x11/setup.py	2007-07-24 15:18:15.000000000 -0400
++++ Miro-2007-07-24/platform/gtk-x11/setup.py	2007-08-08 12:41:00.000000000 -0400
+@@ -256,7 +256,7 @@
+ 
+ #### Xine Extension ####
+ xine_options = parsePkgConfig('pkg-config', 
+-        'libxine pygtk-2.0 gtk+-2.0 glib-2.0 gthread-2.0')
++        'libxine pygtk-2.0 gtk+-2.0 glib-2.0 gthread-2.0 x11')
+ xine_ext = Extension('miro.xine', [
+         os.path.join(xine_dir, 'xine.pyx'),
+         os.path.join(xine_dir, 'xine_impl.c'),
