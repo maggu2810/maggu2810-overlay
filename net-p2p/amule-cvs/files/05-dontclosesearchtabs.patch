@@ -1,5 +1,5 @@
---- src.org/MuleNotebook.cpp	2007-06-18 19:07:57.000000000 +0200
-+++ src/MuleNotebook.cpp	2007-08-10 18:12:50.000000000 +0200
+--- src.org/MuleNotebook.cpp
++++ src/MuleNotebook.cpp
 @@ -63,6 +63,8 @@ CMuleNotebook::~CMuleNotebook()
  
  bool CMuleNotebook::DeletePage(int nPage)

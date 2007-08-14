@@ -1,5 +1,5 @@
---- src.org/PartFile.cpp	2007-08-10 18:13:43.000000000 +0200
-+++ src/PartFile.cpp	2007-08-10 18:13:50.000000000 +0200
+--- src.org/PartFile.cpp
++++ src/PartFile.cpp
 @@ -414,6 +414,7 @@ uint8 CPartFile::LoadPartFile(const wxSt
  					 newtag.GetNameID() == FT_FILENAME))) {
  				switch(newtag.GetNameID()) {

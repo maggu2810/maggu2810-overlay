@@ -1,5 +1,5 @@
---- src.org/DownloadListCtrl.cpp	2007-08-10 18:12:41.000000000 +0200
-+++ src/DownloadListCtrl.cpp	2007-08-10 18:12:45.000000000 +0200
+--- src.org/DownloadListCtrl.cpp
++++ src/DownloadListCtrl.cpp
 @@ -153,6 +153,7 @@ BEGIN_EVENT_TABLE(CDownloadListCtrl, CMu
  	EVT_MENU( MP_METINFO,			CDownloadListCtrl::OnViewFileInfo )
  	EVT_MENU( MP_VIEW,			CDownloadListCtrl::OnPreviewFile )
@@ -53,8 +53,8 @@
  		//-----------------------------------------------------
  		m_menu->AppendSeparator();
  		//-----------------------------------------------------
---- src.org/DownloadListCtrl.h	2007-06-18 19:07:57.000000000 +0200
-+++ src/DownloadListCtrl.h	2007-08-10 18:12:45.000000000 +0200
+--- src.org/DownloadListCtrl.h
++++ src/DownloadListCtrl.h
 @@ -229,6 +229,7 @@ private:
  	void	OnViewFileInfo( wxCommandEvent& event );
  	void	OnViewFileComments( wxCommandEvent& event );
@@ -63,8 +63,8 @@
  	
  	// Event-handlers for sources
  	void	OnSwapSource( wxCommandEvent& event );
---- src.org/include/common/MenuIDs.h	2007-06-18 19:18:58.000000000 +0200
-+++ src/include/common/MenuIDs.h	2007-08-10 18:12:45.000000000 +0200
+--- src.org/include/common/MenuIDs.h
++++ src/include/common/MenuIDs.h
 @@ -71,6 +71,7 @@ enum {
  	MP_ADDTOSTATIC,
  	MP_REMOVEFROMSTATIC,

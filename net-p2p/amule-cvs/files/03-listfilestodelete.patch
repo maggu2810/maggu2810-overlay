@@ -1,5 +1,5 @@
---- src.org/DownloadListCtrl.cpp	2007-08-10 18:12:31.000000000 +0200
-+++ src/DownloadListCtrl.cpp	2007-08-10 18:12:41.000000000 +0200
+--- src.org/DownloadListCtrl.cpp
++++ src/DownloadListCtrl.cpp
 @@ -609,7 +609,16 @@ void CDownloadListCtrl::OnCancelFile(wxC
  	ItemList files = ::GetSelectedItems(this, itFILES);
  	if (files.size()) {	

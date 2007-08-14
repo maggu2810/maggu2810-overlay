@@ -1,5 +1,5 @@
---- src.org/amule-remote-gui.h	2007-07-27 16:27:10.000000000 +0200
-+++ src/amule-remote-gui.h	2007-08-10 18:13:29.000000000 +0200
+--- src.org/amule-remote-gui.h
++++ src/amule-remote-gui.h
 @@ -569,6 +569,11 @@ public:
  		return m_shared_files->GetByID(id); 
  	}
@@ -12,8 +12,8 @@
  	uint16 requested;
  	uint32 transferred;
  	uint16 accepted;
---- src.org/DownloadQueue.cpp	2007-08-10 18:13:17.000000000 +0200
-+++ src/DownloadQueue.cpp	2007-08-10 18:13:29.000000000 +0200
+--- src.org/DownloadQueue.cpp
++++ src/DownloadQueue.cpp
 @@ -1392,7 +1392,7 @@ void CDownloadQueue::SetCatStatus(uint8 
  		
  	for ( ; it != files.end(); it++ ) {
@@ -23,8 +23,8 @@
  			case MP_PAUSE:	(*it)->PauseFile();	break;
  			case MP_STOP:	(*it)->StopFile();	break;
  			case MP_RESUME:	(*it)->ResumeFile();	break;
---- src.org/ExternalConn.cpp	2007-08-10 18:13:11.000000000 +0200
-+++ src/ExternalConn.cpp	2007-08-10 18:13:29.000000000 +0200
+--- src.org/ExternalConn.cpp
++++ src/ExternalConn.cpp
 @@ -560,7 +560,7 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
  				if ( thePrefs::StartNextFile() && (pfile->GetStatus() != PS_PAUSED) ) {
  					theApp->downloadqueue->StartNextFile(pfile);
@@ -34,8 +34,8 @@
  				break;
  
  			case EC_OP_PARTFILE_REHASH:
---- src.org/GuiEvents.cpp	2007-08-10 18:13:11.000000000 +0200
-+++ src/GuiEvents.cpp	2007-08-10 18:13:29.000000000 +0200
+--- src.org/GuiEvents.cpp
++++ src/GuiEvents.cpp
 @@ -633,7 +633,7 @@ namespace MuleNotify
  	
  	void PartFile_Delete(CPartFile* file)
@@ -45,8 +45,8 @@
  	}
  	
  	void PartFile_Rehash(CPartFile* file)
---- src.org/KnownFile.cpp	2007-07-27 16:27:10.000000000 +0200
-+++ src/KnownFile.cpp	2007-08-10 18:13:29.000000000 +0200
+--- src.org/KnownFile.cpp
++++ src/KnownFile.cpp
 @@ -610,6 +610,17 @@ bool CKnownFile::LoadFromFile(const CFil
  }
  
@@ -65,8 +65,8 @@
  bool CKnownFile::WriteToFile(CFileDataIO* file)
  {
  	wxCHECK(!IsPartFile(), false);
---- src.org/KnownFile.h	2007-07-27 16:27:10.000000000 +0200
-+++ src/KnownFile.h	2007-08-10 18:13:29.000000000 +0200
+--- src.org/KnownFile.h
++++ src/KnownFile.h
 @@ -307,6 +307,8 @@ public:
  	
  	void	ClearPriority();
@@ -76,8 +76,8 @@
  protected:
  	bool	LoadTagsFromFile(const CFileDataIO* file);
  	bool	LoadDateFromFile(const CFileDataIO* file);
---- src.org/KnownFileList.cpp	2007-07-27 16:27:10.000000000 +0200
-+++ src/KnownFileList.cpp	2007-08-10 18:13:29.000000000 +0200
+--- src.org/KnownFileList.cpp
++++ src/KnownFileList.cpp
 @@ -51,47 +51,55 @@ CKnownFileList::~CKnownFileList()
  
  bool CKnownFileList::Init()
@@ -251,8 +251,8 @@
  CKnownFile* CKnownFileList::IsOnDuplicates(wxString filename,uint32 in_date,uint64 in_size) const
  {
  	KnownFileList::const_iterator it = m_duplicates.begin();
---- src.org/KnownFileList.h	2007-07-27 16:27:10.000000000 +0200
-+++ src/KnownFileList.h	2007-08-10 18:13:29.000000000 +0200
+--- src.org/KnownFileList.h
++++ src/KnownFileList.h
 @@ -46,6 +46,9 @@ public:
  	CKnownFile* FindKnownFileByID(const CMD4Hash& hash);
  	bool	IsKnownFile(const CKnownFile* file);
@@ -284,8 +284,8 @@
  };
  
  #endif // KNOWNFILELIST_H
---- src.org/PartFileConvert.cpp	2007-07-27 16:27:10.000000000 +0200
-+++ src/PartFileConvert.cpp	2007-08-10 18:13:29.000000000 +0200
+--- src.org/PartFileConvert.cpp
++++ src/PartFileConvert.cpp
 @@ -397,7 +397,7 @@ int CPartFileConvert::performConvertToeM
  			AddDebugLogLineM(true, logPfConvert, wxT("IO error while converting partfiles: ") + e.what());
  			
@@ -313,8 +313,8 @@
  		return CONV_BADFORMAT;
  	}
  
---- src.org/PartFile.cpp	2007-08-10 18:13:11.000000000 +0200
-+++ src/PartFile.cpp	2007-08-10 18:13:29.000000000 +0200
+--- src.org/PartFile.cpp
++++ src/PartFile.cpp
 @@ -2358,7 +2358,7 @@ void  CPartFile::RemoveAllSources(bool b
  }
  
@@ -336,8 +336,8 @@
  	AddDebugLogLineM(false, logPartFile, wxT("Done"));
  	
  	delete this;
---- src.org/PartFile.h	2007-08-10 18:13:11.000000000 +0200
-+++ src/PartFile.h	2007-08-10 18:13:29.000000000 +0200
+--- src.org/PartFile.h
++++ src/PartFile.h
 @@ -165,7 +165,7 @@ public:
  
  	void	RemoveBlockFromList(uint64 start,uint64 end);
@@ -347,8 +347,8 @@
  	void	Rehash();
  	void	ForceCompletion();
  	void	StopFile(bool bCancel = false);
---- src.org/SearchListCtrl.cpp	2007-07-22 06:06:21.000000000 +0200
-+++ src/SearchListCtrl.cpp	2007-08-10 18:13:29.000000000 +0200
+--- src.org/SearchListCtrl.cpp
++++ src/SearchListCtrl.cpp
 @@ -270,6 +270,11 @@ void CSearchListCtrl::UpdateItemColor( l
  				green = 128;
  				blue = 128;

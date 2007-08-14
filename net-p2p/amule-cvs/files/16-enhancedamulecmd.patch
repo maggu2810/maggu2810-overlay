@@ -1,5 +1,5 @@
---- src.org/DownloadQueue.cpp	2007-08-10 18:13:37.000000000 +0200
-+++ src/DownloadQueue.cpp	2007-08-10 18:13:56.000000000 +0200
+--- src.org/DownloadQueue.cpp
++++ src/DownloadQueue.cpp
 @@ -1621,7 +1621,7 @@ void CDownloadQueue::OnHostnameResolved(
  }
  
@@ -68,8 +68,8 @@
  	}
  	
  	if (link->HasValidAICHHash()) {
---- src.org/DownloadQueue.h	2007-08-10 18:13:37.000000000 +0200
-+++ src/DownloadQueue.h	2007-08-10 18:13:56.000000000 +0200
+--- src.org/DownloadQueue.h
++++ src/DownloadQueue.h
 @@ -270,11 +270,11 @@ public:
  	/**
  	 * Adds an ed2k or magnet link to download queue.
@@ -86,8 +86,8 @@
  	bool	AddED2KLink( const CED2KServerLink* link );
  	bool	AddED2KLink( const CED2KServerListLink* link );
  
---- src.org/ExternalConn.cpp	2007-08-10 18:13:29.000000000 +0200
-+++ src/ExternalConn.cpp	2007-08-10 18:13:56.000000000 +0200
+--- src.org/ExternalConn.cpp
++++ src/ExternalConn.cpp
 @@ -575,6 +575,23 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
  				pfile->SetCategory(hashtag->GetTagByIndexSafe(0)->GetInt());
  				break;
@@ -213,8 +213,8 @@
  			response = Get_EC_Response_PartFile_Cmd(request);
  			break;
  		case EC_OP_SHAREDFILES_RELOAD:
---- src.org/libs/ec/abstracts/ECCodes.abstract	2007-08-10 18:13:17.000000000 +0200
-+++ src/libs/ec/abstracts/ECCodes.abstract	2007-08-10 18:13:56.000000000 +0200
+--- src.org/libs/ec/abstracts/ECCodes.abstract
++++ src/libs/ec/abstracts/ECCodes.abstract
 @@ -134,6 +134,11 @@ EC_OP_KAD_STOP                      0x49
  
  EC_OP_CONNECT                       0x4A
@@ -227,8 +227,8 @@
  [/Section]
  
  [Section Content]
---- src.org/libs/ec/c#/ECCodes.cs	2007-08-10 18:13:17.000000000 +0200
-+++ src/libs/ec/c#/ECCodes.cs	2007-08-10 18:13:56.000000000 +0200
+--- src.org/libs/ec/c#/ECCodes.cs
++++ src/libs/ec/c#/ECCodes.cs
 @@ -113,7 +113,10 @@ public enum ECOpCodes {
  	EC_OP_KAD_START                     = 0x48,
  	EC_OP_KAD_STOP                      = 0x49,
@@ -241,8 +241,8 @@
  };
  public enum ECTagNames {
  	EC_TAG_STRING                             = 0x0000,
---- src.org/libs/ec/cpp/ECCodes.h	2007-08-10 18:13:17.000000000 +0200
-+++ src/libs/ec/cpp/ECCodes.h	2007-08-10 18:13:56.000000000 +0200
+--- src.org/libs/ec/cpp/ECCodes.h
++++ src/libs/ec/cpp/ECCodes.h
 @@ -121,7 +121,10 @@ enum ECOpCodes {
  	EC_OP_KAD_START                     = 0x48,
  	EC_OP_KAD_STOP                      = 0x49,
@@ -255,8 +255,8 @@
  };
  
  enum ECTagNames {
---- src.org/libs/ec/java/ECCodes.java	2007-08-10 18:13:17.000000000 +0200
-+++ src/libs/ec/java/ECCodes.java	2007-08-10 18:13:56.000000000 +0200
+--- src.org/libs/ec/java/ECCodes.java
++++ src/libs/ec/java/ECCodes.java
 @@ -112,6 +112,9 @@ public final static byte EC_OP_KAD_START
  public final static byte EC_OP_KAD_STOP                      = 0x49;
  public final static byte EC_OP_CONNECT                       = 0x4A;
@@ -267,8 +267,8 @@
  
  public final static short EC_TAG_STRING                             = 0x0000;
  public final static short EC_TAG_PASSWD_HASH                        = 0x0001;
---- src.org/PartFile.h	2007-08-10 18:13:29.000000000 +0200
-+++ src/PartFile.h	2007-08-10 18:13:56.000000000 +0200
+--- src.org/PartFile.h
++++ src/PartFile.h
 @@ -399,6 +399,15 @@ public:
  	
  	CUpDownClient* GetSlowerDownloadingClient(uint32 speed, CUpDownClient* caller) ;
@@ -285,8 +285,8 @@
  private:
  	/* downloading sources list */
  	CClientPtrList m_downloadingSourcesList;
---- src.org/TextClient.cpp	2007-08-10 18:13:17.000000000 +0200
-+++ src/TextClient.cpp	2007-08-10 18:13:56.000000000 +0200
+--- src.org/TextClient.cpp
++++ src/TextClient.cpp
 @@ -105,6 +105,15 @@ enum {
  	CMD_ID_SEARCH_RESULTS,
  	CMD_ID_SEARCH_PROGRESS,

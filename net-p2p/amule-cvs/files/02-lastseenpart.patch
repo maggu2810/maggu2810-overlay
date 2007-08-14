@@ -1,5 +1,5 @@
---- src.org/DownloadListCtrl.cpp	2007-08-10 18:12:26.000000000 +0200
-+++ src/DownloadListCtrl.cpp	2007-08-10 18:12:31.000000000 +0200
+--- src.org/DownloadListCtrl.cpp
++++ src/DownloadListCtrl.cpp
 @@ -199,7 +199,7 @@ CMuleListCtrl( parent, winid, pos, size,
  	InsertColumn( 5,  _("Progress"),		wxLIST_FORMAT_LEFT, 170 );
  	InsertColumn( 6,  _("Sources"),			wxLIST_FORMAT_LEFT,  50 );
@@ -40,8 +40,8 @@
  		break;
  
  	// Sort by remaining time
---- src.org/FileDetailDialog.cpp	2007-07-27 16:27:10.000000000 +0200
-+++ src/FileDetailDialog.cpp	2007-08-10 18:12:31.000000000 +0200
+--- src.org/FileDetailDialog.cpp
++++ src/FileDetailDialog.cpp
 @@ -132,6 +132,13 @@ void CFileDetailDialog::UpdateData()
  		bufferS = last_seen.FormatISODate() + wxT(" ") + last_seen.FormatISOTime();
  	}
@@ -56,8 +56,8 @@
  	CastChild(IDC_LASTSEENCOMPL,wxControl)->SetLabel(bufferS);
  	setEnableForApplyButton();
  	FillSourcenameList();
---- src.org/include/tags/FileTags.h	2007-07-27 16:27:10.000000000 +0200
-+++ src/include/tags/FileTags.h	2007-08-10 18:12:32.000000000 +0200
+--- src.org/include/tags/FileTags.h
++++ src/include/tags/FileTags.h
 @@ -33,6 +33,7 @@
  #define	FT_FILETYPE			0x03	// <string> or <uint32>
  #define	FT_FILEFORMAT			0x04	// <string>
@@ -66,8 +66,8 @@
  #define	FT_TRANSFERRED			0x08	// <uint32>
  #define	FT_GAPSTART			0x09	// <uint32>
  #define	FT_GAPEND			0x0A	// <uint32>
---- src.org/muuli_wdr.cpp	2007-07-27 16:27:10.000000000 +0200
-+++ src/muuli_wdr.cpp	2007-08-10 18:12:32.000000000 +0200
+--- src.org/muuli_wdr.cpp
++++ src/muuli_wdr.cpp
 @@ -637,7 +637,7 @@ wxSizer *fileDetails( wxWindow *parent, 
  
      wxBoxSizer *item19 = new wxBoxSizer( wxHORIZONTAL );
@@ -77,8 +77,8 @@
      item19->Add( item20, 0, wxADJUST_MINSIZE|wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT, 5 );
  
      wxStaticText *item21 = new wxStaticText( parent, IDC_LASTSEENCOMPL, _("N/A"), wxDefaultPosition, wxDefaultSize, 0 );
---- src.org/PartFile.cpp	2007-07-27 16:27:10.000000000 +0200
-+++ src/PartFile.cpp	2007-08-10 18:12:31.000000000 +0200
+--- src.org/PartFile.cpp
++++ src/PartFile.cpp
 @@ -379,7 +379,28 @@ uint8 CPartFile::LoadPartFile(const wxSt
  
  		uint32 tagcount = metFile.ReadUInt32();
@@ -181,8 +181,8 @@
  	m_availablePartsCount=0;
  	m_ClientSrcAnswered = 0;
  	m_LastNoNeededCheck = 0;
---- src.org/PartFile.h	2007-07-27 16:27:10.000000000 +0200
-+++ src/PartFile.h	2007-08-10 18:12:31.000000000 +0200
+--- src.org/PartFile.h
++++ src/PartFile.h
 @@ -150,6 +150,7 @@ public:
  	wxString getPartfileStatus() const; //<<--9/21/02
  	sint32	getTimeRemaining() const; //<<--9/21/02

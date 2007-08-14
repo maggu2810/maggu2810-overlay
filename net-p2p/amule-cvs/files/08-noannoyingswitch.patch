@@ -1,5 +1,5 @@
---- src.org/amule.cpp	2007-07-29 15:12:09.000000000 +0200
-+++ src/amule.cpp	2007-08-10 18:13:05.000000000 +0200
+--- src.org/amule.cpp
++++ src/amule.cpp
 @@ -468,7 +468,7 @@ bool CamuleApp::OnInit()
  
  	if ( !cmdline.Found(wxT("even-if-lfroen-surreptitiously-removes-it-this-will-stay")) ) {
@@ -7,5 +7,5 @@
 -		return false;
 +		//return false;
  	}	
- 	
- #ifdef AMULE_DAEMON
+ 
+ 	bool ec_config = false;	

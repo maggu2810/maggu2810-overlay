@@ -1,5 +1,5 @@
---- src.org/DownloadListCtrl.cpp	2007-08-10 18:12:45.000000000 +0200
-+++ src/DownloadListCtrl.cpp	2007-08-10 18:13:11.000000000 +0200
+--- src.org/DownloadListCtrl.cpp
++++ src/DownloadListCtrl.cpp
 @@ -129,6 +129,8 @@ BEGIN_EVENT_TABLE(CDownloadListCtrl, CMu
  	EVT_MENU( MP_CLEAN_UP_SOURCES,		CDownloadListCtrl::OnCleanUpSources )
  
@@ -71,8 +71,8 @@
  		m_menu->Append(MP_STOP, _("&Stop"));
  		m_menu->Append(MP_PAUSE, _("&Pause"));
  		m_menu->Append(MP_RESUME, _("&Resume"));
---- src.org/DownloadListCtrl.h	2007-08-10 18:12:45.000000000 +0200
-+++ src/DownloadListCtrl.h	2007-08-10 18:13:11.000000000 +0200
+--- src.org/DownloadListCtrl.h
++++ src/DownloadListCtrl.h
 @@ -218,6 +218,8 @@ private:
  	// Event-handlers for files
  	void	OnCleanUpSources( wxCommandEvent& event ); 
@@ -82,8 +82,8 @@
  	void	OnSetPriority( wxCommandEvent& event );
  	void	OnSwapSources( wxCommandEvent& event );
  	void	OnSetCategory( wxCommandEvent& event );	
---- src.org/ExternalConn.cpp	2007-06-18 19:07:57.000000000 +0200
-+++ src/ExternalConn.cpp	2007-08-10 18:13:11.000000000 +0200
+--- src.org/ExternalConn.cpp
++++ src/ExternalConn.cpp
 @@ -563,6 +563,14 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
  				pfile->Delete();
  				break;
@@ -108,8 +108,8 @@
  		case EC_OP_PARTFILE_SET_CAT:
  			response = Get_EC_Response_PartFile_Cmd(request);
  			break;
---- src.org/GuiEvents.cpp	2007-03-28 03:15:02.000000000 +0200
-+++ src/GuiEvents.cpp	2007-08-10 18:13:11.000000000 +0200
+--- src.org/GuiEvents.cpp
++++ src/GuiEvents.cpp
 @@ -145,6 +145,16 @@ namespace MuleNotify
  		theApp->downloadqueue->SendFileCommand(file, EC_OP_PARTFILE_DELETE);
  	}
@@ -144,8 +144,8 @@
  	void PartFile_SetCat(CPartFile* file, uint32 val)
  	{
  		file->SetCategory(val);
---- src.org/GuiEvents.h	2007-06-18 19:07:57.000000000 +0200
-+++ src/GuiEvents.h	2007-08-10 18:13:11.000000000 +0200
+--- src.org/GuiEvents.h
++++ src/GuiEvents.h
 @@ -124,6 +124,8 @@ namespace MuleNotify
  	void PartFile_PrioAuto(CPartFile* file, bool val);
  	void PartFile_PrioSet(CPartFile* file, uint8 newDownPriority, bool bSave);
@@ -164,8 +164,8 @@
  #define CoreNotify_PartFile_SetCat(ptr, val)		MuleNotify::DoNotify(&MuleNotify::PartFile_SetCat, ptr, val)
  
  // KnownFile
---- src.org/include/common/MenuIDs.h	2007-08-10 18:12:45.000000000 +0200
-+++ src/include/common/MenuIDs.h	2007-08-10 18:13:11.000000000 +0200
+--- src.org/include/common/MenuIDs.h
++++ src/include/common/MenuIDs.h
 @@ -80,6 +80,8 @@ enum {
  	MP_CLOSE_ALL_TABS,
  	MP_CLOSE_OTHER_TABS,
@@ -175,8 +175,8 @@
  
  /* Razor 1a - Modif by MikaelB
       Opcodes for :
---- src.org/libs/ec/abstracts/ECCodes.abstract	2007-05-07 00:43:20.000000000 +0200
-+++ src/libs/ec/abstracts/ECCodes.abstract	2007-08-10 18:13:11.000000000 +0200
+--- src.org/libs/ec/abstracts/ECCodes.abstract
++++ src/libs/ec/abstracts/ECCodes.abstract
 @@ -73,6 +73,8 @@ EC_OP_PARTFILE_RESUME               0x1A
  EC_OP_PARTFILE_STOP                 0x1B
  EC_OP_PARTFILE_PRIO_SET             0x1C
@@ -186,8 +186,8 @@
  EC_OP_PARTFILE_SET_CAT              0x1E
  
  EC_OP_DLOAD_QUEUE                   0x1F
---- src.org/libs/ec/c#/ECCodes.cs	2007-07-22 07:32:11.000000000 +0200
-+++ src/libs/ec/c#/ECCodes.cs	2007-08-10 18:13:11.000000000 +0200
+--- src.org/libs/ec/c#/ECCodes.cs
++++ src/libs/ec/c#/ECCodes.cs
 @@ -66,6 +66,8 @@ public enum ECOpCodes {
  	EC_OP_PARTFILE_STOP                 = 0x1B,
  	EC_OP_PARTFILE_PRIO_SET             = 0x1C,
@@ -197,8 +197,8 @@
  	EC_OP_PARTFILE_SET_CAT              = 0x1E,
  	EC_OP_DLOAD_QUEUE                   = 0x1F,
  	EC_OP_ULOAD_QUEUE                   = 0x20,
---- src.org/libs/ec/cpp/ECCodes.h	2007-06-18 19:18:58.000000000 +0200
-+++ src/libs/ec/cpp/ECCodes.h	2007-08-10 18:13:11.000000000 +0200
+--- src.org/libs/ec/cpp/ECCodes.h
++++ src/libs/ec/cpp/ECCodes.h
 @@ -74,6 +74,8 @@ enum ECOpCodes {
  	EC_OP_PARTFILE_STOP                 = 0x1B,
  	EC_OP_PARTFILE_PRIO_SET             = 0x1C,
@@ -208,8 +208,8 @@
  	EC_OP_PARTFILE_SET_CAT              = 0x1E,
  	EC_OP_DLOAD_QUEUE                   = 0x1F,
  	EC_OP_ULOAD_QUEUE                   = 0x20,
---- src.org/libs/ec/java/ECCodes.java	2007-07-22 07:32:11.000000000 +0200
-+++ src/libs/ec/java/ECCodes.java	2007-08-10 18:13:11.000000000 +0200
+--- src.org/libs/ec/java/ECCodes.java
++++ src/libs/ec/java/ECCodes.java
 @@ -64,6 +64,8 @@ public final static byte EC_OP_PARTFILE_
  public final static byte EC_OP_PARTFILE_STOP                 = 0x1B;
  public final static byte EC_OP_PARTFILE_PRIO_SET             = 0x1C;
@@ -219,8 +219,8 @@
  public final static byte EC_OP_PARTFILE_SET_CAT              = 0x1E;
  public final static byte EC_OP_DLOAD_QUEUE                   = 0x1F;
  public final static byte EC_OP_ULOAD_QUEUE                   = 0x20;
---- src.org/PartFile.cpp	2007-08-10 18:13:01.000000000 +0200
-+++ src/PartFile.cpp	2007-08-10 18:13:11.000000000 +0200
+--- src.org/PartFile.cpp
++++ src/PartFile.cpp
 @@ -2219,6 +2219,22 @@ void CPartFile::RemoveAllRequestedBlocks
  }
  
@@ -244,8 +244,8 @@
  void CPartFile::CompleteFile(bool bIsHashingDone)
  {
  	if (GetKadFileSearchID()) {
---- src.org/PartFile.h	2007-08-10 18:12:31.000000000 +0200
-+++ src/PartFile.h	2007-08-10 18:13:11.000000000 +0200
+--- src.org/PartFile.h
++++ src/PartFile.h
 @@ -166,6 +166,8 @@ public:
  	void	RemoveBlockFromList(uint64 start,uint64 end);
  	void	RemoveAllSources(bool bTryToSwap);
@@ -255,8 +255,8 @@
  	void	StopFile(bool bCancel = false);
  	void	PauseFile(bool bInsufficient = false);
  	void	ResumeFile();
---- src.org/TextClient.cpp	2007-06-18 19:07:57.000000000 +0200
-+++ src/TextClient.cpp	2007-08-10 18:13:11.000000000 +0200
+--- src.org/TextClient.cpp
++++ src/TextClient.cpp
 @@ -62,6 +62,8 @@ enum {
  	CMD_ID_PRIORITY_HIGH,
  	CMD_ID_PRIORITY_AUTO,
