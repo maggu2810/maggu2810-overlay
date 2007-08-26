@@ -15,7 +15,6 @@
 		</description>
 	</overlay>
 
-
 	<overlay
 		type = "svn"
 		src  = "https://cafarelli.fr/svn/voyageur-overlay/"
@@ -29,4 +28,35 @@
 			voyageur overlay
 		</description>
 	</overlay>
+
+	<overlay
+		type = "svn"
+		src  = "https://arcon.svn.sourceforge.net/svnroot/arcon/trunk/overlay/"
+		status = "unofficial"
+		name = "arcon-portage"
+		contact = "rafkup@gmail.com">
+		<link>
+			http://arcon.svn.sourceforge.net/viewvc/arcon/trunk/overlay/
+		</link>
+    		<description>
+			Arcon Overlay!
+		</description>
+	</overlay>
+
+        <overlay
+                type = "svn"
+                src  = "http://svn.liveforge.org/berkano/trunk"
+                contact = "yngwin@gmail.com"
+                status  = "unofficial"
+                name = "berkano">
+                <link>
+                        http://svn.liveforge.org/berkano/trunk
+                </link>
+                <description>
+                        Berkano overlay provides an overlay for Gentoo Linux with ebuilds
+                        of bleeding edge software (such as live subversion builds) and
+                        other handy tools that are missing from the official portage tree.
+                        Areas of interest include multimedia and system administration.
+                </description>
+        </overlay>
 </layman>
