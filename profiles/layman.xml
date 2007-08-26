@@ -2,7 +2,7 @@
 <layman>
 	<overlay
 		type = "svn"
-		src  = "http://opensvn.csie.org/maggu2810_overlay"
+		src  = "http://opensvn.csie.org/maggu2810_overlay/"
 		contact = "maggu2810@gentooforum.de"
 		status  = "unofficial"
 		name = "maggu2810_overlay">
@@ -14,5 +14,19 @@
 			contains for example ebuild from: bugs.gentoo.org
 		</description>
 	</overlay>
-</layman>
 
+
+	<overlay
+		type = "svn"
+		src  = "https://cafarelli.fr/svn/voyageur-overlay/"
+		contact = "maggu2810@gentooforum.de"
+		status  = "unofficial"
+		name = "voyageur@gentoo.org">
+		<link>
+			http://cafarelli.fr/websvn/listing.php?repname=voyageur-overlay
+		</link>
+		<description>
+			voyageur overlay
+		</description>
+	</overlay>
+</layman>
