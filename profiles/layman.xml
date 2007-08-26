@@ -19,9 +19,9 @@
 	<overlay
 		type = "svn"
 		src  = "https://cafarelli.fr/svn/voyageur-overlay/"
-		contact = "maggu2810@gentooforum.de"
+		contact = "voyageur@gentoo.org"
 		status  = "unofficial"
-		name = "voyageur@gentoo.org">
+		name = "voyageur-overlay">
 		<link>
 			http://cafarelli.fr/websvn/listing.php?repname=voyageur-overlay
 		</link>
