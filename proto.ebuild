@@ -1,4 +1,4 @@
-inherit eutils java-pkg-2 java-ant-2 cvs
+inherit eutils java-pkg-2 java-ant-2 subversion
 
 # short description
 DESCRIPTION=""
@@ -24,7 +24,7 @@ IUSE="doc source"
 
 # real name of package
 # (used for archive filename-creation,
-# cvs module during checkout and
+# svn module during checkout and
 # part of emerge workdir)
 MY_PN=""
 
@@ -33,7 +33,7 @@ MY_PN=""
 MY_SRC=""
 
 # class path to main class
-# (leave empty for auto-detection)
+# (leave empty for auto-detection, use - for none)
 MY_MAIN=""
 
 # additional arguments for JRE
@@ -64,13 +64,13 @@ declare -a MY_JAVA_PKGS
 
 # Code that should be executed between linking and building
 before_compile() {
-	echo -n
+	:
 }
 
 # Code that should be executed between main class detection
 # and java launcher creation
 before_install() {
-	echo -n
+	:
 }
 
 
@@ -86,16 +86,10 @@ S=${WORKDIR}/${MY_PN}
 [ "${PV}" != "9999" ] && \
 	SRC_URI="https://darknrg.dyndns.org:28514/files/pkgs/${MY_PN}-${PV}.tar.bz2"
 
-ECVS_SERVER="darknrg.dyndns.org:/var/lib/cvsd/root"
-ECVS_USER="oliver"
-ECVS_PASS=""
-ECVS_AUTH="ext"
-ECVS_MODULE="${MY_PN}"
-ECVS_BRANCH="HEAD"
-ECVS_TOP_DIR="${DISTDIR}/cvs-src/${MY_PN}"
+ESVN_REPO_URI="svn+ssh://oliver@darknrg.dyndns.org/var/svn/repos/trunk/root/${MY_PN}"
 
 src_unpack() {
-	[ "${PV}" == "9999" ] && cvs_src_unpack || unpack ${A}
+	[ "${PV}" == "9999" ] && subversion_src_unpack || unpack ${A}
 }
 
 src_compile() {
@@ -150,7 +144,7 @@ src_install() {
 	before_install || die
 	
 	[ ${#MY_JAVA_ARGS} -gt 0 ] && JAVA_ARGS="--java_args" || JAVA_ARGS=""
-	java-pkg_dolauncher ${PN} --main ${MY_MAIN} ${JAVA_ARGS} ${MY_JAVA_ARGS}
+	[ "${MY_MAIN}" != "-" ] && java-pkg_dolauncher ${PN} --main ${MY_MAIN} ${JAVA_ARGS} ${MY_JAVA_ARGS}
 	java-pkg_dojar ${S}/dist/${MY_PN}.jar
 
 	if use doc; then
