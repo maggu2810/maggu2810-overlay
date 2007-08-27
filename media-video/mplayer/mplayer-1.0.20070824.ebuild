@@ -1,15 +1,14 @@
 # Copyright 1999-2007 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/media-video/mplayer/mplayer-1.0.20070814.ebuild,v 1.1 2007/08/15 06:47:53 beandog Exp $
+# $Header: /var/cvsroot/gentoo-x86/media-video/mplayer/mplayer-1.0.20070824.ebuild,v 1.1 2007/08/25 13:48:14 beandog Exp $
 
 inherit eutils flag-o-matic multilib
 
 RESTRICT="strip"
-IUSE="3dnow 3dnowext a52 aac aalib alsa altivec amrnb amrwb arts bidi bl bindist
+IUSE="darknrg 3dnow 3dnowext a52 aac aalib alsa altivec amrnb amrwb arts bidi bl bindist
 cddb cdio cdparanoia cpudetection custom-cflags dga doc dts dvb directfb dvd
 dv enca encode esd fbcon ftp gif ggi gtk iconv ipv6 ivtv jack joystick
-jpeg libcaca lirc live livecd lzo mad md5sum mmx mmxext mp2 mp3 musepack nas
-unicode vorbis opengl openal oss png pnm quicktime radio rar real rtc samba sdl
+jpeg libcaca lirc live livecd lzo mad md5sum mmx mmxext mp2 mp3 musepack nas pvr unicode vorbis opengl openal oss png pnm quicktime radio rar real rtc samba sdl
 speex srt sse sse2 ssse3 svga teletext tga theora tivo truetype v4l v4l2 vidix win32codecs X x264 xanim xinerama xv xvid xvmc zoran"
 
 VIDEO_CARDS="i810 nvidia s3virge mga tdfx vesa"
@@ -18,11 +17,9 @@ for X in ${VIDEO_CARDS}; do
 	IUSE="${IUSE} video_cards_${X}"
 done
 
-IUSE="${IUSE} darknrg"
-
 BLUV=1.7
 SVGV=1.9.17
-MY_PV="20070814"
+MY_PV="20070824"
 S="${WORKDIR}/${PN}-${MY_PV}"
 AMR_URI="http://www.3gpp.org/ftp/Specs/archive"
 SRC_URI="mirror://gentoo/${PN}-${MY_PV}.tar.bz2
@@ -59,7 +56,7 @@ RDEPEND="sys-libs/ncurses
 	cdio? ( dev-libs/libcdio )
 	cdparanoia? ( media-sound/cdparanoia )
 	directfb? ( dev-libs/DirectFB )
-	dts? ( || ( media-libs/libdts media-libs/libdca ) )
+	dts? ( || ( media-libs/libdca media-libs/libdts ) )
 	dv? ( media-libs/libdv )
 	dvb? ( media-tv/linuxtv-dvb-headers )
 	encode? (
@@ -132,9 +129,8 @@ DEPEND="${RDEPEND}
 # Remove this once default-linux/amd64/2006.1 is deprecated
 DEPEND="${DEPEND} amd64? ( >=sys-apps/portage-2.1.2 )
 	mp2? ( >=sys-apps/portage-2.1.2 )
-	ivtv? ( !x86-fbsd? ( <sys-kernel/linux-headers-2.6.20
-		media-tv/ivtv
-		>=sys-apps/portage-2.1.2 ) )"
+	ivtv? ( media-tv/ivtv
+		>=sys-apps/portage-2.1.2 )"
 
 SLOT="0"
 LICENSE="GPL-2"
@@ -276,6 +272,7 @@ src_compile() {
 		use v4l	|| myconf="${myconf} --disable-tv-v4l1"
 		use v4l2 || myconf="${myconf} --disable-tv-v4l2"
 		use teletext || myconf="${myconf} --disable-tv-teletext"
+		use pvr || myconf="${myconf} --disable-pvr"
 		if ( use dvb || use v4l || use v4l2 ) && use radio; then
 			myconf="${myconf} --enable-radio $(use_enable encode radio-capture)"
 		else
@@ -284,14 +281,9 @@ src_compile() {
 	else
 		myconf="${myconf} --disable-tv --disable-tv-v4l1 --disable-tv-v4l2 \
 			--disable-radio --disable-radio-v4l2 --disable-radio-bsdbt848 \
-			--disable-dvb --disable-dvbhead --disable-tv-teletext"
+			--disable-dvb --disable-dvbhead --disable-tv-teletext \
+			--disable-pvr"
 	fi
-
-	# disable PVR support
-	# The build will break if you have media-tv/ivtv installed and
-	# linux-headers != 2.6.18
-	# See also, bug 164748
-	myconf="${myconf} --disable-pvr"
 
 	#########
 	# Codecs #
