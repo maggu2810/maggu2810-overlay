@@ -1,0 +1,39 @@
+# some storage media
+KERNEL=="sd*", ATTRS{serial}=="57442D574341505733303730313432", ATTRS{product}=="External HDD", ATTRS{manufacturer}=="Western Digital", NAME="%k", SYMLINK="wd500gb_b%n"
+KERNEL=="sd*", ATTRS{serial}=="57442D5743414E5531373635303239", ATTRS{product}=="External HDD", ATTRS{manufacturer}=="Western Digital", NAME="%k", SYMLINK="wd500gb_a%n"
+KERNEL=="sd*", ATTRS{model}=="00BB-00GUA0     ", ATTRS{vendor}=="WDC WD25", NAME="%k", SYMLINK="flo_250gb%n"
+KERNEL=="sd*", ATTRS{model}=="SP2514N         ", ATTRS{vendor}=="SAMSUNG ", NAME="%k", SYMLINK+="my_sa250gb%n"
+
+# for my scanner
+SUBSYSTEM=="usb_device", SYSFS{serial}=="SG07S2628SPE", SYSFS{product}=="HP ScanJet 6300C", SYSFS{manufacturer}=="Hewlett-Packard", PROGRAM="/bin/sh -c 'K=%k; K=$${K#usbdev}; printf bus/usb/%%03i/%%03i $${K%%%%.*} $${K#*.}'", NAME="%c", GROUP="scanner", MODE="0664"
+
+# for my handy
+KERNEL=="ttyACM[0-9]*", NAME="%k", GROUP="tty", MODE="0660"
+
+# for my IR remote control
+KERNEL=="event*", ATTRS{interface}=="HID Keyboard", ATTRS{bInterfaceProtocol}=="01", ATTRS{bInterfaceNumber}=="00", NAME="input/%k", SYMLINK+="input/ir_k"
+KERNEL=="event*", ATTRS{interface}=="HID Mouse",    ATTRS{bInterfaceProtocol}=="02", ATTRS{bInterfaceNumber}=="01", NAME="input/%k", SYMLINK+="input/ir_m", RUN+="/etc/init.d/inputlircd restart"
+
+
+
+# -------------------------------------------------------------------------------------------------------------------------------
+# obsolete
+# -------------------------------------------------------------------------------------------------------------------------------
+#BUS="scsi", KERNEL="sd*", SYSFS{model}="MP300F Player   ", SYSFS{vendor}="SigmaTel", NAME="%k", SYMLINK="maggu2810/dad-mp3%n"
+#BUS="scsi", KERNEL="sd*", SYSFS{model}="6MP-9N3", SYSFS{vendor}="CAMERA", NAME="%k", SYMLINK="maggu2810/dad-camera%n"
+#BUS="scsi", KERNEL="sd*", SYSFS{model}="USB Storage-MMC ", SYSFS{vendor}="GENERIC ", NAME="%k", SYMLINK="maggu2810/sd-camera%n"
+#BUS="scsi", KERNEL="sd*", SYSFS{model}="SLIM", SYSFS{vendor}="B4F", NAME="%k", SYMLINK="maggu2810/usbstick%n"
+#BUS="scsi", KERNEL="sd*", SYSFS{model}="00JB-00FUA0", SYSFS{vendor}="WDC WD16", NAME="%k", SYMLINK="maggu2810/exthd_160gb%n"
+#BUS="scsi", KERNEL="sd*", SYSFS{model}="SP2514N", SYSFS{vendor}="SAMSUNG ", NAME="%k", SYMLINK="maggu2810/exthd_250gb%n"
+#BUS="scsi", KERNEL="sd*", SYSFS{model}="00BB-00GUA0", SYSFS{vendor}="WDC WD25", NAME="%k", SYMLINK="maggu2810/exthd_flo%n"
+
+#BUS="ide", KERNEL="hdc", NAME="%k", SYMLINK="cd-r cdrecorder cdrom cdrw dvd dvdrw cdroms/cdrom%n", MODE="666"
+
+#KERNEL=="eth?", ATTR{address}=="00:03:25:21:36:00:c2:95", NAME="fw-eth0"
+#KERNEL=="*", ATTR{address}=="00:11:09:0b:58:8e", NAME="wlan0"
+#KERNEL=="wmaster*", ACTION=="add", SUBSYSTEM=="net", DRIVERS=="?*", ATTR{address}=="00:11:09:0b:58:8e", NAME="wmaster0"
+#KERNEL=="wlan*", ACTION=="add", SUBSYSTEM=="net", DRIVERS=="?*", ATTR{address}=="00:11:09:0b:58:8e", NAME="wlan0"
+
+#BUS="serio", KERNEL="mouse*", SYSFS{description}="i8042 Aux Port", NAME="%k", SYMLINK="maggu2810/mouse_touch"
+#BUS="usb", KERNEL="mouse*", SYSFS{product}="USB-PS/2 Optical Mouse", NAME="%k", SYMLINK="maggu2810/mouse_logi"
+# -------------------------------------------------------------------------------------------------------------------------------
