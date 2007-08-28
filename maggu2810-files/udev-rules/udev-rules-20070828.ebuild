@@ -6,8 +6,7 @@ LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~ia64 ~m68k ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86"
 
-RDEPEND="media-plugins/blop
-	 media-libs/ladspa-cmt"
+RDEPEND="sys-fs/udev"
 
 src_install() {
         insopts -m0640 -o root -g audio
