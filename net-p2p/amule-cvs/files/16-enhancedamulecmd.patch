@@ -1,6 +1,6 @@
 --- src.org/DownloadQueue.cpp
 +++ src/DownloadQueue.cpp
-@@ -1621,7 +1621,7 @@ void CDownloadQueue::OnHostnameResolved(
+@@ -1611,7 +1611,7 @@ void CDownloadQueue::OnHostnameResolved(
  }
  
  
@@ -9,7 +9,7 @@
  {
  	wxString uri(link);
  
-@@ -1634,7 +1634,7 @@ bool CDownloadQueue::AddLink( const wxSt
+@@ -1624,7 +1624,7 @@ bool CDownloadQueue::AddLink( const wxSt
  	}
  
  	if (uri.compare(0, 7, wxT("ed2k://")) == 0) {
@@ -18,7 +18,7 @@
  	} else {
  		AddLogLineM(true, CFormat(_("Unknown protocol of link: %s")) % link);
  		return false;
-@@ -1642,7 +1642,7 @@ bool CDownloadQueue::AddLink( const wxSt
+@@ -1632,7 +1632,7 @@ bool CDownloadQueue::AddLink( const wxSt
  }
  
  
@@ -27,7 +27,7 @@
  {
  	wxASSERT( !link.IsEmpty() );
  	wxString URI = link;
-@@ -1654,7 +1654,7 @@ bool CDownloadQueue::AddED2KLink( const 
+@@ -1644,7 +1644,7 @@ bool CDownloadQueue::AddED2KLink( const 
  	
  	try {
  		CED2KLink* uri = CED2KLink::CreateLinkFromUrl(URI);
@@ -36,7 +36,7 @@
  		delete uri;
  		
  		return result;
-@@ -1666,11 +1666,11 @@ bool CDownloadQueue::AddED2KLink( const 
+@@ -1656,11 +1656,11 @@ bool CDownloadQueue::AddED2KLink( const 
  }
  
  
@@ -50,7 +50,7 @@
  			
  		case CED2KLink::kServer:
  			return AddED2KLink( dynamic_cast<const CED2KServerLink*>( link ) );
-@@ -1685,7 +1685,7 @@ bool CDownloadQueue::AddED2KLink( const 
+@@ -1675,7 +1675,7 @@ bool CDownloadQueue::AddED2KLink( const 
  
  
  
@@ -59,7 +59,7 @@
  {
  	CPartFile* file = NULL;
  	if (IsFileExisting(link->GetHashKey())) {
-@@ -1701,7 +1701,7 @@ bool CDownloadQueue::AddED2KLink( const 
+@@ -1691,7 +1691,7 @@ bool CDownloadQueue::AddED2KLink( const 
  			return false;
  		}
  		
@@ -479,16 +479,16 @@
  					CECTag hashtag(EC_TAG_PARTFILE, file->nHash);
  					hashtag.AddTag(CECTag(EC_TAG_PARTFILE_CAT, category));
  					request->AddTag(hashtag);
-@@ -957,6 +1051,9 @@ void CamulecmdApp::OnInitCommandSet()
- 	m_commands.AddCommand(wxT("Download"), CMD_ID_DOWNLOAD, wxTRANSLATE("Start downloading a file"),
+@@ -958,6 +1052,9 @@ void CamulecmdApp::OnInitCommandSet()
  			      wxTRANSLATE("The number of a file from the last search has to be given.\n"
- 					  "Example: 'download 12' will start to download the file with the number 12 of the prvious search.\n"), CMD_PARAM_ALWAYS);
+ 					  "Example: 'download 12' will start to download the file with the number 12 of the previous search.\n"), CMD_PARAM_ALWAYS);
+ 
 +	m_commands.AddCommand(wxT("DownloadEx"), CMD_ID_DOWNLOAD_EX, wxTRANSLATE("Start downloading a file to a specified category"),
 +			      wxTRANSLATE("The number of a category and a file from the last search has to be given.\n"
 +					  "Example: 'download 5 12' will start to download the file with the number 12 of the previous search in the category 5.\n"), CMD_PARAM_ALWAYS);
  
- 
  	//
+ 	// TODO: These commands below need implementation and/or rewrite!
 @@ -1034,6 +1131,29 @@ void CamulecmdApp::OnInitCommandSet()
  	m_commands.AddCommand(wxT("SetDownBWLimit"), CMD_ID_SET_BWLIMIT_DOWN | CMD_DEPRECATED, wxTRANSLATE("Deprecated command, now 'Set BwLimit Down'."),
  			      wxTRANSLATE("This is a deprecated command, and may be removed in the future.\n"

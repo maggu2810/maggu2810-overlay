@@ -221,7 +221,7 @@
  public final static byte EC_OP_ULOAD_QUEUE                   = 0x20;
 --- src.org/PartFile.cpp
 +++ src/PartFile.cpp
-@@ -2219,6 +2219,22 @@ void CPartFile::RemoveAllRequestedBlocks
+@@ -2217,6 +2217,22 @@ void CPartFile::RemoveAllRequestedBlocks
  }
  
  
@@ -309,4 +309,4 @@
 +
  	tmp = m_commands.AddCommand(wxT("Priority"), CMD_ERR_INCOMPLETE, wxTRANSLATE("Set download priority."),
  				    wxTRANSLATE("Set priority of a download to Low, Normal, High or Auto.\n"), CMD_PARAM_ALWAYS);
- 	tmp->AddCommand(wxT("Low"), CMD_ID_PRIORITY_LOW, wxTRANSLATE("Set riority to low."), wxEmptyString, CMD_PARAM_ALWAYS);
+ 	tmp->AddCommand(wxT("Low"), CMD_ID_PRIORITY_LOW, wxTRANSLATE("Set priority to low."), wxEmptyString, CMD_PARAM_ALWAYS);

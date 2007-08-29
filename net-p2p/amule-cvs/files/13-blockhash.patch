@@ -22,7 +22,7 @@
  }
  
  
-@@ -1861,4 +1869,155 @@ bool CDownloadQueue::DoKademliaFileReque
+@@ -1851,4 +1859,155 @@ bool CDownloadQueue::DoKademliaFileReque
  {
  	return ((::GetTickCount() - lastkademliafilerequest) > KADEMLIAASKTIME);
  }
@@ -207,7 +207,7 @@
  			
  	if (thePrefs::GetAllocFullPart()) {
  		#warning Code for full file alloc - should be done on thread.
-@@ -3122,6 +3125,11 @@ void CPartFile::FlushBuffer(bool /*force
+@@ -3116,6 +3119,11 @@ void CPartFile::FlushBuffer(bool /*force
  		return;
  	}
  	
@@ -219,7 +219,7 @@
  	// Loop through queue
  	while ( !m_BufferedData_list.empty() ) {
  		// Get top item and remove it from the queue
-@@ -3139,6 +3147,13 @@ void CPartFile::FlushBuffer(bool /*force
+@@ -3133,6 +3141,13 @@ void CPartFile::FlushBuffer(bool /*force
  		}
  		// SLUGFILLER: SafeHash
  		
@@ -233,7 +233,7 @@
  		// Go to the correct position in file and write block of data			
  		try {
  			m_hpartfile.Seek(item->start);
-@@ -3155,6 +3170,59 @@ void CPartFile::FlushBuffer(bool /*force
+@@ -3149,6 +3164,59 @@ void CPartFile::FlushBuffer(bool /*force
  		delete item;
  	}
  	
@@ -323,7 +323,7 @@
  	static bool 		GetShowRatesOnTitle()		{ return s_ShowRatesOnTitle; }
  	
  	// Message Filters
-@@ -661,6 +663,8 @@ protected:
+@@ -662,6 +664,8 @@ protected:
  	static bool	s_bUAP;
  	static bool	s_bDisableKnownClientList;
  	static bool	s_bDisableQueueList;

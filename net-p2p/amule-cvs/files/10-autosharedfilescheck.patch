@@ -590,10 +590,13 @@
  /* The rest, organize it! */
  wxString	CPreferences::s_nick;
  uint16		CPreferences::s_maxupload;
-@@ -1139,6 +1148,19 @@ void CPreferences::BuildItemList( const 
+@@ -1126,7 +1135,20 @@ void CPreferences::BuildItemList( const 
+ 	 * Version check
+ 	 **/
  	 NewCfgItem(IDC_NEWVERSION,	(new Cfg_Bool( wxT("/eMule/NewVersionCheck"), s_NewVersionCheck, false )));
- 	 
- 	/**
+-	 
++
++	/** 
 +	 * Auto Shared Files Check
 +	 **/
 +	s_MiscList.push_back( MkCfg_Int( wxT("/eMule/ASFCInterval"), s_ASFCInterval, 60000 ) );
@@ -605,11 +608,10 @@
 +	s_MiscList.push_back( new Cfg_Bool( wxT("/eMule/ASFCAddNewFilesPaused"), s_ASFCAddNewFilesPaused, false ) );
 +	s_MiscList.push_back( new Cfg_Bool( wxT("/eMule/ASFCCreateLog"), s_ASFCCreateLog, false ) );
 +	s_MiscList.push_back( MkCfg_Int( wxT("/eMule/ASFCCatForTokens"), s_ASFCCatForTokens, -1 ) );
-+	
-+	/**
- 	 * The following doesn't have an associated widget.
- 	 **/
- 	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/Language"),			s_languageID ) );
++
+ 	 /**
+ 	  * Obfuscation
+ 	  **/
 --- src.org/Preferences.h
 +++ src/Preferences.h
 @@ -499,6 +499,26 @@ public:
@@ -639,7 +641,7 @@
  	// Networks
  	static bool GetNetworkKademlia()		{ return s_ConnectToKad; }
  	static void SetNetworkKademlia(bool val)	{ s_ConnectToKad = val; }
-@@ -737,6 +757,15 @@ protected:
+@@ -738,6 +758,15 @@ protected:
  	// Version check
  	static bool s_NewVersionCheck;
  	

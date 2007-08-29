@@ -1,6 +1,6 @@
 --- src.org/amule-remote-gui.h
 +++ src/amule-remote-gui.h
-@@ -569,6 +569,11 @@ public:
+@@ -570,6 +570,11 @@ public:
  		return m_shared_files->GetByID(id); 
  	}
  
@@ -315,7 +315,7 @@
  
 --- src.org/PartFile.cpp
 +++ src/PartFile.cpp
-@@ -2358,7 +2358,7 @@ void  CPartFile::RemoveAllSources(bool b
+@@ -2356,7 +2356,7 @@ void  CPartFile::RemoveAllSources(bool b
  }
  
  
@@ -324,7 +324,7 @@
  {
  	AddLogLineM(false, CFormat(_("Deleting file: %s")) % GetFileName());
  	// Barry - Need to tell any connected clients to stop sending the file
-@@ -2414,6 +2414,11 @@ void CPartFile::Delete()
+@@ -2412,6 +2412,11 @@ void CPartFile::Delete()
  		}
  	}
  
