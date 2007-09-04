@@ -1,0 +1,18 @@
+--- libglademm-2.6.3/libglade/libglademm/xml.cc.orig	2006-05-18 12:09:35.000000000 -0700
++++ libglademm-2.6.3/libglade/libglademm/xml.cc	2007-06-28 03:24:42.000000000 -0700
+@@ -142,6 +142,7 @@
+ // Custom coded so that we can custom-code the vfunc in the Xml class.
+ // This is marginally better than modifying gtkmmproc to allow this.
+ //
++#ifdef GLIBMM_VFUNCS_ENABLED
+ GType Xml_Class::lookup_type_vfunc_callback(GladeXML* self, const char* classname)
+ {
+   CppObjectType *const obj = dynamic_cast<CppObjectType*>(
+@@ -170,6 +171,7 @@
+ 
+   return 0;
+ }
++#endif //GLIBMM_VFUNCS_ENABLED
+ 
+ GType Xml::lookup_type_vfunc(const Glib::ustring& classname)
+ {
