@@ -13,7 +13,7 @@ SRC_URI="http://thilo.kickchat.com/download/${MY_P}.tar.bz2
 
 LICENSE="GPL-2 worldofpadman"
 SLOT="0"
-KEYWORDS="~x86"
+KEYWORDS="~x86 ~amd64"
 IUSE="dedicated maps opengl"
 
 UIDEPEND="virtual/opengl
