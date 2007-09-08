@@ -8,7 +8,7 @@ inherit eutils subversion
 DESCRIPTION="Kdenlive! (pronounced Kay-den-live) is a Non Linear Video Editing Suite for KDE."
 HOMEPAGE="http://kdenlive.sourceforge.net/"
 
-ESVN_REPO_URI="https://svn.sourceforge.net/svnroot/kdenlive/trunk/kdenlive"
+ESVN_REPO_URI="https://kdenlive.svn.sourceforge.net/svnroot/kdenlive/trunk/kdenlive"
 # SRC_URI="mirror://sourceforge/kdenlive/${P}.tar.gz"
 
 SLOT="0"
