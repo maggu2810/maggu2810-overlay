@@ -20,53 +20,33 @@ RDEPEND="dev-games/physfs
 	media-libs/libsdl"
 # Some of the data files are zipped
 DEPEND="${RDEPEND}
-	app-arch/zip"
+	app-arch/zip
+	dev-util/cmake"
 
 dir=${GAMES_DATADIR}/${PN}
 
 src_unpack() {
 	subversion_src_unpack
-	cd "${S}"
-
-	# Look in shared directory for server.xml
-	sed -i \
-		-e "s:PHYSFS_addToSearchPath(\"data\":PHYSFS_addToSearchPath(\"${dir}\":" \
-		src/DedicatedServer.cpp || die "sed DedicatedServer.cpp failed"
 }
 
 src_compile() {
-	eautoreconf || die
-
-	# Fix broken opengl recognition.
-	# There's probably a better way of doing this.
-	sed -i \
-		-e "s:HAVE_LIBGL = @HAVE_LIBGL@:HAVE_LIBGL = 1:" \
-		Makefile.in || die "sed Makefile.in failed"
-
-	sed -i \
-		-e "s:-lSDL:-lSDL -lGL:" \
-		configure || die "sed configure failed"
-
-	egamesconf \
-		HAVE_LIBGL=1 \
-		|| die "egamesconf failed"
-
-	emake \
-		GAMEDATADIR="${dir}" \
-		CFLAGS="${CFLAGS}" \
-		CXXFLAGS="${CXXFLAGS}" \
-		|| die "emake failed"
+	cmake . || die "cmake failed"
+	emake || die "emake failed"
 }
 
 src_install() {
-	dogamesbin src/blobby{,-server} || die
-	make_desktop_entry blobby "Blobby Volley"
+	exeinto "${dir}"
+	doexe src/blobby{,-server} || die
 
-	insinto "${dir}"
+	insinto "${dir}/data"
 	doins -r data/* || die
-	rm -f "${D}/${dir}"/{*.zip,Makefile*}
+	rm -rf "${D}/${dir}"/{CMakeFiles,cmake_install.cmake,Makefile}
 
 	dodoc AUTHORS ChangeLog NEWS README TODO
+
+	games_make_wrapper ${PN} ./blobby "${dir}"
+	games_make_wrapper ${PN}-server ./blobby-server "${dir}"
+	prepgamesdirs
 }
 
 pkg_postinst() {
