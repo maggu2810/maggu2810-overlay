@@ -12,7 +12,7 @@ S=${WORKDIR}/${MY_P}
 DATE=$(date +%Y%m%d)
 # Uncomment and edit this line to use a specific date
 # Format is <Year><Month><Day>
-DATE=20070829
+DATE=20070909
 
 DESCRIPTION="aMule, the all-platform eMule p2p client"
 HOMEPAGE="http://www.amule.org/"
