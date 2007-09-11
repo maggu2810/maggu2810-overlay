@@ -40,7 +40,7 @@ src_install() {
 
 	insinto "${dir}/data"
 	doins -r data/* || die
-	rm -rf "${D}/${dir}"/{CMakeFiles,cmake_install.cmake,Makefile}
+	rm -rf "${D}/${dir}/data"/{CMakeFiles,cmake_install.cmake,Makefile}
 
 	dodoc AUTHORS ChangeLog NEWS README TODO
 
