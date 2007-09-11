@@ -1,0 +1,35 @@
+--- configure.ac.old	2007-08-14 03:22:31.000000000 -0400
++++ configure.ac	2007-08-14 03:23:58.000000000 -0400
+@@ -11,11 +11,6 @@
+ dnl necessary for compiling assembly
+ AM_PROG_AS
+ 
+-CFLAGS=
+-CPPFLAGS=
+-CXXFLAGS=
+-CCASFLAGS=
+-
+ dnl Check for debug build
+ AC_MSG_CHECKING(debug build)
+ AC_ARG_ENABLE(debug, AC_HELP_STRING([--enable-debug], [debug build]),
+@@ -23,16 +18,13 @@
+ if test "x$debug" == xyes
+ then
+  AC_DEFINE(_DEBUG,1,[_DEBUG])
+- CFLAGS+=" -g "
+- CPPFLAGS+=" -g "
+- CXXFLAGS+=" -g "
+- CCASFLAGS+=" -D_DEBUG -g "
++ CCASFLAGS+=" -D_DEBUG "
+  MYOBJDIR="Debug"
+ else
+  AC_DEFINE(NDEBUG,1,[NDEBUG])
+- CFLAGS+=" -O2 -fomit-frame-pointer "
+- CPPFLAGS+=" -O2 -fomit-frame-pointer "
+- CXXFLAGS+=" -O2 -fomit-frame-pointer "
++ CFLAGS=" -O2 -fomit-frame-pointer ${CFLAGS} "
++ CPPFLAGS=" -O2 -fomit-frame-pointer ${CPPFLAGS} "
++ CXXFLAGS=" -O2 -fomit-frame-pointer ${CXXFLAGS} "
+  MYOBJDIR="Release"
+ fi
+ AC_MSG_RESULT($debug)
