@@ -24,6 +24,7 @@ LICENSE="D1X
 	as-is"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
+# awe32 (improved midi) still needs to be explicitly enabled, in d1x
 IUSE="awe32 debug demo mpu401 opengl"
 
 QA_EXECSTACK="${GAMES_BINDIR:1}/${PN}"
@@ -32,7 +33,6 @@ QA_EXECSTACK="${GAMES_BINDIR:1}/${PN}"
 UIRDEPEND="media-libs/alsa-lib
 	>=media-libs/libsdl-1.2.9
 	>=media-libs/sdl-image-1.2.3-r1
-	mixer? ( media-libs/sdl-mixer )
 	opengl? (
 		virtual/glu
 		virtual/opengl )
@@ -61,6 +61,13 @@ src_unpack() {
 		-e "s:'SDL':'SDL', 'X11':" \
 		SConstruct || die "sed SConstruct"
 
+	# linux/awe_voice.h is not in recent kernels
+	cp "${FILESDIR}"/awe_voice.h arch/linux/ || die
+	#	-e "s:#define WANT_AWE32 0:// #define WANT_AWE32 0:"
+	sed -i \
+		-e "s:#include <linux/awe_voice.h>:#include \"awe_voice.h\":" \
+		arch/linux/hmiplay.c || die "sed hmiplay.c awe_voice"
+
 	# Midi music - awe32 for most SoundBlaster cards
 	if use awe32 ; then
 		sed -i \
@@ -82,7 +89,6 @@ src_compile() {
 	# Ignoring assembler, to avoid compilation issues
 	local opts="no_asm=1"
 	use debug && opts="${opts} debug=1"
-#	use mixer && opts="${opts} sdlmixer=1"
 	use opengl || opts="${opts} sdl_only=1"
 	use demo && opts="${opts} shareware=1"
 
@@ -126,6 +132,10 @@ pkg_postinst() {
 		ewarn "   Error: Not enough strings in text file"
 	fi
 	echo
+
+	if ! use opengl ; then
+		elog "Add the 'opengl' USE flag, for better graphics."
+	fi
 	elog "To play the game with common options, run:  ${PN}-common"
 	echo
 }
