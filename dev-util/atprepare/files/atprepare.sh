@@ -21,7 +21,9 @@ function create_makefile_src() { # skip
 		return
 	fi
 	echo "if COLORGCC" >> Makefile.am
-	echo "override CXX = /usr/lib/colorgcc/bin/g++" >> Makefile.am
+	echo "  override CC = /usr/lib/colorgcc/bin/gcc" >> Makefile.am
+	echo "  override CXX = /usr/lib/colorgcc/bin/g++" >> Makefile.am
+	echo "  override CPP = /usr/lib/colorgcc/bin/gcc -E" >> Makefile.am
 	echo "endif" >> Makefile.am
 	echo >> Makefile.am
 	echo "bin_PROGRAMS = $PROGNAME" >> Makefile.am
