@@ -2,9 +2,12 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
+MY_PN="${PN}-plugin"
+MY_P="${MY_PN}-${PV}"
+
 DESCRIPTION="This is a GIMP plugin for image targeting"
 HOMEPAGE="http://stuporglue.org/gimp-lqr.php"
-SRC_URI="http://web.tiscali.it/carlobaldassi/GimpLqrPlugin/${PN}-plugin-${PVR}.tar.gz"
+SRC_URI="http://web.tiscali.it/carlobaldassi/GimpLqrPlugin/${MY_P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -19,6 +22,7 @@ src_unpack() {
 }
 
 src_compile() {
+	cd ${MY_P}
 	econf
 	emake || die "emake failed"
 }
