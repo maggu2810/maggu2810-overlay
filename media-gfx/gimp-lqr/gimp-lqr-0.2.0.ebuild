@@ -28,5 +28,6 @@ src_compile() {
 }
 
 src_install() {
+	cd ${MY_P}
 	emake install DESTDIR="${D}" || die "install failed"
 }
