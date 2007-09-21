@@ -44,10 +44,23 @@ RDEPEND="${COMMONDEP}"
 
 src_install() {
 	cd ${FILESDIR}
+	tocp=""
 	for f in *.sh; do
 		f2=${T}/${f%.sh}
+		tocp="$tocp $f2"
 		cp $f $f2
-		dobin $f2
+	done
+
+	[ -e ${PF}.patch ] && {
+		cp ${PF}.patch ${T}
+		cd ${T}
+		sed -i "s:/usr/bin/::" ${PF}.patch
+		epatch ${PF}.patch
+	}
+
+	cd ${T}
+	for f in $tocp; do
+		dobin $f
 	done
 	cd -
 }
