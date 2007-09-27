@@ -1,0 +1,18 @@
+[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=Extreme Tux Racer
+Type=Application
+GenericName=Arcade Game
+GenericName[de]=Arkade-Spiel
+GenericName[ro_RO]=Joc de arcadă
+Comment=Race a penguin down a mountain
+Comment[de]=Rutsche mit einem Pinguin einen Hügel hinab
+Comment[ro_RO]=Curse cu un pinguin pe munte, la vale
+Icon=etracericon.svg
+FilePattern=etracer;
+Exec=etracer
+Terminal=false
+StartupNotify=false
+Categories=Application;Game;ArcadeGame;
+GenericName[en_GB]=Arcade Game
