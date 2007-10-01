@@ -19,7 +19,7 @@ DEPEND=""
 
 RDEPEND="virtual/libc
 	virtual/x11
-	>=app-cdr/lightscribe-1.4.113.1
+	>=app-cdr/liblightscribe-1.4.113.1
 	>=media-libs/fontconfig-2.3.2
 	>=media-libs/freetype-2.1.10
 	>=sys-devel/gcc-3.4"
