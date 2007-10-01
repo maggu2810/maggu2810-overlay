@@ -1,5 +1,6 @@
 <?xml version="1.0" ?>
 <layman>
+
 	<overlay
 		type = "svn"
 		src  = "http://opensvn.csie.org/maggu2810_overlay/"
@@ -59,4 +60,27 @@
                         Areas of interest include multimedia and system administration.
                 </description>
         </overlay>
+
+        <overlay
+		contact="java@gentoo.org"
+		name="java-experimental"
+		src="http://overlays.gentoo.org/svn/proj/java/java-experimental/"
+		status="unofficial"
+		type="svn">
+		<link>
+			http://overlays.gentoo.org/proj/java
+		</link>
+		<description>
+			The java-experimental overlay is normally not available via layman.
+			Use this with caution. It can break something...
+			The purpose of this experimental overlay is to serve as a sandbox
+			for exciting new packages and untrivial version bumps of packages
+			in main gentoo tree, which are works-in-progress and/or not quite
+			ready for prime-time. This means that the packages here are not
+			guaranteed to build or work.
+			Because of this, the overlay is not available via layman and should
+			be generally used only by Gentoo/Java developers and contributors.
+		</description>
+	</overlay>
+
 </layman>
