@@ -6,8 +6,8 @@ inherit eutils rpm
 
 DESCRIPTION="Binary only Library for LightScribe"
 HOMEPAGE="http://www.lightscribe.com/"
-SRC_URI="http://www.lightscribe.com/downloadSection/linux/downloads/lss/lightscribe-${PV}-linux-2.6-intel.rpm
-	http://www.lightscribe.com/downloadSection/linux/downloads/lpSDK/lightscribePublicSDK-${PV}-linux-2.6-intel.rpm"
+SRC_URI="http://download.lightscribe.com/ls/lightscribe-${PV}-linux-2.6-intel.rpm
+         http://download.lightscribe.com/ls/lightscribePublicSDK-${PV}-linux-2.6-intel.rpm"
 
 LICENSE="HP-LightScribe"
 SLOT="0"
