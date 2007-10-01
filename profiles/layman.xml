@@ -83,4 +83,24 @@
 		</description>
 	</overlay>
 
+        <overlay
+		contact="chewi@aura-online.co.uk"
+		name="chewi-overlay"
+		src="http://overlays.gentoo.org/svn/proj/java/chewi-overlay/"
+		status="unofficial"
+		type="svn">
+		<link>
+			http://overlays.gentoo.org/proj/java
+		</link>
+		<description>
+			Eclipse Plugin Overlay
+			One of our users, Chewi, made huge changes to the eclipse eclass.
+			We are now able to build most of the Eclipse plugins which are only
+			in portage as binary packages from source, instead of relying on binary
+			packages. chewi-overlay.
+			He also has a README explaining the changes that have been made. 
+			Packages in this overlay require packages from java-experimental-overlay.
+		</description>
+	</overlay>
+
 </layman>
