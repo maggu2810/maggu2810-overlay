@@ -22,21 +22,26 @@ KEYWORDS="~x86"
 
 IUSE=""
 
-DEPEND="app-text/rpl"
+#DEPEND="app-text/rpl"
+DEPEND=""
 
 RDEPEND=">=virtual/jre-1.5"
 
 S="${WORKDIR}/${MY_PF}"
 
+src_compile() {
+	epatch "${FILESDIR}/${MY_PF}_install.patch"
+}
+
 src_install() {
-	rpl 'BONGO_INST="/usr/share/bongosurfer"' 'BONGO_INST="${PREFIX}/share/bongosurfer"' install.sh
-	rpl 'BONGO_DOC="/usr/share/doc/bongosurfer"' 'BONGO_DOC="${PREFIX}/share/doc/bongosurfer"' install.sh
-	rpl 'BONGO_CONF="/etc/bongosurfer"'  'BONGO_CONF="${GLOBAL_CONF}/bongosurfer"' install.sh
-	rpl ' /etc/' ' ${GLOBAL_CONF}/' install.sh
-	rpl ' /usr/' ' ${PREFIX}/' install.sh
-	rpl '/usr/sbin/bongosetup2 -a' '#/usr/sbin/bongosetup2 -a' install.sh
-	rpl -e 'if [ ! -d ${BONGO_INST} ]; then' 'if [ ! -d ${PREFIX}/bin ]; then\n\tinstall -vm 755 -d ${PREFIX}/bin\nfi\nif [ ! -d ${PREFIX}/sbin ]; then\n\tinstall -vm 755 -d ${PREFIX}/sbin\nfi\nif [ ! -d ${PREFIX}/share/man/man1 ]; then\n\tinstall -vm 755 -d ${PREFIX}/share/man/man1\nfi\nif [ ! -d ${PREFIX}/share/pixmaps ]; then\n\tinstall -vm 755 -d ${PREFIX}/share/pixmaps\nfi\nif [ ! -d ${BONGO_INST} ]; then' install.sh
-	PREFIX="${D}/usr" GLOBAL_CONF="${D}/etc" "./install.sh" || die "Install failed"
+	#rpl 'BONGO_INST="/usr/share/bongosurfer"' 'BONGO_INST="${PREFIX}/share/bongosurfer"' install.sh
+	#rpl 'BONGO_DOC="/usr/share/doc/bongosurfer"' 'BONGO_DOC="${PREFIX}/share/doc/bongosurfer"' install.sh
+	#rpl 'BONGO_CONF="/etc/bongosurfer"'  'BONGO_CONF="${GLOBAL_CONF}/bongosurfer"' install.sh
+	#rpl ' /etc/' ' ${GLOBAL_CONF}/' install.sh
+	#rpl ' /usr/' ' ${PREFIX}/' install.sh
+	#rpl '/usr/sbin/bongosetup2 -a' '#/usr/sbin/bongosetup2 -a' install.sh
+	#rpl -e 'if [ ! -d ${BONGO_INST} ]; then' 'if [ ! -d ${PREFIX}/bin ]; then\n\tinstall -vm 755 -d ${PREFIX}/bin\nfi\nif [ ! -d ${PREFIX}/sbin ]; then\n\tinstall -vm 755 -d ${PREFIX}/sbin\nfi\nif [ ! -d ${PREFIX}/share/man/man1 ]; then\n\tinstall -vm 755 -d ${PREFIX}/share/man/man1\nfi\nif [ ! -d ${PREFIX}/share/pixmaps ]; then\n\tinstall -vm 755 -d ${PREFIX}/share/pixmaps\nfi\nif [ ! -d ${BONGO_INST} ]; then' install.sh
+	BASEDIR="${D}" "./install.sh" || die "Install failed"
 }
 
 pkg_postinst() {
