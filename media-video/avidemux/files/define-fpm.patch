@@ -1,0 +1,10 @@
+--- avidemux-24000/avidemux/ADM_libraries/ADM_libMad/mad.h.org	2007-10-03 17:04:57.000000000 +0200
++++ avidemux-24000/avidemux/ADM_libraries/ADM_libMad/mad.h	2007-10-03 17:05:06.000000000 +0200
+@@ -25,6 +25,7 @@
+ # endif
+ 
+ //# define FPM_DEFAULT
++#define FPM_INTEL
+ 
+ #if 0 //MEANX
+ 
