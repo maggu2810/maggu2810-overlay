@@ -1,0 +1,1024 @@
+diff -burN mplayer.orig/AUTHORS mplayer/AUTHORS
+--- mplayer.orig/AUTHORS	2007-03-20 22:03:22.141339000 +0000
++++ mplayer/AUTHORS	2007-03-20 22:05:53.305278089 +0000
+@@ -629,7 +629,7 @@
+     * Darwin VCD/SVCD support
+ 
+ Poettering, Lennart <mzzcynlre@0pointer.de>
+-    * audio driver for the Polypaudio sound server
++    * audio driver for the PulseAudio sound server
+ 
+ Poirier, Guillaume (poirierg) <poirierg@gmail.com>
+     * French documentation translation and synchronization
+diff -burN mplayer.orig/configure mplayer/configure
+--- mplayer.orig/configure	2007-03-20 22:03:27.054589000 +0000
++++ mplayer/configure	2007-03-20 22:19:29.642740690 +0000
+@@ -377,7 +377,7 @@
+   --disable-ossaudio     disable OSS audio output [autodetect]
+   --disable-arts         disable aRts audio output [autodetect]
+   --disable-esd          disable esd audio output [autodetect]
+-  --disable-polyp        disable Polypaudio audio output [autodetect]
++  --disable-pulse        disable PulseAudio audio output [autodetect]
+   --disable-jack         disable JACK audio output [autodetect]
+   --disable-openal       disable OpenAL audio output [autodetect]
+   --disable-nas          disable NAS audio output [autodetect]
+@@ -531,7 +531,7 @@
+ _ossaudio=auto
+ _arts=auto
+ _esd=auto
+-_polyp=auto
++_pulse=auto
+ _jack=auto
+ _openal=auto
+ _libcdio=auto
+@@ -844,8 +844,8 @@
+   --disable-arts)	_arts=no	;;
+   --enable-esd)		_esd=yes	;;
+   --disable-esd)	_esd=no		;;
+-  --enable-polyp)	_polyp=yes	;;
+-  --disable-polyp)	_polyp=no		;;
++  --enable-pulse)	_pulse=yes	;;
++  --disable-pulse)	_pulse=no		;;
+   --enable-jack)	_jack=yes	;;
+   --disable-jack)	_jack=no	;;
+   --enable-openal)	_openal=yes	;;
+@@ -4938,32 +4938,30 @@
+   _noaomodules="esd $_noaomodules"
+ fi
+ 
+-echocheck "Polyp"
+-if test "$_polyp" = auto ; then
+-  _polyp=no
+-  if $_pkg_config --exists 'polyplib >= 0.6 polyplib-error >= 0.6 polyplib-mainloop >= 0.6' ; then
++echocheck "pulse"
++if test "$_pulse" = auto ; then
++  _pulse=no
++  if $_pkg_config --exists 'libpulse >= 0.9' ; then
+ 
+ cat > $TMPC << EOF
+-#include <polyp/polyplib.h>
+-#include <polyp/mainloop.h>
+-#include <polyp/polyplib-error.h>
++#include <pulse/pulseaudio.h>
+ int main(void) { return 0; }
+ EOF
+-cc_check `$_pkg_config --libs --cflags polyplib polyplib-error polyplib-mainloop` && tmp_run && _polyp=yes
++cc_check `$_pkg_config --libs --cflags libpulse` && tmp_run && _pulse=yes
+ 
+   fi
+ fi
+-echores "$_polyp"
++echores "$_pulse"
+ 
+-if test "$_polyp" = yes ; then
+-  _def_polyp='#define USE_POLYP 1'
+-  _aosrc="$_aosrc ao_polyp.c"
+-  _aomodules="polyp $_aomodules"
+-  _libs_mplayer="$_libs_mplayer `$_pkg_config --libs polyplib polyplib-error polyplib-mainloop`"
+-  _inc_extra="$_inc_extra `$_pkg_config --cflags polyplib polyplib-error polyplib-mainloop`"
++if test "$_pulse" = yes ; then
++  _def_pulse='#define USE_PULSE 1'
++  _aosrc="$_aosrc ao_pulse.c"
++  _aomodules="pulse $_aomodules"
++  _libs_mplayer="$_libs_mplayer `$_pkg_config --libs libpulse`"
++  _inc_extra="$_inc_extra `$_pkg_config --cflags libpulse`"
+ else
+-  _def_polyp='#undef USE_POLYP'
+-  _noaomodules="polyp $_noaomodules"
++  _def_pulse='#undef USE_PULSE'
++  _noaomodules="pulse $_noaomodules"
+ fi
+ 
+ 
+@@ -8065,7 +8063,7 @@
+ $_def_arts
+ $_def_esd
+ $_def_esd_latency
+-$_def_polyp
++$_def_pulse
+ $_def_jack
+ $_def_openal
+ $_def_openal_h
+diff -burN mplayer.orig/libao2/ao_polyp.c mplayer/libao2/ao_polyp.c
+--- mplayer.orig/libao2/ao_polyp.c	2007-03-20 22:03:23.368151000 +0000
++++ mplayer/libao2/ao_polyp.c	1970-01-01 01:00:00.000000000 +0100
+@@ -1,324 +0,0 @@
+-#include <assert.h>
+-#include <string.h>
+-
+-#include <polyp/polyplib.h>
+-#include <polyp/polyplib-error.h>
+-#include <polyp/mainloop.h>
+-
+-#include "config.h"
+-#include "audio_out.h"
+-#include "audio_out_internal.h"
+-#include "libaf/af_format.h"
+-#include "mp_msg.h"
+-
+-#define	POLYP_CLIENT_NAME "MPlayer"
+-
+-/** General driver info */
+-static ao_info_t info = {
+-    "Polypaudio audio output",
+-    "polyp",
+-    "Lennart Poettering",
+-    ""
+-};
+-
+-/** The sink to connect to */
+-static char *sink = NULL;
+-
+-/** Polypaudio playback stream object */
+-static struct pa_stream *stream = NULL;
+-
+-/** Polypaudio connection context */
+-static struct pa_context *context = NULL;
+-
+-/** Main event loop object */
+-static struct pa_mainloop *mainloop = NULL;
+-
+-/** Some special libao macro magic */
+-LIBAO_EXTERN(polyp)
+-
+-/** Wait until no further actions are pending on the connection context */
+-static void wait_for_completion(void) {
+-    assert(context && mainloop);
+-
+-    while (pa_context_is_pending(context))
+-        pa_mainloop_iterate(mainloop, 1, NULL);
+-}
+-
+-/** Make sure that the connection context doesn't starve to death */
+-static void keep_alive(void) {
+-    assert(context && mainloop);
+-
+-    while (pa_mainloop_iterate(mainloop, 0, NULL) > 0);
+-}
+-
+-/** Wait until the specified operation completes */
+-static void wait_for_operation(struct pa_operation *o) {
+-    assert(o && context && mainloop);
+-
+-    while (pa_operation_get_state(o) == PA_OPERATION_RUNNING)
+-        pa_mainloop_iterate(mainloop, 1, NULL);
+-
+-    pa_operation_unref(o);
+-}
+-
+-/** libao initialization function, arguments are sampling frequency,
+- * number of channels, sample type and some flags */
+-static int init(int rate_hz, int channels, int format, int flags) {
+-    struct pa_sample_spec ss;
+-    struct pa_buffer_attr a;
+-    char hn[128];
+-    char *host = NULL;
+-
+-    assert(!context && !stream && !mainloop);
+-
+-    if (ao_subdevice) {
+-        int i = strcspn(ao_subdevice, ":");
+-        if (i >= sizeof(hn))
+-            i = sizeof(hn)-1;
+-
+-        if (i > 0) {
+-            strncpy(host = hn, ao_subdevice, i);
+-            hn[i] = 0;
+-        }
+-
+-        if (ao_subdevice[i] == ':')
+-            sink = ao_subdevice+i+1;
+-    }
+-
+-    mp_msg(MSGT_AO, MSGL_ERR, "AO: [polyp] -%s-%s-\n", host, sink);
+-
+-    
+-    ss.channels = channels;
+-    ss.rate = rate_hz;
+-
+-    switch (format) {
+-        case AF_FORMAT_U8:
+-            ss.format = PA_SAMPLE_U8;
+-            break;
+-        case AF_FORMAT_S16_LE:
+-            ss.format = PA_SAMPLE_S16LE;
+-            break;
+-        case AF_FORMAT_S16_BE:
+-            ss.format = PA_SAMPLE_S16BE;
+-            break;
+-        case AF_FORMAT_FLOAT_NE:
+-            ss.format = PA_SAMPLE_FLOAT32;
+-            break;
+-        default:
+-            mp_msg(MSGT_AO, MSGL_ERR, "AO: [polyp] Unsupported sample spec\n");
+-            goto fail;
+-    }
+-
+-
+-    if (!pa_sample_spec_valid(&ss)) {
+-        mp_msg(MSGT_AO, MSGL_ERR, "AO: [polyp] Invalid sample spec\n");
+-        goto fail;
+-    }
+-        
+-
+-    mainloop = pa_mainloop_new();
+-    assert(mainloop);
+-
+-    context = pa_context_new(pa_mainloop_get_api(mainloop), POLYP_CLIENT_NAME);
+-    assert(context);
+-
+-    pa_context_connect(context, host, 1, NULL);
+-
+-    wait_for_completion();
+-
+-    if (pa_context_get_state(context) != PA_CONTEXT_READY) {
+-        mp_msg(MSGT_AO, MSGL_ERR, "AO: [polyp] Failed to connect to server: %s\n", pa_strerror(pa_context_errno(context)));
+-        goto fail;
+-    }
+-
+-    stream = pa_stream_new(context, "audio stream", &ss);
+-    assert(stream);
+-
+-    a.maxlength = pa_bytes_per_second(&ss)*1;
+-    a.tlength = a.maxlength*9/10;
+-    a.prebuf = a.tlength/2;
+-    a.minreq = a.tlength/10;
+-    
+-    pa_stream_connect_playback(stream, sink, &a, PA_STREAM_INTERPOLATE_LATENCY, PA_VOLUME_NORM);
+-
+-    wait_for_completion();
+-
+-    if (pa_stream_get_state(stream) != PA_STREAM_READY) {
+-        mp_msg(MSGT_AO, MSGL_ERR, "AO: [polyp] Failed to connect to server: %s\n", pa_strerror(pa_context_errno(context)));
+-        goto fail;
+-    }
+-    
+-    return 1;
+-
+-fail:
+-    uninit(1);
+-    return 0;
+-}
+-
+-/** Destroy libao driver */
+-static void uninit(int immed) {
+-    if (stream) {
+-        if (!immed && pa_stream_get_state(stream) == PA_STREAM_READY)
+-                wait_for_operation(pa_stream_drain(stream, NULL, NULL));
+-        
+-        pa_stream_unref(stream);
+-        stream = NULL;
+-    }
+-
+-    if (context) {
+-        pa_context_unref(context);
+-        context = NULL;
+-    }
+-
+-    if (mainloop) {
+-        pa_mainloop_free(mainloop);
+-        mainloop = NULL;
+-    }
+-}
+-
+-/** Play the specified data to the polypaudio server */
+-static int play(void* data, int len, int flags) {
+-    assert(stream && context);
+-
+-    if (pa_stream_get_state(stream) != PA_STREAM_READY)
+-        return -1;
+-
+-    if (!len)
+-        wait_for_operation(pa_stream_trigger(stream, NULL, NULL));
+-    else
+-        pa_stream_write(stream, data, len, NULL, 0);
+-
+-    wait_for_completion();
+-
+-    if (pa_stream_get_state(stream) != PA_STREAM_READY)
+-        return -1;
+-
+-    return len;
+-}
+-
+-/** Pause the audio stream by corking it on the server */
+-static void audio_pause(void) {
+-    assert(stream && context && pa_stream_get_state(stream) == PA_STREAM_READY);
+-    wait_for_operation(pa_stream_cork(stream, 1, NULL, NULL));
+-}
+-
+-/** Resume the audio stream by uncorking it on the server */
+-static void audio_resume(void) {
+-    assert(stream && context && pa_stream_get_state(stream) == PA_STREAM_READY);
+-    wait_for_operation(pa_stream_cork(stream, 0, NULL, NULL));
+-}
+-
+-/** Reset the audio stream, i.e. flush the playback buffer on the server side */
+-static void reset(void) {
+-    assert(stream && context && pa_stream_get_state(stream) == PA_STREAM_READY);
+-    wait_for_operation(pa_stream_flush(stream, NULL, NULL));
+-}
+-
+-/** Return number of bytes that may be written to the server without blocking */
+-static int get_space(void) {
+-    uint32_t l;
+-    assert(stream && context && pa_stream_get_state(stream) == PA_STREAM_READY);
+-    
+-    keep_alive();
+-
+-    l = pa_stream_writable_size(stream);
+-    
+-    return l;
+-}
+-
+-/* A temporary latency variable */
+-/* static pa_usec_t latency = 0; */
+-
+-/* static void latency_func(struct pa_stream *s, const struct pa_latency_info *l, void *userdata) { */
+-/*     int negative = 0; */
+-    
+-/*     if (!l) { */
+-/*         mp_msg(MSGT_AO, MSGL_ERR, "AO: [polyp] Invalid sample spec: %s\n", pa_strerror(pa_context_errno(context))); */
+-/*         return; */
+-/*     } */
+-
+-/*     latency = pa_stream_get_latency(s, l, &negative); */
+-
+-/*     /\* Nor really required *\/ */
+-/*     if (negative) */
+-/*         latency = 0; */
+-/* } */
+-
+-/** Return the current latency in seconds */
+-static float get_delay(void) {
+-    pa_usec_t latency;
+-    assert(stream && context && pa_stream_get_state(stream) == PA_STREAM_READY);
+-
+-    /*     latency = 0; */
+-/*     wait_for_operation(pa_stream_get_latency(stream, latency_func, NULL)); */
+-    /*     pa_operation_unref(pa_stream_get_latency(stream, latency_func, NULL)); */
+-
+-    latency = pa_stream_get_interpolated_latency(stream, NULL);
+-    
+-    return (float) latency/1000000;
+-}
+-
+-/** A temporary variable to store the current volume */
+-static pa_volume_t volume = PA_VOLUME_NORM;
+-
+-/** A callback function that is called when the
+- * pa_context_get_sink_input_info() operation completes. Saves the
+- * volume field of the specified structure to the global variable volume. */
+-static void info_func(struct pa_context *c, const struct pa_sink_input_info *i, int is_last, void *userdata) {
+-    if (is_last < 0) {
+-        mp_msg(MSGT_AO, MSGL_ERR, "AO: [polyp] Failed to get sink input info: %s\n", pa_strerror(pa_context_errno(context)));
+-        return;
+-    }
+-
+-    if (!i)
+-        return;
+-
+-    volume = i->volume;
+-}
+-
+-/** Issue special libao controls on the device */
+-static int control(int cmd, void *arg) {
+-    
+-    if (!context || !stream)
+-        return CONTROL_ERROR;
+-    
+-    switch (cmd) {
+-
+-        case AOCONTROL_SET_DEVICE:
+-            /* Change the playback device */
+-            sink = (char*)arg;
+-            return CONTROL_OK;
+-
+-        case AOCONTROL_GET_DEVICE:
+-            /* Return the playback device */
+-            *(char**)arg = sink;
+-            return CONTROL_OK;
+-        
+-        case AOCONTROL_GET_VOLUME: {
+-            /* Return the current volume of the playback stream */
+-            ao_control_vol_t *vol = (ao_control_vol_t*) arg;
+-                
+-            volume = PA_VOLUME_NORM;
+-            wait_for_operation(pa_context_get_sink_input_info(context, pa_stream_get_index(stream), info_func, NULL));
+-            vol->left = vol->right = (int) (pa_volume_to_user(volume)*100);
+-            return CONTROL_OK;
+-        }
+-            
+-        case AOCONTROL_SET_VOLUME: {
+-            /* Set the playback volume of the stream */
+-            const ao_control_vol_t *vol = (ao_control_vol_t*) arg;
+-            int v = vol->left;
+-            if (vol->right > v)
+-                v = vol->left;
+-            
+-            wait_for_operation(pa_context_set_sink_input_volume(context, pa_stream_get_index(stream), pa_volume_from_user((double)v/100), NULL, NULL));
+-            
+-            return CONTROL_OK;
+-        }
+-            
+-        default:
+-            /* Unknown CONTROL command */
+-            return CONTROL_UNKNOWN;
+-    }
+-}
+-
+diff -burN mplayer.orig/libao2/ao_pulse.c mplayer/libao2/ao_pulse.c
+--- mplayer.orig/libao2/ao_pulse.c	1970-01-01 01:00:00.000000000 +0100
++++ mplayer/libao2/ao_pulse.c	2007-03-20 22:25:29.212886010 +0000
+@@ -0,0 +1,566 @@
++#include <assert.h>
++#include <string.h>
++#include <stdio.h>
++
++#include <pulse/pulseaudio.h>
++
++#include "config.h"
++#include "libaf/af_format.h"
++#include "mp_msg.h"
++#include "audio_out.h"
++#include "audio_out_internal.h"
++
++#define	PULSE_CLIENT_NAME "MPlayer"
++
++/*#define PULSE_DEBUG*/
++
++/** General driver info */
++static ao_info_t info = {
++    "PulseAudio audio output",
++    "pulse",
++    "Lennart Poettering",
++    ""
++};
++
++/** The sink to connect to */
++static char *sink = NULL;
++
++/** PulseAudio playback stream object */
++static struct pa_stream *stream = NULL;
++
++/** PulseAudio connection context */
++static struct pa_context *context = NULL;
++
++/** Main event loop object */
++static struct pa_threaded_mainloop *mainloop = NULL;
++
++/** A temporary variable to store the current volume */
++static pa_cvolume volume;
++static int volume_initialized = 0;
++
++/** Some special libao macro magic */
++LIBAO_EXTERN(pulse)
++
++#define CHECK_DEAD_GOTO(label) do { \
++if (!context || pa_context_get_state(context) != PA_CONTEXT_READY || \
++    !stream || pa_stream_get_state(stream) != PA_STREAM_READY) { \
++        mp_msg(MSGT_AO, MSGL_ERR, "AO: [pulse] Connection died: %s\n", context ? pa_strerror(pa_context_errno(context)) : "NULL"); \
++        goto label; \
++    }  \
++} while(0);
++
++static void context_state_cb(pa_context *c, void *userdata) {
++    assert(c);
++
++    switch (pa_context_get_state(c)) {
++        case PA_CONTEXT_READY:
++        case PA_CONTEXT_TERMINATED:
++        case PA_CONTEXT_FAILED:
++            pa_threaded_mainloop_signal(mainloop, 0);
++            break;
++
++        case PA_CONTEXT_UNCONNECTED:
++        case PA_CONTEXT_CONNECTING:
++        case PA_CONTEXT_AUTHORIZING:
++        case PA_CONTEXT_SETTING_NAME:
++            break;
++    }
++}
++
++static void stream_state_cb(pa_stream *s, void * userdata) {
++    assert(s);
++
++    switch (pa_stream_get_state(s)) {
++
++        case PA_STREAM_READY:
++        case PA_STREAM_FAILED:
++        case PA_STREAM_TERMINATED:
++            pa_threaded_mainloop_signal(mainloop, 0);
++            break;
++
++        case PA_STREAM_UNCONNECTED:
++        case PA_STREAM_CREATING:
++            break;
++    }
++}
++
++static void stream_request_cb(pa_stream *s, size_t length, void *userdata) {
++    assert(s);
++
++    pa_threaded_mainloop_signal(mainloop, 0);
++}
++
++static void stream_latency_update_cb(pa_stream *s, void *userdata) {
++    assert(s);
++
++    pa_threaded_mainloop_signal(mainloop, 0);
++}
++
++static void success_cb(pa_stream *s, int success, void *userdata) {
++    assert(s);
++
++    if (userdata)
++        *(int*) userdata = success;
++    pa_threaded_mainloop_signal(mainloop, 0);
++}
++
++/** libao initialization function, arguments are sampling frequency,
++ * number of channels, sample type and some flags */
++static int init(int rate_hz, int channels, int format, int flags) {
++    struct pa_sample_spec ss;
++    struct pa_channel_map map;
++    char hn[128];
++    char *host = NULL;
++
++    assert(!context);
++    assert(!stream);
++    assert(!mainloop);
++
++    if (ao_subdevice) {
++        int i = strcspn(ao_subdevice, ":");
++        if ((size_t) i >= sizeof(hn))
++            i = sizeof(hn)-1;
++
++        if (i > 0) {
++            strncpy(host = hn, ao_subdevice, i);
++            hn[i] = 0;
++        }
++
++        if (ao_subdevice[i] == ':')
++            sink = ao_subdevice+i+1;
++    }
++
++    ss.channels = channels;
++    ss.rate = rate_hz;
++
++    ao_data.samplerate = rate_hz;
++    ao_data.format = format;
++    ao_data.channels = channels;
++
++    switch (format) {
++        case AF_FORMAT_U8:
++            ss.format = PA_SAMPLE_U8;
++            break;
++        case AF_FORMAT_S16_LE:
++            ss.format = PA_SAMPLE_S16LE;
++            break;
++        case AF_FORMAT_S16_BE:
++            ss.format = PA_SAMPLE_S16BE;
++            break;
++        case AF_FORMAT_FLOAT_LE:
++            ss.format = PA_SAMPLE_FLOAT32LE;
++            break;
++        case AF_FORMAT_FLOAT_BE:
++            ss.format = PA_SAMPLE_FLOAT32BE;
++            break;
++        case AF_FORMAT_MU_LAW:
++            ss.format = PA_SAMPLE_ULAW;
++            break;
++        case AF_FORMAT_A_LAW:
++            ss.format = PA_SAMPLE_ALAW;
++            break;
++        default:
++            mp_msg(MSGT_AO, MSGL_ERR, "AO: [pulse] Unsupported sample spec\n");
++            goto fail;
++    }
++
++    if (!pa_sample_spec_valid(&ss)) {
++        mp_msg(MSGT_AO, MSGL_ERR, "AO: [pulse] Invalid sample spec\n");
++        goto fail;
++    }
++
++    pa_channel_map_init_auto(&map, ss.channels, PA_CHANNEL_MAP_ALSA);
++    ao_data.bps = pa_bytes_per_second(&ss);
++
++    if (!volume_initialized || ss.channels != volume.channels) {
++        pa_cvolume_reset(&volume, ss.channels);
++        volume_initialized = 1;
++    }
++
++    if (!(mainloop = pa_threaded_mainloop_new())) {
++        mp_msg(MSGT_AO, MSGL_ERR, "AO: [pulse] Failed to allocate main loop\n");
++        goto fail;
++    }
++
++    if (!(context = pa_context_new(pa_threaded_mainloop_get_api(mainloop), PULSE_CLIENT_NAME))) {
++        mp_msg(MSGT_AO, MSGL_ERR, "AO: [pulse] Failed to allocate context\n");
++        goto fail;
++    }
++
++    pa_context_set_state_callback(context, context_state_cb, NULL);
++
++    if (pa_context_connect(context, host, 0, NULL) < 0) {
++        mp_msg(MSGT_AO, MSGL_ERR, "AO: [pulse] Failed to connect to server: %s\n", pa_strerror(pa_context_errno(context)));
++        goto fail;
++    }
++
++    pa_threaded_mainloop_lock(mainloop);
++
++    if (pa_threaded_mainloop_start(mainloop) < 0) {
++        mp_msg(MSGT_AO, MSGL_ERR, "AO: [pulse] Failed to start main loop\n");
++        goto unlock_and_fail;
++    }
++
++    /* Wait until the context is ready */
++    pa_threaded_mainloop_wait(mainloop);
++
++    if (pa_context_get_state(context) != PA_CONTEXT_READY) {
++        mp_msg(MSGT_AO, MSGL_ERR, "AO: [pulse] Failed to connect to server: %s\n", pa_strerror(pa_context_errno(context)));
++        goto unlock_and_fail;
++    }
++
++    if (!(stream = pa_stream_new(context, "audio stream", &ss, &map))) {
++        mp_msg(MSGT_AO, MSGL_ERR, "AO: [pulse] Failed to create stream: %s\n", pa_strerror(pa_context_errno(context)));
++        goto unlock_and_fail;
++    }
++
++    pa_stream_set_state_callback(stream, stream_state_cb, NULL);
++    pa_stream_set_write_callback(stream, stream_request_cb, NULL);
++    pa_stream_set_latency_update_callback(stream, stream_latency_update_cb, NULL);
++
++    if (pa_stream_connect_playback(stream, sink, NULL, PA_STREAM_INTERPOLATE_TIMING|PA_STREAM_AUTO_TIMING_UPDATE, &volume, NULL) < 0) {
++        mp_msg(MSGT_AO, MSGL_ERR, "AO: [pulse] Failed to connect stream: %s\n", pa_strerror(pa_context_errno(context)));
++        goto unlock_and_fail;
++    }
++
++    /* Wait until the stream is ready */
++    pa_threaded_mainloop_wait(mainloop);
++
++    if (pa_stream_get_state(stream) != PA_STREAM_READY) {
++        mp_msg(MSGT_AO, MSGL_ERR, "AO: [pulse] Failed to connect to server: %s\n", pa_strerror(pa_context_errno(context)));
++        goto unlock_and_fail;
++    }
++
++    pa_threaded_mainloop_unlock(mainloop);
++
++    return 1;
++
++unlock_and_fail:
++
++    if (mainloop)
++        pa_threaded_mainloop_unlock(mainloop);
++
++fail:
++
++    uninit(1);
++    return 0;
++}
++
++/** Destroy libao driver */
++static void uninit(int immed) {
++#ifdef PULSE_DEBUG
++    fprintf(stderr, "uninit(%i) ***\n", immed);
++#endif
++
++    if (stream) {
++        if (!immed) {
++            pa_operation *o;
++
++	    pa_threaded_mainloop_lock(mainloop);
++
++            if ((o = pa_stream_drain(stream, success_cb, NULL))) {
++
++                while (pa_operation_get_state(o) != PA_OPERATION_DONE) {
++                    CHECK_DEAD_GOTO(fail);
++                    pa_threaded_mainloop_wait(mainloop);
++                }
++
++            fail:
++
++                pa_operation_unref(o);
++            }
++
++	    pa_threaded_mainloop_unlock(mainloop);
++        }
++    }
++
++    if (mainloop)
++        pa_threaded_mainloop_stop(mainloop);
++
++    if (stream) {
++        pa_stream_disconnect(stream);
++        pa_stream_unref(stream);
++        stream = NULL;
++    }
++
++    if (context) {
++        pa_context_disconnect(context);
++        pa_context_unref(context);
++        context = NULL;
++    }
++
++    if (mainloop) {
++        pa_threaded_mainloop_free(mainloop);
++        mainloop = NULL;
++    }
++}
++
++/** Play the specified data to the pulseaudio server */
++static int play(void* data, int len, int flags) {
++    int r = -1;
++    pa_operation *o = NULL;
++
++    assert(stream);
++    assert(context);
++
++#ifdef PULSE_DEBUG
++    fprintf(stderr, "playing %lu ***\n", len);
++#endif
++
++    pa_threaded_mainloop_lock(mainloop);
++
++    CHECK_DEAD_GOTO(fail);
++
++    if (len) {
++
++        if (pa_stream_write(stream, data, len, NULL, 0, PA_SEEK_RELATIVE) < 0) {
++            mp_msg(MSGT_AO, MSGL_ERR, "AO: [pulse] pa_stream_write() failed: %s\n", pa_strerror(pa_context_errno(context)));
++            goto fail;
++        }
++
++    } else {
++
++        if (!(o = pa_stream_trigger(stream, NULL, NULL))) {
++            mp_msg(MSGT_AO, MSGL_ERR, "AO: [pulse] pa_stream_trigger() failed: %s\n", pa_strerror(pa_context_errno(context)));
++            goto fail;
++        }
++
++        /* We don't wait for this operation to complete */
++    }
++
++    r = len;
++
++fail:
++    if (o)
++        pa_operation_unref(o);
++
++    pa_threaded_mainloop_unlock(mainloop);
++
++    return r;
++}
++
++static void cork(int b) {
++    pa_operation *o = NULL;
++    int success = 0;
++
++    assert(stream);
++    assert(context);
++
++#ifdef PULSE_DEBUG
++    fprintf(stderr, "cork(%i) ***\n", b);
++#endif
++
++    pa_threaded_mainloop_lock(mainloop);
++
++    CHECK_DEAD_GOTO(fail);
++
++    if (!(o = pa_stream_cork(stream, b, success_cb, &success))) {
++        mp_msg(MSGT_AO, MSGL_ERR, "AO: [pulse] pa_stream_cork() failed: %s\n", pa_strerror(pa_context_errno(context)));
++        goto fail;
++    }
++
++    while (pa_operation_get_state(o) != PA_OPERATION_DONE) {
++        CHECK_DEAD_GOTO(fail);
++        pa_threaded_mainloop_wait(mainloop);
++    }
++
++    if (!success)
++        mp_msg(MSGT_AO, MSGL_ERR, "AO: [pulse] pa_stream_cork() failed: %s\n", pa_strerror(pa_context_errno(context)));
++
++    pa_operation_unref(o);
++
++fail:
++    pa_threaded_mainloop_unlock(mainloop);
++}
++
++/** Pause the audio stream by corking it on the server */
++static void audio_pause(void) {
++    cork(1);
++ }
++
++/** Resume the audio stream by uncorking it on the server */
++static void audio_resume(void) {
++    cork(0);
++}
++
++/** Reset the audio stream, i.e. flush the playback buffer on the server side */
++static void reset(void) {
++    pa_operation *o = NULL;
++    int success = 0;
++
++    assert(stream);
++    assert(context);
++
++#ifdef PULSE_DEBUG
++    fprintf(stderr, "reset() ***\n");
++#endif
++
++    pa_threaded_mainloop_lock(mainloop);
++
++    CHECK_DEAD_GOTO(fail);
++
++    if (!(o = pa_stream_flush(stream, success_cb, &success))) {
++        mp_msg(MSGT_AO, MSGL_ERR, "AO: [pulse] pa_stream_flush() failed: %s\n", pa_strerror(pa_context_errno(context)));
++        goto fail;
++    }
++
++    while (pa_operation_get_state(o) != PA_OPERATION_DONE) {
++        CHECK_DEAD_GOTO(fail);
++        pa_threaded_mainloop_wait(mainloop);
++    }
++
++    if (!success)
++        mp_msg(MSGT_AO, MSGL_ERR, "AO: [pulse] pa_stream_flush() failed: %s\n", pa_strerror(pa_context_errno(context)));
++
++    pa_operation_unref(o);
++
++fail:
++    pa_threaded_mainloop_unlock(mainloop);
++}
++
++/** Return number of bytes that may be written to the server without blocking */
++static int get_space(void) {
++    size_t l = (size_t) -1;
++
++    pa_threaded_mainloop_lock(mainloop);
++
++    CHECK_DEAD_GOTO(fail);
++
++    l = pa_stream_writable_size(stream);
++
++#ifdef PULSE_DEBUG
++    fprintf(stderr, "\nspace = %lu\n", l);
++#endif
++
++fail:
++
++    pa_threaded_mainloop_unlock(mainloop);
++
++    return l == (size_t) -1 ? -1 : (int) l;
++}
++
++/** Return the current latency in seconds */
++static float get_delay(void) {
++    pa_usec_t latency = (pa_usec_t) -1;
++
++    pa_threaded_mainloop_lock(mainloop);
++
++    for (;;) {
++        CHECK_DEAD_GOTO(fail);
++
++        if (pa_stream_get_latency(stream, &latency, NULL) >= 0)
++            break;
++
++        if (pa_context_errno(context) != PA_ERR_NODATA) {
++            mp_msg(MSGT_AO, MSGL_ERR, "AO: [pulse] pa_stream_get_latency() failed: %s\n", pa_strerror(pa_context_errno(context)));
++            goto fail;
++        }
++
++        /* Wait until latency data is available again */
++        pa_threaded_mainloop_wait(mainloop);
++    }
++
++#ifdef PULSE_DEBUG
++    fprintf(stderr, "latency=%0.3f sec\n", (double) latency / 1000000);
++#endif
++
++fail:
++    pa_threaded_mainloop_unlock(mainloop);
++
++    return (latency == (pa_usec_t) -1) ? 0 : ((float) latency / 1000000.0);
++}
++
++/** A callback function that is called when the
++ * pa_context_get_sink_input_info() operation completes. Saves the
++ * volume field of the specified structure to the global variable volume. */
++static void info_func(struct pa_context *c, const struct pa_sink_input_info *i, int is_last, void *userdata) {
++    if (is_last < 0) {
++        mp_msg(MSGT_AO, MSGL_ERR, "AO: [pulse] Failed to get sink input info: %s\n", pa_strerror(pa_context_errno(context)));
++        return;
++    }
++
++    if (!i)
++        return;
++
++    volume = i->volume;
++    volume_initialized = 1;
++
++    pa_threaded_mainloop_signal(mainloop, 0);
++}
++
++/** Issue special libao controls on the device */
++static int control(int cmd, void *arg) {
++
++    if (!context || !stream)
++        return CONTROL_ERROR;
++
++    switch (cmd) {
++
++        case AOCONTROL_GET_VOLUME: {
++            /* Return the current volume of the playback stream */
++            ao_control_vol_t *vol = (ao_control_vol_t*) arg;
++            pa_operation *o;
++
++            if (!(o = pa_context_get_sink_input_info(context, pa_stream_get_index(stream), info_func, NULL))) {
++                mp_msg(MSGT_AO, MSGL_ERR, "AO: [pulse] pa_stream_get_sink_input_info() failed: %s\n", pa_strerror(pa_context_errno(context)));
++                return CONTROL_ERROR;
++            }
++
++            while (pa_operation_get_state(o) != PA_OPERATION_DONE) {
++                CHECK_DEAD_GOTO(fail);
++                pa_threaded_mainloop_wait(mainloop);
++            }
++
++        fail:
++            pa_operation_unref(o);
++
++            if (!volume_initialized) {
++                mp_msg(MSGT_AO, MSGL_ERR, "AO: [pulse] pa_stream_get_sink_input_info() failed: %s\n", pa_strerror(pa_context_errno(context)));
++                return CONTROL_ERROR;
++            }
++
++            if (volume.channels != 2)
++                vol->left = vol->right = (int) ((pa_cvolume_avg(&volume)*100)/PA_VOLUME_NORM);
++            else {
++                vol->left = (int) (volume.values[0]*100)/PA_VOLUME_NORM;
++                vol->right = (int) (volume.values[1]*100)/PA_VOLUME_NORM;
++            }
++
++            return CONTROL_OK;
++        }
++
++        case AOCONTROL_SET_VOLUME: {
++            /* Set the playback volume of the stream */
++            const ao_control_vol_t *vol = (ao_control_vol_t*) arg;
++            pa_operation *o;
++
++            if (!volume_initialized) {
++                pa_cvolume_reset(&volume, 2);
++                volume_initialized = 1;
++            }
++
++            if (volume.channels != 2)
++                pa_cvolume_set(&volume, volume.channels, ((pa_volume_t) vol->left*PA_VOLUME_NORM)/100);
++            else {
++                volume.values[0] = ((pa_volume_t) vol->left*PA_VOLUME_NORM)/100;
++                volume.values[1] = ((pa_volume_t) vol->right*PA_VOLUME_NORM)/100;
++            }
++
++            if (!(o = pa_context_set_sink_input_volume(context, pa_stream_get_index(stream), &volume, NULL, NULL))) {
++                mp_msg(MSGT_AO, MSGL_ERR, "AO: [pulse] pa_context_set_sink_input_volume() failed: %s\n", pa_strerror(pa_context_errno(context)));
++                return CONTROL_ERROR;
++            }
++
++            pa_operation_unref(o);
++
++            /* We don't wait for completion here */
++
++            return CONTROL_OK;
++        }
++
++        default:
++            /* Unknown CONTROL command */
++            return CONTROL_UNKNOWN;
++    }
++}
++
+diff -burN mplayer.orig/libao2/audio_out.c mplayer/libao2/audio_out.c
+--- mplayer.orig/libao2/audio_out.c	2007-03-20 22:03:23.370151000 +0000
++++ mplayer/libao2/audio_out.c	2007-03-20 22:27:25.246184403 +0000
+@@ -25,8 +25,8 @@
+ #ifdef USE_ESD
+ extern ao_functions_t audio_out_esd;
+ #endif
+-#ifdef USE_POLYP
+-extern ao_functions_t audio_out_polyp;
++#ifdef USE_PULSE
++extern ao_functions_t audio_out_pulse;
+ #endif
+ #ifdef USE_JACK
+ extern ao_functions_t audio_out_jack;
+@@ -109,8 +109,8 @@
+ #ifdef USE_ESD
+         &audio_out_esd,
+ #endif
+-#ifdef USE_POLYP
+-        &audio_out_polyp,
++#ifdef USE_PULSE
++        &audio_out_pulse,
+ #endif
+ #ifdef USE_JACK
+         &audio_out_jack,

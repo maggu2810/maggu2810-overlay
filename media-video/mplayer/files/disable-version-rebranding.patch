@@ -1,0 +1,13 @@
+--- Makefile.orig	2006-11-04 11:35:54.000000000 +0000
++++ Makefile	2006-11-04 11:40:14.000000000 +0000
+@@ -427,10 +427,6 @@
+ 	@echo "####### Please run ./configure again - it's changed! #######"
+ 	@echo "############################################################"
+ 
+-# rebuild at every config.h/config.mak/Makefile change:
+-version.h: config.h config.mak Makefile
+-	./version.sh `$(CC) -dumpversion`
+-
+ doxygen:
+ 	doxygen DOCS/tech/Doxyfile
+ 
