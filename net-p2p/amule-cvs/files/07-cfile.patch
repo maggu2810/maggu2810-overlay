@@ -579,7 +579,7 @@
  		m_hpartfile.Close();
  		// Update met file (with current directory entry)
  		SavePartFile();			
-@@ -2358,7 +2358,7 @@ void CPartFile::Delete()
+@@ -2359,7 +2359,7 @@ void CPartFile::Delete()
  	// eMule had same problem with lseek error ... and override with a simple 
  	// check for INVALID_HANDLE_VALUE (that, btw, does not exist on linux)
  	// So we just guess is < 0 on error and > 2 if ok (0 stdin, 1 stdout, 2 stderr)
@@ -590,7 +590,7 @@
  
 --- src.org/Preferences.cpp
 +++ src/Preferences.cpp
-@@ -67,6 +67,8 @@ COLORREF		CPreferences::s_colors_ref[cnt
+@@ -66,6 +66,8 @@ COLORREF		CPreferences::s_colors_ref[cnt
  CPreferences::CFGMap	CPreferences::s_CfgList;
  CPreferences::CFGList	CPreferences::s_MiscList;
  
@@ -599,7 +599,7 @@
  
  /* Proxy */
  CProxyData	CPreferences::s_ProxyData;
-@@ -1160,6 +1162,13 @@ void CPreferences::BuildItemList( const 
+@@ -1163,6 +1165,13 @@ void CPreferences::BuildItemList( const 
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/KadNodesUrl"),			s_KadURL, wxT("http://emule-inside.net/nodes.dat") ) );
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/Ed2kServersUrl"),			s_Ed2kURL, wxT("http://ocbmaurice.dyndns.org/pl/slist.pl/server.met?download/server-max.met") ) );
  	
@@ -615,7 +615,7 @@
  	for ( int i = 0; i < cntStatColors; i++ ) {  
 --- src.org/Preferences.h
 +++ src/Preferences.h
-@@ -486,6 +486,9 @@ public:
+@@ -492,6 +492,9 @@ public:
  	// Can't have it return a reference, will need a pointer later.
  	static const CProxyData *GetProxyData()			{ return &s_ProxyData; }
  	
@@ -625,9 +625,9 @@
  	// Hidden files
  	
  	static bool ShareHiddenFiles() { return s_ShareHiddenFiles; }
-@@ -724,6 +727,9 @@ protected:
- 	static bool		s_FilterAllMessages;
- 	static bool		s_FilterSomeMessages;
+@@ -734,6 +737,9 @@ protected:
+ 	static wxString 	s_CommentFilterString;
+ 
  	
 +	// Dynamic File Opening
 +	static uint16		s_DFOMaxOpenFiles;

@@ -88,7 +88,7 @@
  
 --- src.org/ExternalConn.cpp
 +++ src/ExternalConn.cpp
-@@ -575,6 +575,23 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
+@@ -576,6 +576,23 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
  				pfile->SetCategory(hashtag->GetTagByIndexSafe(0)->GetInt());
  				break;
  
@@ -112,7 +112,7 @@
  			default:
  				response = new CECPacket(EC_OP_FAILED);
  				response->AddTag(CECTag(EC_TAG_STRING, wxTRANSLATE("OOPS! OpCode processing error!")));
-@@ -1022,12 +1039,13 @@ CECPacket *ExternalConn::ProcessRequest2
+@@ -1023,12 +1040,13 @@ CECPacket *ExternalConn::ProcessRequest2
  			}
  			break;
  		case EC_OP_ADD_LINK: 
@@ -127,7 +127,7 @@
  					response = new CECPacket(EC_OP_NOOP);
  				} else {
  					// Error messages are printed by the add function.
-@@ -1064,6 +1082,77 @@ CECPacket *ExternalConn::ProcessRequest2
+@@ -1065,6 +1083,77 @@ CECPacket *ExternalConn::ProcessRequest2
  				response = Get_EC_Response_GetDownloadQueue(request, enc_part_map);
  			}
  			break;
@@ -205,7 +205,7 @@
  		case EC_OP_GET_ULOAD_QUEUE:
  			if ( request->GetDetailLevel() == EC_DETAIL_INC_UPDATE ) {
  				response = Get_EC_Response_GetUpQueue(objmap);
-@@ -1093,6 +1182,7 @@ CECPacket *ExternalConn::ProcessRequest2
+@@ -1094,6 +1183,7 @@ CECPacket *ExternalConn::ProcessRequest2
  		case EC_OP_PARTFILE_REHASH:
  		case EC_OP_PARTFILE_FORCECOMPL:
  		case EC_OP_PARTFILE_SET_CAT:
@@ -269,7 +269,7 @@
  public final static short EC_TAG_PASSWD_HASH                        = 0x0001;
 --- src.org/PartFile.h
 +++ src/PartFile.h
-@@ -399,6 +399,15 @@ public:
+@@ -400,6 +400,15 @@ public:
  	
  	CUpDownClient* GetSlowerDownloadingClient(uint32 speed, CUpDownClient* caller) ;
  

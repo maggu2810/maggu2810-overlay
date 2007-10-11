@@ -207,7 +207,7 @@
  			
  	if (thePrefs::GetAllocFullPart()) {
  		#warning Code for full file alloc - should be done on thread.
-@@ -3116,6 +3119,11 @@ void CPartFile::FlushBuffer(bool /*force
+@@ -3117,6 +3120,11 @@ void CPartFile::FlushBuffer(bool /*force
  		return;
  	}
  	
@@ -219,7 +219,7 @@
  	// Loop through queue
  	while ( !m_BufferedData_list.empty() ) {
  		// Get top item and remove it from the queue
-@@ -3133,6 +3141,13 @@ void CPartFile::FlushBuffer(bool /*force
+@@ -3134,6 +3142,13 @@ void CPartFile::FlushBuffer(bool /*force
  		}
  		// SLUGFILLER: SafeHash
  		
@@ -233,7 +233,7 @@
  		// Go to the correct position in file and write block of data			
  		try {
  			m_hpartfile.Seek(item->start);
-@@ -3149,6 +3164,59 @@ void CPartFile::FlushBuffer(bool /*force
+@@ -3150,6 +3165,59 @@ void CPartFile::FlushBuffer(bool /*force
  		delete item;
  	}
  	
@@ -295,7 +295,7 @@
  	m_lastDateChanged = wxDateTime().Now();
 --- src.org/Preferences.cpp
 +++ src/Preferences.cpp
-@@ -141,6 +141,7 @@ bool		CPreferences::s_checkDiskspace;
+@@ -140,6 +140,7 @@ bool		CPreferences::s_checkDiskspace;
  uint32		CPreferences::s_uMinFreeDiskSpace;
  wxString	CPreferences::s_yourHostname;
  bool		CPreferences::s_bVerbose;
@@ -303,7 +303,7 @@
  bool		CPreferences::s_bmanualhighprio;
  bool		CPreferences::s_btransferfullchunks;
  bool		CPreferences::s_bstartnextfile;
-@@ -1170,6 +1171,8 @@ void CPreferences::BuildItemList( const 
+@@ -1173,6 +1174,8 @@ void CPreferences::BuildItemList( const 
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/YourHostname"),			s_yourHostname, wxEmptyString ) );
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/DateTimeFormat"),		s_datetimeformat, wxT("%A, %x, %X") ) );
  
@@ -323,7 +323,7 @@
  	static bool 		GetShowRatesOnTitle()		{ return s_ShowRatesOnTitle; }
  	
  	// Message Filters
-@@ -662,6 +664,8 @@ protected:
+@@ -668,6 +670,8 @@ protected:
  	static bool	s_bUAP;
  	static bool	s_bDisableKnownClientList;
  	static bool	s_bDisableQueueList;
