@@ -1,0 +1,11 @@
+--- xine_sxfe_frontend.c.org	2007-10-13 22:44:40.000000000 +0200
++++ xine_sxfe_frontend.c	2007-10-13 22:45:05.000000000 +0200
+@@ -64,6 +64,8 @@
+ #include "xine_frontend.h"
+ #include "xine/post.h"
+ 
++#define XINELIBOUTPUT_FE_TOGGLE_FULLSCREEN	1
++
+ #define MWM_HINTS_DECORATIONS       (1L << 1)
+ #define PROP_MWM_HINTS_ELEMENTS     5
+ typedef struct _mwmhints {
