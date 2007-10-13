@@ -1,0 +1,20 @@
+--- /usr/bin/checkuseflags	2007-09-21 18:56:56.000000000 +0200
++++ checkuseflags	2007-10-13 17:52:04.000000000 +0200
+@@ -99,7 +99,7 @@
+ 			fi
+ 			availflags1=" `FORMAT='<availableversionslong>' eix --exact $pack | sed -e "s/[^{]*//" -e "s/.*{\(.*\)}.*/\1/"` "
+ 			if [ $installed -gt 0 ]; then
+-				availflags2=" `FORMAT='<installedversions:::::::@>' eix --exact $pack | grep @ | cut -d @ -f 2` "
++				availflags2=" `FORMAT='<installedversions::::::::::@>' eix --exact $pack | grep @ | cut -d @ -f 2` "
+ 				[ $2 -eq 1 ] && availflags1=""
+ 			else
+ 				availflags2=""
+@@ -144,7 +144,7 @@
+ 	echo "make-local:   0 or 1 => make USE flags in make.conf used by only 2 available or no"
+ 	echo "                        installed packages local by putting them into portage.use."
+ 	echo "inst-only:    0 or 1 => if a package is installed, remove not only invalid USE flags"
+-	echo "                        from portage.use but also all flags not availabe for the"
++	echo "                        from portage.use but also all flags not available for the"
+ 	echo "                        currently installed version."
+ 	echo "rem-not-inst: 0 or 1 => remove all packages from portage.use which are not installed."
+ 	echo
