@@ -29,6 +29,10 @@ RDEPEND=">=virtual/jre-1.5"
 
 S="${WORKDIR}/${MY_PF}"
 
+pkg_setup() {
+	enewgroup dialout
+}
+
 src_compile() {
 	epatch "${FILESDIR}/${MY_PF}_install.patch"
 }
