@@ -102,5 +102,20 @@
 			Packages in this overlay require packages from java-experimental-overlay.
 		</description>
 	</overlay>
+	<overlay
+		type = "svn"
+		src = "http://mars.arge.at/svn/linamh/trunk/linamh"
+		contact = "mario-fetka@gmx.at"
+		status  = "unofficial"
+		name = "linamh">
+		<link>
+			http://mars.arge.at
+		</link>
+		<description>
+			This overlay is geos_one's playground for new ebuilds
+			The short name linamh is LINux AdMinistrators Heaven.
+			As the full Name says ints mainly for Admins
+		</description>
+	</overlay>
 
 </layman>
