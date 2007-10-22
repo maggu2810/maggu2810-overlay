@@ -1,25 +1,26 @@
-# Copyright 1999-2006 Gentoo Foundation
+# Copyright 1999-2007 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-inherit eutils rpm
+inherit eutils rpm multilib
 
 DESCRIPTION="Binary only Library for LightScribe"
 HOMEPAGE="http://www.lightscribe.com/"
 SRC_URI="http://download.lightscribe.com/ls/lightscribe-${PV}-linux-2.6-intel.rpm
-         http://download.lightscribe.com/ls/lightscribePublicSDK-${PV}-linux-2.6-intel.rpm"
+	http://download.lightscribe.com/ls/lightscribePublicSDK-${PV}-linux-2.6-intel.rpm"
 
 LICENSE="HP-LightScribe"
 SLOT="0"
-KEYWORDS="~x86"
-IUSE=""
+KEYWORDS="~x86 ~amd64"
+IUSE="multilib"
 
 DEPEND=""
 
 RDEPEND="virtual/libc
-	sys-libs/libstdc++-v3"
+	x86? ( sys-libs/libstdc++-v3 )
+	amd64? ( app-emulation/emul-linux-x86-compat )"
 
-RESTRICT="nomirror nostrip"
+RESTRICT="mirror strip"
 
 src_unpack() {
 	rpm_src_unpack
@@ -28,16 +29,41 @@ src_unpack() {
 src_compile() { :; }
 
 src_install() {
-	dodoc ${WORKDIR}/usr/share/doc/*
-	insinto /opt/liblightscribe/lib/lightscribe
-	doins -r ${WORKDIR}/usr/lib/lightscribe/*
-	insinto /opt/liblightscribe/lib
-	doins ${WORKDIR}/usr/lib/liblightscribe.so.*
-	dosym /opt/liblightscribe/lib/liblightscribe.so.1 /opt/liblightscribe/lib/liblightscribe.so
-	insinto /usr/include/liblightsribe
+	has_multilib_profile && ABI="x86"
+	
+	insinto /opt/liblightscribe/$(get_libdir)/lightscribe/xres
+	doins ${WORKDIR}/usr/lib/lightscribe/xres/*
+	insinto /opt/liblightscribe/$(get_libdir)/lightscribe/sres
+	doins ${WORKDIR}/usr/lib/lightscribe/res/*
+	dosym sres /opt/liblightscribe/$(get_libdir)/lightscribe/res
+	exeinto /opt/liblightscribe/$(get_libdir)/lightscribe/updates
+	doexe ${WORKDIR}/usr/lib/lightscribe/updates/fallback.sh
+	exeinto /opt/liblightscribe/$(get_libdir)/lightscribe
+	doexe ${WORKDIR}/usr/lib/lightscribe/elcu.sh
+	dosed "s%/usr/lib%/opt/liblightscribe/$(get_libdir)%" /opt/liblightscribe/$(get_libdir)/lightscribe/elcu.sh
+	into /opt/liblightscribe
+	dolib.so ${WORKDIR}/usr/lib/liblightscribe.so.*
+	dosym liblightscribe.so.1 /opt/liblightscribe/$(get_libdir)/liblightscribe.so
+	insinto /usr/include/lightsribe
 	doins -r ${WORKDIR}/usr/include/*
 	insinto /etc
 	doins -r ${WORKDIR}/etc/*
-	dosed "s%/usr/lib%/opt/liblightscribe/lib%" /etc/lightscribe.rc
-	doenvd ${FILESDIR}/80liblightscribe
+	dosed "s%/usr/lib%/opt/liblightscribe/$(get_libdir)%" /etc/lightscribe.rc
+	dodoc ${WORKDIR}/usr/share/doc/*.*
+	dodoc ${WORKDIR}/usr/share/doc/lightscribe-sdk/*.*
+	dodoc ${WORKDIR}/usr/share/doc/lightscribe-sdk/docs/*
+	docinto sample/lsprint
+	dodoc ${WORKDIR}/usr/share/doc/lightscribe-sdk/sample/lsprint/*
+	# cope with libraries being in /opt/liblightscribe/lib
+        dodir /etc/env.d
+        echo "LDPATH=/opt/liblightscribe/$(get_libdir)" > ${D}/etc/env.d/80liblightscribe
+
+}
+
+pkg_postinst() {
+        einfo
+        einfo "This version olso support Enhanced Contrast"
+        einfo "You can activate it by running:"
+        einfo "/opt/liblightscribe/$(get_libdir)/lightscribe/elcu.sh"
+        einfo
 }
