@@ -6,7 +6,7 @@ inherit eutils rpm
 
 MY_PV="${PV/_p/-r}"
 
-DESCRIPTION="Binary only GIU for LightScribe"
+DESCRIPTION="Binary only GUI for LightScribe"
 HOMEPAGE="http://www.lacie.com/products/product.htm?pid=10803"
 SRC_URI="http://www.lacie.com/download/drivers/4L-${MY_PV}.i586.rpm
 	http://eventi.vnunet.it/images/lacie.png"

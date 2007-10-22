@@ -4,7 +4,7 @@
 
 inherit eutils rpm multilib
 
-DESCRIPTION="Binary only GIU for LightScribe"
+DESCRIPTION="Binary only GUI for LightScribe"
 HOMEPAGE="http://www.lightscribe.com/"
 SRC_URI="http://download.lightscribe.com/ls/lightScribeSimpleLabeler-${PV}-linux-2.6-intel.rpm"
 
