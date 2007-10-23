@@ -167,7 +167,7 @@ src_unpack() {
 	cd ${S}
 
 	epatch "${FILESDIR}/disable-version-rebranding.patch"
-	epatch "${FILESDIR}/pulseaudio.patch"
+	use pulseaudio && epatch "${FILESDIR}/pulseaudio.patch"
 
 	# Fix hppa compilation
 	[ "${ARCH}" = "hppa" ] && sed -i -e "s/-O4/-O1/" "${S}/configure"
