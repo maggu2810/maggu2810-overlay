@@ -1,0 +1,103 @@
+#!/bin/bash
+
+# =====================================
+# = please submit improvements to me: =
+# = Markus Rathgeb                    =
+# = maggu2810@gentooforum.de          =
+# =====================================
+
+if [ "$1" != "udev" ]
+then
+	echo 'add the following lines to your udev rules:
+	ACTION=="add"   , KERNEL=="sd[a-z][0-9]", RUN+="/usr/sbin/clenf-am udev %d"
+	ACTION=="remove", KERNEL=="sd[a-z][0-9]", RUN+="/usr/sbin/clenf-am udev %d"
+	'
+	exit 0
+fi
+
+TMPDIR="/tmp/automount"
+LOGFILE="${TMPDIR}/log"
+SDEVNAME="${DEVNAME//\//_}"		# contains an simple name for the device
+EDEVFILE="${TMPDIR}/${SDEVNAME}"		# file with the environment by adding the device
+MOUNTDIR="/media"
+
+CSETUP="/sbin/cryptsetup"
+MAPDIR="/dev/mapper"
+VOLID="/sbin/vol_id"
+
+mkdir -p ${TMPDIR} ${MOUNTDIR}
+
+# -------------------------
+# -- IF DEVICE WAS ADDED --
+# -------------------------
+if [ "$ACTION" = "add" ]
+then
+
+# --------------------------------------------
+# -- PREPARE THE DEVICE AND THE ENVIRONMENT --
+# --------------------------------------------
+	env > ${EDEVFILE}
+	case "$ID_FS_TYPE" in
+		crypto_LUKS)
+			TMPDEVNAME="${MAPDIR}/${SDEVNAME}"
+			openvt -s -w -- bash -c "TERM=linux clear; $CSETUP luksOpen ${DEVNAME} ${SDEVNAME}"
+			;;
+	    	*)
+			TMPDEVNAME="${DEVNAME}"
+			;;
+	esac
+	echo "MY_DEVNAME=${TMPDEVNAME}" >> ${EDEVFILE}
+	$VOLID --export ${TMPDEVNAME} | xargs -I° echo MY_° >> ${EDEVFILE}
+	# -- FIND A NAME FOR THE MOUNT DIRECTORY
+		TMPLABEL=$($VOLID --label ${TMPDEVNAME})
+		if [ "$TMPLABEL" = "" ]
+		then
+			$TMPLABEL=${SDEVNAME}
+		fi
+		CNT=""
+		MY_MOUNT_DIR="${MOUNTDIR}/${TMPLABEL}"
+		while [ -e ${MY_MOUNT_DIR}${CNT} ]; do CNT=$((CNT+1)); done
+		echo "MY_MOUNT_DIR=${MY_MOUNT_DIR}${CNT}" >> ${EDEVFILE}
+	# --
+	source ${EDEVFILE}
+
+# --------------------------------------------------
+# -- MOUNT THE DEVICE                             --
+# -- WE SHOULD ONLY USE VARIABLES WITH MY_ PREFIX --
+# --------------------------------------------------
+	mkdir -p ${MY_MOUNT_DIR}
+	case "$MY_ID_FS_TYPE" in
+		ext[23])
+			mount -o rw,noexec,nosuid,nodev ${MY_DEVNAME} ${MY_MOUNT_DIR}
+			;;
+		ntfs)
+			mount -t ntfs-3g -o rw,noexec,nosuid,nodev,allow_other ${MY_DEVNAME} ${MY_MOUNT_DIR}
+			;;
+		vfat)
+			mount -t vfat -o rw,noexec,nosuid,nodev,umask=0,dmask=0,fmask=0 ${MY_DEVNAME} ${MY_MOUNT_DIR}
+			;;
+		*)
+			rmdir ${MY_MOUNT_DIR}
+			;;
+	esac
+
+# ---------------------------------------------------------
+elif [ "$ACTION" = "remove" ]
+then
+	source ${EDEVFILE}
+	umount ${MY_MOUNT_DIR}
+	if [ $? -eq 1 ]
+	then
+		umount -l ${MY_MOUNT_DIR}
+	fi
+	rmdir ${MY_MOUNT_DIR}
+	case "$ID_FS_TYPE" in
+		crypto_LUKS)
+			$CSETUP luksClose ${SDEVNAME}
+			;;
+	    	*)
+			echo ""
+			;;
+	esac
+	rm ${EDEVFILE}
+fi
