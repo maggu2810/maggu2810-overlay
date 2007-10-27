@@ -1,0 +1,24 @@
+#!/bin/bash -
+#
+# /usr/bin/wx-config
+#
+#  a lame wx-config script wrapper by dirtyepic@gentoo.org
+
+if [[ -n ${WX_ECLASS_CONFIG} ]]; then
+	${WX_ECLASS_CONFIG} $@
+	exit 0
+else
+	source /var/lib/wx-config/current
+	if [[ -f /usr/lib/wx/config/${WXCONFIG} \
+	   && -x /usr/lib/wx/config/${WXCONFIG} ]]; then
+	   /usr/lib/wx/config/${WXCONFIG} $@
+	else
+		echo
+		echo "Cannot find currently selected wxGTK configuration - ${WXCONFIG}"
+		echo
+		echo "Please use \`eselect wx-config\` to select an available config and try again."
+		echo
+		exit 1
+	fi
+	exit 0
+fi

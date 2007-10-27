@@ -1,0 +1,6 @@
+#!/bin/bash -
+#
+# /usr/bin/wxrc
+#	another lame wrapper by dirtyepic@gentoo.org
+
+$(/usr/bin/wx-config --utility=wxrc) "$@"
