@@ -579,7 +579,7 @@
  		m_hpartfile.Close();
  		// Update met file (with current directory entry)
  		SavePartFile();			
-@@ -2359,7 +2359,7 @@ void CPartFile::Delete()
+@@ -2346,7 +2346,7 @@ void CPartFile::Delete()
  	// eMule had same problem with lseek error ... and override with a simple 
  	// check for INVALID_HANDLE_VALUE (that, btw, does not exist on linux)
  	// So we just guess is < 0 on error and > 2 if ok (0 stdin, 1 stdout, 2 stderr)
@@ -599,7 +599,7 @@
  
  /* Proxy */
  CProxyData	CPreferences::s_ProxyData;
-@@ -1163,6 +1165,13 @@ void CPreferences::BuildItemList( const 
+@@ -1153,6 +1155,13 @@ void CPreferences::BuildItemList( const 
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/KadNodesUrl"),			s_KadURL, wxT("http://emule-inside.net/nodes.dat") ) );
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/Ed2kServersUrl"),			s_Ed2kURL, wxT("http://ocbmaurice.dyndns.org/pl/slist.pl/server.met?download/server-max.met") ) );
  	

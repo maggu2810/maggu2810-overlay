@@ -124,7 +124,7 @@
  // File_checked_for_headers
 --- src.org/DownloadListCtrl.cpp
 +++ src/DownloadListCtrl.cpp
-@@ -196,19 +196,19 @@ CMuleListCtrl( parent, winid, pos, size,
+@@ -190,19 +190,19 @@ CMuleListCtrl( parent, winid, pos, size,
  	m_hilightUnfocusBrush = new wxBrush( colour, wxSOLID );
  
  	InsertColumn( 0,  _("File Name"),		wxLIST_FORMAT_LEFT, 260 );
@@ -154,7 +154,7 @@
  
  	m_category = 0;
  	m_completedFiles = 0;
-@@ -1538,7 +1538,7 @@ void CDownloadListCtrl::DrawFileItem( wx
+@@ -1487,7 +1487,7 @@ void CDownloadListCtrl::DrawFileItem( wx
  	// Last seen part
  	case 8:
  		if ( file->lastseenpart ) {

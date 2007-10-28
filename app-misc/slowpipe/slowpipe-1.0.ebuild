@@ -74,6 +74,7 @@ src_unpack() {
 }
 
 src_compile() {
+	[ -d ${MY_PN} ] && cd ${MY_PN}
 	[ -e bootstrap ] && ./bootstrap
 	econf || die
 	before_compile || die
@@ -81,6 +82,7 @@ src_compile() {
 }
 
 src_install() {
+	[ -d ${MY_PN} ] && cd ${MY_PN}
 	before_install || die
 	emake DESTDIR=${D} install || die
 }

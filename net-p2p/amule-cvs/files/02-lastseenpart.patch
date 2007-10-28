@@ -1,6 +1,6 @@
 --- src.org/DownloadListCtrl.cpp
 +++ src/DownloadListCtrl.cpp
-@@ -200,7 +200,7 @@ CMuleListCtrl( parent, winid, pos, size,
+@@ -194,7 +194,7 @@ CMuleListCtrl( parent, winid, pos, size,
  	InsertColumn( 5,  _("Progress"),		wxLIST_FORMAT_LEFT, 170 );
  	InsertColumn( 6,  _("Sources"),			wxLIST_FORMAT_LEFT,  50 );
  	InsertColumn( 7,  _("Priority"),		wxLIST_FORMAT_LEFT,  55 );
@@ -9,7 +9,7 @@
  	InsertColumn( 9,  _("Time Remaining"),		wxLIST_FORMAT_LEFT, 110 );
  	InsertColumn( 10, _("Last Seen Complete"),	wxLIST_FORMAT_LEFT, 220 );
  	InsertColumn( 11, _("Gained"),			wxLIST_FORMAT_LEFT, 100 );
-@@ -1455,9 +1455,13 @@ void CDownloadListCtrl::DrawFileItem( wx
+@@ -1404,9 +1404,13 @@ void CDownloadListCtrl::DrawFileItem( wx
  		text = PriorityToStr( file->GetDownPriority(), file->IsAutoDownPriority() );
  		break;
  			
@@ -25,7 +25,7 @@
  		break;
  	
  	// Remaining
-@@ -1994,11 +1998,11 @@ int CDownloadListCtrl::Compare( const CP
+@@ -1943,11 +1947,11 @@ int CDownloadListCtrl::Compare( const CP
  			file2->GetDownPriority() );
  		break;
  
@@ -148,7 +148,7 @@
  
  		if ( IsAutoUpPriority() ) {
  			CTagInt32( FT_ULPRIORITY,	(uint8)PR_AUTO	).WriteTagToFile( &file );	// 8
-@@ -3669,6 +3699,24 @@ void CPartFile::UpdatePartsFrequency( CU
+@@ -3627,6 +3657,24 @@ void CPartFile::UpdatePartsFrequency( CU
  	}
  	
  	if ( increment ) {
@@ -173,7 +173,7 @@
  		for ( unsigned int i = 0; i < size; i++ ) {
  			if ( freq[i] ) {
  				m_SrcpartFrequency[i]++;
-@@ -3788,6 +3836,7 @@ void CPartFile::Init()
+@@ -3746,6 +3794,7 @@ void CPartFile::Init()
  	completedsize=0;
  	m_bPreviewing = false;
  	lastseencomplete = 0;

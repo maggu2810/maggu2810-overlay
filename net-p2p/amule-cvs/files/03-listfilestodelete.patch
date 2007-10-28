@@ -1,6 +1,6 @@
 --- src.org/DownloadListCtrl.cpp
 +++ src/DownloadListCtrl.cpp
-@@ -611,7 +611,16 @@ void CDownloadListCtrl::OnCancelFile(wxC
+@@ -576,7 +576,16 @@ void CDownloadListCtrl::OnCancelFile(wxC
  	ItemList files = ::GetSelectedItems(this, itFILES);
  	if (files.size()) {	
  		wxString question = 
