@@ -1,0 +1,53 @@
+--- /usr/local/portage/dev-util/atprepare/files/atprepare.sh	2007-09-21 13:46:53.000000000 +0200
++++ atprepare	2007-10-28 15:25:32.000000000 +0100
+@@ -122,6 +122,11 @@
+ chmod 755 bootstrap
+ }
+ 
++[ "`whoami`" == "root" ] && {
++	echo "Error: Should not be run as root!"
++	exit 1
++}
++
+ [ "$1" == "remove" ] && {
+ 	rm -f -r autom4te.cache .deps
+ 	rm -f aclocal.m4 autoscan-*.log bootstrap config.h config.h.in config.log config.status configure
+@@ -134,12 +139,37 @@
+ 	exit 
+ }
+ 
++[ "$1" == "dist" ] && {
++	[ "$2" ] && ver=$2 || ver="1.0"
++	echo "Checking out in temp dir ..."
++	tmp=`mktemp -d`
++	olddir=`pwd`
++	subdir=`basename $olddir`
++	svnrepos=`grep svn .svn/entries | head -n 1`
++	trg="/tmp/$subdir-$ver.tar.bz2"
++	cd $tmp
++	svn checkout $svnrepos
++	cd $subdir
++	echo "Removing cvs/svn information ..."
++	find . -type d -name ".svn" -print0 -o -type d -name "CVS" -print0 | xargs -0r rm -f -r
++	rm -f .cvsignore
++	echo "Tarring archive ..."
++	cd ..
++	tar cv $subdir | bzip2 -c -f -9 > $trg
++	echo "Cleaning up ..."
++	cd $olddir
++	rm -fr $tmp
++	echo "Done - archive is in $trg"
++	exit
++}
++
+ [ "$1" != "prep" ] && {
+-	echo "Syntax: $0 prep|remove"
++	echo "Syntax: $0 prep|remove|dist"
+ 	echo "prep:   prepare a C or C++ project with existing source files in . or in src/"
+ 	echo "        for autotools usage."
+ 	echo "remove: remove all autotools relevant files from the current directory and"
+ 	echo "        the src/ subdirectory."
++	echo "dist:   create tar.bz2 archive for distributioning"
+ 	exit 1
+ }
+ 
