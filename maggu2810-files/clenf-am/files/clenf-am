@@ -56,7 +56,19 @@ then
 		fi
 		CNT=""
 		MY_MOUNT_DIR="${MOUNTDIR}/${TMPLABEL}"
-		while [ -e ${MY_MOUNT_DIR}${CNT} ]; do CNT=$((CNT+1)); done
+		while [ -e ${MY_MOUNT_DIR}${CNT} ]
+		do
+			grep "^${MY_MOUNT_DIR}${CNT} " /etc/mtab &> /dev/null
+			if [ $? -eq 1 ]
+			then
+				rmdir ${MY_MOUNT_DIR}${CNT} &> /dev/null
+				if [ $? -eq 0 ]
+				then
+					break
+				fi
+			fi
+			CNT=$((CNT+1))
+		done
 		echo "MY_MOUNT_DIR=${MY_MOUNT_DIR}${CNT}" >> ${EDEVFILE}
 	# --
 	source ${EDEVFILE}
