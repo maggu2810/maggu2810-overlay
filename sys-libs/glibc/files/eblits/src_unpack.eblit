@@ -1,0 +1,150 @@
+# Copyright 1999-2007 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: /var/cvsroot/gentoo-x86/sys-libs/glibc/files/eblits/src_unpack.eblit,v 1.4 2007/11/11 20:12:38 vapier Exp $
+
+check_kheader_version() {
+	local version=$(
+		printf '#include <linux/version.h>\nLINUX_VERSION_CODE\n' | \
+		$(tc-getCPP ${CTARGET}) -I "$(alt_build_headers)" | \
+		tail -n 1
+	)
+	[[ ${version} -ge "$1" ]]
+}
+
+check_nptl_support() {
+	local min_kernel_version=$(KV_to_int "${NPTL_KERN_VER}")
+
+	ebegin "Checking gcc for __thread support"
+	if ! eend $(want__thread ; echo $?) ; then
+		echo
+		eerror "Could not find a gcc that supports the __thread directive!"
+		eerror "Please update your binutils/gcc and try again."
+		die "No __thread support in gcc!"
+	fi
+
+	if ! is_crosscompile && ! tc-is-cross-compiler ; then
+		# Building fails on an non-supporting kernel
+		ebegin "Checking kernel version (>=${NPTL_KERN_VER})"
+		if ! eend $([[ $(get_KV) -ge ${min_kernel_version} ]] ; echo $?) ; then
+			echo
+			eerror "You need a kernel of at least version ${NPTL_KERN_VER}"
+			eerror "for NPTL support!"
+			die "Kernel version too low!"
+		fi
+	fi
+
+	# Building fails with too low linux-headers
+	just_headers && return
+	ebegin "Checking linux-headers version (>=${NPTL_KERN_VER})"
+	if ! eend $(check_kheader_version "${min_kernel_version}" ; echo $?) ; then
+		echo
+		eerror "You need linux-headers of at least version ${NPTL_KERN_VER}"
+		eerror "for NPTL support!"
+		die "linux-headers version too low!"
+	fi
+}
+
+unpack_addon() {
+	local addon=$1 ver=${2:-${RELEASE_VER}}
+	unpack glibc-${addon}-${ver}.tar.bz2
+	mv glibc-${addon}-${ver} ${addon} || die
+}
+
+toolchain-glibc_src_unpack() {
+	# Check NPTL support _before_ we unpack things to save some time
+	want_nptl && check_nptl_support
+
+	unpack glibc-${RELEASE_VER}.tar.bz2
+
+	cd "${S}"
+	[[ -n ${LT_VER} ]] && unpack glibc-linuxthreads-${LT_VER}.tar.bz2
+	[[ -n ${PORTS_VER} ]] && unpack_addon ports ${PORTS_VER}
+	unpack_addon libidn
+
+	if [[ -n ${PATCH_VER} ]] ; then
+		cd "${WORKDIR}"
+		unpack glibc-${PATCH_GLIBC_VER}-patches-${PATCH_VER}.tar.bz2
+		# pull out all the addons
+		local d
+		for d in extra/*/configure ; do
+			d=${d%/configure}
+			[[ -d ${S}/${d} ]] && die "${d} already exists in \${S}"
+			mv "${d}" "${S}" || die "moving ${d} failed"
+		done
+	fi
+
+	# XXX: We should do the branchupdate, before extracting the manpages and
+	# infopages else it does not help much (mtimes change if there is a change
+	# to them with branchupdate)
+	if [[ -n ${BRANCH_UPDATE} ]] ; then
+		cd "${S}"
+		epatch "${DISTDIR}"/glibc-${RELEASE_VER}-branch-update-${BRANCH_UPDATE}.patch.bz2
+
+		# Snapshot date patch
+		einfo "Patching version to display snapshot date ..."
+		sed -i -e "s:\(#define RELEASE\).*:\1 \"${BRANCH_UPDATE}\":" version.h
+	fi
+
+	if [[ -n ${MANPAGE_VER} ]] ; then
+		cd "${WORKDIR}"
+		unpack glibc-manpages-${MANPAGE_VER}.tar.bz2
+	fi
+
+	if [[ -n ${INFOPAGE_VER} ]] ; then
+		cd "${S}"
+		unpack glibc-infopages-${INFOPAGE_VER}.tar.bz2
+	fi
+
+	if [[ -n ${PATCH_VER} ]] && ! use vanilla ; then
+		cd "${S}"
+		EPATCH_MULTI_MSG="Applying Gentoo Glibc Patchset ${PATCH_GLIBC_VER}-${PATCH_VER} ..." \
+		EPATCH_EXCLUDE=${GLIBC_PATCH_EXCLUDE} \
+		EPATCH_SUFFIX="patch" \
+		ARCH=$(tc-arch) \
+		epatch "${WORKDIR}"/patches
+
+		# tag, glibc is it
+		[[ -e csu/Banner ]] && die "need new banner location"
+		echo "Gentoo patchset ${PATCH_VER}" > csu/Banner
+	fi
+
+	gnuconfig_update
+}
+
+eblit-glibc-src_unpack() {
+	setup_env
+
+	toolchain-glibc_src_unpack
+
+	# Backwards SSP support
+	cd "${S}"
+# For now, we force everyone to have the extra symbols
+#	einfon "Scanning system for __guard to see if we need SSP compat ... "
+#	if [[ -n $(scanelf -qyls__guard -F'#s%F' | grep -v '^/lib.*/libc-2.*.so$') ]] ; then
+		echo "yes" > "${T}"/.ssp.compat
+#	else
+#		# ok, a quick scan didnt find it, so lets do a deep scan ...
+#		if [[ -n $(scanelf -qyRlps__guard -F'#s%F' | grep -v '^/lib.*/libc-2.*.so$') ]] ; then
+#			echo "yes" > "${T}"/.ssp.compat
+#		else
+#			echo "no" > "${T}"/.ssp.compat
+#		fi
+#	fi
+#	cat "${T}"/.ssp.compat
+
+	# Glibc is stupid sometimes, and doesn't realize that with a
+	# static C-Only gcc, -lgcc_eh doesn't exist.
+	# http://sources.redhat.com/ml/libc-alpha/2003-09/msg00100.html
+	# http://sourceware.org/ml/libc-alpha/2005-02/msg00042.html
+	echo 'int main(){}' > "${T}"/gcc_eh_test.c
+	if ! $(tc-getCC ${CTARGET}) "${T}"/gcc_eh_test.c -lgcc_eh 2>/dev/null ; then
+		sed -i -e 's:-lgcc_eh::' Makeconfig || die "sed gcc_eh"
+	fi
+
+	cd "${WORKDIR}"
+	find . -type f '(' -size 0 -o -name "*.orig" ')' -exec rm -f {} \;
+	find . -name configure -exec touch {} \;
+
+	# Fix permissions on some of the scripts
+	chmod u+x "${S}"/scripts/*.sh
+}
