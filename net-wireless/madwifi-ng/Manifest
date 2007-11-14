@@ -1,0 +1,11 @@
+AUX madwifi-ng-0.9.3-uudecode-gcda-fix.patch 340 RMD160 2a18fc4f9e66aa131e901e7e46930e08e2ece7ea SHA1 3c84bf4e203ab3c810c734816dd1291ba19b0005 SHA256 be6e7a66acad56044c25ab56d9cbd7d5326c4ba21f5d9ed25caef56a9577bdc8
+MD5 c2c1ef3c395377312cfa0e012ded2777 files/madwifi-ng-0.9.3-uudecode-gcda-fix.patch 340
+RMD160 2a18fc4f9e66aa131e901e7e46930e08e2ece7ea files/madwifi-ng-0.9.3-uudecode-gcda-fix.patch 340
+SHA256 be6e7a66acad56044c25ab56d9cbd7d5326c4ba21f5d9ed25caef56a9577bdc8 files/madwifi-ng-0.9.3-uudecode-gcda-fix.patch 340
+EBUILD madwifi-ng-9999.ebuild 2348 RMD160 40c040d842ec2af20f999388301a1c048516c024 SHA1 5a2764d9c4f672fa95fd4fa1ecb082b2f37931ff SHA256 548d4a4b2627cd522f061fe453c5235caf457d9e1e86e43ba4e23ce6bc043d50
+MD5 52c5c6d7257d9994b22f2f9e509a78ba madwifi-ng-9999.ebuild 2348
+RMD160 40c040d842ec2af20f999388301a1c048516c024 madwifi-ng-9999.ebuild 2348
+SHA256 548d4a4b2627cd522f061fe453c5235caf457d9e1e86e43ba4e23ce6bc043d50 madwifi-ng-9999.ebuild 2348
+MD5 d41d8cd98f00b204e9800998ecf8427e files/digest-madwifi-ng-9999 0
+RMD160 9c1185a5c5e9fc54612808977ee8f548b2258d31 files/digest-madwifi-ng-9999 0
+SHA256 e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 files/digest-madwifi-ng-9999 0
