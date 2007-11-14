@@ -295,7 +295,7 @@
  	m_lastDateChanged = wxDateTime().Now();
 --- src.org/Preferences.cpp
 +++ src/Preferences.cpp
-@@ -140,6 +140,7 @@ bool		CPreferences::s_checkDiskspace;
+@@ -141,6 +141,7 @@ bool		CPreferences::s_checkDiskspace;
  uint32		CPreferences::s_uMinFreeDiskSpace;
  wxString	CPreferences::s_yourHostname;
  bool		CPreferences::s_bVerbose;
@@ -314,7 +314,7 @@
  	s_MiscList.push_back( new Cfg_Bool( wxT("/eMule/ShowAllNotCats"),		s_showAllNotCats, false ) );
 --- src.org/Preferences.h
 +++ src/Preferences.h
-@@ -465,6 +465,8 @@ public:
+@@ -464,6 +464,8 @@ public:
  	static void LoadAllItems(wxConfigBase* cfg);
  	static void SaveAllItems(wxConfigBase* cfg);
  
@@ -323,7 +323,7 @@
  	static bool 		GetShowRatesOnTitle()		{ return s_ShowRatesOnTitle; }
  	
  	// Message Filters
-@@ -668,6 +670,8 @@ protected:
+@@ -667,6 +669,8 @@ protected:
  	static bool	s_bUAP;
  	static bool	s_bDisableKnownClientList;
  	static bool	s_bDisableQueueList;

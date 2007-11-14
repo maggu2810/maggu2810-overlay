@@ -615,7 +615,7 @@
  	for ( int i = 0; i < cntStatColors; i++ ) {  
 --- src.org/Preferences.h
 +++ src/Preferences.h
-@@ -492,6 +492,9 @@ public:
+@@ -491,6 +491,9 @@ public:
  	// Can't have it return a reference, will need a pointer later.
  	static const CProxyData *GetProxyData()			{ return &s_ProxyData; }
  	
@@ -625,7 +625,7 @@
  	// Hidden files
  	
  	static bool ShareHiddenFiles() { return s_ShareHiddenFiles; }
-@@ -734,6 +737,9 @@ protected:
+@@ -732,6 +735,9 @@ protected:
  	static wxString 	s_CommentFilterString;
  
  	

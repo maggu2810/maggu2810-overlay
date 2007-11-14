@@ -515,7 +515,7 @@
  	 */
 --- src.org/ECSpecialMuleTags.cpp
 +++ src/ECSpecialMuleTags.cpp
-@@ -462,6 +462,12 @@ void CEC_Prefs_Packet::Apply()
+@@ -459,6 +459,12 @@ void CEC_Prefs_Packet::Apply()
  		if ((oneTag = thisTab->GetTagByName(EC_TAG_FILES_MIN_FREE_SPACE)) != NULL) {
  			thePrefs::SetMinFreeDiskSpace(oneTag->GetInt());
  		}
@@ -614,7 +614,7 @@
  	  **/
 --- src.org/Preferences.h
 +++ src/Preferences.h
-@@ -505,6 +505,26 @@ public:
+@@ -504,6 +504,26 @@ public:
  	
  	static bool CheckNewVersion() { return s_NewVersionCheck; }
  
@@ -641,7 +641,7 @@
  	// Networks
  	static bool GetNetworkKademlia()		{ return s_ConnectToKad; }
  	static void SetNetworkKademlia(bool val)	{ s_ConnectToKad = val; }
-@@ -748,6 +768,15 @@ protected:
+@@ -746,6 +766,15 @@ protected:
  	// Version check
  	static bool s_NewVersionCheck;
  	
