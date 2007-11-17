@@ -56,6 +56,7 @@ then
 	done 
 
 	## === DO SOME CORRECTIONS ===
+	rm -rf /usr/portage/local/layman/berkano/app-misc/screen
 	rm -rf /usr/portage/local/layman/berkano/media-video/ffmpeg
 	rm -rf /usr/portage/local/layman/berkano/media-video/mplayer
 	ebuild /usr/portage/local/layman/berkano/media-libs/x264-svn/x264-svn-20079999.ebuild digest
