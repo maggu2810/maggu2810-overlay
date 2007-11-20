@@ -1,0 +1,173 @@
+--- atprepare.sh	2007-09-19 00:42:42.000000000 +0200
++++ /usr/local/bin/atprepare	2007-11-20 14:45:22.000000000 +0100
+@@ -4,11 +4,12 @@
+ 
+ HAS_C=0
+ HAS_CXX=0
++HAS_LIBS=0
+ 
+ function create_makefile_src() { # skip
+ 	echo "Creating source Makefile.am ..."
+ 	SOURCES=""
+-	for f in *.[ch] *.cpp *.cxx *.hh; do
++	for f in *.c *.cpp *.cxx; do
+ 		if [ -f "$f" ]; then
+ 			[ "$f" != "${f%.c}" ] && HAS_C=1
+ 			[ "$f" != "${f%.cpp}" ] && HAS_CXX=1
+@@ -17,6 +18,7 @@
+ 		fi
+ 	done
+ 	if [ "$1" == "skip" ]; then
++		if grep -q _LTLIBRARIES Makefile.am; then HAS_LIBS=1; fi
+ 		echo "Skipped"
+ 		return
+ 	fi
+@@ -32,7 +34,7 @@
+ 	echo >> Makefile.am
+ 	echo "${PROGNAME}_LDADD = " >> Makefile.am
+ 	echo >> Makefile.am
+-	echo "INCLUDES = -Wall -Wextra -Wformat-y2k -Wformat-nonliteral -Wformat-security -Winit-self \\" >> Makefile.am
++	echo "AM_CPPFLAGS = -Wall -Wextra -Wformat-y2k -Wformat-nonliteral -Wformat-security -Winit-self \\" >> Makefile.am
+ 	echo "  -Wmissing-include-dirs -Wswitch-default -Wswitch-enum -Wunused-parameter -Wunknown-pragmas \\" >> Makefile.am
+ 	echo "  -Wstrict-aliasing=2 -Wstrict-overflow=5 -Wfloat-equal -Wundef -Wunsafe-loop-optimizations \\" >> Makefile.am
+ 	echo "  -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings -Wconversion -Wmissing-noreturn \\" >> Makefile.am
+@@ -72,6 +74,7 @@
+ 
+ 	[ $HAS_C == 1 ] && echo "AC_PROG_CC" >> configure.in
+ 	[ $HAS_CXX == 1 ] && echo "AC_PROG_CXX" >> configure.in
++	[ $HAS_LIBS == 1 ] && echo "AC_PROG_LIBTOOL" >> configure.in
+ 
+ 	echo "AC_CONFIG_FILES([Makefile`[ "$1" ] && echo " $1/Makefile"`])" >> configure.in 
+ 	echo "AC_OUTPUT" >> configure.in
+@@ -79,15 +82,22 @@
+ 
+ function merge_configure_scan() {
+ 	echo "Updating configure.in ..."
++
+ 	sed -i "s/FULL-PACKAGE-NAME/$PROGNAME/g" configure.scan
+ 	sed -i "s/VERSION/0.1/g" configure.scan
+ 	sed -i "s/BUG-REPORT-ADDRESS/oliver.hoffmann@uni-ulm.de/g" configure.scan
++
++	[ $HAS_LIBS == 1 ] && sed -i "s/AC_PROG_RANLIB/AC_PROG_LIBTOOL/g" configure.scan
++
+ 	line=`grep -n "^AC_INIT(" configure.scan | cut -d ":" -f 1`
+ 	len=`cat configure.scan | wc -l`
+ 	head -n $line configure.scan > configure.in
++
+ 	echo "AM_INIT_AUTOMAKE([`automake --version | head -n 1 | cut -d " " -f 4` foreign])" >> configure.in
+ 	echo "AM_CONDITIONAL(COLORGCC, test -e /usr/lib/colorgcc/bin/g++ )" >> configure.in
++
+ 	tail -n $[ $len - $line ] configure.scan >> configure.in
++
+ 	rm -f configure.scan autoscan-*.log
+ }
+ 
+@@ -103,49 +113,84 @@
+ config.status
+ configure
+ stamp-h1
+-$PROGNAME
+-" >> .cvsignore
++$PROGNAME" >> .cvsignore
++sort .cvsignore | uniq > .cvsignore.tmp
++mv -f .cvsignore.tmp .cvsignore
+ }
+ 
+ function create_bootstrap() {
+-echo "#!/bin/bash
++echo '#!/bin/bash
+ set -e
+-echo \"Running aclocal ...\"
+-aclocal
+-echo \"Running autoheader ...\"
+-autoheader
+-echo \"Running automake ...\"
+-automake --gnu --add-missing
+-echo \"Running autoconf ...\"
+-autoconf
+-echo \"Bootstrapping finished\"" > bootstrap
++[ "$1" == "-v" -o "$1" == "--verbose" ] && verbose="--verbose" || verbose=""' > bootstrap
++[ $HAS_LIBS == 1 ] && echo 'echo "Running libtoolize ..."
++libtoolize --force' >> bootstrap
++echo 'echo "Running aclocal ..."
++aclocal $verbose --force
++echo "Running autoheader ..."
++autoheader $verbose --force --warnings=all
++echo "Running automake ..."
++automake $verbose --add-missing --force-missing --gnu --warnings=all
++echo "Running autoconf ..."
++autoconf $verbose --force --warnings=all
++echo "Bootstrapping finished"' >> bootstrap
+ chmod 755 bootstrap
+ }
+ 
++[ "`whoami`" == "root" ] && {
++	echo "Error: Should not be run as root!"
++	exit 1
++}
++
+ [ "$1" == "remove" ] && {
+ 	rm -f -r autom4te.cache .deps
+ 	rm -f aclocal.m4 autoscan-*.log bootstrap config.h config.h.in config.log config.status configure
+-	rm -f configure.in configure.scan depcomp install-sh missing stamp-h1
+-	rm -f Makefile.am Makefile.in Makefile
++	rm -f configure.in configure.scan depcomp install-sh missing stamp-h1 config.h.in~
++	rm -f Makefile.in Makefile config.guess config.sub ltmain.sh libtool configure.in~
+ 	[ -d "src" ] && {
+ 		rm -f -r src/.deps 
+-		rm -f src/Makefile.am src/Makefile.in src/Makefile
++		rm -f src/Makefile.in src/Makefile
+ 	}
+ 	exit 
+ }
+ 
++[ "$1" == "dist" ] && {
++	[ "$2" ] && ver=$2 || ver="1.0"
++	echo "Checking out in temp dir ..."
++	tmp=`mktemp -d`
++	olddir=`pwd`
++	subdir=`basename $olddir`
++	svnrepos=`grep svn .svn/entries | head -n 1`
++	trg="/tmp/$subdir-$ver.tar.bz2"
++	cd $tmp
++	svn checkout $svnrepos
++	cd $subdir
++	echo "Removing cvs/svn information ..."
++	find . -type d -name ".svn" -print0 -o -type d -name "CVS" -print0 | xargs -0r rm -f -r
++	rm -f .cvsignore
++	echo "Tarring archive ..."
++	cd ..
++	tar cv $subdir | bzip2 -c -f -9 > $trg
++	echo "Cleaning up ..."
++	cd $olddir
++	rm -fr $tmp
++	echo "Done - archive is in $trg"
++	exit
++}
++
+ [ "$1" != "prep" ] && {
+-	echo "Syntax: $0 prep|remove"
++	echo "Syntax: $0 prep|remove|dist"
+ 	echo "prep:   prepare a C or C++ project with existing source files in . or in src/"
+ 	echo "        for autotools usage."
+ 	echo "remove: remove all autotools relevant files from the current directory and"
+ 	echo "        the src/ subdirectory."
++	echo "dist:   create tar.bz2 archive for distributioning"
+ 	exit 1
+ }
+ 
+ 
+ WD=`pwd`
+ PROGNAME=`basename $WD`
++PROGNAME=${PROGNAME//-/_}
+ rm -f makefile Makefile configure.in
+ [ -e "Makefile.am" ] && skip="skip" || skip=""
+ if [ -d "src" ]; then
+@@ -161,6 +206,7 @@
+ fi
+ 
+ echo "Running AutoTools..."
++[ $HAS_LIBS == 1 ] && libtoolize
+ aclocal
+ autoconf
+ automake --gnu --add-missing
