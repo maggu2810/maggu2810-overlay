@@ -32,9 +32,7 @@ done
 RESTRICT="nostrip nomirror"
 
 DEPEND="
-        gtk2? ( >=x11-libs/wxGTK-2.6.0 )
-        amuled? ( >=x11-libs/wxGTK-2.6.0 )
-        !gtk2? ( !amuled? ( >=x11-libs/wxGTK-2.6.0 ) )
+        >=x11-libs/wxGTK-2.8.0
         >=sys-libs/zlib-1.2.1
         stats? ( >=media-libs/gd-2.0.26 )
         remote? ( >=media-libs/libpng-1.2.0 )
