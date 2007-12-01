@@ -207,7 +207,7 @@
  			
  	if (thePrefs::GetAllocFullPart()) {
  		#warning Code for full file alloc - should be done on thread.
-@@ -3104,6 +3107,11 @@ void CPartFile::FlushBuffer(bool /*force
+@@ -3105,6 +3108,11 @@ void CPartFile::FlushBuffer(bool /*force
  		return;
  	}
  	
@@ -219,7 +219,7 @@
  	// Loop through queue
  	while ( !m_BufferedData_list.empty() ) {
  		// Get top item and remove it from the queue
-@@ -3121,6 +3129,13 @@ void CPartFile::FlushBuffer(bool /*force
+@@ -3122,6 +3130,13 @@ void CPartFile::FlushBuffer(bool /*force
  		}
  		// SLUGFILLER: SafeHash
  		
@@ -233,7 +233,7 @@
  		// Go to the correct position in file and write block of data			
  		try {
  			m_hpartfile.Seek(item->start);
-@@ -3137,6 +3152,59 @@ void CPartFile::FlushBuffer(bool /*force
+@@ -3138,6 +3153,59 @@ void CPartFile::FlushBuffer(bool /*force
  		delete item;
  	}
  	
@@ -303,7 +303,7 @@
  bool		CPreferences::s_bmanualhighprio;
  bool		CPreferences::s_btransferfullchunks;
  bool		CPreferences::s_bstartnextfile;
-@@ -1163,6 +1164,8 @@ void CPreferences::BuildItemList( const 
+@@ -1162,6 +1163,8 @@ void CPreferences::BuildItemList( const 
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/YourHostname"),			s_yourHostname, wxEmptyString ) );
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/DateTimeFormat"),		s_datetimeformat, wxT("%A, %x, %X") ) );
  

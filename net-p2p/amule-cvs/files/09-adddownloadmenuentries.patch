@@ -166,7 +166,7 @@
  // KnownFile
 --- src.org/include/common/MenuIDs.h
 +++ src/include/common/MenuIDs.h
-@@ -80,6 +80,8 @@ enum {
+@@ -81,6 +81,8 @@ enum {
  	MP_CLOSE_ALL_TABS,
  	MP_CLOSE_OTHER_TABS,
  	MP_RENAME,

@@ -47,7 +47,7 @@
  	void PartFile_Rehash(CPartFile* file)
 --- src.org/KnownFile.cpp
 +++ src/KnownFile.cpp
-@@ -610,6 +610,17 @@ bool CKnownFile::LoadFromFile(const CFil
+@@ -630,6 +630,17 @@ bool CKnownFile::LoadFromFile(const CFil
  }
  
  
@@ -67,7 +67,7 @@
  	wxCHECK(!IsPartFile(), false);
 --- src.org/KnownFile.h
 +++ src/KnownFile.h
-@@ -307,6 +307,8 @@ public:
+@@ -311,6 +311,8 @@ public:
  	
  	void	ClearPriority();
  	
@@ -78,10 +78,11 @@
  	bool	LoadDateFromFile(const CFileDataIO* file);
 --- src.org/KnownFileList.cpp
 +++ src/KnownFileList.cpp
-@@ -51,47 +51,55 @@ CKnownFileList::~CKnownFileList()
+@@ -66,49 +66,57 @@ CKnownFileList::~CKnownFileList()
  
  bool CKnownFileList::Init()
  {
+-	CFile file;
 +	const bool resK = Init0(true);
 +	const bool resC = Init0(false);
 +	return resK && resC;
@@ -90,7 +91,7 @@
 +bool CKnownFileList::Init0(bool knownMet)
 +{
 +	wxString name = knownMet ? wxT("known") : wxT("cancelled");
- 	CFile file;
++	knownMetCFile file;
  	
 -	wxString fullpath = theApp->ConfigDir + wxT("known.met");
 +	wxString fullpath = theApp->ConfigDir + name + wxT(".met");
@@ -116,23 +117,26 @@
  		
  		wxMutexLocker sLock(list_mut);
  		uint32 RecordsNumber = file.ReadUInt32();
--		AddDebugLogLineM(false, logKnownFiles, wxString::Format(wxT("Reading %i known files from file format 0x%2.2x."),RecordsNumber, version));
-+		AddDebugLogLineM(false, logKnownFiles, wxString::Format(wxT("Reading %i %ls files from file format 0x%2.2x."),RecordsNumber, name.c_str(), version));
+ 		AddDebugLogLineM(false, logKnownFiles,
+-			wxString::Format(wxT("Reading %i known files from file format 0x%2.2x."),
+-			RecordsNumber, version));
++			wxString::Format(wxT("Reading %i %ls files from file format 0x%2.2x."),
++			RecordsNumber, name.c_str(), version));
  		for (uint32 i = 0; i < RecordsNumber; i++) {
  			std::auto_ptr<CKnownFile> record(new CKnownFile());
- 			
 -			if (record->LoadFromFile(&file)) {
--				AddDebugLogLineM(false, logKnownFiles, wxT("Known file read: ") + record->GetFileName());
--				Append(record.release());
 +			if (knownMet ? record->LoadFromFile(&file) : record->LoadFromCancelledMet(&file)) {
-+				AddDebugLogLineM(false, logKnownFiles, name + wxT(" file read: ") + record->GetFileName());
+ 				AddDebugLogLineM(false, logKnownFiles,
+-					wxT("Known file read: ") + record->GetFileName());
+-				Append(record.release());
++					name + wxT(" file read: ") + record->GetFileName());
 +				if (knownMet) AppendK(record.release()); else AppendC(record.release());
  			} else {
--				AddLogLineM(true, wxT("Failed to load entry in knownfilelist, file may be corrupt"));
-+				AddLogLineM(true, wxT("Failed to load entry in ") + name + wxT("filelist, file may be corrupt"));
+ 				AddLogLineM(true,
+-					wxT("Failed to load entry in knownfilelist, file may be corrupt"));
++					wxT("Failed to load entry in ") + name + wxT("filelist, file may be corrupt"));
  			}
  		}
- 		
 -		AddDebugLogLineM(false, logKnownFiles, wxT("Finished reading known files"));
 +		AddDebugLogLineM(false, logKnownFiles, wxT("Finished reading ") + name + wxT(" files"));
  	
@@ -142,11 +146,11 @@
 +		AddLogLineM(true, wxT("Invalid entry in ") + name + wxT("filelist, file may be corrupt: ") + e.what());
  	} catch (const CSafeIOException& e) {
 -		AddLogLineM(true, CFormat(_("IO error while reading known.met file: %s")) % e.what());
-+		AddLogLineM(true, CFormat(_("IO error while reading ") + name + wxT(".met file: %s")) % e.what());
++		AddLogLineM(true, CFormat(_("IO error while reading ") + name + _(".met file: %s")) % e.what());
  	}	
  	
  	return false;
-@@ -99,6 +107,12 @@ bool CKnownFileList::Init()
+@@ -117,6 +125,12 @@ bool CKnownFileList::Init()
  
  void CKnownFileList::Save()
  {
@@ -159,7 +163,7 @@
  	CFile file(theApp->ConfigDir + wxT("known.met"), CFile::write);
  	if (!file.IsOpened()) {
  		return;
-@@ -142,6 +156,32 @@ void CKnownFileList::Save()
+@@ -159,6 +173,32 @@ void CKnownFileList::Save()
  }
  
  
@@ -192,48 +196,45 @@
  void CKnownFileList::Clear()
  {	
  	wxMutexLocker sLock(list_mut);
-@@ -149,6 +189,8 @@ void CKnownFileList::Clear()
+@@ -168,6 +208,7 @@ void CKnownFileList::Clear()
  		delete it->second;
- 	m_map.clear();
- 
+ 	}
+ 	m_knownFileMap.clear();
 +	m_map_cld.clear();
-+
- 	KnownFileList::iterator it = m_duplicates.begin();
- 	for ( ; it != m_duplicates.end(); ++it ) {
- 		delete *it;
-@@ -193,12 +235,27 @@ CKnownFile* CKnownFileList::FindKnownFil
+ 
+ 	for (KnownFileList::iterator it = m_duplicateFileList.begin();
+ 	     it != m_duplicateFileList.end(); ++it) {
+@@ -250,15 +291,25 @@ CKnownFile* CKnownFileList::FindKnownFil
  
  }
  
-+
-+bool CKnownFileList::FindCancelledFileByID(const CMD4Hash& hash) {
-+	
++bool CKnownFileList::FindCancelledFileByID(const CMD4Hash& hash)
++{
 +	wxMutexLocker sLock(list_mut);
-+
 +	return !hash.IsEmpty() && (m_map_cld.find(hash) != m_map_cld.end());
-+	
 +}
-+
-+
- bool CKnownFileList::SafeAddKFile(CKnownFile* toadd) {
+ 
+ bool CKnownFileList::SafeAddKFile(CKnownFile* toadd)
+ {
  	wxMutexLocker sLock(list_mut);
 -	return Append(toadd);
 +	return AppendK(toadd);
  }
  
--bool CKnownFileList::Append(CKnownFile* Record)
-+bool CKnownFileList::SafeAddCancelledFile(CKnownFile* toadd) {
++bool CKnownFileList::SafeAddCancelledFile(CKnownFile* toadd)
++{
 +	wxMutexLocker sLock(list_mut);
 +	return AppendC(toadd);
 +}
-+
-+bool CKnownFileList::AppendK(CKnownFile* Record)
+ 
+-bool CKnownFileList::Append(CKnownFile *Record)
++bool CKnownFileList::AppendK(CKnownFile *Record)
  {
  	if (Record->GetFileSize() > 0) {
  		const CMD4Hash& tkey = Record->GetFileHash();
-@@ -237,6 +294,19 @@ bool CKnownFileList::Append(CKnownFile* 
+@@ -296,4 +347,16 @@ bool CKnownFileList::Append(CKnownFile *
+ 	}
  }
- 
  
 +bool CKnownFileList::AppendC(CKnownFile* Record)
 +{
@@ -247,13 +248,10 @@
 +	return false;
 +}
 +
-+
- CKnownFile* CKnownFileList::IsOnDuplicates(wxString filename,uint32 in_date,uint64 in_size) const
- {
- 	KnownFileList::const_iterator it = m_duplicates.begin();
+ // File_checked_for_headers
 --- src.org/KnownFileList.h
 +++ src/KnownFileList.h
-@@ -46,6 +46,9 @@ public:
+@@ -48,6 +48,9 @@ public:
  	CKnownFile* FindKnownFileByID(const CMD4Hash& hash);
  	bool	IsKnownFile(const CKnownFile* file);
  
@@ -263,7 +261,7 @@
  	uint16 requested;
  	uint32 transferred;
  	uint16 accepted;
-@@ -53,13 +56,19 @@ public:
+@@ -55,7 +58,13 @@ public:
  private:
  	wxMutex	list_mut;
  
@@ -273,17 +271,11 @@
 +	bool 	Init0(bool knownMet);
 +	void	SaveK();
 +	void	SaveC();
- 
- 	CKnownFile* IsOnDuplicates(wxString filename,uint32 in_date,uint64 in_size) const;
- 
- 	typedef std::list<CKnownFile*> KnownFileList;
 +	typedef std::map<CMD4Hash, uint8> CancelledFileMap;
- 	KnownFileList	m_duplicates;
- 	CKnownFileMap	m_map;
 +	CancelledFileMap	m_map_cld;
- };
  
- #endif // KNOWNFILELIST_H
+ 	CKnownFile *IsOnDuplicates(
+ 		const wxString &filename,
 --- src.org/PartFileConvert.cpp
 +++ src/PartFileConvert.cpp
 @@ -397,7 +397,7 @@ int CPartFileConvert::performConvertToeM
@@ -349,7 +341,7 @@
  	void	StopFile(bool bCancel = false);
 --- src.org/SearchListCtrl.cpp
 +++ src/SearchListCtrl.cpp
-@@ -270,6 +270,11 @@ void CSearchListCtrl::UpdateItemColor( l
+@@ -278,6 +278,11 @@ void CSearchListCtrl::UpdateItemColor( l
  				green = 128;
  				blue = 128;
  			}

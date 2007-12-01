@@ -309,7 +309,7 @@
  	int tmp_int = 0;
 +	unsigned long int tmp_paused = 0;
 +	unsigned long int tmp_category = 0;
- 	EC_SEARCH_TYPE search_type;
+ 	EC_SEARCH_TYPE search_type = EC_SEARCH_KAD;
  
  	// Implementation of the deprecated command 'SetIPFilter'.
 @@ -304,10 +315,18 @@ int CamulecmdApp::ProcessCommand(int Cmd
