@@ -91,7 +91,7 @@
 +bool CKnownFileList::Init0(bool knownMet)
 +{
 +	wxString name = knownMet ? wxT("known") : wxT("cancelled");
-+	knownMetCFile file;
++	CFile file;
  	
 -	wxString fullpath = theApp->ConfigDir + wxT("known.met");
 +	wxString fullpath = theApp->ConfigDir + name + wxT(".met");
