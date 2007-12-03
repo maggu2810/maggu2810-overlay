@@ -167,7 +167,7 @@ src_unpack() {
 	cd ${S}
 
 	epatch "${FILESDIR}/disable-version-rebranding.patch"
-	epatch "${FILESDIR}/eac3v2.patch"
+	#epatch "${FILESDIR}/eac3v2.patch"
 
 	# Fix hppa compilation
 	[ "${ARCH}" = "hppa" ] && sed -i -e "s/-O4/-O1/" "${S}/configure"
