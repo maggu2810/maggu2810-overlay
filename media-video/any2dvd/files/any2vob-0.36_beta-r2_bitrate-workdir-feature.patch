@@ -1,0 +1,30 @@
+--- any2vob-0.36_beta-r2.sh	2007-10-17 19:12:58.000000000 -0500
++++ any2vob-0.36_beta3.sh	2007-10-17 19:18:17.000000000 -0500
+@@ -237,6 +237,7 @@
+ --skip_comm=[yes|no]			Skip commercials for MythTV recorded video			(Default: No)
+ --mpegts_allpids=[yes|no]               Encode all PIDs from MPEG-TS capture files      		(Default: No (First PID only))
+ --overscan=[0-100]			Percentage value to pad screen border ('3.5' is a good start)	(Default: None)
++--vid_bitrate=[3000-5000]               Video Bitrate in kbps to encode to (Below 3000 is pretty poor quality and --compress=yes halves this)   (Default: 5000)
+ --encode_args=["..."]			Extra encoding command-line options to pass to Transcode	(Default: None)
+ --preformat=[yes|no]			Force files through Mencoder first before Transcoding		(Default: No)
+ -j [movie_title=file1.avi file2.avi]	Movie title followed by files to join
+@@ -294,6 +295,7 @@
+ 		--mpegts_allpids=yes) shift; MPEGTS_PIDS="yes" ;;
+ 		--mpegts_allpids=no) shift; MPEGTS_PIDS="no" ;;
+ 		--overscan=*) OVERSCAN=`echo $1 | sed 's/=/ /' | awk '{print $2}' | sed 's/%//g'`; shift ;;
++		--vid_bitrate=*) VID_BITRATE=`echo $1 | sed 's/=/ /' | awk '{print $2}' | sed 's/%//g'`; shift ; if [ "$COMPRESS" = "yes" ]; then VID_BITRATE=`perl -le "print int($VID_BITRATE / 2)"` ; fi ;;
+ 		--encode_args=*) ENCODE_ARGS=`echo $1 | awk -F"--encode_args=" '{for(i=1;i<=NF;i++) print $i }' | sed '$!N;s/\n//'`; shift ;;
+ 		--preformat=yes) PREFORMAT_FRC="yes"; shift ;;
+ 		--calc) shift; CALC="yes" ;;
+@@ -360,7 +362,10 @@
+ if [ "$WORKDIR" = "tmp_any2dvd" ] && [ ! -d "tmp_any2dvd" ]; then mkdir tmp_any2dvd; fi
+ if [ ! -d "$WORKDIR" ]; then
+ 	errmsg Error: Directory \""$WORKDIR"\" does not exist!
+-	exit
++        echo -n "Shall I create it for you? (yes/no): "
++        read answer
++        [ "$answer" != "yes" ] && rm "$LOCKFILE" &> /dev/null && exit
++        mkdir -p $WORKDIR
+ fi
+ if [ "$FORMAT" = "ntsc" ]; then
+ 	FPS="29.970"; FPS_CODE="4"; SUB_HEIGHT="480"; HEIGHT="480"

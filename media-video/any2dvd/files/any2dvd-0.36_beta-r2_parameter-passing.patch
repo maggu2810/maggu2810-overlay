@@ -1,0 +1,11 @@
+--- any2dvd-0.36_beta-r2.sh	2007-10-07 15:10:09.000000000 -0500
++++ any2dvd-0.36_beta2.sh	2007-10-17 19:09:47.000000000 -0500
+@@ -608,7 +608,7 @@
+ 			exit
+ 		else
+ 			good Running: "any2vob --workdir=\"$WORKDIR\" --format=$FORMAT --audio_format=$AUD_FMT $ENCODE_ARGS_A2V $OVERSCAN_ARGS $PREFORMAT_FRC_ARGS $SURROUND_ARGS --compress=$COMPRESS --aspect=$ASPECT --pulldown=$PULLDOWN --keep_dts=$KEEP_DTS --preview=$PREVIEW --skip_comm=$SKIP_COMM --mpegts_allpids=$MPEGTS_PIDS $CALC_ARGS $SUB_ARGS $AUD_ARGS $INPUT_ARGS $JOIN_ARGS"
+-			CMD="any2vob --workdir=\"$WORKDIR\" --format=$FORMAT --audio_format=$AUD_FMT $ENCODE_ARGS_A2V $OVERSCAN_ARGS $SURROUND_ARGS --compress=$COMPRESS --aspect=$ASPECT --pulldown=$PULLDOWN --keep_dts=$KEEP_DTS --preview=$PREVIEW --any2dvd=yes --skip_comm=$SKIP_COMM --mpegts_allpids=$MPEGTS_PIDS $CALC_ARGS $SUB_ARGS $AUD_ARGS -i $a2v_file_list $JOIN_ARGS"
++			CMD="any2vob --workdir=\"$WORKDIR\" --format=$FORMAT --audio_format=$AUD_FMT $ENCODE_ARGS_A2V $OVERSCAN_ARGS $PREFORMAT_FRC_ARGS $SURROUND_ARGS --compress=$COMPRESS --aspect=$ASPECT --pulldown=$PULLDOWN --keep_dts=$KEEP_DTS --preview=$PREVIEW --any2dvd=yes --skip_comm=$SKIP_COMM --mpegts_allpids=$MPEGTS_PIDS $CALC_ARGS $SUB_ARGS $AUD_ARGS -i $a2v_file_list $JOIN_ARGS"
+ 			eval $CMD
+ 		fi
+ 	else

@@ -1,0 +1,53 @@
+--- any2dvd-0.36_beta-r2.sh	2007-10-17 19:09:47.000000000 -0500
++++ any2dvd-0.36_beta3.sh	2007-10-17 19:08:56.000000000 -0500
+@@ -68,6 +68,7 @@
+ KEEP_DTS="yes"
+ SKIP_COMM="no"
+ MPEGTS_PIDS="no"
++VID_BITRATE="5000"
+ SUBFONT="arial.ttf"
+ SUBFONTSIZE="18.0"
+ SUBCHARACTERSET="ISO8859-1"
+@@ -191,6 +192,7 @@
+ --skip_comm=[yes|no]			Skip commercials for MythTV recorded video			(Default: No)
+ --mpegts_allpids=[yes|no]		Encode all PIDs from MPEG-TS capture files			(Default: No (First PID only))
+ --overscan=[0-100]			Percentage value to pad screen border ('3.5' is a good start)	(Default: None)
++--vid_bitrate=[3000-5000]		Video Bitrate in kbps to encode to (Below 3000 is pretty poor quality and --compress=yes halves this)	(Default: 5000)
+ --encode_args=["..."]			Extra encoding command-line options to pass to Transcode	(Default: None)
+ --preformat=[yes|no]			Force files through Mencoder first before Transcoding		(Default: No)
+ -j [movie_title=file1.avi file2.avi]	Movie title followed by files to join
+@@ -287,6 +289,8 @@
+ 			--mpegts_allpids=no) shift; MPEGTS_PIDS="no" ;;
+ 			--overscan=*) OVERSCAN=`echo $1 | sed 's/=/ /' | awk '{print $2}' | sed 's/%//g'`
+ 					OVERSCAN_ARGS="--overscan="$OVERSCAN""; shift ;;
++			--vid_bitrate=*) VID_BITRATE=`echo $1 | sed 's/=/ /' | awk '{print $2}' | sed 's/%//g'`
++					VID_BITRATE_ARGS="--vid_bitrate="$VID_BITRATE""; shift ;;
+ 			--encode_args=*) ENCODE_ARGS=`echo $1 | awk -F"--encode_args=" '{for(i=1;i<=NF;i++) print $i }' | sed '$!N;s/\n//'`
+ 					ENCODE_ARGS_A2V="--encode_args=\"$ENCODE_ARGS\""; shift ;;
+ 			--preformat=yes) PREFORMAT_FRC="yes"; PREFORMAT_FRC_ARGS="--preformat=yes"; shift ;;
+@@ -345,9 +349,11 @@
+ [ ! -z "$JMT" ] && FORCE="no"
+ if [ "$WORKDIR" = "tmp_any2dvd" ] && [ ! -d "tmp_any2dvd" ]; then mkdir tmp_any2dvd; fi
+ if [ ! -d "$WORKDIR" ]; then
+-	echo -e "\n\e[31;01m Error:\e[m Directory \""$WORKDIR"\" does not exist!\n"
+-	rm "$LOCKFILE" &> /dev/null
+-	exit
++	echo -e "\n\e[31;01m Warning:\e[m Directory \""$WORKDIR"\" does not exist!\n"
++        echo -n "Shall I create it for you? (yes/no): "
++        read answer
++        [ "$answer" != "yes" ] && rm "$LOCKFILE" &> /dev/null && exit
++        mkdir -p $WORKDIR
+ fi
+ if [ "$FORMAT" = "ntsc" ]; then
+ 	FPS="29.970"; FPS_CODE="4"; HEIGHT="480"; MFPS="30000:1001"; OFPS="30000/1001";	TVSIZE="720x480"
+@@ -607,8 +613,8 @@
+ 			rm "$LOCKFILE" &> /dev/null
+ 			exit
+ 		else
+-			good Running: "any2vob --workdir=\"$WORKDIR\" --format=$FORMAT --audio_format=$AUD_FMT $ENCODE_ARGS_A2V $OVERSCAN_ARGS $PREFORMAT_FRC_ARGS $SURROUND_ARGS --compress=$COMPRESS --aspect=$ASPECT --pulldown=$PULLDOWN --keep_dts=$KEEP_DTS --preview=$PREVIEW --skip_comm=$SKIP_COMM --mpegts_allpids=$MPEGTS_PIDS $CALC_ARGS $SUB_ARGS $AUD_ARGS $INPUT_ARGS $JOIN_ARGS"
+-			CMD="any2vob --workdir=\"$WORKDIR\" --format=$FORMAT --audio_format=$AUD_FMT $ENCODE_ARGS_A2V $OVERSCAN_ARGS $PREFORMAT_FRC_ARGS $SURROUND_ARGS --compress=$COMPRESS --aspect=$ASPECT --pulldown=$PULLDOWN --keep_dts=$KEEP_DTS --preview=$PREVIEW --any2dvd=yes --skip_comm=$SKIP_COMM --mpegts_allpids=$MPEGTS_PIDS $CALC_ARGS $SUB_ARGS $AUD_ARGS -i $a2v_file_list $JOIN_ARGS"
++			good Running: "any2vob --workdir=\"$WORKDIR\" --format=$FORMAT --audio_format=$AUD_FMT $ENCODE_ARGS_A2V $OVERSCAN_ARGS $VID_BITRATE_ARGS $PREFORMAT_FRC_ARGS $SURROUND_ARGS --compress=$COMPRESS --aspect=$ASPECT --pulldown=$PULLDOWN --keep_dts=$KEEP_DTS --preview=$PREVIEW --skip_comm=$SKIP_COMM --mpegts_allpids=$MPEGTS_PIDS $CALC_ARGS $SUB_ARGS $AUD_ARGS $INPUT_ARGS $JOIN_ARGS"
++			CMD="any2vob --workdir=\"$WORKDIR\" --format=$FORMAT --audio_format=$AUD_FMT $ENCODE_ARGS_A2V $OVERSCAN_ARGS $VID_BITRATE_ARGS $PREFORMAT_FRC_ARGS $SURROUND_ARGS --compress=$COMPRESS --aspect=$ASPECT --pulldown=$PULLDOWN --keep_dts=$KEEP_DTS --preview=$PREVIEW --any2dvd=yes --skip_comm=$SKIP_COMM --mpegts_allpids=$MPEGTS_PIDS $CALC_ARGS $SUB_ARGS $AUD_ARGS -i $a2v_file_list $JOIN_ARGS"
+ 			eval $CMD
+ 		fi
+ 	else

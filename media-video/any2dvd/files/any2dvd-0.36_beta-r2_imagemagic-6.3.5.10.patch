@@ -1,0 +1,20 @@
+--- any2dvd-0.36_beta-r2.sh	2007-10-01 00:01:54.000000000 +0200
++++ any2dvd-0.36_beta-patched.sh	2007-10-01 00:16:13.000000000 +0200
+@@ -36,7 +36,7 @@
+ # Required packages:
+ #	GNU Ghostscript Fonts Package			-> ftp://mirror.cs.wisc.edu/pub/mirrors/ghost/fonts/ghostscript-fonts-std-8.11.tar.gz
+ #		Re-compile Imagemagick with Ghostscript font support once installed
+-#		In a terminal type `convert -list type`, if the fonts package is installed correctly, it will show a list of fonts
++#		In a terminal type `convert -list font`, if the fonts package is installed correctly, it will show a list of fonts
+ #	Imagemagick built with Ghostscript font support	-> http://www.imagemagick.org/
+ #
+ ################################################################################################
+@@ -428,7 +428,7 @@ check_tools () {
+ }
+ 
+ fontpath () {
+-	GS_XML=`convert -list type | grep Path: | grep ghostscript | awk '{print $2}'`
++	GS_XML=`convert -list font | grep Path: | grep ghostscript | awk '{print $2}'`
+ 	if [ ! -f "$GS_XML" ] || [ ! -f "`cat $GS_XML | grep glyphs | tail -n1 | cut -d= -f2 | sed 's/\"//g'`" ]; then
+ 		errmsg Error: "GNU-Ghostscript fonts were not found"
+ 		echo " Please install GNU-Ghostscript fonts package found here ftp://mirror.cs.wisc.edu/pub/mirrors/ghost/fonts/"
