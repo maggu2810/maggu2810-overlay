@@ -8,7 +8,7 @@
  
  
  #ifdef HAVE_CONFIG_H
-@@ -154,13 +155,61 @@ CSeekFailureException::CSeekFailureExcep
+@@ -142,13 +143,61 @@ CSeekFailureException::CSeekFailureExcep
  {}
  
  
@@ -72,7 +72,7 @@
  {
  	Open(fileName, mode);
  }
-@@ -174,15 +223,15 @@ CFile::~CFile()
+@@ -162,15 +211,15 @@ CFile::~CFile()
  }
  
  
@@ -93,7 +93,7 @@
  }
  
  
-@@ -207,18 +256,78 @@ bool CFile::Create(const wxString& path,
+@@ -195,18 +244,78 @@ bool CFile::Create(const wxString& path,
  bool CFile::Open(const wxString& fileName, OpenMode mode, int accessMode)
  {
  	MULE_VALIDATE_PARAMS(!fileName.IsEmpty(), wxT("CFile: Cannot open, empty path."));
@@ -174,7 +174,7 @@
  			{
  				flags |= O_WRONLY | O_APPEND;
  				break;
-@@ -239,21 +348,101 @@ bool CFile::Open(const wxString& fileNam
+@@ -227,21 +336,101 @@ bool CFile::Open(const wxString& fileNam
          	break;
  	}
  	
@@ -282,7 +282,7 @@
  }
  
  
-@@ -261,12 +450,49 @@ bool CFile::Close() 
+@@ -249,12 +438,49 @@ bool CFile::Close() 
  {
  	MULE_VALIDATE_STATE(IsOpened(), wxT("CFile: Cannot close closed file."));
  
@@ -335,7 +335,7 @@
  }
  
  
-@@ -274,8 +500,10 @@ bool CFile::Flush()
+@@ -262,8 +488,10 @@ bool CFile::Flush()
  {
  	MULE_VALIDATE_STATE(IsOpened(), wxT("CFile: Cannot flush closed file."));
  	
@@ -346,7 +346,7 @@
  
  	return flushed;	
  }
-@@ -286,12 +514,14 @@ sint64 CFile::doRead(void* buffer, size_
+@@ -274,12 +502,14 @@ sint64 CFile::doRead(void* buffer, size_
  	MULE_VALIDATE_PARAMS(buffer, wxT("CFile: Invalid buffer in read operation."));
  	MULE_VALIDATE_STATE(IsOpened(), wxT("CFile: Cannot read from closed file."));
  	
@@ -361,7 +361,7 @@
  			throw CIOFailureException(wxString(wxT("Error reading from file: ")) + wxSysErrorMsg());
  		} else if ((totalRead + current < count) && Eof()) {
  			// We may fail to read the specified count in a couple
-@@ -303,6 +533,7 @@ sint64 CFile::doRead(void* buffer, size_
+@@ -291,6 +521,7 @@ sint64 CFile::doRead(void* buffer, size_
  		totalRead += current;
  	}
  	
@@ -369,7 +369,7 @@
  	return totalRead;
  }
  
-@@ -312,8 +543,10 @@ sint64 CFile::doWrite(const void* buffer
+@@ -300,8 +531,10 @@ sint64 CFile::doWrite(const void* buffer
  	MULE_VALIDATE_PARAMS(buffer, wxT("CFile: Invalid buffer in write operation."));
  	MULE_VALIDATE_STATE(IsOpened(), wxT("CFile: Cannot write to closed file."));
  
@@ -380,7 +380,7 @@
  	if (result != (sint64)nCount) {
  		throw CIOFailureException(wxString(wxT("Error writing to file: ")) + wxSysErrorMsg());
  	}
-@@ -327,7 +560,9 @@ sint64 CFile::doSeek(sint64 offset) cons
+@@ -315,7 +548,9 @@ sint64 CFile::doSeek(sint64 offset) cons
  	MULE_VALIDATE_STATE(IsOpened(), wxT("Cannot seek on closed file."));
  	MULE_VALIDATE_PARAMS(offset >= 0, wxT("Invalid position, must be positive."));
  	
@@ -390,7 +390,7 @@
  
  	if (result == offset) {
  		return result;
-@@ -343,7 +578,9 @@ uint64 CFile::GetPosition() const
+@@ -331,7 +566,9 @@ uint64 CFile::GetPosition() const
  {
  	MULE_VALIDATE_STATE(IsOpened(), wxT("Cannot get position in closed file."));
  	
@@ -400,7 +400,7 @@
  	if (pos == wxInvalidOffset) {
  		throw CSeekFailureException(wxString(wxT("Failed to retrieve position in file: ")) + wxSysErrorMsg());
  	}
-@@ -357,9 +594,12 @@ uint64 CFile::GetLength() const
+@@ -345,9 +582,12 @@ uint64 CFile::GetLength() const
  	MULE_VALIDATE_STATE(IsOpened(), wxT("CFile: Cannot get length of closed file."));
  
  	STAT_STRUCT buf;
@@ -413,7 +413,7 @@
  	
  	return buf.st_size;
  }
-@@ -384,11 +624,13 @@ bool CFile::SetLength(size_t new_len)
+@@ -372,11 +612,13 @@ bool CFile::SetLength(size_t new_len)
  {
  	MULE_VALIDATE_STATE(IsOpened(), wxT("CFile: Cannot set length when no file is open."));
  
@@ -565,7 +565,7 @@
   * This exception is thrown by CFile if a seek or tell fails.
 --- src.org/PartFile.cpp
 +++ src/PartFile.cpp
-@@ -196,11 +196,11 @@ CPartFile::~CPartFile()
+@@ -198,11 +198,11 @@ CPartFile::~CPartFile()
  	// So we just guess is < 0 on error and > 2 if ok (0 stdin, 1 stdout, 2 stderr)
  	// But, where does this wrong handle comes from?
  	
@@ -579,7 +579,7 @@
  		m_hpartfile.Close();
  		// Update met file (with current directory entry)
  		SavePartFile();			
-@@ -2346,7 +2346,7 @@ void CPartFile::Delete()
+@@ -2343,7 +2343,7 @@ void CPartFile::Delete()
  	// eMule had same problem with lseek error ... and override with a simple 
  	// check for INVALID_HANDLE_VALUE (that, btw, does not exist on linux)
  	// So we just guess is < 0 on error and > 2 if ok (0 stdin, 1 stdout, 2 stderr)
@@ -590,7 +590,7 @@
  
 --- src.org/Preferences.cpp
 +++ src/Preferences.cpp
-@@ -66,6 +66,8 @@ COLORREF		CPreferences::s_colors_ref[cnt
+@@ -68,6 +68,8 @@ COLORREF		CPreferences::s_colors_ref[cnt
  CPreferences::CFGMap	CPreferences::s_CfgList;
  CPreferences::CFGList	CPreferences::s_MiscList;
  
@@ -599,7 +599,7 @@
  
  /* Proxy */
  CProxyData	CPreferences::s_ProxyData;
-@@ -1152,6 +1154,13 @@ void CPreferences::BuildItemList( const 
+@@ -1156,6 +1158,13 @@ void CPreferences::BuildItemList( const 
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/KadNodesUrl"),			s_KadURL, wxT("http://emule-inside.net/nodes.dat") ) );
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/Ed2kServersUrl"),			s_Ed2kURL, wxT("http://ocbmaurice.dyndns.org/pl/slist.pl/server.met?download/server-max.met") ) );
  	
@@ -615,7 +615,7 @@
  	for ( int i = 0; i < cntStatColors; i++ ) {  
 --- src.org/Preferences.h
 +++ src/Preferences.h
-@@ -491,6 +491,9 @@ public:
+@@ -494,6 +494,9 @@ public:
  	// Can't have it return a reference, will need a pointer later.
  	static const CProxyData *GetProxyData()			{ return &s_ProxyData; }
  	
@@ -625,7 +625,7 @@
  	// Hidden files
  	
  	static bool ShareHiddenFiles() { return s_ShareHiddenFiles; }
-@@ -732,6 +735,9 @@ protected:
+@@ -737,6 +740,9 @@ protected:
  	static wxString 	s_CommentFilterString;
  
  	

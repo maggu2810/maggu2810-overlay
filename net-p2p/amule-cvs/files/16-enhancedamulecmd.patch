@@ -88,7 +88,7 @@
  
 --- src.org/ExternalConn.cpp
 +++ src/ExternalConn.cpp
-@@ -563,6 +563,23 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
+@@ -565,6 +565,23 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
  				pfile->SetCategory(hashtag->GetTagByIndexSafe(0)->GetInt());
  				break;
  
@@ -112,7 +112,7 @@
  			default:
  				response = new CECPacket(EC_OP_FAILED);
  				response->AddTag(CECTag(EC_TAG_STRING, wxTRANSLATE("OOPS! OpCode processing error!")));
-@@ -1009,12 +1026,13 @@ CECPacket *ExternalConn::ProcessRequest2
+@@ -1011,12 +1028,13 @@ CECPacket *ExternalConn::ProcessRequest2
  			}
  			break;
  		case EC_OP_ADD_LINK: 
@@ -127,7 +127,7 @@
  					response = new CECPacket(EC_OP_NOOP);
  				} else {
  					// Error messages are printed by the add function.
-@@ -1051,6 +1069,77 @@ CECPacket *ExternalConn::ProcessRequest2
+@@ -1053,6 +1071,77 @@ CECPacket *ExternalConn::ProcessRequest2
  				response = Get_EC_Response_GetDownloadQueue(request, enc_part_map);
  			}
  			break;
@@ -205,7 +205,7 @@
  		case EC_OP_GET_ULOAD_QUEUE:
  			if ( request->GetDetailLevel() == EC_DETAIL_INC_UPDATE ) {
  				response = Get_EC_Response_GetUpQueue(objmap);
-@@ -1080,6 +1169,7 @@ CECPacket *ExternalConn::ProcessRequest2
+@@ -1082,6 +1171,7 @@ CECPacket *ExternalConn::ProcessRequest2
  		case EC_OP_PARTFILE_REHASH:
  		case EC_OP_PARTFILE_FORCECOMPL:
  		case EC_OP_PARTFILE_SET_CAT:
@@ -323,12 +323,12 @@
 +		case CMD_ID_A4AF_THIS_AUTO:
 +		case CMD_ID_A4AF_OTHER:
  			if ( args.IsEmpty() ) {
- 				Show(_("This command requieres an argument. Valid arguments: 'all' or a number.\n"));
+ 				Show(_("This command requires an argument. Valid arguments: 'all' or a number.\n"));
  				return 0;
 -			} else if ( args.Left(3) == wxT("all") ) {
 +			} else if ( CmdId != CMD_ID_RENAME && CmdId != CMD_ID_SET_CAT && CmdId != CMD_ID_A4AF_THIS &&
-+							CmdId != CMD_ID_A4AF_OTHER &&
-+						args.Left(3) == wxT("all") ) {
++					CmdId != CMD_ID_A4AF_OTHER &&
++					args.Left(3) == wxT("all") ) {
  				CECPacket request_all(EC_OP_GET_DLOAD_QUEUE, EC_DETAIL_CMD);
  				const CECPacket *reply_all = SendRecvMsg_v2(&request_all);
  				if (reply_all) {
@@ -489,33 +489,30 @@
  
  	//
  	// TODO: These commands below need implementation and/or rewrite!
-@@ -1034,6 +1131,29 @@ void CamulecmdApp::OnInitCommandSet()
- 	m_commands.AddCommand(wxT("SetDownBWLimit"), CMD_ID_SET_BWLIMIT_DOWN | CMD_DEPRECATED, wxTRANSLATE("Deprecated command, now 'Set BwLimit Down'."),
- 			      wxTRANSLATE("This is a deprecated command, and may be removed in the future.\n"
- 					  "Use 'Set BwLimit Down' instead.\n"), CMD_PARAM_ALWAYS);
-+					  
-+  	m_commands.AddCommand(wxT("Stop"), CMD_ID_STOP, wxTRANSLATE("Stop download."),
-+ 			      wxEmptyString, CMD_PARAM_ALWAYS);
-+  	m_commands.AddCommand(wxT("Rename"), CMD_ID_RENAME, wxTRANSLATE("Rename download."),
-+ 			      wxTRANSLATE("Requires hash and new name"), CMD_PARAM_ALWAYS);
-+  	m_commands.AddCommand(wxT("SetCat"), CMD_ID_SET_CAT, wxTRANSLATE("Change category of a download."),
-+ 			      wxTRANSLATE("Requires hash and category number"), CMD_PARAM_ALWAYS);
-+  	m_commands.AddCommand(wxT("AddEx"), CMD_ID_ADD_EX, wxTRANSLATE("Adds an ed2k link to core."),
-+ 			      wxTRANSLATE("First param should be 1 for adding in paused mode, 0 for normal adding, "
-+ 			      "second param gives the category (0 for default), third param gives the link to be added"), CMD_PARAM_ALWAYS);
-+  	m_commands.AddCommand(wxT("RuntimeInfo"), CMD_ID_RUNTIMEINFO, wxTRANSLATE("Returns runtime information for downloads"),
-+                  wxTRANSLATE("(0 = full, 1 = only runtime, 2 = partial & only runtime) (optional: category number)."),
-+ 			      CMD_PARAM_ALWAYS);
+@@ -1013,6 +1110,26 @@ void CamulecmdApp::OnInitCommandSet()
+ 	DEPRECATED("GetBWLimits", GET_BWLIMITS, "Get BwLimits", NEVER);
+ 	DEPRECATED("SetUpBWLimit", SET_BWLIMIT_UP, "Set BwLimit Up", ALWAYS);
+ 	DEPRECATED("SetDownBWLimit", SET_BWLIMIT_DOWN, "Set BwLimit Down", ALWAYS);
++
++	m_commands.AddCommand(wxT("Stop"), CMD_ID_STOP, wxTRANSLATE("Stop download."),
++		wxEmptyString, CMD_PARAM_ALWAYS);
++	m_commands.AddCommand(wxT("Rename"), CMD_ID_RENAME, wxTRANSLATE("Rename download."),
++		wxTRANSLATE("Requires hash and new name"), CMD_PARAM_ALWAYS);
++	m_commands.AddCommand(wxT("SetCat"), CMD_ID_SET_CAT, wxTRANSLATE("Change category of a download."),
++		wxTRANSLATE("Requires hash and category number"), CMD_PARAM_ALWAYS);
++	m_commands.AddCommand(wxT("AddEx"), CMD_ID_ADD_EX, wxTRANSLATE("Adds an ed2k link to core."),
++		wxTRANSLATE("First param should be 1 for adding in paused mode, 0 for normal adding, "
++ 		"second param gives the category (0 for default), third param gives the link to be added"), CMD_PARAM_ALWAYS);
++	m_commands.AddCommand(wxT("RuntimeInfo"), CMD_ID_RUNTIMEINFO, wxTRANSLATE("Returns runtime information for downloads"),
++		wxTRANSLATE("(0 = full, 1 = only runtime, 2 = partial & only runtime) (optional: category number)."), CMD_PARAM_ALWAYS);
 +	tmp = m_commands.AddCommand(wxT("A4AF"), CMD_ERR_INCOMPLETE, wxTRANSLATE("Starts A4AF special operations."),
-+				    wxTRANSLATE("Swaps A4AF clients to this or to any other file.\n"), CMD_PARAM_ALWAYS);
-+  	tmp->AddCommand(wxT("This"), CMD_ID_A4AF_THIS, wxTRANSLATE("Swaps AFAF clients to this file."),
-+ 			      wxEmptyString, CMD_PARAM_ALWAYS);
-+  	tmp->AddCommand(wxT("ThisAuto"), CMD_ID_A4AF_THIS_AUTO, wxTRANSLATE("Auto-Swaps AFAF clients to this file."),
-+ 			      wxEmptyString, CMD_PARAM_ALWAYS);
-+  	tmp->AddCommand(wxT("Other"), CMD_ID_A4AF_OTHER, wxTRANSLATE("Swaps AFAF clients to any other file."),
-+ 			      wxEmptyString, CMD_PARAM_ALWAYS);
-+
-+
++		wxTRANSLATE("Swaps A4AF clients to this or to any other file.\n"), CMD_PARAM_ALWAYS);
++	tmp->AddCommand(wxT("This"), CMD_ID_A4AF_THIS, wxTRANSLATE("Swaps AFAF clients to this file."),
++		wxEmptyString, CMD_PARAM_ALWAYS);
++	tmp->AddCommand(wxT("ThisAuto"), CMD_ID_A4AF_THIS_AUTO, wxTRANSLATE("Auto-Swaps AFAF clients to this file."),
++		wxEmptyString, CMD_PARAM_ALWAYS);
++	tmp->AddCommand(wxT("Other"), CMD_ID_A4AF_OTHER, wxTRANSLATE("Swaps AFAF clients to any other file."),
++		wxEmptyString, CMD_PARAM_ALWAYS);
  }
  
  int CamulecmdApp::OnRun()

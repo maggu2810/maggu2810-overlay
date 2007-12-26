@@ -79,7 +79,7 @@
      wxStaticText *item21 = new wxStaticText( parent, IDC_LASTSEENCOMPL, _("N/A"), wxDefaultPosition, wxDefaultSize, 0 );
 --- src.org/PartFile.cpp
 +++ src/PartFile.cpp
-@@ -379,7 +379,28 @@ uint8 CPartFile::LoadPartFile(const wxSt
+@@ -376,7 +376,28 @@ uint8 CPartFile::LoadPartFile(const wxSt
  
  		uint32 tagcount = metFile.ReadUInt32();
  
@@ -109,7 +109,7 @@
  			CTag newtag(metFile,true);
  			if (	!getsizeonly ||
  				(getsizeonly && 
-@@ -395,6 +416,13 @@ uint8 CPartFile::LoadPartFile(const wxSt
+@@ -392,6 +413,13 @@ uint8 CPartFile::LoadPartFile(const wxSt
  					}
  					case FT_LASTSEENCOMPLETE: {
  						lastseencomplete = newtag.GetInt();		
@@ -123,7 +123,7 @@
  						break;
  					}
  					case FT_FILESIZE: {
-@@ -743,6 +771,7 @@ bool CPartFile::SavePartFile(bool Initia
+@@ -740,6 +768,7 @@ bool CPartFile::SavePartFile(bool Initia
  		}
  		
  		uint32 lsc = lastseencomplete;
@@ -131,16 +131,16 @@
  
  		if (!Initial) {
  			BackupFile(m_fullname, wxT(".backup"));
-@@ -766,7 +795,7 @@ bool CPartFile::SavePartFile(bool Initia
+@@ -763,7 +792,7 @@ bool CPartFile::SavePartFile(bool Initia
  			file.WriteHash(m_hashlist[x]);
  		}
  		// tags		
 -		#define FIXED_TAGS 15
 +		#define FIXED_TAGS 16
  		uint32 tagcount = m_taglist.size() + FIXED_TAGS + (m_gaplist.size()*2);
- 		if (not m_corrupted_list.empty()) {			
+ 		if (!m_corrupted_list.empty()) {			
  			++tagcount;
-@@ -809,6 +838,7 @@ bool CPartFile::SavePartFile(bool Initia
+@@ -806,6 +835,7 @@ bool CPartFile::SavePartFile(bool Initia
  		}
  
  		CTagInt32( FT_LASTSEENCOMPLETE,	lsc			).WriteTagToFile( &file );	// 7
@@ -148,7 +148,7 @@
  
  		if ( IsAutoUpPriority() ) {
  			CTagInt32( FT_ULPRIORITY,	(uint8)PR_AUTO	).WriteTagToFile( &file );	// 8
-@@ -3628,6 +3658,24 @@ void CPartFile::UpdatePartsFrequency( CU
+@@ -3623,6 +3653,24 @@ void CPartFile::UpdatePartsFrequency( CU
  	}
  	
  	if ( increment ) {
@@ -173,7 +173,7 @@
  		for ( unsigned int i = 0; i < size; i++ ) {
  			if ( freq[i] ) {
  				m_SrcpartFrequency[i]++;
-@@ -3747,6 +3795,7 @@ void CPartFile::Init()
+@@ -3742,6 +3790,7 @@ void CPartFile::Init()
  	completedsize=0;
  	m_bPreviewing = false;
  	lastseencomplete = 0;

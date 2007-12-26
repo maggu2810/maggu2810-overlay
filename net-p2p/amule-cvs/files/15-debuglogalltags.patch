@@ -1,6 +1,6 @@
 --- src.org/PartFile.cpp
 +++ src/PartFile.cpp
-@@ -414,6 +414,7 @@ uint8 CPartFile::LoadPartFile(const wxSt
+@@ -411,6 +411,7 @@ uint8 CPartFile::LoadPartFile(const wxSt
  					 newtag.GetNameID() == FT_FILENAME))) {
  				switch(newtag.GetNameID()) {
  					case FT_FILENAME: {
@@ -8,7 +8,7 @@
  						if (GetFileName().IsEmpty()) {
  							// If it's not empty, we already loaded the unicoded one
  							SetFileName(newtag.GetStr());
-@@ -421,6 +422,7 @@ uint8 CPartFile::LoadPartFile(const wxSt
+@@ -418,6 +419,7 @@ uint8 CPartFile::LoadPartFile(const wxSt
  						break;
  					}
  					case FT_LASTSEENCOMPLETE: {
@@ -16,7 +16,7 @@
  						lastseencomplete = newtag.GetInt();		
  						if (!lastseenpart) {
  							lastseenpart = lastseencomplete;
-@@ -428,23 +430,28 @@ uint8 CPartFile::LoadPartFile(const wxSt
+@@ -425,23 +427,28 @@ uint8 CPartFile::LoadPartFile(const wxSt
  						break;
  					}
  					case FT_LASTSEENPART: {
@@ -36,7 +36,7 @@
  					}
  					case FT_FILETYPE:{
 +						AddDebugLogLineM(false, logPartFile, CFormat( wxT("%s: Tag FTYPE: %s") ) % filename % newtag.GetStr());
- 						#warning needs setfiletype string
+ 						//#warning needs setfiletype string
  						//SetFileType(newtag.GetStr());
  						break;
  					}					
@@ -45,7 +45,7 @@
  						m_category = newtag.GetInt();
  						if (m_category > theApp->glob_prefs->GetCatCount() - 1 ) {
  							m_category = 0;
-@@ -453,6 +460,7 @@ uint8 CPartFile::LoadPartFile(const wxSt
+@@ -450,6 +457,7 @@ uint8 CPartFile::LoadPartFile(const wxSt
  					}
  					case FT_OLDDLPRIORITY:
  					case FT_DLPRIORITY: {
@@ -53,7 +53,7 @@
  						if (!isnewstyle){
  							m_iDownPriority = newtag.GetInt();
  							if( m_iDownPriority == PR_AUTO ){
-@@ -470,12 +478,14 @@ uint8 CPartFile::LoadPartFile(const wxSt
+@@ -467,12 +475,14 @@ uint8 CPartFile::LoadPartFile(const wxSt
  						break;
  					}
  					case FT_STATUS: {
@@ -68,7 +68,7 @@
  						if (!isnewstyle){
  							SetUpPriority(newtag.GetInt(), false);
  							if( GetUpPriority() == PR_AUTO ){
-@@ -488,6 +498,7 @@ uint8 CPartFile::LoadPartFile(const wxSt
+@@ -485,6 +495,7 @@ uint8 CPartFile::LoadPartFile(const wxSt
  						break;
  					}				
  					case FT_KADLASTPUBLISHSRC:{
@@ -76,7 +76,7 @@
  						SetLastPublishTimeKadSrc(newtag.GetInt(), 0);
  						if(GetLastPublishTimeKadSrc() > (uint32)time(NULL)+KADEMLIAREPUBLISHTIMES) {
  							//There may be a posibility of an older client that saved a random number here.. This will check for that..
-@@ -496,6 +507,7 @@ uint8 CPartFile::LoadPartFile(const wxSt
+@@ -493,6 +504,7 @@ uint8 CPartFile::LoadPartFile(const wxSt
  						break;
  					}
  					case FT_KADLASTPUBLISHNOTES:{
@@ -84,7 +84,7 @@
  						SetLastPublishTimeKadNotes(newtag.GetInt());
  						break;
  					}					
-@@ -505,10 +517,12 @@ uint8 CPartFile::LoadPartFile(const wxSt
+@@ -502,10 +514,12 @@ uint8 CPartFile::LoadPartFile(const wxSt
  						break;
  					case FT_DL_ACTIVE_TIME:
  						if (newtag.IsInt()) {
@@ -97,7 +97,7 @@
  						wxASSERT(m_corrupted_list.empty());
  						wxString strCorruptedParts(newtag.GetStr());
  						wxStringTokenizer tokenizer(strCorruptedParts, wxT(","));
-@@ -524,6 +538,7 @@ uint8 CPartFile::LoadPartFile(const wxSt
+@@ -521,6 +535,7 @@ uint8 CPartFile::LoadPartFile(const wxSt
  						break;
  					}
  					case FT_AICH_HASH:{
@@ -105,7 +105,7 @@
  						CAICHHash hash;
  						bool hashSizeOk =
  							hash.DecodeBase32(newtag.GetStr()) == CAICHHash::GetHashSize();
-@@ -534,18 +549,22 @@ uint8 CPartFile::LoadPartFile(const wxSt
+@@ -531,18 +546,22 @@ uint8 CPartFile::LoadPartFile(const wxSt
  						break;
  					}
  					case FT_ATTRANSFERRED:{
@@ -128,7 +128,7 @@
  						statistic.SetAllTimeAccepts(newtag.GetInt());
  						break;
  					}
-@@ -554,6 +573,7 @@ uint8 CPartFile::LoadPartFile(const wxSt
+@@ -551,6 +570,7 @@ uint8 CPartFile::LoadPartFile(const wxSt
  						
  						wxCharBuffer tag_ansi_name = newtag.GetName().ToAscii();
  						char gap_mark = tag_ansi_name ? tag_ansi_name[0u] : 0;
@@ -136,7 +136,7 @@
  						if ( newtag.IsInt() && (newtag.GetName().Length() > 1) &&
  							((gap_mark == FT_GAPSTART) ||
  							 (gap_mark == FT_GAPEND))) {
-@@ -580,6 +600,7 @@ uint8 CPartFile::LoadPartFile(const wxSt
+@@ -577,6 +597,7 @@ uint8 CPartFile::LoadPartFile(const wxSt
  							}
  							// End Changes by Slugfiller for better exception handling
  						} else {
@@ -144,7 +144,7 @@
  							m_taglist.push_back(newtag);
  						}
  					}
-@@ -829,35 +850,52 @@ bool CPartFile::SavePartFile(bool Initia
+@@ -826,35 +847,52 @@ bool CPartFile::SavePartFile(bool Initia
  		
  		// 0 (unicoded part file name) 
  		// We write it with BOM to kep eMule compatibility
@@ -197,7 +197,7 @@
  		CTagInt32(FT_ATACCEPTED,     statistic.GetAllTimeAccepts()).WriteTagToFile( &file );	// 14
  
  		// currupt part infos
-@@ -873,28 +911,34 @@ bool CPartFile::SavePartFile(bool Initia
+@@ -870,28 +908,34 @@ bool CPartFile::SavePartFile(bool Initia
  			}
  			wxASSERT( !strCorruptedParts.IsEmpty() );
  			
@@ -232,7 +232,7 @@
  			m_taglist[j].WriteTagToFile(&file);
  		}
  		
-@@ -906,9 +950,11 @@ bool CPartFile::SavePartFile(bool Initia
+@@ -903,9 +947,11 @@ bool CPartFile::SavePartFile(bool Initia
  			
  			// gap start = first missing byte but gap ends = first non-missing byte
  			// in edonkey but I think its easier to user the real limits

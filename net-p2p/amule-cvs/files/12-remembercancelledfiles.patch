@@ -25,7 +25,7 @@
  			case MP_RESUME:	(*it)->ResumeFile();	break;
 --- src.org/ExternalConn.cpp
 +++ src/ExternalConn.cpp
-@@ -548,7 +548,7 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
+@@ -550,7 +550,7 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
  				if ( thePrefs::StartNextFile() && (pfile->GetStatus() != PS_PAUSED) ) {
  					theApp->downloadqueue->StartNextFile(pfile);
  				}
@@ -82,7 +82,6 @@
  
  bool CKnownFileList::Init()
  {
--	CFile file;
 +	const bool resK = Init0(true);
 +	const bool resC = Init0(false);
 +	return resK && resC;
@@ -91,7 +90,7 @@
 +bool CKnownFileList::Init0(bool knownMet)
 +{
 +	wxString name = knownMet ? wxT("known") : wxT("cancelled");
-+	CFile file;
+ 	CFile file;
  	
 -	wxString fullpath = theApp->ConfigDir + wxT("known.met");
 +	wxString fullpath = theApp->ConfigDir + name + wxT(".met");
@@ -278,7 +277,7 @@
  		const wxString &filename,
 --- src.org/PartFileConvert.cpp
 +++ src/PartFileConvert.cpp
-@@ -397,7 +397,7 @@ int CPartFileConvert::performConvertToeM
+@@ -394,7 +394,7 @@ int CPartFileConvert::performConvertToeM
  			AddDebugLogLineM(true, logPfConvert, wxT("IO error while converting partfiles: ") + e.what());
  			
  			delete[] ba;
@@ -287,7 +286,7 @@
  			return CONV_IOERROR;
  		}
  		
-@@ -445,7 +445,7 @@ int CPartFileConvert::performConvertToeM
+@@ -442,7 +442,7 @@ int CPartFileConvert::performConvertToeM
  			ret = wxCopyFile(oldfile, newfilename.Left(newfilename.Length() - 4), false);
  		}
  		if (!ret) {
@@ -296,7 +295,7 @@
  			//delete file;
  			return CONV_FAILED;
  		}
-@@ -467,7 +467,7 @@ int CPartFileConvert::performConvertToeM
+@@ -464,7 +464,7 @@ int CPartFileConvert::performConvertToeM
  
  	if (!file->LoadPartFile(thePrefs::GetTempDir(), file->GetPartMetFileName(), false)) {
  		//delete file;
@@ -307,7 +306,7 @@
  
 --- src.org/PartFile.cpp
 +++ src/PartFile.cpp
-@@ -2344,7 +2344,7 @@ void  CPartFile::RemoveAllSources(bool b
+@@ -2341,7 +2341,7 @@ void  CPartFile::RemoveAllSources(bool b
  }
  
  
@@ -316,7 +315,7 @@
  {
  	AddLogLineM(false, CFormat(_("Deleting file: %s")) % GetFileName());
  	// Barry - Need to tell any connected clients to stop sending the file
-@@ -2400,6 +2400,11 @@ void CPartFile::Delete()
+@@ -2397,6 +2397,11 @@ void CPartFile::Delete()
  		}
  	}
  

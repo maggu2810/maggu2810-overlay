@@ -1,7 +1,7 @@
 --- src.org/DownloadQueue.cpp
 +++ src/DownloadQueue.cpp
 @@ -32,6 +32,8 @@
- #include <include/common/Constants.h>
+ #include <common/Constants.h>
  
  #include <wx/textfile.h>	// Needed for wxTextFile
 +#include <wx/wfstream.h>	// Needed for wxFileInputStream
@@ -33,7 +33,7 @@
 @@ -214,7 +230,7 @@ void CDownloadQueue::LoadSourceSeeds()
  }
  
- #warning We must add the sources, review CSearchFile constructor.
+ //#warning We must add the sources, review CSearchFile constructor.
 -void CDownloadQueue::AddSearchToDownload(CSearchFile* toadd, uint8 category)
 +void CDownloadQueue::AddSearchToDownload(CSearchFile* toadd, uint8 category, bool forcePaused)
  {
@@ -515,7 +515,7 @@
  	 */
 --- src.org/ECSpecialMuleTags.cpp
 +++ src/ECSpecialMuleTags.cpp
-@@ -459,6 +459,12 @@ void CEC_Prefs_Packet::Apply()
+@@ -462,6 +462,12 @@ void CEC_Prefs_Packet::Apply()
  		if ((oneTag = thisTab->GetTagByName(EC_TAG_FILES_MIN_FREE_SPACE)) != NULL) {
  			thePrefs::SetMinFreeDiskSpace(oneTag->GetInt());
  		}
@@ -574,7 +574,7 @@
  public final static short 		EC_TAG_SRCDROP_DROP_FQS                   = 0x1902;
 --- src.org/Preferences.cpp
 +++ src/Preferences.cpp
-@@ -72,6 +72,15 @@ uint16		CPreferences::s_DFOMaxOpenFiles;
+@@ -74,6 +74,15 @@ uint16		CPreferences::s_DFOMaxOpenFiles;
  /* Proxy */
  CProxyData	CPreferences::s_ProxyData;
  
@@ -590,7 +590,7 @@
  /* The rest, organize it! */
  wxString	CPreferences::s_nick;
  uint16		CPreferences::s_maxupload;
-@@ -1118,7 +1127,20 @@ void CPreferences::BuildItemList( const 
+@@ -1122,7 +1131,20 @@ void CPreferences::BuildItemList( const 
  	 * Version check
  	 **/
  	 NewCfgItem(IDC_NEWVERSION,	(new Cfg_Bool( wxT("/eMule/NewVersionCheck"), s_NewVersionCheck, false )));
@@ -614,7 +614,7 @@
  	  **/
 --- src.org/Preferences.h
 +++ src/Preferences.h
-@@ -504,6 +504,26 @@ public:
+@@ -507,6 +507,26 @@ public:
  	
  	static bool CheckNewVersion() { return s_NewVersionCheck; }
  
@@ -641,7 +641,7 @@
  	// Networks
  	static bool GetNetworkKademlia()		{ return s_ConnectToKad; }
  	static void SetNetworkKademlia(bool val)	{ s_ConnectToKad = val; }
-@@ -746,6 +766,15 @@ protected:
+@@ -751,6 +771,15 @@ protected:
  	// Version check
  	static bool s_NewVersionCheck;
  	

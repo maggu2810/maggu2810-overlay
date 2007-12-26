@@ -84,7 +84,7 @@
  	void	OnSetCategory( wxCommandEvent& event );	
 --- src.org/ExternalConn.cpp
 +++ src/ExternalConn.cpp
-@@ -551,6 +551,14 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
+@@ -553,6 +553,14 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
  				pfile->Delete();
  				break;
  
@@ -99,7 +99,7 @@
  			case EC_OP_PARTFILE_SET_CAT:
  				pfile->SetCategory(hashtag->GetTagByIndexSafe(0)->GetInt());
  				break;
-@@ -1069,6 +1077,8 @@ CECPacket *ExternalConn::ProcessRequest2
+@@ -1071,6 +1079,8 @@ CECPacket *ExternalConn::ProcessRequest2
  		case EC_OP_PARTFILE_STOP:
  		case EC_OP_PARTFILE_PRIO_SET:
  		case EC_OP_PARTFILE_DELETE:
@@ -221,7 +221,7 @@
  public final static byte EC_OP_ULOAD_QUEUE                   = 0x20;
 --- src.org/PartFile.cpp
 +++ src/PartFile.cpp
-@@ -2205,6 +2205,22 @@ void CPartFile::RemoveAllRequestedBlocks
+@@ -2202,6 +2202,22 @@ void CPartFile::RemoveAllRequestedBlocks
  }
  
  
@@ -274,7 +274,7 @@
 +		case CMD_ID_FORCECOMPL:
  		case CMD_ID_RESUME:
  			if ( args.IsEmpty() ) {
- 				Show(_("This command requieres an argument. Valid arguments: 'all' or a number.\n"));
+ 				Show(_("This command requires an argument. Valid arguments: 'all' or a number.\n"));
 @@ -310,6 +314,10 @@ int CamulecmdApp::ProcessCommand(int Cmd
  							request = new CECPacket(EC_OP_PARTFILE_PAUSE); break;
  						case CMD_ID_CANCEL:

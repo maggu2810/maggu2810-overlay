@@ -1,7 +1,7 @@
 --- src.org/PartFile.cpp
 +++ src/PartFile.cpp
-@@ -261,6 +261,9 @@ void CPartFile::CreatePartFile()
- 		#warning Code for full file alloc - should be done on thread.
+@@ -263,6 +263,9 @@ void CPartFile::CreatePartFile()
+ 		//#warning Code for full file alloc - should be done on thread.
  	}
  	
 +	// create whole file as sparse
