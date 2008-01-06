@@ -1,4 +1,4 @@
-# Copyright 1999-2007 Gentoo Foundation
+# Copyright 1999-2008 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -7,13 +7,13 @@ inherit eutils flag-o-matic subversion
 RESTRICT="nostrip"
 IUSE="X 3dfx 3dnow 3dnowext a52 aac aalib alsa altivec amrnb amrwb arts ass
 	bidi bindist bl cddb cdparanoia color-console cpudetection custom-cflags
-	debug dga doc dvb directfb dvd dv dvdnav dvdread enca encode esd
+	debug dga doc dvb directfb dts dvd dv dvdnav dvdread eac3 enca encode esd
 	fbcon fpm ftp gif ggi gtk i8x0 ipv6 ivtv jack joystick jpeg
 	ladspa libcaca lirc live livecd lzo matrox mga mmx mmxext mp2 mp3 mpeg
 	musepack nas nls nut nvidia openal opengl oss png pnm pulseaudio quicktime
 	radio rar real rtc samba sdl sortsub speex sse sse2 svga tga theora tivo
-	truetype unicode v4l v4l2 vorbis win32codecs x264 xanim xinerama xmga xv
-	xvid xvmc zoran darknrg"
+	truehd truetype unicode v4l v4l2 vorbis win32codecs x264 xanim xinerama 
+	xmga xv xvid xvmc zoran darknrg"
 
 LANGS="bg cs de da el en es fr hu ja ko mk nl no pl pt_BR ro ru sk tr uk zh_CN zh_TW"
 
@@ -46,6 +46,7 @@ RDEPEND="sys-libs/ncurses
 	cdparanoia? ( media-sound/cdparanoia )
 	dga? ( x11-libs/libXxf86dga )
 	directfb? ( dev-libs/DirectFB )
+	dts? ( || ( media-libs/libdca media-libs/libdts ) )
 	dvb? ( media-tv/linuxtv-dvb-headers )
 	dvdnav? ( media-libs/libdvdnav )
 	dvdread? ( media-libs/libdvdread )
@@ -127,7 +128,7 @@ DEPEND="${RDEPEND}
 
 SLOT="0"
 LICENSE="GPL-2"
-KEYWORDS=""
+KEYWORDS="~amd64 ~x86 ~sparc"
 
 pkg_setup() {
 	if use real && use x86 ; then
@@ -148,7 +149,7 @@ src_unpack() {
 
 	subversion_src_unpack
 
-	cd ${WORKDIR}
+	cd "${WORKDIR}"
 	if ! use truetype || ! use unicode ; then
 		unpack font-arial-iso-8859-1.tar.bz2 \
 			   font-arial-iso-8859-2.tar.bz2 \
@@ -162,12 +163,26 @@ src_unpack() {
 	# For Version Branding
 	cd "${ESVN_STORE_DIR}/${ESVN_CO_DIR}/${ESVN_PROJECT}/${ESVN_REPO_URI##*/}"
 	./version.sh
-	mv version.h ${S}
+	mv version.h "${S}"
 
-	cd ${S}
+	cd "${S}"
 
 	epatch "${FILESDIR}/disable-version-rebranding.patch"
-	#epatch "${FILESDIR}/eac3v2.patch"
+
+	# eac3 patches from the GSoC project 
+	if use eac3
+	then
+		cd "${WORKDIR}"
+		echo "Fetching eac3 sources..."
+		svn co svn://svn.mplayerhq.hu/soc/eac3 eac3
+		cd "${S}"
+		echo "Applying eac3 patches..."
+		epatch "${WORKDIR}/eac3/ffmpeg.patch"
+		cp ../eac3/*.{h,c} ./libavcodec/
+	fi
+
+	# MLP/TrueHD decoder patch from Ian Caulfield (FFmpeg-devel ML)
+	use truehd && epatch "${FILESDIR}/truehd-20071218.patch"
 
 	# Fix hppa compilation
 	[ "${ARCH}" = "hppa" ] && sed -i -e "s/-O4/-O1/" "${S}/configure"
@@ -180,17 +195,18 @@ src_unpack() {
 		einfo " to actually use this)"
 		echo
 
-		mv ${WORKDIR}/svgalib_helper ${S}/libdha
+		mv "${WORKDIR}/svgalib_helper" "${S}/libdha"
 	fi
 
 	# Remove kernel-2.6 workaround as the problem it works around is
 	# fixed, and the workaround breaks sparc
 	use sparc && sed -i 's:#define __KERNEL__::' osdep/kerneltwosix.h
 
+	use darknrg && epatch ${FILESDIR}/darknrg.patch
+
 	# minor fix
 	sed -i -e "s:-O4:-O4 -D__STDC_LIMIT_MACROS:" configure
 
-	use darknrg && epatch ${FILESDIR}/darknrg.patch
 }
 
 src_compile() {
@@ -275,7 +291,7 @@ src_compile() {
 	use live || myconf="${myconf} --disable-live"
 	myconf="${myconf} $(use_enable radio) $(use_enable radio radio-capture)"
 	use radio && use v4l2 || myconf="${myconf} --disable-radio-v4l2"
-	myconf="${myconf} $(use_enable rar unrarlib)"
+	myconf="${myconf} $(use_enable rar unrarexec)"
 	myconf="${myconf} $(use_enable rtc)"
 	myconf="${myconf} $(use_enable samba smb)"
 	myconf="${myconf} $(use_enable truetype freetype)"
@@ -306,6 +322,7 @@ src_compile() {
 	use a52 || myconf="${myconf} --disable-liba52"
 	use amrnb || myconf="${myconf} --disable-libamr_nb"
 	use amrwb || myconf="${myconf} --disable-libamr_wb"
+	use dts || myconf="${myconf} --disable-libdca"
 	! use png && ! use gtk && myconf="${myconf} --disable-png"
 	use lzo || myconf="${myconf} --disable-liblzo"
 	use mpeg || myconf="${myconf} --disable-libmpeg2"
@@ -500,7 +517,7 @@ src_install() {
 		 install || die "Failed to install MPlayer!"
 	einfo "Make install completed"
 
-	dodoc AUTHORS ChangeLog README
+	dodoc AUTHORS Changelog README
 	# Install the documentation; DOCS is all mixed up not just html
 	if use doc ; then
 		find "${S}/DOCS" -type d | xargs -- chmod 0755
@@ -517,16 +534,16 @@ src_install() {
 	# Install the default Skin and Gnome menu entry
 	if use gtk; then
 		dodir /usr/share/mplayer/skins
-		cp -r ${WORKDIR}/productive ${D}/usr/share/mplayer/skins/default || die
+		cp -r "${WORKDIR}/productive" "${D}"/usr/share/mplayer/skins/default || die
 
 		# Fix the symlink
-		rm -rf ${D}/usr/bin/gmplayer
+		rm -rf "${D}"/usr/bin/gmplayer
 		dosym mplayer /usr/bin/gmplayer
 
 		insinto /usr/share/pixmaps
-		newins ${S}/Gui/mplayer/pixmaps/logo.xpm mplayer.xpm
+		newins "${S}"/gui/mplayer/pixmaps/logo.xpm mplayer.xpm
 		insinto /usr/share/applications
-		doins ${FILESDIR}/mplayer.desktop
+		doins "${FILESDIR}/mplayer.desktop"
 	fi
 
 	if ! use truetype || ! use unicode; then
@@ -536,15 +553,15 @@ src_install() {
 		# of their zips ...
 		for x in $(find ${WORKDIR}/ -type d -name 'font-arial-*')
 		do
-			cp -pPR ${x} ${D}/usr/share/mplayer/fonts
+			cp -pPR ${x} "${D}"/usr/share/mplayer/fonts
 		done
 		# Fix the font symlink ...
-		rm -rf ${D}/usr/share/mplayer/font
+		rm -rf "${D}"/usr/share/mplayer/font
 		dosym fonts/font-arial-14-iso-8859-1 /usr/share/mplayer/font
 	fi
 
 	insinto /etc
-	newins ${S}/etc/example.conf mplayer.conf
+	newins "${S}"/etc/example.conf mplayer.conf
 	dosed -e 's/include =/#include =/' /etc/mplayer.conf
 	dosed -e 's/fs=yes/fs=no/' /etc/mplayer.conf
 	if use truetype && use unicode ; then
@@ -557,20 +574,24 @@ EOT
 	dosym ../../../etc/mplayer.conf /usr/share/mplayer/mplayer.conf
 
 	#mv the midentify script to /usr/bin
-	cp ${D}/usr/share/doc/${PF}/TOOLS/midentify ${D}/usr/bin
-	chmod a+x ${D}/usr/bin/midentify
+	cp "${D}"/usr/share/doc/${PF}/TOOLS/midentify "${D}"/usr/bin
+	chmod a+x "${D}"/usr/bin/midentify
 
 	insinto /usr/share/mplayer
-	doins ${S}/etc/codecs.conf
-	doins ${S}/etc/input.conf
-	doins ${S}/etc/menu.conf
+	doins "${S}"/etc/codecs.conf
+	doins "${S}"/etc/input.conf
+	doins "${S}"/etc/menu.conf
+
+	# add codec configuration for eac3
+	use eac3 && cat "${FILESDIR}/eac3-id.conf" >> "${D}"/usr/share/mplayer/codecs.conf
+
 }
 
 pkg_preinst() {
 
 	if [ -d "${ROOT}/usr/share/mplayer/skins/default" ]
 	then
-		rm -rf ${ROOT}/usr/share/mplayer/skins/default
+		rm -rf "${ROOT}"/usr/share/mplayer/skins/default
 	fi
 }
 
@@ -603,15 +624,15 @@ pkg_postinst() {
 pkg_postrm() {
 
 	# Cleanup stale symlinks
-	if [ -L ${ROOT}/usr/share/mplayer/font -a \
-	     ! -e ${ROOT}/usr/share/mplayer/font ]
+	if [ -L "${ROOT}"/usr/share/mplayer/font -a \
+	     ! -e "${ROOT}"/usr/share/mplayer/font ]
 	then
-		rm -f ${ROOT}/usr/share/mplayer/font
+		rm -f "${ROOT}"/usr/share/mplayer/font
 	fi
 
-	if [ -L ${ROOT}/usr/share/mplayer/subfont.ttf -a \
-	     ! -e ${ROOT}/usr/share/mplayer/subfont.ttf ]
+	if [ -L "${ROOT}"/usr/share/mplayer/subfont.ttf -a \
+	     ! -e "${ROOT}"/usr/share/mplayer/subfont.ttf ]
 	then
-		rm -f ${ROOT}/usr/share/mplayer/subfont.ttf
+		rm -f "${ROOT}"/usr/share/mplayer/subfont.ttf
 	fi
 }
