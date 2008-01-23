@@ -32,7 +32,6 @@ COMMONDEP="
 	sys-apps/grep
 	sys-apps/sed
 
-	sys-apps/mktemp
 	>=app-portage/eix-0.10.0
 	sys-apps/diffutils
 	app-misc/colordiff
