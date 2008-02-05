@@ -338,20 +338,68 @@
                                                  default: wxASSERT(0);
                                          }
  
-@@ -383,6 +406,12 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -346,8 +369,8 @@ int CamulecmdApp::ProcessCommand(int Cmd
+ 	                                                	if (tag) {
+ 	                                                        	request->AddTag(CECTag(EC_TAG_PARTFILE, tag->GetMD4Data()));
+ 	                                                	}
+-								break;
+ 							}
++							break;
+ 	                                        } else if ( hash.Decode(token.Trim(false).Trim(true)) ) {
+ 							if ( !hash.IsEmpty() ) {
+ 								Show(_("Processing by hash: "+token+wxT("\n")));
+@@ -383,6 +406,50 @@ int CamulecmdApp::ProcessCommand(int Cmd
  			break;
  		}
  
-+		case CMD_ID_RENAME:
++		case CMD_ID_RENAME: {
++			if (args.Find(' ') == -1) {
++				Show(_("This command requires two arguments\n"));
++				return CMD_ERR_INVALID_ARG;
++			}
++			CMD4Hash hash;
++			if (!hash.Decode(args.BeforeFirst(' ').Trim(false).Trim(true))) {
++				Show(_("Not a valid hash (length should be exactly 32 chars)\n"));
++				return CMD_ERR_INVALID_ARG;
++			}
++
++			request = new CECPacket(EC_OP_PARTFILE_RENAME);
++			CECTag hashtag(EC_TAG_PARTFILE, hash);
++			hashtag.AddTag(CECTag(EC_TAG_PARTFILE_NAME, args.AfterFirst(' ')));
++
++			request->AddTag(hashtag);
++			request_list.push_back(request);
++			break;
++		}
 +		case CMD_ID_SET_CAT: {
-+			//TODO
++			if (args.Find(' ') == -1) {
++				Show(_("This command requires two arguments\n"));
++				return CMD_ERR_INVALID_ARG;
++			}
++			CMD4Hash hash;
++			if (!hash.Decode(args.BeforeFirst(' ').Trim(false).Trim(true))) {
++				Show(_("Not a valid hash (length should be exactly 32 chars)\n"));
++				return CMD_ERR_INVALID_ARG;
++			}
++			unsigned long nr;
++			if (!args.AfterFirst(' ').ToULong(&nr)) {
++				Show(_("Not a valid number\n"));
++				return CMD_ERR_INVALID_ARG;
++			}
++
++			request = new CECPacket(EC_OP_PARTFILE_SET_CAT);
++			CECTag hashtag(EC_TAG_PARTFILE, hash);
++			hashtag.AddTag(CECTag(EC_TAG_PARTFILE_CAT, (uint32) nr));
++
++			request->AddTag(hashtag);
++			request_list.push_back(request);
 +			break;
 +		}
 +
  		case CMD_ID_PRIORITY_LOW:
  		case CMD_ID_PRIORITY_NORMAL:
  		case CMD_ID_PRIORITY_HIGH:
-@@ -432,6 +461,36 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -432,6 +499,36 @@ int CamulecmdApp::ProcessCommand(int Cmd
  			request_list.push_back(new CECPacket(EC_OP_GET_DLOAD_QUEUE));
  			break;
  
@@ -388,7 +436,7 @@
  		case CMD_ID_SHOW_LOG:
  			request_list.push_back(new CECPacket(EC_OP_GET_LOG));
  			break;
-@@ -444,17 +503,29 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -444,17 +541,29 @@ int CamulecmdApp::ProcessCommand(int Cmd
  			request_list.push_back(new CECPacket(EC_OP_RESET_LOG));
  			break;
  
@@ -421,7 +469,7 @@
  
  		case CMD_ID_SET_BWLIMIT_UP:
  			tmp_int = EC_TAG_CONN_MAX_UL - EC_TAG_CONN_MAX_DL;
-@@ -562,6 +633,10 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -562,6 +671,10 @@ int CamulecmdApp::ProcessCommand(int Cmd
  			request_list.push_back(new CECPacket(EC_OP_SEARCH_PROGRESS));
  			break;
  
@@ -432,7 +480,7 @@
  		case CMD_ID_DOWNLOAD:
  			if (!args.IsEmpty()) 
  			{	
-@@ -572,7 +647,7 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -572,7 +685,7 @@ int CamulecmdApp::ProcessCommand(int Cmd
  					printf("Download File: %lu %s\n", id, (const char*)unicode2char(file->sFileName));
  					request = new CECPacket(EC_OP_DOWNLOAD_SEARCH_RESULT);
  					// get with id the hash and category=0
@@ -441,7 +489,7 @@
  					CECTag hashtag(EC_TAG_PARTFILE, file->nHash);
  					hashtag.AddTag(CECTag(EC_TAG_PARTFILE_CAT, category));
  					request->AddTag(hashtag);
-@@ -977,6 +1052,9 @@ void CamulecmdApp::OnInitCommandSet()
+@@ -977,6 +1090,9 @@ void CamulecmdApp::OnInitCommandSet()
  			      wxTRANSLATE("The number of a file from the last search has to be given.\n"
  					  "Example: 'download 12' will start to download the file with the number 12 of the previous search.\n"), CMD_PARAM_ALWAYS);
  
@@ -451,7 +499,7 @@
  
  	//
  	// TODO: These commands below need implementation and/or rewrite!
-@@ -1032,6 +1110,26 @@ void CamulecmdApp::OnInitCommandSet()
+@@ -1032,6 +1148,26 @@ void CamulecmdApp::OnInitCommandSet()
  	DEPRECATED("GetBWLimits", GET_BWLIMITS, "Get BwLimits", NEVER);
  	DEPRECATED("SetUpBWLimit", SET_BWLIMIT_UP, "Set BwLimit Up", ALWAYS);
  	DEPRECATED("SetDownBWLimit", SET_BWLIMIT_DOWN, "Set BwLimit Down", ALWAYS);
