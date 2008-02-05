@@ -13,7 +13,7 @@
 +				break;
 +			}
 +			CPartFile* file = (*it)->GetFile();
-+			question += file->GetFileName() + wxT("\n");
++			question += file->GetFileName().GetPrintable() + wxT("\n");
 +		}
  		if (wxMessageBox( question, _("Cancel"), wxICON_QUESTION | wxYES_NO, this) == wxYES) {
  			for (ItemList::iterator it = files.begin(); it != files.end(); ++it) {

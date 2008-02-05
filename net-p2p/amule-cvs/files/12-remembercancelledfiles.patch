@@ -1,6 +1,6 @@
 --- src.org/amule-remote-gui.h
 +++ src/amule-remote-gui.h
-@@ -570,6 +570,11 @@ public:
+@@ -579,6 +579,11 @@ public:
  		return m_shared_files->GetByID(id); 
  	}
  
@@ -14,7 +14,7 @@
  	uint16 accepted;
 --- src.org/DownloadQueue.cpp
 +++ src/DownloadQueue.cpp
-@@ -1392,7 +1392,7 @@ void CDownloadQueue::SetCatStatus(uint8 
+@@ -1401,7 +1401,7 @@ void CDownloadQueue::SetCatStatus(uint8 
  		
  	for ( ; it != files.end(); it++ ) {
  		switch ( newstatus ) {
@@ -25,7 +25,7 @@
  			case MP_RESUME:	(*it)->ResumeFile();	break;
 --- src.org/ExternalConn.cpp
 +++ src/ExternalConn.cpp
-@@ -550,7 +550,7 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
+@@ -559,7 +559,7 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
  				if ( thePrefs::StartNextFile() && (pfile->GetStatus() != PS_PAUSED) ) {
  					theApp->downloadqueue->StartNextFile(pfile);
  				}
@@ -47,7 +47,7 @@
  	void PartFile_Rehash(CPartFile* file)
 --- src.org/KnownFile.cpp
 +++ src/KnownFile.cpp
-@@ -630,6 +630,17 @@ bool CKnownFile::LoadFromFile(const CFil
+@@ -628,6 +628,17 @@ bool CKnownFile::LoadFromFile(const CFil
  }
  
  
@@ -67,15 +67,15 @@
  	wxCHECK(!IsPartFile(), false);
 --- src.org/KnownFile.h
 +++ src/KnownFile.h
-@@ -311,6 +311,8 @@ public:
+@@ -305,6 +305,8 @@ public:
+ 	static void CreateHashFromHashlist(const ArrayOfCMD4Hash& hashes, CMD4Hash* Output);
  	
  	void	ClearPriority();
- 	
++
 +	bool LoadFromCancelledMet(const CFileDataIO* file);
-+	
+ 	
+ 	time_t	m_lastDateChanged;
  protected:
- 	bool	LoadTagsFromFile(const CFileDataIO* file);
- 	bool	LoadDateFromFile(const CFileDataIO* file);
 --- src.org/KnownFileList.cpp
 +++ src/KnownFileList.cpp
 @@ -66,49 +66,57 @@ CKnownFileList::~CKnownFileList()
@@ -92,9 +92,9 @@
 +	wxString name = knownMet ? wxT("known") : wxT("cancelled");
  	CFile file;
  	
--	wxString fullpath = theApp->ConfigDir + wxT("known.met");
-+	wxString fullpath = theApp->ConfigDir + name + wxT(".met");
- 	if (!wxFileExists(fullpath)) {
+-	CPath fullpath = CPath(theApp->ConfigDir + wxT("known.met"));
++	CPath fullpath = CPath(theApp->ConfigDir + name + wxT(".met"));
+ 	if (!fullpath.FileExists()) {
 -		AddLogLineM(true, _("Warning: known.met does not exist."));
 +		AddLogLineM(true, _("Warning: ") + name + _(".met does not exist."));
  		return false;
@@ -126,9 +126,9 @@
 -			if (record->LoadFromFile(&file)) {
 +			if (knownMet ? record->LoadFromFile(&file) : record->LoadFromCancelledMet(&file)) {
  				AddDebugLogLineM(false, logKnownFiles,
--					wxT("Known file read: ") + record->GetFileName());
+-					CFormat(wxT("Known file read: %s")) % record->GetFileName());
 -				Append(record.release());
-+					name + wxT(" file read: ") + record->GetFileName());
++					CFormat(name + wxT(" file read: %s")) % record->GetFileName());
 +				if (knownMet) AppendK(record.release()); else AppendC(record.release());
  			} else {
  				AddLogLineM(true,
@@ -250,7 +250,7 @@
  // File_checked_for_headers
 --- src.org/KnownFileList.h
 +++ src/KnownFileList.h
-@@ -48,6 +48,9 @@ public:
+@@ -49,6 +49,9 @@ public:
  	CKnownFile* FindKnownFileByID(const CMD4Hash& hash);
  	bool	IsKnownFile(const CKnownFile* file);
  
@@ -260,7 +260,7 @@
  	uint16 requested;
  	uint32 transferred;
  	uint16 accepted;
-@@ -55,7 +58,13 @@ public:
+@@ -56,7 +59,13 @@ public:
  private:
  	wxMutex	list_mut;
  
@@ -274,10 +274,10 @@
 +	CancelledFileMap	m_map_cld;
  
  	CKnownFile *IsOnDuplicates(
- 		const wxString &filename,
+ 		const CPath& filename,
 --- src.org/PartFileConvert.cpp
 +++ src/PartFileConvert.cpp
-@@ -394,7 +394,7 @@ int CPartFileConvert::performConvertToeM
+@@ -391,7 +391,7 @@ int CPartFileConvert::performConvertToeM
  			AddDebugLogLineM(true, logPfConvert, wxT("IO error while converting partfiles: ") + e.what());
  			
  			delete[] ba;
@@ -286,8 +286,8 @@
  			return CONV_IOERROR;
  		}
  		
-@@ -442,7 +442,7 @@ int CPartFileConvert::performConvertToeM
- 			ret = wxCopyFile(oldfile, newfilename.Left(newfilename.Length() - 4), false);
+@@ -437,7 +437,7 @@ int CPartFileConvert::performConvertToeM
+ 			ret = CPath::CloneFile(oldfile, newfilename, false);
  		}
  		if (!ret) {
 -			file->Delete();
@@ -295,9 +295,9 @@
  			//delete file;
  			return CONV_FAILED;
  		}
-@@ -464,7 +464,7 @@ int CPartFileConvert::performConvertToeM
+@@ -459,7 +459,7 @@ int CPartFileConvert::performConvertToeM
  
- 	if (!file->LoadPartFile(thePrefs::GetTempDir(), file->GetPartMetFileName(), false)) {
+ 	if (!file->LoadPartFile(CPath(thePrefs::GetTempDir()), file->GetPartMetFileName(), false)) {
  		//delete file;
 -		file->Delete();
 +		file->Delete(false);
@@ -306,7 +306,7 @@
  
 --- src.org/PartFile.cpp
 +++ src/PartFile.cpp
-@@ -2341,7 +2341,7 @@ void  CPartFile::RemoveAllSources(bool b
+@@ -2343,7 +2343,7 @@ void  CPartFile::RemoveAllSources(bool b
  }
  
  
@@ -315,7 +315,7 @@
  {
  	AddLogLineM(false, CFormat(_("Deleting file: %s")) % GetFileName());
  	// Barry - Need to tell any connected clients to stop sending the file
-@@ -2397,6 +2397,11 @@ void CPartFile::Delete()
+@@ -2396,6 +2396,11 @@ void CPartFile::Delete()
  		}
  	}
  
@@ -329,7 +329,7 @@
  	delete this;
 --- src.org/PartFile.h
 +++ src/PartFile.h
-@@ -165,7 +165,7 @@ public:
+@@ -184,7 +184,7 @@ public:
  
  	void	RemoveBlockFromList(uint64 start,uint64 end);
  	void	RemoveAllSources(bool bTryToSwap);
@@ -340,7 +340,7 @@
  	void	StopFile(bool bCancel = false);
 --- src.org/SearchListCtrl.cpp
 +++ src/SearchListCtrl.cpp
-@@ -278,6 +278,11 @@ void CSearchListCtrl::UpdateItemColor( l
+@@ -280,6 +280,11 @@ void CSearchListCtrl::UpdateItemColor( l
  				green = 128;
  				blue = 128;
  			}

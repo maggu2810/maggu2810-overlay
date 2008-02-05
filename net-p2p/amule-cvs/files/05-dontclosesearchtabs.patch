@@ -1,15 +1,15 @@
 --- src.org/MuleNotebook.cpp
 +++ src/MuleNotebook.cpp
-@@ -63,6 +63,8 @@ CMuleNotebook::~CMuleNotebook()
+@@ -66,6 +66,8 @@ bool CMuleNotebook::DeletePage(int nPage
+ 	wxCHECK_MSG((nPage >= 0) && (nPage < (int)GetPageCount()), false,
+ 		wxT("Trying to delete invalid page-index in CMuleNotebook::DeletePage"));
  
- bool CMuleNotebook::DeletePage(int nPage)
- {
 +	return false; // amule crash on page close with older wxGTK versions
-+	
++
  	// Send out close event
- 	wxNotebookEvent evt( wxEVT_COMMAND_MULENOTEBOOK_PAGE_CLOSED, GetId(), nPage );
+ 	wxNotebookEvent evt( wxEVT_COMMAND_MULENOTEBOOK_PAGE_CLOSING, GetId(), nPage );
  	evt.SetEventObject(this);
-@@ -92,7 +94,8 @@ bool CMuleNotebook::DeleteAllPages()
+@@ -95,7 +97,8 @@ bool CMuleNotebook::DeleteAllPages()
  	Freeze();
  
  	bool result = true;

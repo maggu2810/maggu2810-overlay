@@ -9,7 +9,7 @@
  #include <wx/utils.h>
  
  #include "Server.h"		// Needed for CServer
-@@ -88,6 +90,20 @@ CDownloadQueue::CDownloadQueue()
+@@ -89,6 +91,20 @@ CDownloadQueue::CDownloadQueue()
  	m_cRequestsSentToServer = 0;
  	m_lastDiskCheck = 0;
  	SetLastKademliaFileRequest();
@@ -30,7 +30,7 @@
  }
  
  
-@@ -214,7 +230,7 @@ void CDownloadQueue::LoadSourceSeeds()
+@@ -220,7 +236,7 @@ void CDownloadQueue::LoadSourceSeeds()
  }
  
  //#warning We must add the sources, review CSearchFile constructor.
@@ -39,7 +39,7 @@
  {
  	if ( IsFileExisting(toadd->GetFileHash()) ) {
  		return;
-@@ -229,7 +245,7 @@ void CDownloadQueue::AddSearchToDownload
+@@ -235,7 +251,7 @@ void CDownloadQueue::AddSearchToDownload
  	}
  	
  	if ( newfile && newfile->GetStatus() != PS_ERROR ) {
@@ -48,7 +48,7 @@
  	} else {
  		delete newfile;
  	}
-@@ -409,6 +425,13 @@ void CDownloadQueue::Process()
+@@ -415,6 +431,13 @@ void CDownloadQueue::Process()
  	}
  	
  	
@@ -62,7 +62,7 @@
  	// Check for new links once per second.
  	if ((::GetTickCount() - m_nLastED2KLinkCheck) >= 1000) {
  		AddLinksFromFile();
-@@ -982,6 +1005,305 @@ void CDownloadQueue::SendLocalSrcRequest
+@@ -991,6 +1014,305 @@ void CDownloadQueue::SendLocalSrcRequest
  	m_localServerReqQueue.push_back(sender);
  }
  
@@ -231,7 +231,7 @@
 +					// create token hash map for current download list
 +					for (uint16 j = 0; j < m_filelist.size(); ++j) {
 +						if (tokenCat == -1 || tokenCat == m_filelist[j]->GetCategory()) {
-+							HashTokens(m_filelist[j]->GetFileName().c_str(), 1, tokenMap);
++							HashTokens(m_filelist[j]->GetFileName().GetRaw().c_str(), 1, tokenMap);
 +						}
 +					}
 +					
@@ -244,7 +244,7 @@
 +					InitializeTokenMaps();
 +				}
 +				CSearchFile* sf = *it++;
-+				const float value = HashTokens(sf->GetFileName().c_str(), 0, tokenMap);
++				const float value = HashTokens(sf->GetFileName().GetRaw().c_str(), 0, tokenMap);
 +#ifdef OH_ASF_CHECK_STATS
 +				m_sf_checked_cnt++;
 +				m_sf_sum_values += value;
@@ -378,7 +378,7 @@
  
  
  class CSharedFileList;
-@@ -119,11 +120,12 @@ public:
+@@ -116,11 +117,12 @@ public:
  	 *
  	 * @param toadd The search-result to add.
  	 * @param category The category to assign to the new download.
@@ -392,7 +392,7 @@
  	
  	
  	/**
-@@ -306,6 +308,20 @@ public:
+@@ -303,6 +305,20 @@ public:
  	
  	void	SetLastKademliaFileRequest()	{lastkademliafilerequest = ::GetTickCount();}
  	
@@ -413,7 +413,7 @@
  private:
  	/**
  	 * This function initializes new observers with the current contents of the queue.
-@@ -360,6 +376,99 @@ private:
+@@ -353,6 +369,99 @@ private:
  	CServer*	m_udpserver;
  
  	
@@ -530,7 +530,7 @@
  	if ((thisTab = GetTagByName(EC_TAG_PREFS_SRCDROP)) != NULL) {
 --- src.org/libs/ec/abstracts/ECCodes.abstract
 +++ src/libs/ec/abstracts/ECCodes.abstract
-@@ -320,6 +320,8 @@ EC_TAG_SELECT_PREFS                     
+@@ -327,6 +327,8 @@ EC_TAG_SELECT_PREFS                     
  		EC_TAG_FILES_ALLOC_FULL_SIZE              0x180D
  		EC_TAG_FILES_CHECK_FREE_SPACE             0x180E
  		EC_TAG_FILES_MIN_FREE_SPACE	          0x180F
@@ -541,7 +541,7 @@
  		EC_TAG_SRCDROP_NONEEDED                   0x1901
 --- src.org/libs/ec/c#/ECCodes.cs
 +++ src/libs/ec/c#/ECCodes.cs
-@@ -278,6 +278,8 @@ public enum ECTagNames {
+@@ -285,6 +285,8 @@ public enum ECTagNames {
  			EC_TAG_FILES_ALLOC_FULL_SIZE              = 0x180D,
  			EC_TAG_FILES_CHECK_FREE_SPACE             = 0x180E,
  			EC_TAG_FILES_MIN_FREE_SPACE	          = 0x180F,
@@ -552,7 +552,7 @@
  			EC_TAG_SRCDROP_DROP_FQS                   = 0x1902,
 --- src.org/libs/ec/cpp/ECCodes.h
 +++ src/libs/ec/cpp/ECCodes.h
-@@ -287,6 +287,8 @@ enum ECTagNames {
+@@ -294,6 +294,8 @@ enum ECTagNames {
  			EC_TAG_FILES_ALLOC_FULL_SIZE              = 0x180D,
  			EC_TAG_FILES_CHECK_FREE_SPACE             = 0x180E,
  			EC_TAG_FILES_MIN_FREE_SPACE	          = 0x180F,
@@ -563,7 +563,7 @@
  			EC_TAG_SRCDROP_DROP_FQS                   = 0x1902,
 --- src.org/libs/ec/java/ECCodes.java
 +++ src/libs/ec/java/ECCodes.java
-@@ -275,6 +275,8 @@ public final static short 		EC_TAG_FILES
+@@ -282,6 +282,8 @@ public final static short 		EC_TAG_FILES
  public final static short 		EC_TAG_FILES_ALLOC_FULL_SIZE              = 0x180D;
  public final static short 		EC_TAG_FILES_CHECK_FREE_SPACE             = 0x180E;
  public final static short 		EC_TAG_FILES_MIN_FREE_SPACE	          = 0x180F;
@@ -590,7 +590,7 @@
  /* The rest, organize it! */
  wxString	CPreferences::s_nick;
  uint16		CPreferences::s_maxupload;
-@@ -1122,7 +1131,20 @@ void CPreferences::BuildItemList( const 
+@@ -1123,7 +1132,20 @@ void CPreferences::BuildItemList( const 
  	 * Version check
  	 **/
  	 NewCfgItem(IDC_NEWVERSION,	(new Cfg_Bool( wxT("/eMule/NewVersionCheck"), s_NewVersionCheck, false )));
@@ -660,7 +660,7 @@
 --- src.org/SearchList.cpp
 +++ src/SearchList.cpp
 @@ -463,7 +463,8 @@ void CSearchList::ProcessSharedFileList(
- 	long searchID = (long)sender;
+ 	long searchID = reinterpret_cast<wxUIntPtr>(sender);
  
  #ifndef AMULE_DAEMON
 -	if (!theApp->amuledlg->m_searchwnd->CheckTabNameExists(sender->GetUserName())) {
@@ -764,7 +764,7 @@
  	static	CStatTreeItemCounter*		s_sizeOfShare;
 --- src.org/TextClient.cpp
 +++ src/TextClient.cpp
-@@ -95,6 +95,8 @@ enum {
+@@ -97,6 +97,8 @@ enum {
   	CMD_ID_SET_BWLIMIT_UP,
   	CMD_ID_SET_BWLIMIT_DOWN,
   	CMD_ID_GET_BWLIMITS,
@@ -773,7 +773,7 @@
  	CMD_ID_STATTREE,
  	CMD_ID_SEARCH,
  	CMD_ID_SEARCH_GLOBAL,
-@@ -457,6 +459,35 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -476,6 +478,35 @@ int CamulecmdApp::ProcessCommand(int Cmd
  			request_list.push_back(request);
  			break;
  
@@ -809,7 +809,7 @@
  		case CMD_ID_STATTREE:
  			request = new CECPacket(EC_OP_GET_STATSTREE);
  			if (!args.IsEmpty()) {
-@@ -889,6 +920,13 @@ void CamulecmdApp::OnInitCommandSet()
+@@ -908,6 +939,13 @@ void CamulecmdApp::OnInitCommandSet()
  	tmp2->AddCommand(wxT("Down"), CMD_ID_SET_BWLIMIT_DOWN, wxTRANSLATE("Set download bandwidth limit."),
  			 wxT("The given value must be in kilobytes/sec.\n"), CMD_PARAM_ALWAYS);
  

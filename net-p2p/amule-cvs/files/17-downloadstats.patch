@@ -1,6 +1,6 @@
 --- src.org/DownloadQueue.cpp
 +++ src/DownloadQueue.cpp
-@@ -79,6 +79,7 @@ CDownloadQueue::CDownloadQueue()
+@@ -80,6 +80,7 @@ CDownloadQueue::CDownloadQueue()
  // Needs to be recursive that that is can own an observer assigned to itself
  	: m_mutex( wxMUTEX_RECURSIVE )
  {
@@ -8,7 +8,7 @@
  	m_datarate = 0;
  	m_udpserver = 0;
  	m_lastsorttime = 0;
-@@ -445,6 +446,13 @@ void CDownloadQueue::Process()
+@@ -451,6 +452,13 @@ void CDownloadQueue::Process()
  		SearchForDuplicateFiles();
  		m_nLastSearchForDuplicateFiles = ::GetTickCount();
  	}
@@ -22,7 +22,7 @@
  }
  
  
-@@ -1349,6 +1357,44 @@ void CDownloadQueue::AddLinksFromFile()
+@@ -1358,6 +1366,44 @@ void CDownloadQueue::AddLinksFromFile()
  }
  
  
@@ -35,18 +35,18 @@
 +	for ( uint16 i = 0; i < m_filelist.size(); i++ ) {
 +		CPartFile *pf = m_filelist[i];
 +		
-+		const wxString fullPath = pf->GetFullName() + wxT(".stats");
++		const CPath fullPath = CPath(pf->GetFullName().GetRaw() + wxT(".stats"));
 +		CFile file;
 +		try {
-+			if (!file.Open(fullPath, (CheckFileExists(fullPath) ? CFile::read_write : CFile::write))) {
-+				throw CIOFailureException(wxT("Failed to open file: ") + fullPath);
++			if (!file.Open(fullPath, (fullPath.FileExists() ? CFile::read_write : CFile::write))) {
++				throw CIOFailureException(CFormat(wxT("Failed to open file: ")) % fullPath);
 +			}
 +			if (file.Eof()) {
 +				// new / empty file - write signature first
 +				file.WriteUInt32(0x5CD8492F);
 +			} else {
 +				if (file.ReadUInt32() != 0x5CD8492F) {
-+					throw CIOFailureException(wxT("Invalid signature for file: ") + fullPath);
++					throw CIOFailureException(CFormat(wxT("Invalid signature for file: ")) % fullPath);
 +				}
 +				file.Seek(0, wxFromEnd);
 +			}
@@ -69,7 +69,7 @@
  	for ( uint16 i = 0; i < GetFileCount(); i++ ) {
 --- src.org/DownloadQueue.h
 +++ src/DownloadQueue.h
-@@ -347,6 +347,11 @@ private:
+@@ -340,6 +340,11 @@ private:
  	void	AddLinksFromFile();
  
  	/**
@@ -81,7 +81,7 @@
  	 * Stops performing UDP requests.
  	 */
  	void	DoStopUDPRequests();
-@@ -370,6 +375,7 @@ private:
+@@ -363,6 +368,7 @@ private:
  	uint32		m_lastsorttime;
  	uint32		m_lastudpstattime;
  	uint32		m_nLastED2KLinkCheck;
@@ -91,12 +91,12 @@
  	uint8		m_udcounter;
 --- src.org/ThreadTasks.cpp
 +++ src/ThreadTasks.cpp
-@@ -480,7 +480,7 @@ void CCompletionTask::Entry()
+@@ -486,7 +486,7 @@ void CCompletionTask::Entry()
  	}
  
  	// Removes the various other data-files	
 -	const wxChar* otherMetExt[] = { wxT(""), PARTMET_BAK_EXT, wxT(".seeds"), wxT(".blkhash"), NULL };
 +	const wxChar* otherMetExt[] = { wxT(""), PARTMET_BAK_EXT, wxT(".seeds"), wxT(".blkhash"), wxT(".stats"), NULL };
  	for (size_t i = 0; otherMetExt[i]; ++i) {
- 		wxString toRemove = m_metPath + otherMetExt[i];
+ 		CPath toRemove = m_metPath.AppendExt(otherMetExt[i]);
  

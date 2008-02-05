@@ -1,6 +1,6 @@
 --- src.org/PartFile.cpp
 +++ src/PartFile.cpp
-@@ -263,6 +263,9 @@ void CPartFile::CreatePartFile()
+@@ -298,6 +298,9 @@ void CPartFile::CreatePartFile()
  		//#warning Code for full file alloc - should be done on thread.
  	}
  	

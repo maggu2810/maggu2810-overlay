@@ -2,13 +2,13 @@
 +++ src/CFile.cpp
 @@ -27,6 +27,7 @@
  #include "CFile.h"		// Interface declarations.
- #include "FileFunctions.h"	// Needed for CheckFileExists
  #include "Logger.h"		// Needed for AddDebugLogLineM
+ #include <common/Path.h>	// Needed for CPath
 +#include "Preferences.h"	// Needed for thePrefs
  
  
  #ifdef HAVE_CONFIG_H
-@@ -142,13 +143,61 @@ CSeekFailureException::CSeekFailureExcep
+@@ -147,20 +148,68 @@ CSeekFailureException::CSeekFailureExcep
  {}
  
  
@@ -66,13 +66,21 @@
  {}
  
  
+ CFile::CFile(const CPath& fileName, OpenMode mode)
+-	: m_fd(fd_invalid)
++	: m_fd(fd_invalid), m_opened(false), m_open_rec(0)
+ {
+ 	Open(fileName, mode);
+ }
+ 
+ 
  CFile::CFile(const wxString& fileName, OpenMode mode)
 -	: m_fd(fd_invalid)
 +	: m_fd(fd_invalid), m_opened(false), m_open_rec(0)
  {
  	Open(fileName, mode);
  }
-@@ -162,15 +211,15 @@ CFile::~CFile()
+@@ -174,15 +223,9 @@ CFile::~CFile()
  }
  
  
@@ -80,12 +88,8 @@
 -{
 -	return m_fd;
 -}
-+//int CFile::fd() const
-+//{
-+//	throw CIOFailureException(wxT("CFile: Returning fd is impossible."));
-+//}
- 
- 
+-
+-
  bool CFile::IsOpened() const
  {
 -	return m_fd != fd_invalid;
@@ -93,11 +97,10 @@
  }
  
  
-@@ -195,18 +244,78 @@ bool CFile::Create(const wxString& path,
- bool CFile::Open(const wxString& fileName, OpenMode mode, int accessMode)
+@@ -221,18 +264,77 @@ bool CFile::Open(const CPath& fileName, 
  {
- 	MULE_VALIDATE_PARAMS(!fileName.IsEmpty(), wxT("CFile: Cannot open, empty path."));
-+	
+ 	MULE_VALIDATE_PARAMS(fileName.IsOk(), wxT("CFile: Cannot open, empty path."));
+ 
 +	if (IsOpened()) {
 +		Close();
 +	}
@@ -169,12 +172,12 @@
  			break;
  		
  		case write_append:
--			if (CheckFileExists(fileName))
-+			if (CheckFileExists(m_filePath))
+-			if (fileName.FileExists())
++			if (m_filePath.FileExists())
  			{
  				flags |= O_WRONLY | O_APPEND;
  				break;
-@@ -227,21 +336,101 @@ bool CFile::Open(const wxString& fileNam
+@@ -253,20 +355,100 @@ bool CFile::Open(const CPath& fileName, 
          	break;
  	}
  	
@@ -187,18 +190,19 @@
 +		// Remove all flags which should be used only the first time we open the file.
 +		flags &= ~(O_CREAT | O_EXCL | O_TRUNC);
  	}
+-	
+ 
  	
- 	// Test if it is possible to use an ANSI name, otherwise use UTF-8
--	Unicode2CharBuf tmpFileName = unicode_2_broken(fileName);
-+	Unicode2CharBuf tmpFileName = unicode_2_broken(m_filePath);
- 	if (tmpFileName) {
--		m_fd = open(tmpFileName, flags, accessMode);
-+		m_fd = open(tmpFileName, flags, m_accessMode);
- 	} 
- 	
+-	Unicode2CharBuf tmpFileName = filename2char(fileName.GetRaw());
++	Unicode2CharBuf tmpFileName = filename2char(m_filePath.GetRaw());
+ 	wxASSERT_MSG(tmpFileName, wxT("Convertion failed in CFile::Open"));
+ 
 -	m_filePath = fileName;
- 	
+-	m_fd = open(tmpFileName, flags, accessMode);
++	m_fd = open(tmpFileName, flags, m_accessMode);
  	syscall_check(m_fd != fd_invalid, m_filePath, wxT("opening file"));
+ 	
+-	return IsOpened();
 +	if (m_fd == fd_invalid) {
 +		// Failed to open the file.
 +		// Don't assign a slot in the ringbuffer.
@@ -262,8 +266,7 @@
 +		if (s_fol.m_max_checks < check_cnt) s_fol.m_max_checks = check_cnt;
 +#endif
 +	}
- 	
--	return IsOpened();
++	
 +	if (!m_first_open) {
 +		// seek to the last position before the file was closed
 +		const sint64 result = SEEK_FD(m_fd, m_pos, SEEK_SET);
@@ -282,7 +285,7 @@
  }
  
  
-@@ -249,12 +438,49 @@ bool CFile::Close() 
+@@ -274,12 +456,49 @@ bool CFile::Close() 
  {
  	MULE_VALIDATE_STATE(IsOpened(), wxT("CFile: Cannot close closed file."));
  
@@ -335,7 +338,7 @@
  }
  
  
-@@ -262,8 +488,10 @@ bool CFile::Flush()
+@@ -287,8 +506,10 @@ bool CFile::Flush()
  {
  	MULE_VALIDATE_STATE(IsOpened(), wxT("CFile: Cannot flush closed file."));
  	
@@ -346,7 +349,7 @@
  
  	return flushed;	
  }
-@@ -274,12 +502,14 @@ sint64 CFile::doRead(void* buffer, size_
+@@ -299,12 +520,14 @@ sint64 CFile::doRead(void* buffer, size_
  	MULE_VALIDATE_PARAMS(buffer, wxT("CFile: Invalid buffer in read operation."));
  	MULE_VALIDATE_STATE(IsOpened(), wxT("CFile: Cannot read from closed file."));
  	
@@ -361,7 +364,7 @@
  			throw CIOFailureException(wxString(wxT("Error reading from file: ")) + wxSysErrorMsg());
  		} else if ((totalRead + current < count) && Eof()) {
  			// We may fail to read the specified count in a couple
-@@ -291,6 +521,7 @@ sint64 CFile::doRead(void* buffer, size_
+@@ -316,6 +539,7 @@ sint64 CFile::doRead(void* buffer, size_
  		totalRead += current;
  	}
  	
@@ -369,7 +372,7 @@
  	return totalRead;
  }
  
-@@ -300,8 +531,10 @@ sint64 CFile::doWrite(const void* buffer
+@@ -325,8 +549,10 @@ sint64 CFile::doWrite(const void* buffer
  	MULE_VALIDATE_PARAMS(buffer, wxT("CFile: Invalid buffer in write operation."));
  	MULE_VALIDATE_STATE(IsOpened(), wxT("CFile: Cannot write to closed file."));
  
@@ -380,7 +383,7 @@
  	if (result != (sint64)nCount) {
  		throw CIOFailureException(wxString(wxT("Error writing to file: ")) + wxSysErrorMsg());
  	}
-@@ -315,7 +548,9 @@ sint64 CFile::doSeek(sint64 offset) cons
+@@ -340,7 +566,9 @@ sint64 CFile::doSeek(sint64 offset) cons
  	MULE_VALIDATE_STATE(IsOpened(), wxT("Cannot seek on closed file."));
  	MULE_VALIDATE_PARAMS(offset >= 0, wxT("Invalid position, must be positive."));
  	
@@ -390,7 +393,7 @@
  
  	if (result == offset) {
  		return result;
-@@ -331,7 +566,9 @@ uint64 CFile::GetPosition() const
+@@ -356,7 +584,9 @@ uint64 CFile::GetPosition() const
  {
  	MULE_VALIDATE_STATE(IsOpened(), wxT("Cannot get position in closed file."));
  	
@@ -400,7 +403,7 @@
  	if (pos == wxInvalidOffset) {
  		throw CSeekFailureException(wxString(wxT("Failed to retrieve position in file: ")) + wxSysErrorMsg());
  	}
-@@ -345,9 +582,12 @@ uint64 CFile::GetLength() const
+@@ -370,9 +600,12 @@ uint64 CFile::GetLength() const
  	MULE_VALIDATE_STATE(IsOpened(), wxT("CFile: Cannot get length of closed file."));
  
  	STAT_STRUCT buf;
@@ -413,7 +416,7 @@
  	
  	return buf.st_size;
  }
-@@ -372,11 +612,13 @@ bool CFile::SetLength(size_t new_len)
+@@ -397,11 +630,13 @@ bool CFile::SetLength(size_t new_len)
  {
  	MULE_VALIDATE_STATE(IsOpened(), wxT("CFile: Cannot set length when no file is open."));
  
@@ -429,16 +432,22 @@
  
 --- src.org/CFile.h
 +++ src/CFile.h
-@@ -109,7 +109,7 @@ public:
- 	 * Note that direct manipulation of the descriptor should
- 	 * be avoided! That's what this class is for.
- 	 */
--	int  fd() const;
-+	//int  fd() const;
+@@ -109,14 +109,6 @@ public:
+ 
  
  	/**
+-	 * Returns the file descriptior assosiated with the file.
+-	 *
+-	 * Note that direct manipulation of the descriptor should
+-	 * be avoided! That's what this class is for.
+-	 */
+-	int  fd() const;
+-
+-	/**
  	 * Flushes data not yet written.
-@@ -161,6 +161,16 @@ public:
+ 	 *
+ 	 * Note that calling Flush on an closed file
+@@ -166,6 +158,16 @@ public:
  	 */
  	bool IsOpened() const;
  	
@@ -455,10 +464,10 @@
  protected:
  	/** @see CFileDataIO::doRead **/
  	virtual sint64 doRead(void* buffer, size_t count) const;
-@@ -181,8 +191,107 @@ private:
+@@ -186,6 +188,106 @@ private:
  	
  	//! The full path to the current file.
- 	wxString m_filePath;
+ 	CPath m_filePath;
 +
 +	//! Mode from Open()
 +	OpenMode m_mode;
@@ -508,8 +517,8 @@
 +	 * Call only with s_oh_static_mutex !!!
 +	 */
 +	void CloseFDNow();
- };
- 
++};
++
 +//! Generate and output statistics
 +#define OH_FILE_OPEN_STATS
 +
@@ -559,13 +568,12 @@
 +    int m_max_checks;
 +    
 +#endif
-+};
+ };
  
- /**
-  * This exception is thrown by CFile if a seek or tell fails.
+ 
 --- src.org/PartFile.cpp
 +++ src/PartFile.cpp
-@@ -198,11 +198,11 @@ CPartFile::~CPartFile()
+@@ -233,11 +233,11 @@ CPartFile::~CPartFile()
  	// So we just guess is < 0 on error and > 2 if ok (0 stdin, 1 stdout, 2 stderr)
  	// But, where does this wrong handle comes from?
  	
@@ -579,7 +587,7 @@
  		m_hpartfile.Close();
  		// Update met file (with current directory entry)
  		SavePartFile();			
-@@ -2343,7 +2343,7 @@ void CPartFile::Delete()
+@@ -2345,7 +2345,7 @@ void CPartFile::Delete()
  	// eMule had same problem with lseek error ... and override with a simple 
  	// check for INVALID_HANDLE_VALUE (that, btw, does not exist on linux)
  	// So we just guess is < 0 on error and > 2 if ok (0 stdin, 1 stdout, 2 stderr)
@@ -599,9 +607,9 @@
  
  /* Proxy */
  CProxyData	CPreferences::s_ProxyData;
-@@ -1156,6 +1158,13 @@ void CPreferences::BuildItemList( const 
+@@ -1157,6 +1159,13 @@ void CPreferences::BuildItemList( const 
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/KadNodesUrl"),			s_KadURL, wxT("http://emule-inside.net/nodes.dat") ) );
- 	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/Ed2kServersUrl"),			s_Ed2kURL, wxT("http://ocbmaurice.dyndns.org/pl/slist.pl/server.met?download/server-max.met") ) );
+ 	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/Ed2kServersUrl"),		s_Ed2kURL, wxT("http://gruk.org/server.met.gz") ) );
  	
 +	/**
 +	 * Dynamic File Opening
