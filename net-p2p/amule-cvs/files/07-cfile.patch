@@ -607,7 +607,7 @@
  
  /* Proxy */
  CProxyData	CPreferences::s_ProxyData;
-@@ -1157,6 +1159,13 @@ void CPreferences::BuildItemList( const 
+@@ -1151,6 +1153,13 @@ void CPreferences::BuildItemList( const 
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/KadNodesUrl"),			s_KadURL, wxT("http://emule-inside.net/nodes.dat") ) );
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/Ed2kServersUrl"),		s_Ed2kURL, wxT("http://gruk.org/server.met.gz") ) );
  	

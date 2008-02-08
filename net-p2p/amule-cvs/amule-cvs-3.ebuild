@@ -12,7 +12,7 @@ S=${WORKDIR}/${MY_P}
 DATE=$(date +%Y%m%d)
 # Uncomment and edit this line to use a specific date
 # Format is <Year><Month><Day>
-DATE=20080204
+DATE=20080208
 
 DESCRIPTION="aMule, the all-platform eMule p2p client"
 HOMEPAGE="http://www.amule.org/"
@@ -21,7 +21,8 @@ SRC_URI="http://www.hirnriss.net/files/cvs/aMule-CVS-${DATE}.tar.bz2"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~x86 ~amd64"
-IUSE="amuled debug gtk nls nosystray optimize remote remote-gui stats unicode X patching"
+IUSE="amuled debug gtk nls nosystray optimize remote remote-gui stats
+	unicode X patching monolithic web-gui"
 for f in ${FILESDIR}/[0-9][0-9]-*.patch; do
 	u=${f##*/}
 	u=${u#*-}
@@ -35,6 +36,7 @@ DEPEND="
         >=x11-libs/wxGTK-2.8.0
         >=sys-libs/zlib-1.2.1
 		dev-libs/crypto++
+		dev-libs/geoip
         stats? ( >=media-libs/gd-2.0.26 )
         remote? ( >=media-libs/libpng-1.2.0 )
         !net-p2p/amule
@@ -74,7 +76,6 @@ src_unpack() {
 }
 
 src_compile() {
-#	cd /var/tmp/portage/amule-cvs-1/work/amule-cvs/
 	cd ${S}
 	local myconf
 
@@ -101,7 +102,11 @@ src_compile() {
 	fi
 	
 	if use remote; then
-		myconf="${myconf} --enable-webserver --enable-amulecmd"
+		myconf="${myconf} --enable-amulecmd"
+	fi
+
+	if use web-gui; then
+		myconf="${myconf} --enable-webserver"
 	fi
 
 	if use remote && use amuled; then
@@ -111,27 +116,24 @@ src_compile() {
 	econf \
 		--with-wx-config=${WX_CONFIG} \
 		--with-wxbase-config=${WX_CONFIG} \
+		--enable-geoip \
 		`use_with gtk x` \
 		`use_enable amuled amule-daemon` \
 		`use_enable optimize` \
 		`use_enable debug` \
 		`use_enable nls` \
 		`use_enable remote-gui amulecmdgui` \
-		`use_enable remote-gui webservergui` \
+		`use_enable web-gui webservergui` \
 		`use_enable stats cas` \
 		`use_enable stats alcc` \
+		`use_enable monolithic` \
 		${myconf} \
 		|| die
 	
-	# we filter ssp until bug #74457 is closed to build on hardened
-	if has_hardened; then
-		filter-flags -fstack-protector -fstack-protector-all
-	fi
 	emake -j1 || die
 }
 
 src_install() {
-#	cd /var/tmp/portage/amule-cvs-1/work/amule-cvs/
 	cd ${S}
 	make DESTDIR=${D} install || die
 
@@ -147,7 +149,7 @@ src_install() {
 	        exeinto /etc/init.d; newexe ${FILESDIR}/amuled.initd amuled
 	fi
 
-	if use remote; then
+	if use remote && use web-gui; then
 	        insinto /etc/conf.d; newins ${FILESDIR}/amuleweb.confd amuleweb
 	        exeinto /etc/init.d; newexe ${FILESDIR}/amuleweb.initd amuleweb
 	fi

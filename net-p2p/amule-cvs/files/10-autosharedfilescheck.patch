@@ -590,7 +590,7 @@
  /* The rest, organize it! */
  wxString	CPreferences::s_nick;
  uint16		CPreferences::s_maxupload;
-@@ -1123,7 +1132,20 @@ void CPreferences::BuildItemList( const 
+@@ -1117,7 +1126,20 @@ void CPreferences::BuildItemList( const 
  	 * Version check
  	 **/
  	 NewCfgItem(IDC_NEWVERSION,	(new Cfg_Bool( wxT("/eMule/NewVersionCheck"), s_NewVersionCheck, false )));
