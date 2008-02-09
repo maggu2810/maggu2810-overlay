@@ -1,0 +1,16 @@
+--- src.org/PartFile.cpp
++++ src/PartFile.cpp
+@@ -738,10 +738,10 @@ uint8 CPartFile::LoadPartFile(const CPat
+ 					% partFilePath
+ 					% (m_lastDateChanged - file_date) );
+ 				// rehash
+-				SetPartFileStatus(PS_WAITINGFORHASH);
++//				SetPartFileStatus(PS_WAITINGFORHASH);
+ 			
+-				CPath partFileName = m_partmetfilename.RemoveExt();
+-				CThreadScheduler::AddTask(new CHashingTask(m_filePath, partFileName, this));
++//				CPath partFileName = m_partmetfilename.RemoveExt();
++//				CThreadScheduler::AddTask(new CHashingTask(m_filePath, partFileName, this));
+ 			}
+ 		}
+ 	}
