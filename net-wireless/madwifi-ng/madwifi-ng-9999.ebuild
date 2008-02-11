@@ -55,7 +55,10 @@ src_unpack() {
 
 	mv trunk/* . || die
 	touch svnversion.h || die
-	epatch "${FILESDIR}/madwifi-ng-2.6.24.patch" || die
+
+	if [ ${KV_MAJOR} -eq 2 -a ${KV_MINOR} -eq 6 -a ${KV_PATCH} -eq 24 ]; then
+		epatch "${FILESDIR}/madwifi-ng-2.6.24.patch" || die
+	fi
 }
 
 src_install() {
