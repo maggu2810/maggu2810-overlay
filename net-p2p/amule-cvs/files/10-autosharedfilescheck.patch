@@ -286,8 +286,8 @@
 +		CLOSE_LOG
 +		return;
 +	}
-+	wxLongLong free = 0;
-+	if ( !wxGetDiskSpace( thePrefs::GetTempDir(), NULL, &free ) ) {
++	sint64 free = CPath::GetFreeSpace(thePrefs::GetTempDir());
++	if ( free == wxInvalidOffset ) {
 +		AddDebugLogLineM(true, logDownloadQueue, wxT("AutoSharedFilesCheck: Cannot get free disk space"));
 +		CLOSE_LOG
 +		return;
@@ -590,7 +590,7 @@
  /* The rest, organize it! */
  wxString	CPreferences::s_nick;
  uint16		CPreferences::s_maxupload;
-@@ -1117,7 +1126,20 @@ void CPreferences::BuildItemList( const 
+@@ -1145,7 +1154,20 @@ void CPreferences::BuildItemList( const 
  	 * Version check
  	 **/
  	 NewCfgItem(IDC_NEWVERSION,	(new Cfg_Bool( wxT("/eMule/NewVersionCheck"), s_NewVersionCheck, false )));
@@ -614,7 +614,7 @@
  	  **/
 --- src.org/Preferences.h
 +++ src/Preferences.h
-@@ -507,6 +507,26 @@ public:
+@@ -511,6 +511,26 @@ public:
  	
  	static bool CheckNewVersion() { return s_NewVersionCheck; }
  

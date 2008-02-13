@@ -91,7 +91,7 @@
  	uint8		m_udcounter;
 --- src.org/ThreadTasks.cpp
 +++ src/ThreadTasks.cpp
-@@ -486,7 +486,7 @@ void CCompletionTask::Entry()
+@@ -484,7 +484,7 @@ void CCompletionTask::Entry()
  	}
  
  	// Removes the various other data-files	

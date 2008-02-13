@@ -22,7 +22,7 @@
  }
  
  
-@@ -1858,4 +1866,163 @@ bool CDownloadQueue::DoKademliaFileReque
+@@ -1855,4 +1863,163 @@ bool CDownloadQueue::DoKademliaFileReque
  {
  	return ((::GetTickCount() - lastkademliafilerequest) > KADEMLIAASKTIME);
  }
@@ -207,7 +207,7 @@
 +++ src/PartFile.cpp
 @@ -291,6 +291,9 @@ void CPartFile::CreatePartFile()
  
- 	SetFilePath(CPath(thePrefs::GetTempDir()));
+ 	SetFilePath(thePrefs::GetTempDir());
  			
 +	// make sure we have no old .blkhash file laying around
 +	wxRemoveFile(m_fullname.GetRaw() + wxT(".blkhash"));
@@ -311,7 +311,7 @@
  bool		CPreferences::s_bmanualhighprio;
  bool		CPreferences::s_btransferfullchunks;
  bool		CPreferences::s_bstartnextfile;
-@@ -1161,6 +1162,8 @@ void CPreferences::BuildItemList( const 
+@@ -1189,6 +1190,8 @@ void CPreferences::BuildItemList( const 
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/YourHostname"),			s_yourHostname, wxEmptyString ) );
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/DateTimeFormat"),		s_datetimeformat, wxT("%A, %x, %X") ) );
  
@@ -322,7 +322,7 @@
  	s_MiscList.push_back( new Cfg_Bool( wxT("/eMule/ShowAllNotCats"),		s_showAllNotCats, false ) );
 --- src.org/Preferences.h
 +++ src/Preferences.h
-@@ -467,6 +467,8 @@ public:
+@@ -471,6 +471,8 @@ public:
  	static void LoadAllItems(wxConfigBase* cfg);
  	static void SaveAllItems(wxConfigBase* cfg);
  
@@ -342,7 +342,7 @@
  
 --- src.org/ThreadTasks.cpp
 +++ src/ThreadTasks.cpp
-@@ -486,7 +486,7 @@ void CCompletionTask::Entry()
+@@ -484,7 +484,7 @@ void CCompletionTask::Entry()
  	}
  
  	// Removes the various other data-files	

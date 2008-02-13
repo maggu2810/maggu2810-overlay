@@ -22,7 +22,7 @@
  
  	m_category = 0;
  	m_completedFiles = 0;
-@@ -1281,12 +1283,12 @@ void CDownloadListCtrl::DrawFileItem( wx
+@@ -1280,12 +1282,12 @@ void CDownloadListCtrl::DrawFileItem( wx
  		break;
  
  	// Transferred
@@ -37,7 +37,7 @@
  		text = CastItoXBytes( file->GetCompletedSize() );
  		break;
  	
-@@ -1295,6 +1297,8 @@ void CDownloadListCtrl::DrawFileItem( wx
+@@ -1294,6 +1296,8 @@ void CDownloadListCtrl::DrawFileItem( wx
  		if ( file->GetTransferingSrcCount() ) {
  			text = wxString::Format( wxT("%.1f "), file->GetKBpsDown() ) +
  				_("kB/s");
@@ -46,7 +46,7 @@
  		}
  		break;
  	
-@@ -1423,7 +1427,7 @@ void CDownloadListCtrl::DrawFileItem( wx
+@@ -1422,7 +1426,7 @@ void CDownloadListCtrl::DrawFileItem( wx
  	// Last seen completed
  	case 10: {
  		if ( file->lastseencomplete ) {
@@ -55,7 +55,7 @@
  		} else {
  			text = _("Unknown");
  		}
-@@ -1431,14 +1435,31 @@ void CDownloadListCtrl::DrawFileItem( wx
+@@ -1430,14 +1434,31 @@ void CDownloadListCtrl::DrawFileItem( wx
  	}
  	
  	// Laste received
@@ -89,7 +89,7 @@
  	} // switch
  
  	if ( !text.IsEmpty() ) {
-@@ -1594,7 +1615,7 @@ void CDownloadListCtrl::DrawSourceItem(
+@@ -1593,7 +1614,7 @@ void CDownloadListCtrl::DrawSourceItem(
  			}
  			break;
  
@@ -98,7 +98,7 @@
  			if (item->GetType() != A4AF_SOURCE && client->GetTransferredDown()) {
  				buffer = CastItoXBytes(client->GetTransferredDown());
  				dc->DrawText(buffer, rect.GetX(), rect.GetY());
-@@ -1704,12 +1725,13 @@ void CDownloadListCtrl::DrawSourceItem(
+@@ -1703,12 +1724,13 @@ void CDownloadListCtrl::DrawSourceItem(
  						}
  						if( qrDiff > 0 ) {
  							dc->SetTextForeground(*wxRED);
@@ -114,7 +114,7 @@
  						dc->DrawText(buffer, rect.GetX(), rect.GetY());
  						dc->SetTextForeground(savedColour);
  					}
-@@ -1737,6 +1759,46 @@ void CDownloadListCtrl::DrawSourceItem(
+@@ -1736,6 +1758,46 @@ void CDownloadListCtrl::DrawSourceItem(
  			dc->DrawText(buffer, rect.GetX(), rect.GetY());
  			break;
  		}	
@@ -161,7 +161,7 @@
  	}
  }
  
-@@ -1835,14 +1897,14 @@ int CDownloadListCtrl::Compare( const CP
+@@ -1834,14 +1896,14 @@ int CDownloadListCtrl::Compare( const CP
  		break;
  
  	// Sort by transferred
@@ -178,7 +178,7 @@
  		result = CmpAny(
  			file1->GetCompletedSize(),
  			file2->GetCompletedSize() );
-@@ -1851,6 +1913,9 @@ int CDownloadListCtrl::Compare( const CP
+@@ -1850,6 +1912,9 @@ int CDownloadListCtrl::Compare( const CP
  	// Sort by speed
  	case 4:
  		result = CmpAny(
@@ -188,7 +188,7 @@
  			file1->GetKBpsDown() * 1024,
  			file2->GetKBpsDown() * 1024 );
  		break;
-@@ -1910,13 +1975,27 @@ int CDownloadListCtrl::Compare( const CP
+@@ -1909,13 +1974,27 @@ int CDownloadListCtrl::Compare( const CP
  		break;
  
  	// Sort by last reception
@@ -218,7 +218,7 @@
  	return result;
  }
  
-@@ -1934,8 +2013,7 @@ int CDownloadListCtrl::Compare(
+@@ -1933,8 +2012,7 @@ int CDownloadListCtrl::Compare(
  			return CmpAny( client1->GetDownloadState(), client2->GetDownloadState() );
  	
  		// Sort by transferred in the following fields
@@ -228,7 +228,7 @@
  			return CmpAny( client1->GetTransferredDown(), client2->GetTransferredDown() );
  
  		// Sort by speed
-@@ -1962,6 +2040,7 @@ int CDownloadListCtrl::Compare(
+@@ -1961,6 +2039,7 @@ int CDownloadListCtrl::Compare(
  		}
  		
  		// Sort by Queue-Rank
@@ -236,7 +236,7 @@
  		case 7: {
  			// This will sort by download state: Downloading, OnQueue, Connecting ...
  			// However, Asked For Another will always be placed last, due to
-@@ -2015,6 +2094,23 @@ int CDownloadListCtrl::Compare(
+@@ -2014,6 +2093,23 @@ int CDownloadListCtrl::Compare(
  		case 9:
  			return CmpAny(client1->GetSourceFrom(), client2->GetSourceFrom());
  		
