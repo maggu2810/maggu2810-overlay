@@ -59,12 +59,12 @@ then
 	rm -rf /usr/portage/local/layman/berkano/app-misc/screen
 	rm -rf /usr/portage/local/layman/berkano/media-video/ffmpeg
 	rm -rf /usr/portage/local/layman/berkano/media-video/mplayer
-	ebuild /usr/portage/local/layman/berkano/media-libs/x264-svn/x264-svn-20079999.ebuild digest
-	ebuild /usr/portage/local/layman/berkano/media-video/avidemux/avidemux-2.4.0_pre3.ebuild digest
+	#ebuild /usr/portage/local/layman/berkano/media-libs/x264-svn/x264-svn-20079999.ebuild digest
+	#ebuild /usr/portage/local/layman/berkano/media-video/avidemux/avidemux-2.4.0_pre3.ebuild digest
 	rm -rf /usr/portage/local/layman/je_fro/net-wireless/wpa_supplicant
 	rm -rf /usr/portage/local/layman/liquidx/media-video/gpac
 	#ebuild /usr/portage/local/layman/musicbrainz/media-sound/picard/picard-0.9.0_alpha14.ebuild digest
-	ebuild /usr/portage/local/layman/vmware/app-emulation/vmware-workstation/vmware-workstation-6.0.0.45731.ebuild digest
+	#ebuild /usr/portage/local/layman/vmware/app-emulation/vmware-workstation/vmware-workstation-6.0.0.45731.ebuild digest
 	rm -rf /usr/portage/local/layman/zugaina/app-crypt/qca
 
 	# workaround for xeffects

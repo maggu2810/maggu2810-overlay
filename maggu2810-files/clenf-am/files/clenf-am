@@ -83,7 +83,7 @@ then
 			mount -o rw,noexec,nosuid,nodev ${MY_DEVNAME} ${MY_MOUNT_DIR}
 			;;
 		ntfs)
-			mount -t ntfs-3g -o rw,noexec,nosuid,nodev,allow_other ${MY_DEVNAME} ${MY_MOUNT_DIR}
+			mount -t ntfs-3g -o rw,noexec,nosuid,nodev,allow_other,force ${MY_DEVNAME} ${MY_MOUNT_DIR}
 			;;
 		vfat)
 			mount -t vfat -o rw,noexec,nosuid,nodev,umask=0,dmask=0,fmask=0 ${MY_DEVNAME} ${MY_MOUNT_DIR}

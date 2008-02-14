@@ -4,11 +4,10 @@
 
 inherit eutils rpm multilib flag-o-matic toolchain-funcs
 
+MY_P="lightscribeApplications-${PV}"
 DESCRIPTION="LightScribe System Software (binary only library)."
 HOMEPAGE="http://www.lightscribe.com/"
-SRC_URI="http://download.lightscribe.com/ls/lightscribe-${PV}-linux-2.6-intel.rpm
-	http://download.lightscribe.com/ls/lightscribePublicSDK-${PV}-linux-2.6-intel.rpm"
-
+SRC_URI="http://www.lightscribe.com/downloadSection/linux/downloads/lsl/${MY_P}-linux-2.6-intel.rpm"
 LICENSE="HP-LightScribe"
 SLOT="0"
 KEYWORDS="~x86 ~amd64"

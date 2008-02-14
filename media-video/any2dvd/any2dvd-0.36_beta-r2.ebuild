@@ -59,10 +59,10 @@ pkg_setup() {
 	fi
 
 	## FFmpeg dependencies ##
-	if ! built_with_use media-video/ffmpeg {a52,aac,dts,encode}; then
-		eerror "FFmpeg is missing 'a52,aac,dts and encode' support. Please add"
-		eerror "'a52,aac,dts and encode' to your USE flags, and re-emerge media-video/ffmpeg"
-		die "FFmpeg needs 'a52,aac,dts and encode' support"
+	if ! built_with_use media-video/ffmpeg {a52,aac,encode}; then
+		eerror "FFmpeg is missing 'a52,aac and encode' support. Please add"
+		eerror "'a52,aac and encode' to your USE flags, and re-emerge media-video/ffmpeg"
+		die "FFmpeg needs 'a52,aac and encode' support"
 	fi
 
 	## Transcode dependencies ##

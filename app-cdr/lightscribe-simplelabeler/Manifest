@@ -1,5 +1,5 @@
 DIST lightScribeSimpleLabeler-1.4.128.1-linux-2.6-intel.rpm 6730340 RMD160 c8619386fa20b2aab73869ca4bfacfd81120331a SHA1 19a8b9df0fb8e8b1ad5bc050e036489753e58b81 SHA256 b462015f376d68e2d64a8e42a821246df795b1fb0fd7287ed03d21609805afc9
-DIST lightscribeApplications-1.10.19.1-linux-2.6-intel.rpm 6732109 RMD160 5e01c111d30dedf2dd51a726422ba09013e4988c SHA1 e799bff68cc3c5ea1a188221190e9c270c10eb4d SHA256 4938a9f8c38f6c0c63fc0ef5964ce61371d8e4e2dae27a25836228f4c751fa43
+DIST lightscribeApplications-1.10.19.1-linux-2.6-intel.rpm 211 RMD160 5eee4d50983bf1b5bdce196d1844b568ef5ab14a SHA1 ddc52f07bc420fdf9db101a6e70724bc021a6149 SHA256 fa18d5f44f1961a01af2b51a405cea3911761fd4196df270ea8b9a06078c0efb
 EBUILD lightscribe-simplelabeler-1.10.19.1.ebuild 2489 RMD160 f067ffea6a1e12c1e98263668a22ec2aba4d4cb9 SHA1 49fcb6471e380da3ae40b16542ef74e02369bead SHA256 78a01ce8e75166608e6777c421520453362ef8ff3020eb6b430a7281ce41c91f
 MD5 cac7deb5f0536978d1efc9ea8bbb9975 lightscribe-simplelabeler-1.10.19.1.ebuild 2489
 RMD160 f067ffea6a1e12c1e98263668a22ec2aba4d4cb9 lightscribe-simplelabeler-1.10.19.1.ebuild 2489
@@ -8,9 +8,9 @@ EBUILD lightscribe-simplelabeler-1.4.128.1.ebuild 2386 RMD160 71ead19411c4e17779
 MD5 2f99867d0cfe8d68f1bfcad6d5069cd8 lightscribe-simplelabeler-1.4.128.1.ebuild 2386
 RMD160 71ead19411c4e17779fd33e772ad28ca34a3ca19 lightscribe-simplelabeler-1.4.128.1.ebuild 2386
 SHA256 0805d8c2af35f9e9b6431f2c4221e09706c8c10aa12de18544d60b46497ed0e6 lightscribe-simplelabeler-1.4.128.1.ebuild 2386
-MD5 edb86a1efa9ff902d830d48d34abb0f3 files/digest-lightscribe-simplelabeler-1.10.19.1 343
-RMD160 62c2fcf8b6743d2bd5cb3a1432b444436978674d files/digest-lightscribe-simplelabeler-1.10.19.1 343
-SHA256 3cacdb381e32f58933b578574eeaa8df8ba891c585a769f64e5f1b916737620c files/digest-lightscribe-simplelabeler-1.10.19.1 343
+MD5 5b8ec252dd96018ee4b62cf3110d01f6 files/digest-lightscribe-simplelabeler-1.10.19.1 331
+RMD160 f6c2416550959d3018f08c96e012a5d4c0f6a797 files/digest-lightscribe-simplelabeler-1.10.19.1 331
+SHA256 feaad965e3ae096445e760851904694fc6bb4aa2daa3f3b35f07d18b16517172 files/digest-lightscribe-simplelabeler-1.10.19.1 331
 MD5 6e6ddd2bbcb56090f867409eaa710d0e files/digest-lightscribe-simplelabeler-1.4.128.1 346
 RMD160 ce221fd375372bb773ce859d1076abd05f97c19b files/digest-lightscribe-simplelabeler-1.4.128.1 346
 SHA256 6488cf622d495a6636de3a4fef428506223687b96f1dd2fb444a2ba3a4206b53 files/digest-lightscribe-simplelabeler-1.4.128.1 346
