@@ -286,7 +286,7 @@
 +		CLOSE_LOG
 +		return;
 +	}
-+	sint64 free = CPath::GetFreeSpace(thePrefs::GetTempDir());
++	sint64 free = CPath::GetFreeSpaceAt(thePrefs::GetTempDir());
 +	if ( free == wxInvalidOffset ) {
 +		AddDebugLogLineM(true, logDownloadQueue, wxT("AutoSharedFilesCheck: Cannot get free disk space"));
 +		CLOSE_LOG

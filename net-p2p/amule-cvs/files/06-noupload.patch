@@ -1,6 +1,6 @@
 --- src.org/SharedFileList.cpp
 +++ src/SharedFileList.cpp
-@@ -471,6 +471,8 @@ unsigned CSharedFileList::AddFilesFromDi
+@@ -474,6 +474,8 @@ unsigned CSharedFileList::AddFilesFromDi
  
  bool CSharedFileList::AddFile(CKnownFile* pFile)
  {
