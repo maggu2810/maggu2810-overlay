@@ -90,7 +90,7 @@ S=${WORKDIR}/${MY_PN}
 [ "${PV}" != "9999" ] && \
 	SRC_URI="https://darknrg.dyndns.org:28514/files/pkgs/${MY_PN}-${PV}.tar.bz2"
 
-ESVN_REPO_URI="svn+ssh://oliver@darknrg.dyndns.org/var/svn/repos/trunk/root/${MY_PN}"
+ESVN_REPO_URI="svn+ssh://darknrg.dyndns.org/var/svn/repos/trunk/root/${MY_PN}"
 
 src_unpack() {
 	[ "${PV}" == "9999" ] && subversion_src_unpack || unpack ${A}
