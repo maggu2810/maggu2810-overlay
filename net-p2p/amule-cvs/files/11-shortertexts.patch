@@ -154,7 +154,7 @@
  
  	m_category = 0;
  	m_completedFiles = 0;
-@@ -1484,7 +1484,7 @@ void CDownloadListCtrl::DrawFileItem( wx
+@@ -1478,7 +1478,7 @@ void CDownloadListCtrl::DrawFileItem( wx
  	// Last seen part
  	case 8:
  		if ( file->lastseenpart ) {

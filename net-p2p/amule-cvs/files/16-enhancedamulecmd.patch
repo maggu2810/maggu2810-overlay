@@ -88,7 +88,7 @@
  
 --- src.org/ExternalConn.cpp
 +++ src/ExternalConn.cpp
-@@ -628,6 +628,23 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
+@@ -633,6 +633,23 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
  				pfile->SetCategory(hashtag->GetTagByIndexSafe(0)->GetInt());
  				break;
  
@@ -112,7 +112,7 @@
  			default:
  				response = new CECPacket(EC_OP_FAILED);
  				response->AddTag(CECTag(EC_TAG_STRING, wxTRANSLATE("OOPS! OpCode processing error!")));
-@@ -1074,12 +1091,13 @@ CECPacket *ExternalConn::ProcessRequest2
+@@ -1079,12 +1096,13 @@ CECPacket *ExternalConn::ProcessRequest2
  			}
  			break;
  		case EC_OP_ADD_LINK: 
@@ -127,7 +127,7 @@
  					response = new CECPacket(EC_OP_NOOP);
  				} else {
  					// Error messages are printed by the add function.
-@@ -1124,6 +1142,77 @@ CECPacket *ExternalConn::ProcessRequest2
+@@ -1129,6 +1147,77 @@ CECPacket *ExternalConn::ProcessRequest2
  				response = Get_EC_Response_GetDownloadQueue(request, enc_part_map, true);
  			}
  			break;
@@ -205,7 +205,7 @@
  		case EC_OP_GET_ULOAD_QUEUE:
  			if ( request->GetDetailLevel() == EC_DETAIL_INC_UPDATE ) {
  				response = Get_EC_Response_GetUpQueue(objmap);
-@@ -1153,6 +1242,7 @@ CECPacket *ExternalConn::ProcessRequest2
+@@ -1158,6 +1247,7 @@ CECPacket *ExternalConn::ProcessRequest2
  		case EC_OP_PARTFILE_REHASH:
  		case EC_OP_PARTFILE_FORCECOMPL:
  		case EC_OP_PARTFILE_SET_CAT:
@@ -215,26 +215,25 @@
  		case EC_OP_SHAREDFILES_RELOAD:
 --- src.org/libs/ec/abstracts/ECCodes.abstract
 +++ src/libs/ec/abstracts/ECCodes.abstract
-@@ -135,6 +135,11 @@ EC_OP_KAD_STOP                      0x49
- EC_OP_CONNECT                       0x4A
- EC_OP_DISCONNECT                    0x4B
- EC_OP_GET_DLOAD_QUEUE_DETAIL        0x4C
+@@ -138,6 +138,10 @@ EC_OP_GET_DLOAD_QUEUE_DETAIL        0x4C
+ 
+ EC_OP_KAD_UPDATE_FROM_URL           0x4D
+ EC_OP_KAD_BOOTSTRAP_FROM_IP         0x4E
 +
 +EC_OP_PARTFILE_RENAME               0x62
 +EC_OP_ED2K_LINK_PAUSED              0x63
 +EC_OP_GET_RUNTIME_INFO              0x64
-+
  [/Section]
  
  [Section Content]
 --- src.org/libs/ec/c#/ECCodes.cs
 +++ src/libs/ec/c#/ECCodes.cs
-@@ -114,7 +114,10 @@ public enum ECOpCodes {
- 	EC_OP_KAD_STOP                      = 0x49,
- 	EC_OP_CONNECT                       = 0x4A,
+@@ -116,7 +116,10 @@ public enum ECOpCodes {
  	EC_OP_DISCONNECT                    = 0x4B,
--	EC_OP_GET_DLOAD_QUEUE_DETAIL        = 0x4C
-+	EC_OP_GET_DLOAD_QUEUE_DETAIL        = 0x4C,
+ 	EC_OP_GET_DLOAD_QUEUE_DETAIL        = 0x4C,
+ 	EC_OP_KAD_UPDATE_FROM_URL           = 0x4D,
+-	EC_OP_KAD_BOOTSTRAP_FROM_IP         = 0x4E
++	EC_OP_KAD_BOOTSTRAP_FROM_IP         = 0x4E,
 +	EC_OP_PARTFILE_RENAME               = 0x62,
 +	EC_OP_ED2K_LINK_PAUSED              = 0x63,
 +	EC_OP_GET_RUNTIME_INFO              = 0x64
@@ -243,12 +242,12 @@
  	EC_TAG_STRING                             = 0x0000,
 --- src.org/libs/ec/cpp/ECCodes.h
 +++ src/libs/ec/cpp/ECCodes.h
-@@ -122,7 +122,10 @@ enum ECOpCodes {
- 	EC_OP_KAD_STOP                      = 0x49,
- 	EC_OP_CONNECT                       = 0x4A,
+@@ -124,7 +124,10 @@ enum ECOpCodes {
  	EC_OP_DISCONNECT                    = 0x4B,
--	EC_OP_GET_DLOAD_QUEUE_DETAIL        = 0x4C
-+	EC_OP_GET_DLOAD_QUEUE_DETAIL        = 0x4C,
+ 	EC_OP_GET_DLOAD_QUEUE_DETAIL        = 0x4C,
+ 	EC_OP_KAD_UPDATE_FROM_URL           = 0x4D,
+-	EC_OP_KAD_BOOTSTRAP_FROM_IP         = 0x4E
++	EC_OP_KAD_BOOTSTRAP_FROM_IP         = 0x4E,
 +	EC_OP_PARTFILE_RENAME               = 0x62,
 +	EC_OP_ED2K_LINK_PAUSED              = 0x63,
 +	EC_OP_GET_RUNTIME_INFO              = 0x64
@@ -257,10 +256,10 @@
  enum ECTagNames {
 --- src.org/libs/ec/java/ECCodes.java
 +++ src/libs/ec/java/ECCodes.java
-@@ -113,6 +113,9 @@ public final static byte EC_OP_KAD_STOP 
- public final static byte EC_OP_CONNECT                       = 0x4A;
- public final static byte EC_OP_DISCONNECT                    = 0x4B;
+@@ -115,6 +115,9 @@ public final static byte EC_OP_DISCONNEC
  public final static byte EC_OP_GET_DLOAD_QUEUE_DETAIL        = 0x4C;
+ public final static byte EC_OP_KAD_UPDATE_FROM_URL           = 0x4D;
+ public final static byte EC_OP_KAD_BOOTSTRAP_FROM_IP         = 0x4E;
 +public final static byte EC_OP_PARTFILE_RENAME               = 0x62;
 +public final static byte EC_OP_ED2K_LINK_PAUSED              = 0x63;
 +public final static byte EC_OP_GET_RUNTIME_INFO              = 0x64;

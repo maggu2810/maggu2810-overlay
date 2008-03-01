@@ -215,7 +215,7 @@
  	if (thePrefs::GetAllocFullPart()) {
  		//#warning Code for full file alloc - should be done on thread.
  	}
-@@ -3102,6 +3105,11 @@ void CPartFile::FlushBuffer(bool /*force
+@@ -3113,6 +3116,11 @@ void CPartFile::FlushBuffer(bool /*force
  		return;
  	}
  	
@@ -227,7 +227,7 @@
  	// Loop through queue
  	while ( !m_BufferedData_list.empty() ) {
  		// Get top item and remove it from the queue
-@@ -3119,6 +3127,13 @@ void CPartFile::FlushBuffer(bool /*force
+@@ -3130,6 +3138,13 @@ void CPartFile::FlushBuffer(bool /*force
  		}
  		// SLUGFILLER: SafeHash
  		
@@ -241,7 +241,7 @@
  		// Go to the correct position in file and write block of data			
  		try {
  			m_hpartfile.Seek(item->start);
-@@ -3136,6 +3151,59 @@ void CPartFile::FlushBuffer(bool /*force
+@@ -3147,6 +3162,59 @@ void CPartFile::FlushBuffer(bool /*force
  		delete item;
  	}
  	
@@ -322,7 +322,7 @@
  	s_MiscList.push_back( new Cfg_Bool( wxT("/eMule/ShowAllNotCats"),		s_showAllNotCats, false ) );
 --- src.org/Preferences.h
 +++ src/Preferences.h
-@@ -471,6 +471,8 @@ public:
+@@ -472,6 +472,8 @@ public:
  	static void LoadAllItems(wxConfigBase* cfg);
  	static void SaveAllItems(wxConfigBase* cfg);
  
@@ -331,7 +331,7 @@
  	static bool 		GetShowRatesOnTitle()		{ return s_ShowRatesOnTitle; }
  	
  	// Message Filters
-@@ -670,6 +672,8 @@ protected:
+@@ -675,6 +677,8 @@ protected:
  	static bool	s_bUAP;
  	static bool	s_bDisableKnownClientList;
  	static bool	s_bDisableQueueList;
@@ -342,7 +342,7 @@
  
 --- src.org/ThreadTasks.cpp
 +++ src/ThreadTasks.cpp
-@@ -484,7 +484,7 @@ void CCompletionTask::Entry()
+@@ -458,7 +458,7 @@ void CCompletionTask::Entry()
  	}
  
  	// Removes the various other data-files	

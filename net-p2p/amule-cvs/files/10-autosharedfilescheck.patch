@@ -515,7 +515,7 @@
  	 */
 --- src.org/ECSpecialMuleTags.cpp
 +++ src/ECSpecialMuleTags.cpp
-@@ -462,6 +462,12 @@ void CEC_Prefs_Packet::Apply()
+@@ -483,6 +483,12 @@ void CEC_Prefs_Packet::Apply()
  		if ((oneTag = thisTab->GetTagByName(EC_TAG_FILES_MIN_FREE_SPACE)) != NULL) {
  			thePrefs::SetMinFreeDiskSpace(oneTag->GetInt());
  		}
@@ -530,7 +530,7 @@
  	if ((thisTab = GetTagByName(EC_TAG_PREFS_SRCDROP)) != NULL) {
 --- src.org/libs/ec/abstracts/ECCodes.abstract
 +++ src/libs/ec/abstracts/ECCodes.abstract
-@@ -327,6 +327,8 @@ EC_TAG_SELECT_PREFS                     
+@@ -333,6 +333,8 @@ EC_TAG_SELECT_PREFS                     
  		EC_TAG_FILES_ALLOC_FULL_SIZE              0x180D
  		EC_TAG_FILES_CHECK_FREE_SPACE             0x180E
  		EC_TAG_FILES_MIN_FREE_SPACE	          0x180F
@@ -541,7 +541,7 @@
  		EC_TAG_SRCDROP_NONEEDED                   0x1901
 --- src.org/libs/ec/c#/ECCodes.cs
 +++ src/libs/ec/c#/ECCodes.cs
-@@ -285,6 +285,8 @@ public enum ECTagNames {
+@@ -290,6 +290,8 @@ public enum ECTagNames {
  			EC_TAG_FILES_ALLOC_FULL_SIZE              = 0x180D,
  			EC_TAG_FILES_CHECK_FREE_SPACE             = 0x180E,
  			EC_TAG_FILES_MIN_FREE_SPACE	          = 0x180F,
@@ -552,7 +552,7 @@
  			EC_TAG_SRCDROP_DROP_FQS                   = 0x1902,
 --- src.org/libs/ec/cpp/ECCodes.h
 +++ src/libs/ec/cpp/ECCodes.h
-@@ -294,6 +294,8 @@ enum ECTagNames {
+@@ -299,6 +299,8 @@ enum ECTagNames {
  			EC_TAG_FILES_ALLOC_FULL_SIZE              = 0x180D,
  			EC_TAG_FILES_CHECK_FREE_SPACE             = 0x180E,
  			EC_TAG_FILES_MIN_FREE_SPACE	          = 0x180F,
@@ -563,7 +563,7 @@
  			EC_TAG_SRCDROP_DROP_FQS                   = 0x1902,
 --- src.org/libs/ec/java/ECCodes.java
 +++ src/libs/ec/java/ECCodes.java
-@@ -282,6 +282,8 @@ public final static short 		EC_TAG_FILES
+@@ -287,6 +287,8 @@ public final static short 		EC_TAG_FILES
  public final static short 		EC_TAG_FILES_ALLOC_FULL_SIZE              = 0x180D;
  public final static short 		EC_TAG_FILES_CHECK_FREE_SPACE             = 0x180E;
  public final static short 		EC_TAG_FILES_MIN_FREE_SPACE	          = 0x180F;
@@ -614,7 +614,7 @@
  	  **/
 --- src.org/Preferences.h
 +++ src/Preferences.h
-@@ -511,6 +511,26 @@ public:
+@@ -512,6 +512,26 @@ public:
  	
  	static bool CheckNewVersion() { return s_NewVersionCheck; }
  
@@ -641,7 +641,7 @@
  	// Networks
  	static bool GetNetworkKademlia()		{ return s_ConnectToKad; }
  	static void SetNetworkKademlia(bool val)	{ s_ConnectToKad = val; }
-@@ -751,6 +771,15 @@ protected:
+@@ -756,6 +776,15 @@ protected:
  	// Version check
  	static bool s_NewVersionCheck;
  	

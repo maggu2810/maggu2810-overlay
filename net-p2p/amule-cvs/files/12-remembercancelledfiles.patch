@@ -25,7 +25,7 @@
  			case MP_RESUME:	(*it)->ResumeFile();	break;
 --- src.org/ExternalConn.cpp
 +++ src/ExternalConn.cpp
-@@ -613,7 +613,7 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
+@@ -618,7 +618,7 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
  				if ( thePrefs::StartNextFile() && (pfile->GetStatus() != PS_PAUSED) ) {
  					theApp->downloadqueue->StartNextFile(pfile);
  				}
@@ -36,7 +36,7 @@
  			case EC_OP_PARTFILE_REHASH:
 --- src.org/GuiEvents.cpp
 +++ src/GuiEvents.cpp
-@@ -593,7 +593,7 @@ namespace MuleNotify
+@@ -610,7 +610,7 @@ namespace MuleNotify
  	
  	void PartFile_Delete(CPartFile* file)
  	{
@@ -306,7 +306,7 @@
  
 --- src.org/PartFile.cpp
 +++ src/PartFile.cpp
-@@ -2343,7 +2343,7 @@ void  CPartFile::RemoveAllSources(bool b
+@@ -2354,7 +2354,7 @@ void  CPartFile::RemoveAllSources(bool b
  }
  
  
@@ -315,7 +315,7 @@
  {
  	AddLogLineM(false, CFormat(_("Deleting file: %s")) % GetFileName());
  	// Barry - Need to tell any connected clients to stop sending the file
-@@ -2396,6 +2396,11 @@ void CPartFile::Delete()
+@@ -2407,6 +2407,11 @@ void CPartFile::Delete()
  		}
  	}
  
