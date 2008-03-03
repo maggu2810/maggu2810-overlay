@@ -322,7 +322,7 @@
  	s_MiscList.push_back( new Cfg_Bool( wxT("/eMule/ShowAllNotCats"),		s_showAllNotCats, false ) );
 --- src.org/Preferences.h
 +++ src/Preferences.h
-@@ -472,6 +472,8 @@ public:
+@@ -474,6 +474,8 @@ public:
  	static void LoadAllItems(wxConfigBase* cfg);
  	static void SaveAllItems(wxConfigBase* cfg);
  
@@ -331,7 +331,7 @@
  	static bool 		GetShowRatesOnTitle()		{ return s_ShowRatesOnTitle; }
  	
  	// Message Filters
-@@ -675,6 +677,8 @@ protected:
+@@ -677,6 +679,8 @@ protected:
  	static bool	s_bUAP;
  	static bool	s_bDisableKnownClientList;
  	static bool	s_bDisableQueueList;

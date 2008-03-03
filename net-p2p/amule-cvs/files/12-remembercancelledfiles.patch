@@ -47,7 +47,7 @@
  	void PartFile_Rehash(CPartFile* file)
 --- src.org/KnownFile.cpp
 +++ src/KnownFile.cpp
-@@ -639,6 +639,17 @@ bool CKnownFile::LoadFromFile(const CFil
+@@ -643,6 +643,17 @@ bool CKnownFile::LoadFromFile(const CFil
  }
  
  
@@ -67,7 +67,7 @@
  	wxCHECK(!IsPartFile(), false);
 --- src.org/KnownFile.h
 +++ src/KnownFile.h
-@@ -305,6 +305,8 @@ public:
+@@ -301,6 +301,8 @@ public:
  	static void CreateHashFromHashlist(const ArrayOfCMD4Hash& hashes, CMD4Hash* Output);
  	
  	void	ClearPriority();
@@ -75,7 +75,7 @@
 +	bool LoadFromCancelledMet(const CFileDataIO* file);
  	
  	time_t	m_lastDateChanged;
- protected:
+ 
 --- src.org/KnownFileList.cpp
 +++ src/KnownFileList.cpp
 @@ -66,9 +66,17 @@ CKnownFileList::~CKnownFileList()
