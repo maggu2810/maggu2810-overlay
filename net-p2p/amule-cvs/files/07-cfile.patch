@@ -607,7 +607,7 @@
  
  /* Proxy */
  CProxyData	CPreferences::s_ProxyData;
-@@ -1179,6 +1181,13 @@ void CPreferences::BuildItemList( const 
+@@ -1173,6 +1175,13 @@ void CPreferences::BuildItemList( const 
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/KadNodesUrl"),			s_KadURL, wxT("http://emule-inside.net/nodes.dat") ) );
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/Ed2kServersUrl"),		s_Ed2kURL, wxT("http://gruk.org/server.met.gz") ) );
  	
@@ -633,7 +633,7 @@
  	// Hidden files
  	
  	static bool ShareHiddenFiles() { return s_ShareHiddenFiles; }
-@@ -744,6 +747,9 @@ protected:
+@@ -740,6 +743,9 @@ protected:
  	static wxString 	s_CommentFilterString;
  
  	

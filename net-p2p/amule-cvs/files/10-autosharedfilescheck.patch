@@ -590,7 +590,7 @@
  /* The rest, organize it! */
  wxString	CPreferences::s_nick;
  uint16		CPreferences::s_maxupload;
-@@ -1145,7 +1154,20 @@ void CPreferences::BuildItemList( const 
+@@ -1143,7 +1152,20 @@ void CPreferences::BuildItemList( const 
  	 * Version check
  	 **/
  	 NewCfgItem(IDC_NEWVERSION,	(new Cfg_Bool( wxT("/eMule/NewVersionCheck"), s_NewVersionCheck, false )));
@@ -641,7 +641,7 @@
  	// Networks
  	static bool GetNetworkKademlia()		{ return s_ConnectToKad; }
  	static void SetNetworkKademlia(bool val)	{ s_ConnectToKad = val; }
-@@ -758,6 +778,15 @@ protected:
+@@ -754,6 +774,15 @@ protected:
  	// Version check
  	static bool s_NewVersionCheck;
  	

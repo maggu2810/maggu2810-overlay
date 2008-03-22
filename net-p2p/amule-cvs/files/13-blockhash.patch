@@ -311,35 +311,35 @@
  bool		CPreferences::s_bmanualhighprio;
  bool		CPreferences::s_btransferfullchunks;
  bool		CPreferences::s_bstartnextfile;
-@@ -1189,6 +1190,8 @@ void CPreferences::BuildItemList( const 
+@@ -1187,6 +1188,8 @@ void CPreferences::BuildItemList( const 
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/YourHostname"),			s_yourHostname, wxEmptyString ) );
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/DateTimeFormat"),		s_datetimeformat, wxT("%A, %x, %X") ) );
  
 +	s_MiscList.push_back( MkCfg_Int( wxT("/eMule/SDFInterval"), s_SDFInterval, 60 * 60 * 1000 ) );
 +	
- 	s_MiscList.push_back( new Cfg_Bool( wxT("/eMule/IndicateRatings"),		s_indicateratings, true ) );
  	s_MiscList.push_back(    MkCfg_Int( wxT("/eMule/AllcatType"),			s_allcatType, 0 ) );
  	s_MiscList.push_back( new Cfg_Bool( wxT("/eMule/ShowAllNotCats"),		s_showAllNotCats, false ) );
+ 
 --- src.org/Preferences.h
 +++ src/Preferences.h
 @@ -474,6 +474,8 @@ public:
  	static void LoadAllItems(wxConfigBase* cfg);
  	static void SaveAllItems(wxConfigBase* cfg);
  
-+	static uint32		GetSDFInterval()			{ return s_SDFInterval; }
++	static uint32		GetSDFInterval()		{ return s_SDFInterval; }
 +	
  	static bool 		GetShowRatesOnTitle()		{ return s_ShowRatesOnTitle; }
  	
  	// Message Filters
-@@ -677,6 +679,8 @@ protected:
- 	static bool	s_bUAP;
- 	static bool	s_bDisableKnownClientList;
- 	static bool	s_bDisableQueueList;
-+	
-+	static uint32 s_SDFInterval;
+@@ -678,6 +680,8 @@ protected:
  
  	static bool	s_ShowRatesOnTitle;
  
++	static uint32	s_SDFInterval;
++
+ 	static wxString	s_VideoPlayer;
+ 	static bool	s_moviePreviewBackup;
+ 	static bool	s_showAllNotCats;
 --- src.org/ThreadTasks.cpp
 +++ src/ThreadTasks.cpp
 @@ -458,7 +458,7 @@ void CCompletionTask::Entry()
