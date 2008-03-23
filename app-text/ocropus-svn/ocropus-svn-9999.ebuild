@@ -20,7 +20,7 @@ RDEPEND=">=app-text/tesseract-1.04b
 	media-libs/libpng
 	media-libs/jpeg"
 DEPEND="${RDEPEND}
-	dev-util/jam"
+	dev-util/ftjam"
 
 src_compile() {
 	econf --with-tesseract=/usr || die "econf failed"
