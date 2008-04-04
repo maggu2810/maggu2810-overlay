@@ -87,7 +87,7 @@ then
 		emerge -DNu world
 		while [ $? == 1 ]; do emerge --resume --skipfirst; done
 		rm -f /root/.revdep-rebuild*
-		LD_LIBRARY_MASK="libntfs.so.9" revdep-rebuild
+		SEARCH_DIRS_MASK="/usr/lib/gcc/i686-pc-linux-uclibc" revdep-rebuild
 		while [ $? == 1 ]; do emerge --resume --skipfirst; done
 		rm -f /root/.revdep-rebuild*
 	done
