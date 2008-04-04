@@ -20,6 +20,11 @@ DEPEND="net-im/tapioca-glib
 
 src_compile() {
     sed -i 's/pylint --indent-string="    " --max-args=6 --max-public-methods=35 $@//g' ereseva/Makefile*
+    for i in data/icons data/emotes data/avatars
+    do
+	sed -i 's:$(mkinstalldirs) $(datadir):$(mkinstalldirs) $(DESTDIR)$(datadir):g' ${i}/Makefile*
+        sed -i 's: $(datadir)/: $(DESTDIR)$(datadir)/:g' ${i}/Makefile*
+    done
     ./autogen.sh
     econf || die
     emake || die
