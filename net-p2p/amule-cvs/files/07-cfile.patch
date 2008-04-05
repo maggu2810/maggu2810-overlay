@@ -573,7 +573,7 @@
  
 --- src.org/PartFile.cpp
 +++ src/PartFile.cpp
-@@ -233,11 +233,11 @@ CPartFile::~CPartFile()
+@@ -234,11 +234,11 @@ CPartFile::~CPartFile()
  	// So we just guess is < 0 on error and > 2 if ok (0 stdin, 1 stdout, 2 stderr)
  	// But, where does this wrong handle comes from?
  	
@@ -587,7 +587,7 @@
  		m_hpartfile.Close();
  		// Update met file (with current directory entry)
  		SavePartFile();			
-@@ -2356,7 +2356,7 @@ void CPartFile::Delete()
+@@ -2363,7 +2363,7 @@ void CPartFile::Delete()
  	// eMule had same problem with lseek error ... and override with a simple 
  	// check for INVALID_HANDLE_VALUE (that, btw, does not exist on linux)
  	// So we just guess is < 0 on error and > 2 if ok (0 stdin, 1 stdout, 2 stderr)
@@ -598,7 +598,7 @@
  
 --- src.org/Preferences.cpp
 +++ src/Preferences.cpp
-@@ -68,6 +68,8 @@ COLORREF		CPreferences::s_colors_ref[cnt
+@@ -69,6 +69,8 @@ COLORREF		CPreferences::s_colors_ref[cnt
  CPreferences::CFGMap	CPreferences::s_CfgList;
  CPreferences::CFGList	CPreferences::s_MiscList;
  
@@ -607,7 +607,7 @@
  
  /* Proxy */
  CProxyData	CPreferences::s_ProxyData;
-@@ -1173,6 +1175,13 @@ void CPreferences::BuildItemList( const 
+@@ -1175,6 +1177,13 @@ void CPreferences::BuildItemList( const 
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/KadNodesUrl"),			s_KadURL, wxT("http://emule-inside.net/nodes.dat") ) );
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/Ed2kServersUrl"),		s_Ed2kURL, wxT("http://gruk.org/server.met.gz") ) );
  	
@@ -623,7 +623,7 @@
  	for ( int i = 0; i < cntStatColors; i++ ) {  
 --- src.org/Preferences.h
 +++ src/Preferences.h
-@@ -501,6 +501,9 @@ public:
+@@ -491,6 +491,9 @@ public:
  	// Can't have it return a reference, will need a pointer later.
  	static const CProxyData *GetProxyData()			{ return &s_ProxyData; }
  	
@@ -633,7 +633,7 @@
  	// Hidden files
  	
  	static bool ShareHiddenFiles() { return s_ShareHiddenFiles; }
-@@ -740,6 +743,9 @@ protected:
+@@ -730,6 +733,9 @@ protected:
  	static wxString 	s_CommentFilterString;
  
  	
@@ -714,15 +714,15 @@
  
 --- src.org/Statistics.h
 +++ src/Statistics.h
-@@ -30,6 +30,7 @@
- #include "GetTickCount.h"	// Needed for GetTickCount64()
- #include "StatTree.h"		// Needed for CStatTreeItem* classes
+@@ -61,6 +61,7 @@ typedef struct HistoryRecord {
+ 	uint64		kadNodesTotal;
+ } HR;
  
 +#include "CFile.h"		// Needed for OH_FILE_OPEN_STATS define
  
- #include <deque>		// Needed for std::deque
+ #ifndef EC_REMOTE
  
-@@ -465,6 +466,18 @@ class CStatistics {
+@@ -464,6 +465,18 @@ class CStatistics {
  	// Kad nodes
  	static uint64 s_kadNodesTotal;
  	static uint16 s_kadNodesCur;

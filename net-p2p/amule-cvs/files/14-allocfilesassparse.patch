@@ -8,5 +8,5 @@
 +	m_hpartfile.Seek(GetFileSize() - 1, wxFromStart);
 +	m_hpartfile.WriteUInt8(0);
  	
- 	m_hashsetneeded = GetED2KPartHashCount();
+ 	m_hashsetneeded = (GetED2KPartHashCount() > 0);
  	

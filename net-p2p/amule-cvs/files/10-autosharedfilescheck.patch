@@ -574,7 +574,7 @@
  public final static short 		EC_TAG_SRCDROP_DROP_FQS                   = 0x1902;
 --- src.org/Preferences.cpp
 +++ src/Preferences.cpp
-@@ -74,6 +74,15 @@ uint16		CPreferences::s_DFOMaxOpenFiles;
+@@ -75,6 +75,15 @@ uint16		CPreferences::s_DFOMaxOpenFiles;
  /* Proxy */
  CProxyData	CPreferences::s_ProxyData;
  
@@ -590,12 +590,10 @@
  /* The rest, organize it! */
  wxString	CPreferences::s_nick;
  uint16		CPreferences::s_maxupload;
-@@ -1143,7 +1152,20 @@ void CPreferences::BuildItemList( const 
- 	 * Version check
+@@ -1146,6 +1155,19 @@ void CPreferences::BuildItemList( const 
  	 **/
- 	 NewCfgItem(IDC_NEWVERSION,	(new Cfg_Bool( wxT("/eMule/NewVersionCheck"), s_NewVersionCheck, false )));
--	 
-+
+ 	 NewCfgItem(IDC_NEWVERSION,	(new Cfg_Bool( wxT("/eMule/NewVersionCheck"), s_NewVersionCheck, true )));
+ 	 
 +	/** 
 +	 * Auto Shared Files Check
 +	 **/
@@ -614,7 +612,7 @@
  	  **/
 --- src.org/Preferences.h
 +++ src/Preferences.h
-@@ -514,6 +514,26 @@ public:
+@@ -504,6 +504,26 @@ public:
  	
  	static bool CheckNewVersion() { return s_NewVersionCheck; }
  
@@ -641,7 +639,7 @@
  	// Networks
  	static bool GetNetworkKademlia()		{ return s_ConnectToKad; }
  	static void SetNetworkKademlia(bool val)	{ s_ConnectToKad = val; }
-@@ -754,6 +774,15 @@ protected:
+@@ -744,6 +764,15 @@ protected:
  	// Version check
  	static bool s_NewVersionCheck;
  	
@@ -734,16 +732,16 @@
  	uint32 servfail;
 --- src.org/Statistics.h
 +++ src/Statistics.h
-@@ -32,6 +32,8 @@
- 
- #include "CFile.h"		// Needed for OH_FILE_OPEN_STATS define
+@@ -30,6 +30,8 @@
+ #include "StatTree.h"		// Needed for CStatTreeItem* classes
+ #include "GetTickCount.h"	// Needed for GetTickCount64()
  
 +#include "DownloadQueue.h"	// Needed for OH_ASF_CHECK_STATS define
 +
  #include <deque>		// Needed for std::deque
  
  enum StatsGraphType {
-@@ -459,6 +461,18 @@ class CStatistics {
+@@ -458,6 +460,18 @@ class CStatistics {
  	static	CStatTreeItemSimple*		s_totalFiles;
  	static	CStatTreeItemSimple*		s_serverOccupation;
  

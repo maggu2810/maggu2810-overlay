@@ -117,7 +117,7 @@
  			break;
  		case EC_OP_ADD_LINK: 
 +		case EC_OP_ED2K_LINK_PAUSED: 
- 			for(int i = 0; i < request->GetTagCount();i++) {
+ 			for(unsigned int i = 0; i < request->GetTagCount();i++) {
  				const CECTag *tag = request->GetTagByIndex(i);
  				wxString link = tag->GetStringData();
  				int category = tag->GetTagByIndexSafe(0)->GetInt();

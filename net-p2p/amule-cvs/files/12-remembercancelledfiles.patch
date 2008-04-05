@@ -67,7 +67,7 @@
  	wxCHECK(!IsPartFile(), false);
 --- src.org/KnownFile.h
 +++ src/KnownFile.h
-@@ -301,6 +301,8 @@ public:
+@@ -300,6 +300,8 @@ public:
  	static void CreateHashFromHashlist(const ArrayOfCMD4Hash& hashes, CMD4Hash* Output);
  	
  	void	ClearPriority();
@@ -306,7 +306,7 @@
  
 --- src.org/PartFile.cpp
 +++ src/PartFile.cpp
-@@ -2354,7 +2354,7 @@ void  CPartFile::RemoveAllSources(bool b
+@@ -2361,7 +2361,7 @@ void  CPartFile::RemoveAllSources(bool b
  }
  
  
@@ -315,7 +315,7 @@
  {
  	AddLogLineM(false, CFormat(_("Deleting file: %s")) % GetFileName());
  	// Barry - Need to tell any connected clients to stop sending the file
-@@ -2407,6 +2407,11 @@ void CPartFile::Delete()
+@@ -2414,6 +2414,11 @@ void CPartFile::Delete()
  		}
  	}
  

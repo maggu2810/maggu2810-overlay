@@ -68,12 +68,12 @@
  #define	FT_GAPEND			0x0A	// <uint32>
 --- src.org/muuli_wdr.cpp
 +++ src/muuli_wdr.cpp
-@@ -637,7 +637,7 @@ wxSizer *fileDetails( wxWindow *parent, 
+@@ -627,7 +627,7 @@ wxSizer *fileDetails( wxWindow *parent, 
  
      wxBoxSizer *item19 = new wxBoxSizer( wxHORIZONTAL );
  
--    wxStaticText *item20 = new wxStaticText( parent, IDC_FD_X15, _("Last seen complete :"), wxDefaultPosition, wxDefaultSize, 0 );
-+    wxStaticText *item20 = new wxStaticText( parent, IDC_FD_X15, _("Last seen complete (part) :"), wxDefaultPosition, wxDefaultSize, 0 );
+-    wxStaticText *item20 = new wxStaticText( parent, -1, _("Last seen complete :"), wxDefaultPosition, wxDefaultSize, 0 );
++    wxStaticText *item20 = new wxStaticText( parent, -1, _("Last seen complete (part) :"), wxDefaultPosition, wxDefaultSize, 0 );
      item19->Add( item20, 0, wxADJUST_MINSIZE|wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT, 5 );
  
      wxStaticText *item21 = new wxStaticText( parent, IDC_LASTSEENCOMPL, _("N/A"), wxDefaultPosition, wxDefaultSize, 0 );
@@ -148,7 +148,7 @@
  
  		if ( IsAutoUpPriority() ) {
  			CTagInt32( FT_ULPRIORITY,	(uint8)PR_AUTO	).WriteTagToFile( &file );	// 8
-@@ -3665,6 +3695,24 @@ void CPartFile::UpdatePartsFrequency( CU
+@@ -3672,6 +3702,24 @@ void CPartFile::UpdatePartsFrequency( CU
  	}
  	
  	if ( increment ) {
@@ -173,7 +173,7 @@
  		for ( unsigned int i = 0; i < size; i++ ) {
  			if ( freq[i] ) {
  				m_SrcpartFrequency[i]++;
-@@ -3790,6 +3838,7 @@ void CPartFile::Init()
+@@ -3797,6 +3845,7 @@ void CPartFile::Init()
  	completedsize=0;
  	m_bPreviewing = false;
  	lastseencomplete = 0;
