@@ -19,7 +19,8 @@ DEPEND="net-im/tapioca-glib
     net-im/tapioca-python
     dev-python/pyxdg
     dev-python/elementtree
-    dev-python/gst-python"
+    dev-python/gst-python
+    net-voip/telepathy-gabble"
 
 src_compile() {
     sed -i 's/pylint --indent-string="    " --max-args=6 --max-public-methods=35 $@//g' ereseva/Makefile.am
