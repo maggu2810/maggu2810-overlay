@@ -19,5 +19,10 @@ RDEPEND="${DEPEND}
 
 S=${WORKDIR}/${MY_P}
 
+src_compile() {
+	sed 's/kxmame_LDADD = $(GLIB_LDFLAGS) $(GLIB_LIBADD) $(LIB_KFILE) $(LIB_KDEPRINT)/kxmame_LDADD = $(GLIB_LDFLAGS) $(GLIB_LIBADD) $(LIB_KFILE) $(LIB_KDEPRINT) -lexpat/g' -i src/Makefile.am
+	kde_src_compile
+}
+
 need-kde 3.2
 
