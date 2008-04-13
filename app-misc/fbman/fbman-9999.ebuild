@@ -51,9 +51,9 @@ RDEPEND="
 	app-portage/gentoolkit
 	sys-process/psmisc
 	x11-terms/xterm
-	firefox? (www-client/mozilla-firefox)
-	mmaker? (x11-misc/menumaker)
-	|| (sys-apps/slocate sys-apps/rlocate)
+	firefox? ( www-client/mozilla-firefox )
+	mmaker? ( x11-misc/menumaker )
+	|| ( sys-apps/slocate sys-apps/rlocate )
 	${COMMON_DEP}"
 
 # dependencies needed for build time
