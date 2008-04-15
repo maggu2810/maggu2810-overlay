@@ -52,7 +52,7 @@ RDEPEND="
 	>=virtual/jre-1.6
 	sys-apps/file
 	sys-apps/coreutils
-	truecrypt? (app-crypt/truecrypt)
+	truecrypt? ( app-crypt/truecrypt )
 	${COMMON_DEP}"
 
 # dependencies needed for build time
