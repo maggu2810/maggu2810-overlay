@@ -2,18 +2,17 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-inherit eutils flag-o-matic subversion
+inherit eutils flag-o-matic multilib subversion
 
-RESTRICT="nostrip"
+RESTRICT="strip"
 IUSE="X 3dfx 3dnow 3dnowext a52 aac aalib alsa altivec amrnb amrwb arts ass
-	bidi bindist bl cddb cdparanoia color-console cpudetection custom-cflags
-	debug dga doc dvb directfb dts dvd dv dvdnav dvdread eac3 enca encode esd
-	fbcon fpm ftp gif ggi gtk i8x0 ipv6 ivtv jack joystick jpeg
-	ladspa libcaca lirc live livecd lzo matrox mga mmx mmxext mp2 mp3 mpeg
-	musepack nas nls nut nvidia openal opengl oss png pnm pulseaudio quicktime
-	radio rar real rtc samba sdl sortsub speex sse sse2 svga tga theora tivo
-	truehd truetype unicode v4l v4l2 vorbis win32codecs x264 xanim xinerama 
-	xmga xv xvid xvmc zoran darknrg"
+	bidi bindist bl cddb cdparanoia cpudetection custom-cflags debug dga doc
+	dvb directfb dts dvd dv dvdnav dvdread eac3 enca encode esd fbcon fpm ftp
+	gif ggi gtk i8x0 ipv6 ivtv jack joystick jpeg ladspa libcaca lirc live
+	livecd lzo matrox mga mmx mmxext mp2 mp3 mpeg musepack nas nls nut nvidia
+	openal opengl oss png pnm pulseaudio quicktime radio rar real rtc samba
+	sdl sortsub speex sse sse2 svga tga theora tivo truehd truetype unicode
+	v4l v4l2 vorbis win32codecs x264 xanim xinerama xmga xv xvid xvmc zoran darknrg"
 
 LANGS="bg cs de da el en es fr hu ja ko mk nl no pl pt_BR ro ru sk tr uk zh_CN zh_TW"
 
@@ -55,7 +54,7 @@ RDEPEND="sys-libs/ncurses
 		aac? ( media-libs/faac )
 		dv? ( >=media-libs/libdv-0.9.5 )
 		mp3? ( media-sound/lame )
-		x264? ( >=media-libs/x264-svn-20061014 )
+		x264? ( media-libs/x264 )
 		)
 	esd? ( media-sound/esound )
 	fontconfig? ( media-libs/fontconfig )
@@ -169,7 +168,7 @@ src_unpack() {
 
 	epatch "${FILESDIR}/disable-version-rebranding.patch"
 
-	# eac3 patches from the GSoC project 
+	# eac3 patches from the GSoC project
 	if use eac3
 	then
 		cd "${WORKDIR}"
@@ -182,7 +181,7 @@ src_unpack() {
 	fi
 
 	# MLP/TrueHD decoder patch from Ian Caulfield (FFmpeg-devel ML)
-	use truehd && epatch "${FILESDIR}/truehd-20071218.patch"
+	use truehd && epatch "${FILESDIR}/truehd-20080107.patch"
 
 	# Fix hppa compilation
 	[ "${ARCH}" = "hppa" ] && sed -i -e "s/-O4/-O1/" "${S}/configure"
@@ -284,7 +283,6 @@ src_compile() {
 	# linux-headers != 2.6.18, which is currently not keyworded
 	myconf="${myconf} --disable-pvr"
 
-	myconf="${myconf} $(use_enable color-console)"
 	myconf="${myconf} $(use_enable ipv6 inet6)"
 	myconf="${myconf} $(use_enable joystick)"
 	myconf="${myconf} $(use_enable lirc)"
@@ -601,14 +599,10 @@ pkg_postinst() {
 		depmod -a &>/dev/null || :
 	fi
 
-	if use alsa ; then
-		einfo "For those using alsa, please note the ao driver name is no longer"
-		einfo "alsa9x or alsa1x.  It is now just 'alsa' (omit quotes)."
-		einfo "The syntax for optional drivers has also changed.  For example"
-		einfo "if you use a dmix driver called 'dmixer,' use"
-		einfo "ao=alsa:device=dmixer instead of ao=alsa:dmixer"
-		einfo "Some users may not need to specify the extra driver with the ao="
-		einfo "command."
+	if use gtk ; then
+		einfo "The GTK+ GUI for mplayer is no longer developed upstream,"
+		einfo "and is therefore not supported in case of bugs."
+		einfo "We recommend media-video/smplayer as GUI frontend."
 	fi
 
 	if use dvdnav && use dvd; then
