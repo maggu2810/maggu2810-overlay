@@ -68,7 +68,7 @@ S=${WORKDIR}/${MY_PN}
 [ "${PV}" != "9999" ] && \
 	SRC_URI="https://darknrg.dyndns.org:28514/files/pkgs/${MY_PN}-${PV}.tar.bz2"
 
-ESVN_REPO_URI="svn+ssh://oliver@darknrg.dyndns.org/var/svn/repos/trunk/root/${MY_PN}"
+ESVN_REPO_URI="svn+ssh://darknrg.dyndns.org/var/svn/repos/trunk/root/${MY_PN}"
 
 src_unpack() {
 	[ "${PV}" == "9999" ] && subversion_src_unpack || unpack ${A}
@@ -77,7 +77,7 @@ src_unpack() {
 src_compile() {
 	[ -d ${MY_PN} ] && cd ${MY_PN}
 	[ -e bootstrap ] && ./bootstrap
-	econf `use_enable debug`|| die
+	econf `use_enable debug` || die
 	before_compile || die
 	emake || die
 }

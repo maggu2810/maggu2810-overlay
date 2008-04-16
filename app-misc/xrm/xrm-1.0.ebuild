@@ -24,7 +24,7 @@ KEYWORDS="~amd64 ~ia64 ~x86 ~x86-fbsd"
 RESTRICT="mirror"
 
 # use flags
-IUSE=""
+IUSE="debug"
 
 # real name of package
 # (used for archive filename-creation,
@@ -77,7 +77,7 @@ src_unpack() {
 src_compile() {
 	[ -d ${MY_PN} ] && cd ${MY_PN}
 	[ -e bootstrap ] && ./bootstrap
-	econf || die
+	econf `use_enable debug` || die
 	before_compile || die
 	emake || die
 }

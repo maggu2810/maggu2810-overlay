@@ -32,7 +32,7 @@ COMMONDEP="
 	sys-apps/grep
 	sys-apps/sed
 
-	app-portage/eix
+	>=app-portage/eix-0.10.0
 	sys-apps/diffutils
 	app-misc/colordiff
 "
