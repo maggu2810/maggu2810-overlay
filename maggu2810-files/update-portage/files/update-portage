@@ -1,47 +1,34 @@
 #!/bin/bash
 
-OVERLAYS="`for i in $(layman -l |cut -d \  -f 2 | tr -d [:cntrl:] | sed 's/\[39;49;00m/ /g'); do echo $i; done`"
+resume_skip {
+		while [ $? == 1 ]; do emerge --resume --skipfirst; done
+}
 
-if [ "$1" == "--modules" ]
-then
-	MODULES=""
-	MODULES="$MODULES ati-drivers"
-	MODULES="$MODULES x11-drm"
+rebuild_packages() {
+	# list of packages that must be rebuild after kernel update
+	ALL_REBUILD_PACKAGES="
+		app-emulation/virtualbox-modules
+		app-emulation/vmware-modules
+		net-dialup/slmodem
+		net-misc/cisco-vpnclient-3des
+		sys-fs/fuse
+		x11-base/x11-drm
+		x11-drivers/ati-drivers
+	"
 
-	#MODULES="$MODULES net-wireless/rt2500"
+	# look for ebuilds that are installed and so that must be reuild
+	MY_REBUILD=$(for PACKAGE in ${ALL_REBUILD_PACKAGES}; do eix -n -c --only-names -I -A ${PACKAGE}; done)
 
-	MODULES="$MODULES net-wireless/eeprom_93cx6" ## for rt2x00-git
-	MODULES="$MODULES net-wireless/mac80211" ## for rt2x00-git
-	MODULES="$MODULES net-wireless/rt2x00-git" ## order: net-wireless/eeprom_93cx6 net-wireless/mac80211 net-wireless/rt2x00-git
+	# rebuild the installed # == REBUILD KERNEL MODULES ==
+	emerge -va1 ${MY_REBUILD}
+	resume_skip
+}
 
-	MODULES="$MODULES cisco-vpnclient-3des"
-	MODULES="$MODULES sys-fs/fuse"
-	MODULES="$MODULES app-emulation/vmware-modules" ## to run after merging: /opt/vmware/player/bin/vmware-config.pl
-	MODULES="$MODULES slmodem"
-
-	echo $MODULES
-
-	## == REBUILD KERNEL MODULES ==
-	#emerge -va1 $MODULES
-
-	exit 0
-fi
-
-if [ "$1" == "--sync" ]
-then
-
-	## === fetch some ebuild in my local overlay
-		# xwinwrap
-	#mkdir -p /usr/portage/local/maggu2810/x11-misc/xwinwrap
-	#svn co svn://svn.gentoo-xeffects.org/xeffects/trunk/x11-misc/xwinwrap /usr/portage/local/maggu2810/x11-misc/xwinwrap
-	#rm -rf /usr/portage/local/maggu2810/x11-misc/xwinwrap/.svn
-	#rm -rf /usr/portage/local/maggu2810/x11-misc/xwinwrap/files/.svn
-
-	# svn checkout http://OpenSVN.csie.org/maggu2810_overlay /usr/portage/local/maggu2810_overlay
-	#svn update http://OpenSVN.csie.org/maggu2810_overlay /usr/portage/local/maggu2810_overlay
-
+portage_sync() {
 	## === LAYMAN ===
 	layman -L &> /dev/null
+
+	OVERLAYS="`for i in $(layman -l |cut -d \  -f 2 | tr -d [:cntrl:] | sed 's/\[39;49;00m/ /g'); do echo $i; done`"
 
 	#layman --sync-all
 	for i in $OVERLAYS
@@ -55,47 +42,71 @@ then
 		echo "-"
 	done 
 
-	## === DO SOME CORRECTIONS ===
-	rm -rf /usr/portage/local/layman/berkano/app-misc/screen
-	rm -rf /usr/portage/local/layman/berkano/media-video/ffmpeg
-	rm -rf /usr/portage/local/layman/berkano/media-video/mplayer
-	#ebuild /usr/portage/local/layman/berkano/media-libs/x264-svn/x264-svn-20079999.ebuild digest
-	#ebuild /usr/portage/local/layman/berkano/media-video/avidemux/avidemux-2.4.0_pre3.ebuild digest
-	rm -rf /usr/portage/local/layman/je_fro/net-wireless/wpa_supplicant
-	rm -rf /usr/portage/local/layman/liquidx/media-video/gpac
-	#ebuild /usr/portage/local/layman/musicbrainz/media-sound/picard/picard-0.9.0_alpha14.ebuild digest
-	#ebuild /usr/portage/local/layman/vmware/app-emulation/vmware-workstation/vmware-workstation-6.0.0.45731.ebuild digest
-	rm -rf /usr/portage/local/layman/zugaina/app-crypt/qca
-
-	# workaround for xeffects
-	rm -rf /usr/portage/local/layman/xeffects/x11-libs/qt
-	rm -rf /usr/portage/local/layman/xeffects/kde-base	
-
 	## === MAIN PORTAGE TREE ===
 	#eix-sync -v
 	emerge --sync
 	update-eix
+}
 
-	#emerge -fDNu world &> /dev/null &
+handle_elog() {
+	# have a look at the elog files
+	DATE="$(date +%F_-_%H-%M-%S)"
+	TAR="/var/log/portage/${DATE}.tar"
+	TMP="$(mktemp --tmpdir=/tmp ${DATE}.XXXXXXXXXX)"
+	for FILE in /var/log/portage/elog/*
+	do
+		echo -e "\n\n==== ${FILE} ===\n" >> ${TMP}
+		cat ${FILE} >> ${TMP}
+		tar rvf ${TAR} ${FILE}
+		rm ${FILE}
+	done
+	tar rvf ${TAR} ${TMP}
+	less ${TMP}
+}
 
-	exit 0
-fi
-
-if [ "$1" == "--uworldskip" ]
-then
-	for i in 1 2; do
-		emerge -DNu world
-		while [ $? == 1 ]; do emerge --resume --skipfirst; done
+revdep_rebuild() {
 		rm -f /root/.revdep-rebuild*
 		SEARCH_DIRS_MASK="/usr/lib/gcc/i686-pc-linux-uclibc" revdep-rebuild
-		while [ $? == 1 ]; do emerge --resume --skipfirst; done
 		rm -f /root/.revdep-rebuild*
-	done
-	dispatch-conf
-	exit 0
-fi
+}
 
-exit 0 
+uworldskip() {
+	for i in 1 2; do
+		emerge -DNu world
+		resume_skip
+		revdep_rebuild
+		resume_skip
+	done
+
+}
 
 ## == REBUILD 9999 ==
 #emerge -va1 `equery -q -C list -i | grep -E -- -9999 | xargs -I° echo =°`
+
+
+while [ -n ${1} ]
+do
+	case "${1}" in
+		"--uworldskip")
+			uworldskip
+			handle_elog
+			dispatch-conf
+			;;
+		"--new-kernel")
+			rebuild_packages
+			;;
+		"--show")
+			emerge -vpDNu world
+			echo "press return to continue"
+			read
+			;;
+		"--sync")
+			portage_sync
+			;;
+		*)
+			echo "unknow command"
+			exit 1
+		;;
+	esac
+	shift
+done
