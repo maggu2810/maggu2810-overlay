@@ -1,0 +1,60 @@
+# ChangeLog for dev-libs/xalan-c
+# Copyright 1999-2007 Gentoo Foundation; Distributed under the GPL v2
+# $Header: /var/cvsroot/gentoo-x86/dev-libs/xalan-c/ChangeLog,v 1.15 2007/12/24 07:13:42 dev-zero Exp $
+
+  22 Dec 2007; Tiziano Müller <dev-zero@gentoo.org> xalan-c-1.10.0.ebuild:
+  Changed xerces-c version to match only 2.7.0 (bug #202922) since upstream
+  doesn't guarantee compatibility with 2.8.0
+
+  28 Jun 2007; Joseph Jezak <josejx@gentoo.org> xalan-c-1.10.0.ebuild:
+  Marked ~ppc.
+
+  18 May 2007; Petteri Räty <betelgeuse@gentoo.org>
+  +files/1.10.0-as-needed.patch, xalan-c-1.10.0.ebuild:
+  Add patch to fix building with -Wl,--as-needed. Fixes bug #165434. Thanks to
+  Daniel Lin <dtlin@andrew.cmu.edu> for the patch. Also fixed LICENSE to
+  Apache-2.0.
+
+  05 Apr 2007; Tiziano Müller <dev-zero@gentoo.org> Manifest:
+  Manifest rebuilt (bug #173450)
+
+  03 Feb 2007; Simon Stelling <blubb@gentoo.org> xalan-c-1.10.0.ebuild:
+  fix typo causing bug 165168
+
+  02 Feb 2007; Simon Stelling <blubb@gentoo.org> xalan-c-1.10.0.ebuild:
+  fix multilib-strict; bug 154279; credits to Christoph Mende
+
+  04 Dec 2006; Tiziano Müller <dev-zero@gentoo.org>
+  -files/1.8.0-gcc34.patch, -xalan-c-1.7.0.ebuild, -xalan-c-1.8.0.ebuild,
+  xalan-c-1.10.0.ebuild:
+  Dropping old versions. Added API-doc generation (bug #157046) using doxygen.
+  Updated ebuild to make the package use our CXXFLAGS.
+
+  07 Nov 2006; Daniel Gryniewicz <dang@gentoo.org> xalan-c-1.10.0.ebuild:
+  Marked stable on amd64 for bug #152042
+
+  30 Oct 2006; Christian Faulhammer <opfer@gentoo.org>
+  xalan-c-1.10.0.ebuild:
+  keyworded x86 as requested in bug #152042
+
+  22 Oct 2006; Jason Wever <weeve@gentoo.org> xalan-c-1.10.0.ebuild:
+  Stable on SPARC wrt bug #152042.
+
+*xalan-c-1.10.0 (03 Sep 2006)
+
+  03 Sep 2006; Mike Frysinger <vapier@gentoo.org> +xalan-c-1.10.0.ebuild:
+  Version bump #146061 by Colonel Paneek.
+
+  30 May 2005; Sven Wegener <swegener@gentoo.org> xalan-c-1.7.0.ebuild:
+  Moved from gcc.eclass to toolchain-funcs.eclass, bug #92745.
+
+*xalan-c-1.8.0 (10 Nov 2004)
+
+  10 Nov 2004; Mike Frysinger <vapier@gentoo.org> +files/1.8.0-gcc34.patch,
+  xalan-c-1.7.0.ebuild, +xalan-c-1.8.0.ebuild:
+  Version bump #62196 by Sebastian Roth.
+
+*xalan-c-1.7.0 (21 Feb 2004)
+
+  21 Feb 2004; Mike Frysinger <vapier@gentoo.org> :
+  Initial import.  Ebuild submitted by Chris Mayo #36836.
