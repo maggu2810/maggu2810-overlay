@@ -1,0 +1,90 @@
+--- checkuseflags.sh	2008-04-23 13:40:25.000000000 +0200
++++ /usr/bin/checkuseflags	2008-04-26 13:16:41.000000000 +0200
+@@ -2,9 +2,27 @@
+ 
+ set -e
+ 
++function parse_prof() {
++	echo "Reading profile in `pwd` ..."
++	[ -e "make.defaults" ] && source "make.defaults"
++	if [ -e "parent" ]; then
++		local parents=( `cat parent` )
++		local i
++		for ((i=0; $i < ${#parents[@]}; i++)); do
++			local wd=`pwd`
++			cd ${parents[$i]}
++			parse_prof
++			cd $wd
++		done
++	fi
++}
++
+ function check_make_conf() {
+ 	USE=""
+-	source /etc/make.profile/make.defaults
++	cd /etc
++	cd `readlink make.profile`
++	parse_prof
++	echo "Found default USE-flags $USE"
+ 	DEFUSE=" $USE "
+ 
+ 	USE=""
+@@ -58,7 +76,10 @@
+ 	GLOBUSE=" $USE "
+ 
+ 	USE=""
+-	source /etc/make.profile/make.defaults
++	cd /etc
++	cd `readlink make.profile`
++	parse_prof
++	echo "Found default USE-flags $USE"
+ 	DEFUSE=" $USE "
+ 
+ 	cat /etc/portage/package.use | while true; do
+@@ -99,13 +120,13 @@
+ 			fi
+ 			availflags1=" `FORMAT='<availableversionslong>' eix --exact $pack | sed -e "s/[^{]*//" -e "s/.*{\(.*\)}.*/\1/"` "
+ 			if [ $installed -gt 0 ]; then
+-				availflags2=" `FORMAT='<installedversions:::::::@>' eix --exact $pack | grep @ | cut -d @ -f 2` "
++				availflags2=" `FORMAT='<installedversions::::::::::@>' eix --exact $pack | grep @ | cut -d @ -f 2` "
+ 				[ $2 -eq 1 ] && availflags1=""
+ 			else
+ 				availflags2=""
+ 			fi
+-			availflags1="${availflags1// -/ }"
+-			availflags2="${availflags2// -/ }"
++			availflags1=" ${availflags1// -/ }"
++			availflags2=" ${availflags2// -/ }"
+ 			notfound=""
+ 			validflags=""
+ 			for flag in $flags; do
+@@ -117,12 +138,19 @@
+ 						echo "Flag already contained in make.conf: $flag"
+ 						notfound="$notfound $flag"
+ 					elif [ "$DEFUSE" != "${DEFUSE/ $flag /}" -a "$GLOBUSE" == "${GLOBUSE/ -$flag /}" ]; then
+-						echo "Flag already contained in default flags and not in make.conf: $flag"
++						echo "Flag already contained in default flags and not (negated) in make.conf: $flag"
+ 						notfound="$notfound $flag"
+ 					else
+ 						validflags="$validflags $flag"
+ 					fi
+ 				fi
++				if [ $f == $flag ]; then
++					usedinst=`eix --installed --use $f --only-names | wc -l`
++					usedall=`eix --use $f --only-names | wc -l`
++					if [ $usedall -gt 2 ]; then
++						echo "Flag used in more than 2 available packages: $f in $usedall packages ($usedinst installed)"
++					fi
++				fi
+ 			done
+ 			if [ "$notfound" ]; then
+ 				printf "%-40s has invalid flag(s) in package.use: %s\n" $package "$notfound"
+@@ -144,7 +172,7 @@
+ 	echo "make-local:   0 or 1 => make USE flags in make.conf used by only 2 available or no"
+ 	echo "                        installed packages local by putting them into portage.use."
+ 	echo "inst-only:    0 or 1 => if a package is installed, remove not only invalid USE flags"
+-	echo "                        from portage.use but also all flags not availabe for the"
++	echo "                        from portage.use but also all flags not available for the"
+ 	echo "                        currently installed version."
+ 	echo "rem-not-inst: 0 or 1 => remove all packages from portage.use which are not installed."
+ 	echo
