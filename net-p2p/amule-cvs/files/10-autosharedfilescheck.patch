@@ -216,10 +216,10 @@
 +	for (int i = 0; i < MAX_CLIENTS_PER_INVOC; i++) {
 +		// the object itself may be invalid at this time !!!
 +		// but we can still use the pointer to it as an identifier
-+		const long id = m_last_clients[i];
++		const uint64 id = m_last_clients[i];
 +		if (id) {
-+			AddDebugLogLineM(false, logDownloadQueue, CFormat( _("AutoSharedFilesCheck: Checking search results of client 0x%08X") ) % (uint32) id);
-+			if (logOpened) logfile.AddLine(CFormat( _("Checking search list of 0x%08X") ) % (uint32) id);
++			AddDebugLogLineM(false, logDownloadQueue, CFormat( _("AutoSharedFilesCheck: Checking search results of client 0x%16X") ) % id);
++			if (logOpened) logfile.AddLine(CFormat( _("Checking search list of 0x%16X") ) % id);
 +			CSearchResultList srl = theApp->searchlist->GetSearchResults(id);
 +			CSearchResultList::iterator it = srl.begin();
 +#ifdef OH_ASF_CHECK_STATS
@@ -324,7 +324,7 @@
 +			if (::GetTickCount() - m_req_clients[c->GetUserHash()] < 24 * 60 * 60 * 1000) {
 +				// Ignore the above client. Already requested within the last 24 hours.
 +				AddDebugLogLineM(false, logDownloadQueue, CFormat( _("AutoSharedFilesCheck: Already requested list from '%s'") ) % c->GetClientFullInfo());
-+				if (logOpened) logfile.AddLine(CFormat( _("Already requested search list within 24 hours of 0x%08X: %s") ) % (uint32) c % c->GetClientFullInfo());
++				if (logOpened) logfile.AddLine(CFormat( _("Already requested search list within 24 hours of 0x%16X: %s") ) % (uint64) c % c->GetClientFullInfo());
 +				continue;
 +			}
 +#ifdef OH_ASF_CHECK_STATS
@@ -334,7 +334,7 @@
 +			m_last_clients[cnt] = (long) c;
 +			m_req_clients[c->GetUserHash()] = ::GetTickCount();
 +			AddDebugLogLineM(false, logDownloadQueue, CFormat( _("AutoSharedFilesCheck: Requested shared list of '%s'") ) % c->GetClientFullInfo());
-+			if (logOpened) logfile.AddLine(CFormat( _("Requested search list of 0x%08X: %s") ) % (uint32) c % c->GetClientFullInfo());
++			if (logOpened) logfile.AddLine(CFormat( _("Requested search list of 0x%16X: %s") ) % (uint64) c % c->GetClientFullInfo());
 +			if (++cnt == MAX_CLIENTS_PER_INVOC) break;
 +		}
 +		if (cnt == MAX_CLIENTS_PER_INVOC) break;
@@ -420,7 +420,7 @@
 +#define MAX_CLIENTS_PER_INVOC 5
 +	typedef std::map<uint32, uint32>	TokenMap;
 +	typedef std::vector<CMD4Hash>		ClientList;
-+	typedef std::map<CMD4Hash, uint32>	ReqClientMap;
++	typedef std::map<CMD4Hash, uint64>	ReqClientMap;
 +	
 +	//! Last automatic check for shared files of sources
 +	uint32					m_nLastAutoSharedFilesCheck;

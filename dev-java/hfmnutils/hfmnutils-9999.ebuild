@@ -20,7 +20,7 @@ RESTRICT="mirror"
 
 # use flags
 # (doc and source should not be removed)
-IUSE="doc source"
+IUSE="debug doc source"
 
 # real name of package
 # (used for archive filename-creation,
@@ -71,7 +71,13 @@ before_compile() {
 	fi
 	
 	cd resources || die "cd for native lib failed"
-	make || die "make for native lib failed"
+	[ -e bootstrap ] && {
+		./bootstrap || die "bootstrapping for native lib failed"
+		econf `use_enable debug` || die "configure for native lib failed"
+		emake || die "make for native lib failed"
+	} || {
+		make || die "old-style make for native lib failed"
+	}
 	cd .. || die "cd for native lib failed"
 }
 
@@ -79,12 +85,16 @@ before_compile() {
 # and java launcher creation
 before_install() {
 	cd resources || die "cd for native lib failed"
-	if grep -q "INST_DIR=" Makefile; then
-		sed -i "s:INST_DIR=:INST_DIR=${D}:" Makefile
-	else
-		sed -i "s:/usr/local/lib:${D}:" Makefile
-	fi
-	make install || die "make install for native lib failed"
+	[ -e bootstrap ] && {
+		emake DESTDIR=${D} install || die "make install for native lib failed"
+	} || {
+		if grep -q "INST_DIR=" Makefile; then
+			sed -i "s:INST_DIR=:INST_DIR=${D}:" Makefile
+		else
+			sed -i "s:/usr/local/lib:${D}:" Makefile
+		fi
+		make install || die "old-style make install for native lib failed"
+	}
 	cd .. || die "cd for native lib failed"
 }
 
