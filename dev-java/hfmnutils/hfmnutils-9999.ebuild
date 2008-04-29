@@ -41,8 +41,7 @@ MY_MAIN="-"
 MY_JAVA_ARGS=""
 
 # common dependencies
-COMMON_DEP="
-	=dev-java/jdom-1.0*"
+COMMON_DEP=""
 
 # dependencies needed for runtime
 RDEPEND="
@@ -61,7 +60,6 @@ DEPEND="
 # for example:
 # MY_JAVA_PKGS[0]="jdom-1.0 jdom.jar" with COMMON_DEP="=dev-java/jdom-1.0*")
 declare -a MY_JAVA_PKGS
-MY_JAVA_PKGS[0]="jdom-1.0 jdom.jar"
 
 # Code that should be executed between linking and building
 before_compile() {

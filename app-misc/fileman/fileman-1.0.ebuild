@@ -42,7 +42,6 @@ MY_JAVA_ARGS="-Xmx512M -Djava.library.path=/usr/lib"
 
 # common dependencies
 COMMON_DEP="
-	=dev-java/jdom-1.0*
 	=dev-java/jmf-bin-2*
 	=dev-java/hfmnutils-${PV}
 	=app-misc/fileviewer-${PV}"
@@ -67,10 +66,9 @@ DEPEND="
 # for example:
 # MY_JAVA_PKGS[0]="jdom-1.0 jdom.jar" with COMMON_DEP="=dev-java/jdom-1.0*")
 declare -a MY_JAVA_PKGS
-MY_JAVA_PKGS[0]="jdom-1.0 jdom.jar"
-MY_JAVA_PKGS[1]="jmf-bin jmf.jar"
-MY_JAVA_PKGS[2]="hfmnutils HFMNUtils.jar"
-MY_JAVA_PKGS[3]="fileviewer FileViewer.jar"
+MY_JAVA_PKGS[0]="jmf-bin jmf.jar"
+MY_JAVA_PKGS[1]="hfmnutils HFMNUtils.jar"
+MY_JAVA_PKGS[2]="fileviewer FileViewer.jar"
 
 # Code that should be executed between linking and building
 before_compile() {
