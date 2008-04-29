@@ -166,7 +166,7 @@ src_unpack() {
 
 	cd "${S}"
 
-	epatch "${FILESDIR}/disable-version-rebranding.patch"
+	#epatch "${FILESDIR}/disable-version-rebranding.patch"
 
 	# eac3 patches from the GSoC project
 	if use eac3
