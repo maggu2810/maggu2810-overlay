@@ -69,7 +69,10 @@ before_compile() {
 	fi
 	
 	cd resources || die "cd for native lib failed"
+	ln -s ${JDK_HOME}/include/jni.h jni.h
+	ln -s ${JDK_HOME}/include/linux/jni_md.h jni_md.h
 	[ -e bootstrap ] && {
+		sed -i "s:-Wstrict-overflow=5::" Makefile.am
 		./bootstrap || die "bootstrapping for native lib failed"
 		econf `use_enable debug` || die "configure for native lib failed"
 		emake || die "make for native lib failed"
