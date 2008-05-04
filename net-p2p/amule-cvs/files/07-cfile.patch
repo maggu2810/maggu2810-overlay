@@ -691,7 +691,7 @@
  	tmpRoot1 = s_statTree->AddChild(new CStatTreeItemBase(wxTRANSLATE("Shared Files")));
  	s_numberOfShared = (CStatTreeItemCounter*)tmpRoot1->AddChild(new CStatTreeItemCounter(wxTRANSLATE("Number of Shared Files: %s")));
  	s_sizeOfShare = (CStatTreeItemCounter*)tmpRoot1->AddChild(new CStatTreeItemCounter(wxTRANSLATE("Total size of Shared Files: %s")));
-@@ -758,6 +783,20 @@ void CStatistics::UpdateStatsTree()
+@@ -753,6 +778,20 @@ void CStatistics::UpdateStatsTree()
  	s_totalUsers->SetValue((uint64)servtuser);
  	s_totalFiles->SetValue((uint64)servtfile);
  	s_serverOccupation->SetValue(servocc);

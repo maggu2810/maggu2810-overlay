@@ -657,7 +657,7 @@
  	static bool s_ConnectToED2K;
 --- src.org/SearchList.cpp
 +++ src/SearchList.cpp
-@@ -463,7 +463,8 @@ void CSearchList::ProcessSharedFileList(
+@@ -415,7 +415,8 @@ void CSearchList::ProcessSharedFileList(
  	long searchID = reinterpret_cast<wxUIntPtr>(sender);
  
  #ifndef AMULE_DAEMON
@@ -709,9 +709,9 @@
  }
  
  
-@@ -767,6 +793,20 @@ void CStatistics::UpdateStatsTree()
- 	(*cli14) = wxString::Format(_("SecIdent On/Off: %u (%.2f%%) : %u (%.2f%%)"), #secOn , ((#eMule+#aMule)>0)?((double)100*#secOn / (#eMule+#aMule)):0, #secOff, ((#eMule+#aMule)>0)?((double)100*#secOff /(#eMule+#aMule) ):0);
- #endif
+@@ -762,6 +788,20 @@ void CStatistics::UpdateStatsTree()
+ 
+ 	s_avgConnections->SetValue(theApp->listensocket->GetAverageConnections());
  
 +#ifdef OH_ASF_CHECK_STATS
 +	uint64 dl_word_cnt, sfl_request_cnt, sfl_received_cnt, sf_checked_cnt, sf_above_tresh_cnt;

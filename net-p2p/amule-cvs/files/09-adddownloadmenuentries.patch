@@ -62,7 +62,7 @@
  void CDownloadListCtrl::OnSetPriority( wxCommandEvent& event )
  {
  	int priority = 0;
-@@ -925,6 +973,8 @@ void CDownloadListCtrl::OnMouseRightClic
+@@ -931,6 +979,8 @@ void CDownloadListCtrl::OnMouseRightClic
  
  		m_menu->Append(MP_MENU_PRIO, _("Priority"), priomenu);
  		m_menu->Append(MP_CANCEL, _("Cancel"));

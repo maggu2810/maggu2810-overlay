@@ -47,7 +47,7 @@
  	void PartFile_Rehash(CPartFile* file)
 --- src.org/KnownFile.cpp
 +++ src/KnownFile.cpp
-@@ -643,6 +643,17 @@ bool CKnownFile::LoadFromFile(const CFil
+@@ -642,6 +642,17 @@ bool CKnownFile::LoadFromFile(const CFil
  }
  
  

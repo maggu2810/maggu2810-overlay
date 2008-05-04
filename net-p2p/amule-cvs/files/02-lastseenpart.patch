@@ -9,7 +9,7 @@
  	InsertColumn( 9,  _("Time Remaining"),		wxLIST_FORMAT_LEFT, 110 );
  	InsertColumn( 10, _("Last Seen Complete"),	wxLIST_FORMAT_LEFT, 220 );
  	InsertColumn( 11, _("Gained"),			wxLIST_FORMAT_LEFT, 100 );
-@@ -1395,9 +1395,13 @@ void CDownloadListCtrl::DrawFileItem( wx
+@@ -1401,9 +1401,13 @@ void CDownloadListCtrl::DrawFileItem( wx
  		text = PriorityToStr( file->GetDownPriority(), file->IsAutoDownPriority() );
  		break;
  			
@@ -25,7 +25,7 @@
  		break;
  	
  	// Remaining
-@@ -1927,11 +1931,11 @@ int CDownloadListCtrl::Compare( const CP
+@@ -1933,11 +1937,11 @@ int CDownloadListCtrl::Compare( const CP
  			file2->GetDownPriority() );
  		break;
  
@@ -74,7 +74,7 @@
  
 -    wxStaticText *item20 = new wxStaticText( parent, -1, _("Last seen complete :"), wxDefaultPosition, wxDefaultSize, 0 );
 +    wxStaticText *item20 = new wxStaticText( parent, -1, _("Last seen complete (part) :"), wxDefaultPosition, wxDefaultSize, 0 );
-     item19->Add( item20, 0, wxADJUST_MINSIZE|wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT, 5 );
+     item19->Add( item20, 0, wxGROW|wxALIGN_CENTER_VERTICAL|wxLEFT, 5 );
  
      wxStaticText *item21 = new wxStaticText( parent, IDC_LASTSEENCOMPL, _("N/A"), wxDefaultPosition, wxDefaultSize, 0 );
 --- src.org/PartFile.cpp
