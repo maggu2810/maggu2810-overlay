@@ -1,0 +1,79 @@
+#!/bin/bash
+
+set -e
+
+[ -e /etc/vdr2avi.cfg ] && source /etc/vdr2avi.cfg
+[ -e ~/.vdr2avi.cfg ] && source ~/.vdr2avi.cfg
+[ -e vdr2avi.cfg ] && source vdr2avi.cfg
+
+function auto_convert_movie_to_avi() {
+	movie=$1
+
+	echo
+	echo "Processing movie $movie"
+	$NICE_VDR2AVI vdr2avi 3 $movie $V2AAUTO_QUALITY || {
+		echo "Failure occurred in vdr2avi"
+		return
+	}
+
+	if [ ! -e $TRG_PATH/${movie}_${V2AAUTO_QUALITY}.avi ]; then
+		echo "Something went wrong in vdr2avi"
+		return
+	fi
+
+	mv -f $TMP_PATH/$movie.{crop,edl,mpg,rdy1,rdy2} $TMP_PATH/done
+}
+
+function auto_convert_to_avi() {
+	if [ "$1" ]; then
+		auto_convert_movie_to_avi $1
+		return 0
+	fi
+
+	tmp_file=`mktemp`
+	$vdr_sh 0 | grep "[23]$" | cut -d " " -f 2 | sort > $tmp_file
+
+	# Check if a .avi target file exists for any video in our list
+	tmp_file_new=`mktemp`
+	cat $tmp_file | while read -r movie; do
+		[ -e $TRG_PATH/${movie}_*.avi ] || echo "$movie" >> $tmp_file_new
+	done
+	mv -f $tmp_file_new $tmp_file
+
+	# Remove all ignored videos from our list
+	for (( i = 0; $i < ${#V2AAUTO_IGNORED[@]}; i++ )); do
+		tmp_file_new=`mktemp`
+		grep -v "${V2AAUTO_IGNORED[$i]}" $tmp_file > $tmp_file_new
+		mv -f $tmp_file_new $tmp_file
+	done
+	echo "Videos to process: `cat $tmp_file`"
+
+	# Check if a high priority video is in our list
+	movie=""
+	for (( i = 0; $i < ${#V2AAUTO_HIGH_PRIO[@]}; i++ )); do
+		movie=`grep "${V2AAUTO_HIGH_PRIO[$i]}" $tmp_file | head -n 1`
+		if [ "$movie" ]; then
+			echo "High priority pattern ${V2AAUTO_HIGH_PRIO[$i]} matches $movie"
+			break
+		fi
+	done
+
+	# Process the first video, if none of them is high prio
+	[ -z "$movie" ] && movie=`head -n 1 $tmp_file`
+	rm -f $tmp_file
+
+	# Process the video, if we have found one
+	[ "$movie" ] && auto_convert_movie_to_avi $movie
+}
+
+if [ "$1" == "-intern-" ]; then
+	shift
+	auto_convert_to_avi $*
+else
+	cpu_nr=$1
+	shift
+	[ "$cpu_nr" ] || cpu_nr=1 
+	lockfile=${LOCK_FILE}${cpu_nr}.lock
+	touch $lockfile
+	flock --timeout=0 $lockfile $0 -intern- $*
+fi
