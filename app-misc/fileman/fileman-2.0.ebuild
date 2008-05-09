@@ -38,7 +38,7 @@ MY_MAIN=""
 
 # additional arguments for JRE
 # (for example: -Xmx512M)
-MY_JAVA_ARGS="-Xmx512M -Djava.library.path=/usr/lib"
+MY_JAVA_ARGS="-Xmx1G -Djava.library.path=/usr/lib"
 
 # common dependencies
 COMMON_DEP="
