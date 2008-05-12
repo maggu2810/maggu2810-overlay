@@ -262,7 +262,7 @@
  	}
 --- src.org/updownclient.h
 +++ src/updownclient.h
-@@ -609,6 +609,8 @@ public:
+@@ -610,6 +610,8 @@ public:
  	
  	bool		SupportsLargeFiles() const { return m_fSupportsLargeFiles; }
  	

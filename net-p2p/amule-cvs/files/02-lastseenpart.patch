@@ -148,7 +148,7 @@
  
  		if ( IsAutoUpPriority() ) {
  			CTagInt32( FT_ULPRIORITY,	(uint8)PR_AUTO	).WriteTagToFile( &file );	// 8
-@@ -3672,6 +3702,24 @@ void CPartFile::UpdatePartsFrequency( CU
+@@ -3675,6 +3705,24 @@ void CPartFile::UpdatePartsFrequency( CU
  	}
  	
  	if ( increment ) {
@@ -173,7 +173,7 @@
  		for ( unsigned int i = 0; i < size; i++ ) {
  			if ( freq[i] ) {
  				m_SrcpartFrequency[i]++;
-@@ -3797,6 +3845,7 @@ void CPartFile::Init()
+@@ -3800,6 +3848,7 @@ void CPartFile::Init()
  	completedsize=0;
  	m_bPreviewing = false;
  	lastseencomplete = 0;
