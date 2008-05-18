@@ -55,6 +55,20 @@ before_install() {
 }
 
 
+pkg_preinst() {
+	elog "Removing ${D} from paths in ${D}etc/cgictrl.cfg"
+	sed -i "s:${D}::g" "${D}etc/cgictrl.cfg"
+}
+
+pkg_postinst() {
+	elog "Updating cronjobs in ${ROOT}etc/crontab"
+	ETC_PREFIX=${ROOT}etc ${ROOT}usr/share/${PN}/uninstall-cronjob.sh
+	ETC_PREFIX=${ROOT}etc ${ROOT}usr/share/${PN}/install-cronjob.sh
+	elog "Updating htdocs directory"
+	ETC_PREFIX=${ROOT}etc ${ROOT}usr/share/${PN}/prepare.sh
+}
+
+
 ##############################################
 ########## END-OF-USER-CONFIG cpp ############
 ##############################################
