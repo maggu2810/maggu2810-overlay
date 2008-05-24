@@ -1,12 +1,12 @@
 --- src.org/PartFile.cpp
 +++ src/PartFile.cpp
-@@ -298,6 +298,9 @@ void CPartFile::CreatePartFile()
- 		//#warning Code for full file alloc - should be done on thread.
- 	}
+@@ -2582,6 +2582,9 @@ void CPartFile::PauseFile(bool bInsuffic
+ 	m_insufficient = bInsufficient;
+ 	m_paused = true;
  	
 +	// create whole file as sparse
 +	m_hpartfile.Seek(GetFileSize() - 1, wxFromStart);
 +	m_hpartfile.WriteUInt8(0);
  	
- 	m_hashsetneeded = (GetED2KPartHashCount() > 0);
- 	
+ 	kBpsDown = 0.0;
+ 	transferingsrc = 0;

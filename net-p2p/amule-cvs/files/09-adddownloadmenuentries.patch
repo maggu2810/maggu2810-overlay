@@ -221,7 +221,7 @@
  public final static byte EC_OP_ULOAD_QUEUE                   = 0x20;
 --- src.org/PartFile.cpp
 +++ src/PartFile.cpp
-@@ -2222,6 +2222,22 @@ void CPartFile::RemoveAllRequestedBlocks
+@@ -2227,6 +2227,22 @@ void CPartFile::RemoveAllRequestedBlocks
  }
  
  
@@ -257,7 +257,7 @@
  	void	ResumeFile();
 --- src.org/TextClient.cpp
 +++ src/TextClient.cpp
-@@ -64,6 +64,8 @@ enum {
+@@ -67,6 +67,8 @@ enum {
  	CMD_ID_PRIORITY_HIGH,
  	CMD_ID_PRIORITY_AUTO,
  	CMD_ID_CANCEL,
@@ -266,7 +266,7 @@
  	CMD_ID_CONNECT,
  	CMD_ID_CONNECT_ED2K,
  	CMD_ID_CONNECT_KAD,
-@@ -299,6 +301,8 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -302,6 +304,8 @@ int CamulecmdApp::ProcessCommand(int Cmd
  
  		case CMD_ID_PAUSE:
  		case CMD_ID_CANCEL:
@@ -275,7 +275,7 @@
  		case CMD_ID_RESUME:
  		{
  			if ( args.IsEmpty() ) {
-@@ -319,6 +323,10 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -322,6 +326,10 @@ int CamulecmdApp::ProcessCommand(int Cmd
                                                          request = new CECPacket(EC_OP_PARTFILE_PAUSE); break;
                                                  case CMD_ID_CANCEL:
                                                          request = new CECPacket(EC_OP_PARTFILE_DELETE); break;
@@ -286,7 +286,7 @@
                                                  case CMD_ID_RESUME:
                                                          request = new CECPacket(EC_OP_PARTFILE_RESUME); break;
                                                  default: wxASSERT(0);
-@@ -945,6 +953,12 @@ void CamulecmdApp::OnInitCommandSet()
+@@ -927,6 +935,12 @@ void CamulecmdApp::OnInitCommandSet()
     	m_commands.AddCommand(wxT("Cancel"), CMD_ID_CANCEL, wxTRANSLATE("Cancel download."),
    			      wxEmptyString, CMD_PARAM_ALWAYS);
  

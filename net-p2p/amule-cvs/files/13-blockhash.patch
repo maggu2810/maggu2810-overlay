@@ -8,7 +8,7 @@
  	m_dwNextTCPSrcReq = 0;
  	m_cRequestsSentToServer = 0;
  	m_lastDiskCheck = 0;
-@@ -443,6 +444,13 @@ void CDownloadQueue::Process()
+@@ -445,6 +446,13 @@ void CDownloadQueue::Process()
  		AddLinksFromFile();
  		m_nLastED2KLinkCheck = ::GetTickCount();
  	}
@@ -22,7 +22,7 @@
  }
  
  
-@@ -1855,4 +1863,163 @@ bool CDownloadQueue::DoKademliaFileReque
+@@ -1876,4 +1884,163 @@ bool CDownloadQueue::DoKademliaFileReque
  {
  	return ((::GetTickCount() - lastkademliafilerequest) > KADEMLIAASKTIME);
  }
@@ -205,17 +205,23 @@
  #endif // DOWNLOADQUEUE_H
 --- src.org/PartFile.cpp
 +++ src/PartFile.cpp
-@@ -291,6 +291,9 @@ void CPartFile::CreatePartFile()
+@@ -1,4 +1,4 @@
+-//
++
+ // This file is part of the aMule Project.
+ //
+ // Copyright (c) 2003-2008 aMule Team ( admin@amule.org / http://www.amule.org )
+@@ -293,6 +293,9 @@ void CPartFile::CreatePartFile()
  
  	SetFilePath(thePrefs::GetTempDir());
  			
 +	// make sure we have no old .blkhash file laying around
 +	wxRemoveFile(m_fullname.GetRaw() + wxT(".blkhash"));
 +
- 	if (thePrefs::GetAllocFullPart()) {
- 		//#warning Code for full file alloc - should be done on thread.
- 	}
-@@ -3120,6 +3123,11 @@ void CPartFile::FlushBuffer(bool /*force
+ 	if (thePrefs::GetAllocFullFile()) {
+ 		SetPartFileStatus(PS_ALLOCATING);
+ 		CThreadScheduler::AddTask(new CAllocateFileTask(this, thePrefs::AddNewFilesPaused()));
+@@ -3123,6 +3126,11 @@ void CPartFile::FlushBuffer(bool /*force
  		return;
  	}
  	
@@ -227,7 +233,7 @@
  	// Loop through queue
  	while ( !m_BufferedData_list.empty() ) {
  		// Get top item and remove it from the queue
-@@ -3137,6 +3145,13 @@ void CPartFile::FlushBuffer(bool /*force
+@@ -3140,6 +3148,13 @@ void CPartFile::FlushBuffer(bool /*force
  		}
  		// SLUGFILLER: SafeHash
  		
@@ -241,7 +247,7 @@
  		// Go to the correct position in file and write block of data			
  		try {
  			m_hpartfile.Seek(item->start);
-@@ -3154,6 +3169,59 @@ void CPartFile::FlushBuffer(bool /*force
+@@ -3157,6 +3172,59 @@ void CPartFile::FlushBuffer(bool /*force
  		delete item;
  	}
  	
@@ -322,7 +328,7 @@
  
 --- src.org/Preferences.h
 +++ src/Preferences.h
-@@ -464,6 +464,8 @@ public:
+@@ -462,6 +462,8 @@ public:
  	static void LoadAllItems(wxConfigBase* cfg);
  	static void SaveAllItems(wxConfigBase* cfg);
  
@@ -331,7 +337,7 @@
  	static bool 		GetShowRatesOnTitle()		{ return s_ShowRatesOnTitle; }
  	
  	// Message Filters
-@@ -668,6 +670,8 @@ protected:
+@@ -666,6 +668,8 @@ protected:
  
  	static bool	s_ShowRatesOnTitle;
  

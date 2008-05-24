@@ -14,7 +14,7 @@
  	uint16 accepted;
 --- src.org/DownloadQueue.cpp
 +++ src/DownloadQueue.cpp
-@@ -1401,7 +1401,7 @@ void CDownloadQueue::SetCatStatus(uint8 
+@@ -1403,7 +1403,7 @@ void CDownloadQueue::SetCatStatus(uint8 
  		
  	for ( ; it != files.end(); it++ ) {
  		switch ( newstatus ) {
@@ -67,7 +67,7 @@
  	wxCHECK(!IsPartFile(), false);
 --- src.org/KnownFile.h
 +++ src/KnownFile.h
-@@ -300,6 +300,8 @@ public:
+@@ -301,6 +301,8 @@ public:
  	static void CreateHashFromHashlist(const ArrayOfCMD4Hash& hashes, CMD4Hash* Output);
  	
  	void	ClearPriority();
@@ -306,7 +306,7 @@
  
 --- src.org/PartFile.cpp
 +++ src/PartFile.cpp
-@@ -2361,7 +2361,7 @@ void  CPartFile::RemoveAllSources(bool b
+@@ -2366,7 +2366,7 @@ void  CPartFile::RemoveAllSources(bool b
  }
  
  
@@ -315,7 +315,7 @@
  {
  	AddLogLineM(false, CFormat(_("Deleting file: %s")) % GetFileName());
  	// Barry - Need to tell any connected clients to stop sending the file
-@@ -2414,6 +2414,11 @@ void CPartFile::Delete()
+@@ -2419,6 +2419,11 @@ void CPartFile::Delete()
  		}
  	}
  
@@ -340,7 +340,7 @@
  	void	StopFile(bool bCancel = false);
 --- src.org/SearchListCtrl.cpp
 +++ src/SearchListCtrl.cpp
-@@ -280,6 +280,11 @@ void CSearchListCtrl::UpdateItemColor( l
+@@ -294,6 +294,11 @@ void CSearchListCtrl::UpdateItemColor( l
  				green = 128;
  				blue = 128;
  			}

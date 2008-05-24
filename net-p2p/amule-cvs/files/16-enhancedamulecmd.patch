@@ -1,6 +1,6 @@
 --- src.org/DownloadQueue.cpp
 +++ src/DownloadQueue.cpp
-@@ -1617,7 +1617,7 @@ void CDownloadQueue::OnHostnameResolved(
+@@ -1619,7 +1619,7 @@ void CDownloadQueue::OnHostnameResolved(
  }
  
  
@@ -9,7 +9,7 @@
  {
  	wxString uri(link);
  
-@@ -1630,7 +1630,7 @@ bool CDownloadQueue::AddLink( const wxSt
+@@ -1632,7 +1632,7 @@ bool CDownloadQueue::AddLink( const wxSt
  	}
  
  	if (uri.compare(0, 7, wxT("ed2k://")) == 0) {
@@ -18,7 +18,7 @@
  	} else {
  		AddLogLineM(true, CFormat(_("Unknown protocol of link: %s")) % link);
  		return false;
-@@ -1638,7 +1638,7 @@ bool CDownloadQueue::AddLink( const wxSt
+@@ -1640,7 +1640,7 @@ bool CDownloadQueue::AddLink( const wxSt
  }
  
  
@@ -27,7 +27,7 @@
  {
  	wxASSERT( !link.IsEmpty() );
  	wxString URI = link;
-@@ -1651,7 +1651,7 @@ bool CDownloadQueue::AddED2KLink( const 
+@@ -1653,7 +1653,7 @@ bool CDownloadQueue::AddED2KLink( const 
  	try {
  		CScopedPtr<CED2KLink> uri(CED2KLink::CreateLinkFromUrl(URI));
  
@@ -36,7 +36,7 @@
  	} catch ( const wxString& err ) {
  		AddLogLineM( true, CFormat( _("Invalid ed2k link! Error: %s")) % err);
  	}
-@@ -1660,11 +1660,11 @@ bool CDownloadQueue::AddED2KLink( const 
+@@ -1662,11 +1662,11 @@ bool CDownloadQueue::AddED2KLink( const 
  }
  
  
@@ -50,7 +50,7 @@
  			
  		case CED2KLink::kServer:
  			return AddED2KLink( dynamic_cast<const CED2KServerLink*>( link ) );
-@@ -1679,7 +1679,7 @@ bool CDownloadQueue::AddED2KLink( const 
+@@ -1681,7 +1681,7 @@ bool CDownloadQueue::AddED2KLink( const 
  
  
  
@@ -59,7 +59,7 @@
  {
  	CPartFile* file = NULL;
  	if (IsFileExisting(link->GetHashKey())) {
-@@ -1695,7 +1695,7 @@ bool CDownloadQueue::AddED2KLink( const 
+@@ -1697,7 +1697,7 @@ bool CDownloadQueue::AddED2KLink( const 
  			return false;
  		}
  		
@@ -268,7 +268,7 @@
  public final static short EC_TAG_PASSWD_HASH                        = 0x0001;
 --- src.org/PartFile.h
 +++ src/PartFile.h
-@@ -428,6 +428,15 @@ public:
+@@ -429,6 +429,15 @@ public:
  	
  	CUpDownClient* GetSlowerDownloadingClient(uint32 speed, CUpDownClient* caller) ;
  
@@ -286,7 +286,7 @@
  	CClientPtrList m_downloadingSourcesList;
 --- src.org/TextClient.cpp
 +++ src/TextClient.cpp
-@@ -107,6 +107,15 @@ enum {
+@@ -110,6 +110,15 @@ enum {
  	CMD_ID_SEARCH_RESULTS,
  	CMD_ID_SEARCH_PROGRESS,
  	CMD_ID_DOWNLOAD,
@@ -302,7 +302,7 @@
  	// IDs for deprecated commands
  	CMD_ID_SET_IPFILTER
  
-@@ -155,6 +164,8 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -158,6 +167,8 @@ int CamulecmdApp::ProcessCommand(int Cmd
  	CECPacket *request = 0;
  	std::list<CECPacket *> request_list;
  	int tmp_int = 0;
@@ -311,7 +311,7 @@
  	EC_SEARCH_TYPE search_type = EC_SEARCH_KAD;
  
  	// Implementation of the deprecated command 'SetIPFilter'.
-@@ -306,6 +317,10 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -309,6 +320,10 @@ int CamulecmdApp::ProcessCommand(int Cmd
  		case CMD_ID_REHASH:
  		case CMD_ID_FORCECOMPL:
  		case CMD_ID_RESUME:
@@ -322,7 +322,7 @@
  		{
  			if ( args.IsEmpty() ) {
  				Show(_("This command requires an argument. Valid arguments: 'all', filename, or a number.\n"));
-@@ -331,6 +346,14 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -334,6 +349,14 @@ int CamulecmdApp::ProcessCommand(int Cmd
  							request = new CECPacket(EC_OP_PARTFILE_FORCECOMPL); break;
                                                  case CMD_ID_RESUME:
                                                          request = new CECPacket(EC_OP_PARTFILE_RESUME); break;
@@ -337,7 +337,7 @@
                                                  default: wxASSERT(0);
                                          }
  
-@@ -346,8 +369,8 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -349,8 +372,8 @@ int CamulecmdApp::ProcessCommand(int Cmd
  	                                                	if (tag) {
  	                                                        	request->AddTag(CECTag(EC_TAG_PARTFILE, tag->GetMD4Data()));
  	                                                	}
@@ -347,7 +347,7 @@
  	                                        } else if ( hash.Decode(token.Trim(false).Trim(true)) ) {
  							if ( !hash.IsEmpty() ) {
  								Show(_("Processing by hash: "+token+wxT("\n")));
-@@ -383,6 +406,50 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -386,6 +409,50 @@ int CamulecmdApp::ProcessCommand(int Cmd
  			break;
  		}
  
@@ -398,7 +398,7 @@
  		case CMD_ID_PRIORITY_LOW:
  		case CMD_ID_PRIORITY_NORMAL:
  		case CMD_ID_PRIORITY_HIGH:
-@@ -432,6 +499,36 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -435,6 +502,36 @@ int CamulecmdApp::ProcessCommand(int Cmd
  			request_list.push_back(new CECPacket(EC_OP_GET_DLOAD_QUEUE));
  			break;
  
@@ -435,7 +435,7 @@
  		case CMD_ID_SHOW_LOG:
  			request_list.push_back(new CECPacket(EC_OP_GET_LOG));
  			break;
-@@ -444,17 +541,29 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -447,17 +544,29 @@ int CamulecmdApp::ProcessCommand(int Cmd
  			request_list.push_back(new CECPacket(EC_OP_RESET_LOG));
  			break;
  
@@ -468,7 +468,7 @@
  
  		case CMD_ID_SET_BWLIMIT_UP:
  			tmp_int = EC_TAG_CONN_MAX_UL - EC_TAG_CONN_MAX_DL;
-@@ -562,6 +671,10 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -565,6 +674,10 @@ int CamulecmdApp::ProcessCommand(int Cmd
  			request_list.push_back(new CECPacket(EC_OP_SEARCH_PROGRESS));
  			break;
  
@@ -479,7 +479,7 @@
  		case CMD_ID_DOWNLOAD:
  			if (!args.IsEmpty()) 
  			{	
-@@ -572,7 +685,7 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -575,7 +688,7 @@ int CamulecmdApp::ProcessCommand(int Cmd
  					printf("Download File: %lu %s\n", id, (const char*)unicode2char(file->sFileName));
  					request = new CECPacket(EC_OP_DOWNLOAD_SEARCH_RESULT);
  					// get with id the hash and category=0
@@ -488,9 +488,9 @@
  					CECTag hashtag(EC_TAG_PARTFILE, file->nHash);
  					hashtag.AddTag(CECTag(EC_TAG_PARTFILE_CAT, category));
  					request->AddTag(hashtag);
-@@ -977,6 +1090,9 @@ void CamulecmdApp::OnInitCommandSet()
- 			      wxTRANSLATE("The number of a file from the last search has to be given.\n"
- 					  "Example: 'download 12' will start to download the file with the number 12 of the previous search.\n"), CMD_PARAM_ALWAYS);
+@@ -959,6 +1072,9 @@ void CamulecmdApp::OnInitCommandSet()
+ 	m_commands.AddCommand(wxT("Download"), CMD_ID_DOWNLOAD, wxTRANSLATE("Start downloading a file"),
+ 			      wxTRANSLATE("The number of a file from the last search has to be given.\nExample: 'download 12' will start to download the file with the number 12 of the previous search.\n"), CMD_PARAM_ALWAYS);
  
 +	m_commands.AddCommand(wxT("DownloadEx"), CMD_ID_DOWNLOAD_EX, wxTRANSLATE("Start downloading a file to a specified category"),
 +			      wxTRANSLATE("The number of a category and a file from the last search has to be given.\n"
@@ -498,7 +498,7 @@
  
  	//
  	// TODO: These commands below need implementation and/or rewrite!
-@@ -1032,6 +1148,26 @@ void CamulecmdApp::OnInitCommandSet()
+@@ -1013,6 +1129,26 @@ void CamulecmdApp::OnInitCommandSet()
  	DEPRECATED("GetBWLimits", GET_BWLIMITS, "Get BwLimits", NEVER);
  	DEPRECATED("SetUpBWLimit", SET_BWLIMIT_UP, "Set BwLimit Up", ALWAYS);
  	DEPRECATED("SetDownBWLimit", SET_BWLIMIT_DOWN, "Set BwLimit Down", ALWAYS);
