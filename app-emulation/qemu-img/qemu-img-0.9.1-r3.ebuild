@@ -10,7 +10,7 @@ SRC_URI="${HOMEPAGE}${P/-img/}.tar.gz"
 LICENSE="GPL-2 LGPL-2.1"
 SLOT="0"
 KEYWORDS="-alpha amd64 ppc -sparc x86"
-IUSE="sdl kqemu gnutls alsa"
+IUSE=""
 RESTRICT="binchecks test"
 
 DEPEND="virtual/libc
