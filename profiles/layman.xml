@@ -122,7 +122,7 @@
 		type="git"
 		src="git://dev.gentooexperimental.org/kde-overlay.git"
 		contact="bugs@dev.gentooexperimental.org"
-		name="kde4-live">
+		name="kde4-overlay">
 		<link>
 			http://kde.gentooexperimental.org/
 		</link>

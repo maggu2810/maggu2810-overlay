@@ -1,6 +1,6 @@
 #!/bin/bash
 
-resume_skip {
+resume_skip() {
 		while [ $? == 1 ]; do emerge --resume --skipfirst; done
 }
 
@@ -102,6 +102,9 @@ do
 			;;
 		"--sync")
 			portage_sync
+			;;
+		"--elog")
+			handle_elog
 			;;
 		*)
 			echo "unknow command"
