@@ -9,7 +9,7 @@
  #include <wx/utils.h>
  
  #include "Server.h"		// Needed for CServer
-@@ -89,6 +91,20 @@ CDownloadQueue::CDownloadQueue()
+@@ -90,6 +92,20 @@ CDownloadQueue::CDownloadQueue()
  	m_cRequestsSentToServer = 0;
  	m_lastDiskCheck = 0;
  	SetLastKademliaFileRequest();
@@ -30,7 +30,7 @@
  }
  
  
-@@ -220,7 +236,7 @@ void CDownloadQueue::LoadSourceSeeds()
+@@ -221,7 +237,7 @@ void CDownloadQueue::LoadSourceSeeds()
  }
  
  //#warning We must add the sources, review CSearchFile constructor.
@@ -39,7 +39,7 @@
  {
  	if ( IsFileExisting(toadd->GetFileHash()) ) {
  		return;
-@@ -235,7 +251,7 @@ void CDownloadQueue::AddSearchToDownload
+@@ -245,7 +261,7 @@ void CDownloadQueue::AddSearchToDownload
  	}
  	
  	if ( newfile && newfile->GetStatus() != PS_ERROR ) {
@@ -48,7 +48,7 @@
  	} else {
  		delete newfile;
  	}
-@@ -417,6 +433,13 @@ void CDownloadQueue::Process()
+@@ -427,6 +443,13 @@ void CDownloadQueue::Process()
  	}
  	
  	
@@ -62,7 +62,7 @@
  	// Check for new links once per second.
  	if ((::GetTickCount() - m_nLastED2KLinkCheck) >= 1000) {
  		AddLinksFromFile();
-@@ -993,6 +1016,305 @@ void CDownloadQueue::SendLocalSrcRequest
+@@ -1003,6 +1026,305 @@ void CDownloadQueue::SendLocalSrcRequest
  	m_localServerReqQueue.push_back(sender);
  }
  
@@ -574,7 +574,7 @@
  public final static short 		EC_TAG_SRCDROP_DROP_FQS                   = 0x1902;
 --- src.org/Preferences.cpp
 +++ src/Preferences.cpp
-@@ -75,6 +75,15 @@ uint16		CPreferences::s_DFOMaxOpenFiles;
+@@ -77,6 +77,15 @@ uint16		CPreferences::s_DFOMaxOpenFiles;
  /* Proxy */
  CProxyData	CPreferences::s_ProxyData;
  
@@ -590,7 +590,7 @@
  /* The rest, organize it! */
  wxString	CPreferences::s_nick;
  uint16		CPreferences::s_maxupload;
-@@ -1146,6 +1155,19 @@ void CPreferences::BuildItemList( const 
+@@ -1149,6 +1158,19 @@ void CPreferences::BuildItemList( const 
  	 **/
  	 NewCfgItem(IDC_NEWVERSION,	(new Cfg_Bool( wxT("/eMule/NewVersionCheck"), s_NewVersionCheck, true )));
  	 
@@ -669,7 +669,7 @@
  #endif
 --- src.org/Statistics.cpp
 +++ src/Statistics.cpp
-@@ -208,6 +208,17 @@ CStatTreeItemSimple*		CStatistics::s_tot
+@@ -210,6 +210,17 @@ CStatTreeItemSimple*		CStatistics::s_tot
  CStatTreeItemSimple*		CStatistics::s_totalFiles;
  CStatTreeItemSimple*		CStatistics::s_serverOccupation;
  
@@ -687,7 +687,7 @@
  // Shared files
  CStatTreeItemCounter*		CStatistics::s_numberOfShared;
  CStatTreeItemCounter*		CStatistics::s_sizeOfShare;
-@@ -748,6 +759,21 @@ void CStatistics::InitStatsTree()
+@@ -754,6 +765,21 @@ void CStatistics::InitStatsTree()
  	s_sizeOfShare = (CStatTreeItemCounter*)tmpRoot1->AddChild(new CStatTreeItemCounter(wxTRANSLATE("Total size of Shared Files: %s")));
  	s_sizeOfShare->SetDisplayMode(dmBytes);
  	tmpRoot1->AddChild(new CStatTreeItemAverage(wxTRANSLATE("Average filesize: %s"), s_sizeOfShare, s_numberOfShared, dmBytes));
@@ -709,7 +709,7 @@
  }
  
  
-@@ -762,6 +788,20 @@ void CStatistics::UpdateStatsTree()
+@@ -768,6 +794,20 @@ void CStatistics::UpdateStatsTree()
  
  	s_avgConnections->SetValue(theApp->listensocket->GetAverageConnections());
  
@@ -741,7 +741,7 @@
  #include <deque>		// Needed for std::deque
  
  enum StatsGraphType {
-@@ -458,6 +460,18 @@ class CStatistics {
+@@ -462,6 +464,18 @@ class CStatistics {
  	static	CStatTreeItemSimple*		s_totalFiles;
  	static	CStatTreeItemSimple*		s_serverOccupation;
  

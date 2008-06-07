@@ -1,6 +1,6 @@
 --- src.org/DownloadQueue.cpp
 +++ src/DownloadQueue.cpp
-@@ -80,6 +80,7 @@ CDownloadQueue::CDownloadQueue()
+@@ -81,6 +81,7 @@ CDownloadQueue::CDownloadQueue()
  // Needs to be recursive that that is can own an observer assigned to itself
  	: m_mutex( wxMUTEX_RECURSIVE )
  {
@@ -8,7 +8,7 @@
  	m_datarate = 0;
  	m_udpserver = 0;
  	m_lastsorttime = 0;
-@@ -453,6 +454,13 @@ void CDownloadQueue::Process()
+@@ -463,6 +464,13 @@ void CDownloadQueue::Process()
  		SearchForDuplicateFiles();
  		m_nLastSearchForDuplicateFiles = ::GetTickCount();
  	}
@@ -22,7 +22,7 @@
  }
  
  
-@@ -1360,6 +1368,44 @@ void CDownloadQueue::AddLinksFromFile()
+@@ -1370,6 +1378,44 @@ void CDownloadQueue::AddLinksFromFile()
  }
  
  
@@ -91,7 +91,7 @@
  	uint8		m_udcounter;
 --- src.org/ThreadTasks.cpp
 +++ src/ThreadTasks.cpp
-@@ -458,7 +458,7 @@ void CCompletionTask::Entry()
+@@ -455,7 +455,7 @@ void CCompletionTask::Entry()
  	}
  
  	// Removes the various other data-files	

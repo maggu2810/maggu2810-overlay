@@ -14,7 +14,7 @@
  	uint16 accepted;
 --- src.org/DownloadQueue.cpp
 +++ src/DownloadQueue.cpp
-@@ -1403,7 +1403,7 @@ void CDownloadQueue::SetCatStatus(uint8 
+@@ -1413,7 +1413,7 @@ void CDownloadQueue::SetCatStatus(uint8 
  		
  	for ( ; it != files.end(); it++ ) {
  		switch ( newstatus ) {

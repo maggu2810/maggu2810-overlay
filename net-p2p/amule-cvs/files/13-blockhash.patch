@@ -1,6 +1,6 @@
 --- src.org/DownloadQueue.cpp
 +++ src/DownloadQueue.cpp
-@@ -87,6 +87,7 @@ CDownloadQueue::CDownloadQueue()
+@@ -88,6 +88,7 @@ CDownloadQueue::CDownloadQueue()
  	m_lastudpstattime = 0;
  	m_udcounter = 0;
  	m_nLastED2KLinkCheck = 0;
@@ -8,7 +8,7 @@
  	m_dwNextTCPSrcReq = 0;
  	m_cRequestsSentToServer = 0;
  	m_lastDiskCheck = 0;
-@@ -445,6 +446,13 @@ void CDownloadQueue::Process()
+@@ -455,6 +456,13 @@ void CDownloadQueue::Process()
  		AddLinksFromFile();
  		m_nLastED2KLinkCheck = ::GetTickCount();
  	}
@@ -22,7 +22,7 @@
  }
  
  
-@@ -1876,4 +1884,163 @@ bool CDownloadQueue::DoKademliaFileReque
+@@ -1896,4 +1904,163 @@ bool CDownloadQueue::DoKademliaFileReque
  {
  	return ((::GetTickCount() - lastkademliafilerequest) > KADEMLIAASKTIME);
  }
@@ -309,7 +309,7 @@
  	m_lastDateChanged = wxDateTime::GetTimeNow();
 --- src.org/Preferences.cpp
 +++ src/Preferences.cpp
-@@ -144,6 +144,7 @@ bool		CPreferences::s_checkDiskspace;
+@@ -146,6 +146,7 @@ bool		CPreferences::s_checkDiskspace;
  uint32		CPreferences::s_uMinFreeDiskSpace;
  wxString	CPreferences::s_yourHostname;
  bool		CPreferences::s_bVerbose;
@@ -317,7 +317,7 @@
  bool		CPreferences::s_bmanualhighprio;
  bool		CPreferences::s_btransferfullchunks;
  bool		CPreferences::s_bstartnextfile;
-@@ -1189,6 +1190,8 @@ void CPreferences::BuildItemList( const 
+@@ -1192,6 +1193,8 @@ void CPreferences::BuildItemList( const 
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/YourHostname"),			s_yourHostname, wxEmptyString ) );
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/DateTimeFormat"),		s_datetimeformat, wxT("%A, %x, %X") ) );
  
@@ -348,7 +348,7 @@
  	static bool	s_showAllNotCats;
 --- src.org/ThreadTasks.cpp
 +++ src/ThreadTasks.cpp
-@@ -458,7 +458,7 @@ void CCompletionTask::Entry()
+@@ -455,7 +455,7 @@ void CCompletionTask::Entry()
  	}
  
  	// Removes the various other data-files	

@@ -598,7 +598,7 @@
  
 --- src.org/Preferences.cpp
 +++ src/Preferences.cpp
-@@ -69,6 +69,8 @@ COLORREF		CPreferences::s_colors_ref[cnt
+@@ -71,6 +71,8 @@ COLORREF		CPreferences::s_colors_ref[cnt
  CPreferences::CFGMap	CPreferences::s_CfgList;
  CPreferences::CFGList	CPreferences::s_MiscList;
  
@@ -607,7 +607,7 @@
  
  /* Proxy */
  CProxyData	CPreferences::s_ProxyData;
-@@ -1175,6 +1177,13 @@ void CPreferences::BuildItemList( const 
+@@ -1178,6 +1180,13 @@ void CPreferences::BuildItemList( const 
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/KadNodesUrl"),			s_KadURL, wxT("http://emule-inside.net/nodes.dat") ) );
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/Ed2kServersUrl"),		s_Ed2kURL, wxT("http://gruk.org/server.met.gz") ) );
  	
@@ -653,7 +653,7 @@
  #else
  	#include "Preferences.h"
  	#include <ec/cpp/RemoteConnect.h>		// Needed for CRemoteConnect
-@@ -215,6 +216,17 @@ CStatTreeItemCounter*		CStatistics::s_si
+@@ -217,6 +218,17 @@ CStatTreeItemCounter*		CStatistics::s_si
  uint64						CStatistics::s_kadNodesTotal;
  uint16						CStatistics::s_kadNodesCur;
  
@@ -671,7 +671,7 @@
  
  CStatistics::CStatistics()
  	: m_graphRunningAvgDown(thePrefs::GetStatsAverageMinutes() * 60 * 1000, true),
-@@ -718,6 +730,19 @@ void CStatistics::InitStatsTree()
+@@ -724,6 +736,19 @@ void CStatistics::InitStatsTree()
  	s_serverOccupation = (CStatTreeItemSimple*)tmpRoot1->AddChild(new CStatTreeItemSimple(wxTRANSLATE("Server Occupation: %.2f%%")));
  	s_serverOccupation->SetValue(0.0);
  
@@ -691,7 +691,7 @@
  	tmpRoot1 = s_statTree->AddChild(new CStatTreeItemBase(wxTRANSLATE("Shared Files")));
  	s_numberOfShared = (CStatTreeItemCounter*)tmpRoot1->AddChild(new CStatTreeItemCounter(wxTRANSLATE("Number of Shared Files: %s")));
  	s_sizeOfShare = (CStatTreeItemCounter*)tmpRoot1->AddChild(new CStatTreeItemCounter(wxTRANSLATE("Total size of Shared Files: %s")));
-@@ -753,6 +778,20 @@ void CStatistics::UpdateStatsTree()
+@@ -759,6 +784,20 @@ void CStatistics::UpdateStatsTree()
  	s_totalUsers->SetValue((uint64)servtuser);
  	s_totalFiles->SetValue((uint64)servtfile);
  	s_serverOccupation->SetValue(servocc);
@@ -722,7 +722,7 @@
  
  #ifndef EC_REMOTE
  
-@@ -464,6 +465,18 @@ class CStatistics {
+@@ -468,6 +469,18 @@ class CStatistics {
  	// Kad nodes
  	static uint64 s_kadNodesTotal;
  	static uint16 s_kadNodesCur;
