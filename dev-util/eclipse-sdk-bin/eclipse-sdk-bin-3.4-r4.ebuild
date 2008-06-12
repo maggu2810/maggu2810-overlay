@@ -6,7 +6,7 @@ HOMEPAGE="http://www.eclipse.org/"
 SLOT="3.4"
 LICENSE="EPL-1.0"
 IUSE=""
-KEYWORDS="~amd64"
+KEYWORDS=""
 RESTRICT="strip mirror"
 
 VERDATE="200806091311"
