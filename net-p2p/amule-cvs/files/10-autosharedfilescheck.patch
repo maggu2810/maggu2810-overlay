@@ -590,7 +590,7 @@
  /* The rest, organize it! */
  wxString	CPreferences::s_nick;
  uint16		CPreferences::s_maxupload;
-@@ -1149,6 +1158,19 @@ void CPreferences::BuildItemList( const 
+@@ -1154,6 +1163,19 @@ void CPreferences::BuildItemList( const 
  	 **/
  	 NewCfgItem(IDC_NEWVERSION,	(new Cfg_Bool( wxT("/eMule/NewVersionCheck"), s_NewVersionCheck, true )));
  	 
@@ -690,7 +690,7 @@
 @@ -754,6 +765,21 @@ void CStatistics::InitStatsTree()
  	s_sizeOfShare = (CStatTreeItemCounter*)tmpRoot1->AddChild(new CStatTreeItemCounter(wxTRANSLATE("Total size of Shared Files: %s")));
  	s_sizeOfShare->SetDisplayMode(dmBytes);
- 	tmpRoot1->AddChild(new CStatTreeItemAverage(wxTRANSLATE("Average filesize: %s"), s_sizeOfShare, s_numberOfShared, dmBytes));
+ 	tmpRoot1->AddChild(new CStatTreeItemAverage(wxTRANSLATE("Average file size: %s"), s_sizeOfShare, s_numberOfShared, dmBytes));
 +
 +#ifdef OH_ASF_CHECK_STATS
 +	tmpRoot1 = s_statTree->AddChild(new CStatTreeItemBase(wxTRANSLATE("Automatic Shared Files Check")));

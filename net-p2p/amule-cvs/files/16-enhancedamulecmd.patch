@@ -34,7 +34,7 @@
 -		return AddED2KLink( uri.get(), category );
 +		return AddED2KLink( uri.get(), category, forcePaused );
  	} catch ( const wxString& err ) {
- 		AddLogLineM( true, CFormat( _("Invalid ed2k link! Error: %s")) % err);
+ 		AddLogLineM( true, CFormat( _("Invalid eD2k link! ERROR: %s")) % err);
  	}
 @@ -1672,11 +1672,11 @@ bool CDownloadQueue::AddED2KLink( const 
  }
