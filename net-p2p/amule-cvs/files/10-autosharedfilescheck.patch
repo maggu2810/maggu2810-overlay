@@ -33,7 +33,7 @@
 @@ -221,7 +237,7 @@ void CDownloadQueue::LoadSourceSeeds()
  }
  
- //#warning We must add the sources, review CSearchFile constructor.
+ 
 -void CDownloadQueue::AddSearchToDownload(CSearchFile* toadd, uint8 category)
 +void CDownloadQueue::AddSearchToDownload(CSearchFile* toadd, uint8 category, bool forcePaused)
  {
@@ -45,10 +45,10 @@
  	if ( newfile && newfile->GetStatus() != PS_ERROR ) {
 -		AddDownload( newfile, thePrefs::AddNewFilesPaused(), category );
 +		AddDownload( newfile, forcePaused || thePrefs::AddNewFilesPaused(), category );
- 	} else {
- 		delete newfile;
- 	}
-@@ -427,6 +443,13 @@ void CDownloadQueue::Process()
+ 		// Add any possible sources
+ 		if (toadd->GetClientID() && toadd->GetClientPort()) {
+ 			CMemFile sources(1+4+2);
+@@ -444,6 +460,13 @@ void CDownloadQueue::Process()
  	}
  	
  	
@@ -62,7 +62,7 @@
  	// Check for new links once per second.
  	if ((::GetTickCount() - m_nLastED2KLinkCheck) >= 1000) {
  		AddLinksFromFile();
-@@ -1003,6 +1026,305 @@ void CDownloadQueue::SendLocalSrcRequest
+@@ -1020,6 +1043,305 @@ void CDownloadQueue::SendLocalSrcRequest
  	m_localServerReqQueue.push_back(sender);
  }
  

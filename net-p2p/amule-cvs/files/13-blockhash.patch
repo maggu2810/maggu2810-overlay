@@ -8,7 +8,7 @@
  	m_dwNextTCPSrcReq = 0;
  	m_cRequestsSentToServer = 0;
  	m_lastDiskCheck = 0;
-@@ -455,6 +456,13 @@ void CDownloadQueue::Process()
+@@ -472,6 +473,13 @@ void CDownloadQueue::Process()
  		AddLinksFromFile();
  		m_nLastED2KLinkCheck = ::GetTickCount();
  	}
@@ -22,7 +22,7 @@
  }
  
  
-@@ -1896,4 +1904,163 @@ bool CDownloadQueue::DoKademliaFileReque
+@@ -1913,4 +1921,163 @@ bool CDownloadQueue::DoKademliaFileReque
  {
  	return ((::GetTickCount() - lastkademliafilerequest) > KADEMLIAASKTIME);
  }

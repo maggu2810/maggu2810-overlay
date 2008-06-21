@@ -9,7 +9,7 @@
  	
  	EVT_MENU( MP_PAUSE,			CDownloadListCtrl::OnSetStatus )
  	EVT_MENU( MP_STOP,			CDownloadListCtrl::OnSetStatus )
-@@ -611,6 +613,52 @@ void CDownloadListCtrl::OnCancelFile(wxC
+@@ -612,6 +614,52 @@ void CDownloadListCtrl::OnCancelFile(wxC
  }
  
  
@@ -62,7 +62,7 @@
  void CDownloadListCtrl::OnSetPriority( wxCommandEvent& event )
  {
  	int priority = 0;
-@@ -931,6 +979,8 @@ void CDownloadListCtrl::OnMouseRightClic
+@@ -932,6 +980,8 @@ void CDownloadListCtrl::OnMouseRightClic
  
  		m_menu->Append(MP_MENU_PRIO, _("Priority"), priomenu);
  		m_menu->Append(MP_CANCEL, _("Cancel"));

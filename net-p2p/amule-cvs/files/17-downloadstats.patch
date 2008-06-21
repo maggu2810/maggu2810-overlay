@@ -8,7 +8,7 @@
  	m_datarate = 0;
  	m_udpserver = 0;
  	m_lastsorttime = 0;
-@@ -463,6 +464,13 @@ void CDownloadQueue::Process()
+@@ -480,6 +481,13 @@ void CDownloadQueue::Process()
  		SearchForDuplicateFiles();
  		m_nLastSearchForDuplicateFiles = ::GetTickCount();
  	}
@@ -22,7 +22,7 @@
  }
  
  
-@@ -1370,6 +1378,44 @@ void CDownloadQueue::AddLinksFromFile()
+@@ -1387,6 +1395,44 @@ void CDownloadQueue::AddLinksFromFile()
  }
  
  

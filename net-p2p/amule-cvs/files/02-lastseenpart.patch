@@ -9,7 +9,7 @@
  	InsertColumn( 9,  _("Time Remaining"),		wxLIST_FORMAT_LEFT, 110 );
  	InsertColumn( 10, _("Last Seen Complete"),	wxLIST_FORMAT_LEFT, 220 );
  	InsertColumn( 11, _("Gained"),			wxLIST_FORMAT_LEFT, 100 );
-@@ -1410,9 +1410,13 @@ void CDownloadListCtrl::DrawFileItem( wx
+@@ -1411,9 +1411,13 @@ void CDownloadListCtrl::DrawFileItem( wx
  		text = PriorityToStr( file->GetDownPriority(), file->IsAutoDownPriority() );
  		break;
  			
@@ -25,7 +25,7 @@
  		break;
  	
  	// Remaining
-@@ -1942,11 +1946,11 @@ int CDownloadListCtrl::Compare( const CP
+@@ -1943,11 +1947,11 @@ int CDownloadListCtrl::Compare( const CP
  			file2->GetDownPriority() );
  		break;
  

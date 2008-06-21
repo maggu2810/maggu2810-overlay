@@ -14,7 +14,7 @@
  	uint16 accepted;
 --- src.org/DownloadQueue.cpp
 +++ src/DownloadQueue.cpp
-@@ -1413,7 +1413,7 @@ void CDownloadQueue::SetCatStatus(uint8 
+@@ -1430,7 +1430,7 @@ void CDownloadQueue::SetCatStatus(uint8 
  		
  	for ( ; it != files.end(); it++ ) {
  		switch ( newstatus ) {
@@ -340,7 +340,7 @@
  	void	StopFile(bool bCancel = false);
 --- src.org/SearchListCtrl.cpp
 +++ src/SearchListCtrl.cpp
-@@ -294,6 +294,11 @@ void CSearchListCtrl::UpdateItemColor( l
+@@ -306,6 +306,11 @@ void CSearchListCtrl::UpdateItemColor( l
  				green = 128;
  				blue = 128;
  			}

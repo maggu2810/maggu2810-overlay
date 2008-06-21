@@ -101,7 +101,7 @@
  		default:
  			return wxEmptyString;
  	}
-@@ -123,15 +123,15 @@ const wxString GetSoftName(unsigned int 
+@@ -123,16 +123,16 @@ const wxString GetSoftName(unsigned int 
  wxString OriginToText(unsigned int source_from)
  {
  	switch ((ESourceFrom)source_from) {
@@ -109,13 +109,15 @@
 -		case SF_REMOTE_SERVER:		return wxTRANSLATE("Remote Server");
 +		case SF_LOCAL_SERVER:		return wxTRANSLATE("Loc-Srv");
 +		case SF_REMOTE_SERVER:		return wxTRANSLATE("Rem-Srv");
- 		case SF_KADEMLIA:			return wxTRANSLATE("Kad");
+ 		case SF_KADEMLIA:		return wxTRANSLATE("Kad");
 -		case SF_SOURCE_EXCHANGE: 	return wxTRANSLATE("Source Exchange");
 +		case SF_SOURCE_EXCHANGE: 	return wxTRANSLATE("Src-Exch");
- 		case SF_PASSIVE:			return wxTRANSLATE("Passive");
- 		case SF_LINK:				return wxTRANSLATE("Link");
+ 		case SF_PASSIVE:		return wxTRANSLATE("Passive");
+ 		case SF_LINK:			return wxTRANSLATE("Link");
 -		case SF_SOURCE_SEEDS:		return wxTRANSLATE("Source Seeds");
+-		case SF_SEARCH_RESULT:		return wxTRANSLATE("Search Result");
 +		case SF_SOURCE_SEEDS:		return wxTRANSLATE("Src-Seeds");
++		case SF_SEARCH_RESULT:		return wxTRANSLATE("Srch-Res");
  		case SF_NONE:
 -		default:		return wxTRANSLATE("Unknown");
 +		default:		return wxTRANSLATE("???");
@@ -154,7 +156,7 @@
  
  	m_category = 0;
  	m_completedFiles = 0;
-@@ -1493,7 +1493,7 @@ void CDownloadListCtrl::DrawFileItem( wx
+@@ -1494,7 +1494,7 @@ void CDownloadListCtrl::DrawFileItem( wx
  	// Last seen part
  	case 8:
  		if ( file->lastseenpart ) {

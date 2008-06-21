@@ -1,6 +1,6 @@
 --- src.org/DownloadQueue.cpp
 +++ src/DownloadQueue.cpp
-@@ -1629,7 +1629,7 @@ void CDownloadQueue::OnHostnameResolved(
+@@ -1646,7 +1646,7 @@ void CDownloadQueue::OnHostnameResolved(
  }
  
  
@@ -9,7 +9,7 @@
  {
  	wxString uri(link);
  
-@@ -1642,7 +1642,7 @@ bool CDownloadQueue::AddLink( const wxSt
+@@ -1659,7 +1659,7 @@ bool CDownloadQueue::AddLink( const wxSt
  	}
  
  	if (uri.compare(0, 7, wxT("ed2k://")) == 0) {
@@ -18,7 +18,7 @@
  	} else {
  		AddLogLineM(true, CFormat(_("Unknown protocol of link: %s")) % link);
  		return false;
-@@ -1650,7 +1650,7 @@ bool CDownloadQueue::AddLink( const wxSt
+@@ -1667,7 +1667,7 @@ bool CDownloadQueue::AddLink( const wxSt
  }
  
  
@@ -27,7 +27,7 @@
  {
  	wxASSERT( !link.IsEmpty() );
  	wxString URI = link;
-@@ -1663,7 +1663,7 @@ bool CDownloadQueue::AddED2KLink( const 
+@@ -1680,7 +1680,7 @@ bool CDownloadQueue::AddED2KLink( const 
  	try {
  		CScopedPtr<CED2KLink> uri(CED2KLink::CreateLinkFromUrl(URI));
  
@@ -36,7 +36,7 @@
  	} catch ( const wxString& err ) {
  		AddLogLineM( true, CFormat( _("Invalid eD2k link! ERROR: %s")) % err);
  	}
-@@ -1672,11 +1672,11 @@ bool CDownloadQueue::AddED2KLink( const 
+@@ -1689,11 +1689,11 @@ bool CDownloadQueue::AddED2KLink( const 
  }
  
  
@@ -50,7 +50,7 @@
  			
  		case CED2KLink::kServer:
  			return AddED2KLink( dynamic_cast<const CED2KServerLink*>( link ) );
-@@ -1691,7 +1691,7 @@ bool CDownloadQueue::AddED2KLink( const 
+@@ -1708,7 +1708,7 @@ bool CDownloadQueue::AddED2KLink( const 
  
  
  
@@ -59,7 +59,7 @@
  {
  	CPartFile* file = NULL;
  	if (IsFileExisting(link->GetHashKey())) {
-@@ -1717,7 +1717,7 @@ bool CDownloadQueue::AddED2KLink( const 
+@@ -1734,7 +1734,7 @@ bool CDownloadQueue::AddED2KLink( const 
  			return false;
  		}
  		
