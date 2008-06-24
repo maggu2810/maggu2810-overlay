@@ -12,7 +12,7 @@ HOMEPAGE="http://www.videolan.org/vlc/"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="-*"
+KEYWORDS=""
 IUSE="a52 3dfx nls unicode debug altivec httpd vlm gnutls live v4l cdda ogg\
 	matroska dvb dvd vcd ffmpeg aac flac mpeg vorbis theora X opengl freetype\
 	svg fbcon svga oss aalib ggi libcaca esd arts alsa wxwindows ncurses xosd lirc\
