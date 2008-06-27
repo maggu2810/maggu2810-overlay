@@ -9,9 +9,7 @@ IUSE=""
 KEYWORDS="~amd64"
 RESTRICT="strip mirror"
 
-VERDATE="200806091311"
-RL="RC4"
-SRC_URI="http://mirror.yoxos-eclipse-distribution.de/eclipse.org/eclipse/downloads/drops/S-${PV}${RL}-${VERDATE}/eclipse-SDK-${PV}${RL}-linux-gtk-x86_64.tar.gz"
+SRC_URI="http://eclipsemirror.yoxos.com/eclipse.org/technology/epp/downloads/release/ganymede/R/eclipse-jee-ganymede-linux-gtk-x86_64.tar.gz"
 
 CDEPEND=">=dev-java/ant-eclipse-ecj-3.3
 	dev-java/ant-core
