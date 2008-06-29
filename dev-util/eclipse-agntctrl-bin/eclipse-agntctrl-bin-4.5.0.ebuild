@@ -38,6 +38,15 @@ src_install() {
 	ln -s libxerces-c.so.26.0 $libdir/libxerces-c.so
 	ln -s libxerces-c.so.26.0 $libdir/libxerces-c.so.26
 
+	# create executable
+	echo "#!/bin/bash" >> "ACStart"
+	echo "cd ${INSTALLDIR}/bin" >> "ACStart"
+	echo "./ACStart.sh" >> "ACStart"
+	echo "#!/bin/bash" >> "ACStop"
+	echo "cd ${INSTALLDIR}/bin" >> "ACStop"
+	echo "./ACStop.sh" >> "ACStop"
+	dobin ACStart ACStop
+
 	ewarn "Use emerge --config ${PN} to configure TPTP Agent Controller before using it !!!"
 }
 
