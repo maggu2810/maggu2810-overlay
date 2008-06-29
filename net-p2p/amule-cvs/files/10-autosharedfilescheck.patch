@@ -517,7 +517,7 @@
 +++ src/ECSpecialMuleTags.cpp
 @@ -486,6 +486,12 @@ void CEC_Prefs_Packet::Apply()
  		if ((oneTag = thisTab->GetTagByName(EC_TAG_FILES_MIN_FREE_SPACE)) != NULL) {
- 			thePrefs::SetMinFreeDiskSpace(oneTag->GetInt());
+ 			thePrefs::SetMinFreeDiskSpaceMB(oneTag->GetInt());
  		}
 +		if ((oneTag = thisTab->GetTagByName(EC_TAG_FILES_ASFC_INTERVAL)) != NULL) {
 +			thePrefs::SetASFCInterval(oneTag->GetInt());
@@ -590,7 +590,7 @@
  /* The rest, organize it! */
  wxString	CPreferences::s_nick;
  uint16		CPreferences::s_maxupload;
-@@ -1154,6 +1163,19 @@ void CPreferences::BuildItemList( const 
+@@ -1148,6 +1157,19 @@ void CPreferences::BuildItemList( const 
  	 **/
  	 NewCfgItem(IDC_NEWVERSION,	(new Cfg_Bool( wxT("/eMule/NewVersionCheck"), s_NewVersionCheck, true )));
  	 
@@ -612,7 +612,7 @@
  	  **/
 --- src.org/Preferences.h
 +++ src/Preferences.h
-@@ -502,6 +502,26 @@ public:
+@@ -503,6 +503,26 @@ public:
  	
  	static bool CheckNewVersion() { return s_NewVersionCheck; }
  

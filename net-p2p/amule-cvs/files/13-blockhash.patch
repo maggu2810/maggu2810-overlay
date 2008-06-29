@@ -317,7 +317,7 @@
  bool		CPreferences::s_bmanualhighprio;
  bool		CPreferences::s_btransferfullchunks;
  bool		CPreferences::s_bstartnextfile;
-@@ -1197,6 +1198,8 @@ void CPreferences::BuildItemList( const 
+@@ -1191,6 +1192,8 @@ void CPreferences::BuildItemList( const 
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/YourHostname"),			s_yourHostname, wxEmptyString ) );
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/DateTimeFormat"),		s_datetimeformat, wxT("%A, %x, %X") ) );
  
@@ -328,7 +328,7 @@
  
 --- src.org/Preferences.h
 +++ src/Preferences.h
-@@ -462,6 +462,8 @@ public:
+@@ -463,6 +463,8 @@ public:
  	static void LoadAllItems(wxConfigBase* cfg);
  	static void SaveAllItems(wxConfigBase* cfg);
  
@@ -337,7 +337,7 @@
  	static bool 		GetShowRatesOnTitle()		{ return s_ShowRatesOnTitle; }
  	
  	// Message Filters
-@@ -666,6 +668,8 @@ protected:
+@@ -667,6 +669,8 @@ protected:
  
  	static bool	s_ShowRatesOnTitle;
  
