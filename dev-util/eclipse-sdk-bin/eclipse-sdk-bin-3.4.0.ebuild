@@ -38,7 +38,15 @@ INSTALLDIR="/usr/lib/eclipse-${SLOT}"
 
 src_install() {
 	dodir "${INSTALLDIR}"
-	cp -dpr eclipse/* "${D}"/"${INSTALLDIR}"
+	cp -dpr eclipse/* "${D}/${INSTALLDIR}" || die "No eclipse/ dir in archive?"
+
+	mem=`grep MemTotal: /proc/meminfo`
+	[[ "$mem" =~ ([0-9]*)\ kB$ ]]
+	mem=$[ 10#${BASH_REMATCH[1]} / 1024 ]
+	dodir "/etc/env.d"
+	echo "ECLIPSE_XMX="$[ $mem * 8 / 10 ]"M" >> "${D}/etc/env.d/99eclipse"
+	echo "ECLIPSE_MAX_PERMSIZE="$[ $mem * 2 / 10 ]"M" >> "${D}/etc/env.d/99eclipse"
+	einfo "Your system has $mem MB RAM; setting max memory for eclipse to\n`cat "${D}/etc/env.d/99eclipse"`"
 
 	dobin "${FILESDIR}"/eclipse-${SLOT}
 }
