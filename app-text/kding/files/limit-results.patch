@@ -1,0 +1,36 @@
+diff -ur src.org/dingdictionary.cpp src/dingdictionary.cpp
+--- src.org/dingdictionary.cpp	2008-05-18 15:53:57.000000000 +0200
++++ src/dingdictionary.cpp	2008-07-01 16:13:42.000000000 +0200
+@@ -53,11 +53,19 @@
+     delete reslist;
+     reslist = 0;
+     
++    // avoid egrep taking months to complete the search
++    if (text.length() > 200) {
++        reslist = new ResultList();
++        emit searchFinished();
++    }
++    
+     // now construct the QProcess object and finally start searching
+     proc = new QProcess();
+     proc->addArgument("egrep");
+     proc->addArgument("-i");    // case insensitive
+     proc->addArgument("-w");    // match only whole words
++    proc->addArgument("-m");    // avoid egrep taking months to complete the search
++    proc->addArgument("1000");  // ... and return all the results
+     //proc->addArgument("^[^#].*\\b" + text);
+     // this check is needed to pass a correctly encoded search term to the
+     // grep command
+diff -ur src.org/translatedialog.cpp src/translatedialog.cpp
+--- src.org/translatedialog.cpp	2008-05-18 15:53:57.000000000 +0200
++++ src/translatedialog.cpp	2008-07-01 16:17:38.000000000 +0200
+@@ -92,6 +92,9 @@
+     if(text.isEmpty()) {
+         return;
+     }
++
++    // avoid egrep taking months to complete the search
++    if (text.length() > 200) return;
+     
+     QString searchText = text.stripWhiteSpace();
+     
