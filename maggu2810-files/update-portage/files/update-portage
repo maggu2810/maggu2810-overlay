@@ -5,6 +5,10 @@ resume_skip() {
 }
 
 rebuild_packages() {
+	emerge -va1 /lib/modules
+}
+
+old_rebuild_packages() {
 	# list of packages that must be rebuild after kernel update
 	ALL_REBUILD_PACKAGES="
 		app-emulation/virtualbox-modules
@@ -89,8 +93,6 @@ do
 	case "${1}" in
 		"--uworldskip")
 			uworldskip
-			handle_elog
-			dispatch-conf
 			;;
 		"--new-kernel")
 			rebuild_packages
@@ -105,6 +107,9 @@ do
 			;;
 		"--elog")
 			handle_elog
+			;;
+		"--dispatch-conf")
+			dispatch-conf
 			;;
 		*)
 			echo "unknow command"
