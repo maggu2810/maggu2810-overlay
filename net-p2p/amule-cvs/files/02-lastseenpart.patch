@@ -1,6 +1,6 @@
 --- src.org/DownloadListCtrl.cpp
 +++ src/DownloadListCtrl.cpp
-@@ -194,7 +194,7 @@ CMuleListCtrl( parent, winid, pos, size,
+@@ -192,7 +192,7 @@ CMuleListCtrl( parent, winid, pos, size,
  	InsertColumn( 5,  _("Progress"),		wxLIST_FORMAT_LEFT, 170 );
  	InsertColumn( 6,  _("Sources"),			wxLIST_FORMAT_LEFT,  50 );
  	InsertColumn( 7,  _("Priority"),		wxLIST_FORMAT_LEFT,  55 );
@@ -9,7 +9,7 @@
  	InsertColumn( 9,  _("Time Remaining"),		wxLIST_FORMAT_LEFT, 110 );
  	InsertColumn( 10, _("Last Seen Complete"),	wxLIST_FORMAT_LEFT, 220 );
  	InsertColumn( 11, _("Gained"),			wxLIST_FORMAT_LEFT, 100 );
-@@ -1411,9 +1411,13 @@ void CDownloadListCtrl::DrawFileItem( wx
+@@ -1404,9 +1404,13 @@ void CDownloadListCtrl::DrawFileItem( wx
  		text = PriorityToStr( file->GetDownPriority(), file->IsAutoDownPriority() );
  		break;
  			
@@ -25,7 +25,7 @@
  		break;
  	
  	// Remaining
-@@ -1943,11 +1947,11 @@ int CDownloadListCtrl::Compare( const CP
+@@ -1946,11 +1950,11 @@ int CDownloadListCtrl::Compare( const CP
  			file2->GetDownPriority() );
  		break;
  
@@ -68,7 +68,7 @@
  #define	FT_GAPEND			0x0A	// <uint32>
 --- src.org/muuli_wdr.cpp
 +++ src/muuli_wdr.cpp
-@@ -627,7 +627,7 @@ wxSizer *fileDetails( wxWindow *parent, 
+@@ -623,7 +623,7 @@ wxSizer *fileDetails( wxWindow *parent, 
  
      wxBoxSizer *item19 = new wxBoxSizer( wxHORIZONTAL );
  

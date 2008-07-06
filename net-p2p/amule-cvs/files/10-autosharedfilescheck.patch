@@ -574,7 +574,7 @@
  public final static short 		EC_TAG_SRCDROP_DROP_FQS                   = 0x1902;
 --- src.org/Preferences.cpp
 +++ src/Preferences.cpp
-@@ -77,6 +77,15 @@ uint16		CPreferences::s_DFOMaxOpenFiles;
+@@ -78,6 +78,15 @@ uint16		CPreferences::s_DFOMaxOpenFiles;
  /* Proxy */
  CProxyData	CPreferences::s_ProxyData;
  
@@ -590,7 +590,7 @@
  /* The rest, organize it! */
  wxString	CPreferences::s_nick;
  uint16		CPreferences::s_maxupload;
-@@ -1148,6 +1157,19 @@ void CPreferences::BuildItemList( const 
+@@ -1178,6 +1187,19 @@ void CPreferences::BuildItemList( const 
  	 **/
  	 NewCfgItem(IDC_NEWVERSION,	(new Cfg_Bool( wxT("/eMule/NewVersionCheck"), s_NewVersionCheck, true )));
  	 
@@ -612,7 +612,7 @@
  	  **/
 --- src.org/Preferences.h
 +++ src/Preferences.h
-@@ -503,6 +503,26 @@ public:
+@@ -502,6 +502,26 @@ public:
  	
  	static bool CheckNewVersion() { return s_NewVersionCheck; }
  

@@ -598,7 +598,7 @@
  
 --- src.org/Preferences.cpp
 +++ src/Preferences.cpp
-@@ -71,6 +71,8 @@ COLORREF		CPreferences::s_colors_ref[cnt
+@@ -72,6 +72,8 @@ unsigned long		CPreferences::s_colors_re
  CPreferences::CFGMap	CPreferences::s_CfgList;
  CPreferences::CFGList	CPreferences::s_MiscList;
  
@@ -607,7 +607,7 @@
  
  /* Proxy */
  CProxyData	CPreferences::s_ProxyData;
-@@ -1177,6 +1179,13 @@ void CPreferences::BuildItemList( const 
+@@ -1207,6 +1209,13 @@ void CPreferences::BuildItemList( const 
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/KadNodesUrl"),			s_KadURL, wxT("http://emule-inside.net/nodes.dat") ) );
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/Ed2kServersUrl"),		s_Ed2kURL, wxT("http://gruk.org/server.met.gz") ) );
  	
@@ -623,7 +623,7 @@
  	for ( int i = 0; i < cntStatColors; i++ ) {  
 --- src.org/Preferences.h
 +++ src/Preferences.h
-@@ -490,6 +490,9 @@ public:
+@@ -489,6 +489,9 @@ public:
  	// Can't have it return a reference, will need a pointer later.
  	static const CProxyData *GetProxyData()			{ return &s_ProxyData; }
  	
