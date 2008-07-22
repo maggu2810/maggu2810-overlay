@@ -118,18 +118,4 @@
 		</description>
 	</overlay>
 
-	<overlay
-		type="git"
-		src="git://dev.gentooexperimental.org/kde-overlay.git"
-		contact="bugs@dev.gentooexperimental.org"
-		name="kde4-overlay">
-		<link>
-			http://kde.gentooexperimental.org/
-		</link>
-		<description>
-			Experimental overlay for KDE4
-			http://forums.gentoo.org/viewtopic-t-694231-start-0-postdays-0-postorder-asc-highlight-.html
-		</description>
-	</overlay>
-
 </layman>
