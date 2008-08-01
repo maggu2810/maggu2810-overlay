@@ -29,7 +29,7 @@ DEPEND="$DEPEND
         !net-p2p/amule
         !net-p2p/xmule"
 
-IUSE="$IUSE patching"
+IUSE="$IUSE patching monolithic"
 for f in ${FILESDIR}/[0-9][0-9]-*.patch; do
 	u=${f##*/}
 	u=${u#*-}
@@ -66,6 +66,12 @@ pkg_setup() {
 				einfo "I will now compile console versions only."
 		fi
 
+		if use monolithic && ! use gtk; then
+				einfo "Note: You would need both the gtk and monolithic USE flags"
+				einfo "to compile aMule monolithic GUI."
+				einfo "I will now compile console versions only."
+		fi
+
 		if use stats && ! built_with_use media-libs/gd jpeg; then
 				die "media-libs/gd should be compiled with the jpeg use flag when you have the stats use flag set"
 		fi
@@ -97,6 +103,9 @@ src_compile() {
 					--enable-alc"
 				use remote && myconf="${myconf}
 					--enable-amule-gui"
+				use monolithic || myconf="${myconf}
+					--disable-monolithic
+				"
 		else
 				myconf="
 					--disable-monolithic
