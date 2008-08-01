@@ -1,5 +1,5 @@
 --- app-portage/checkuseflags/files/checkuseflags.sh	2008-04-23 13:40:25.000000000 +0200
-+++ /usr/bin/checkuseflags	2008-08-01 16:36:11.000000000 +0200
++++ /usr/bin/checkuseflags	2008-08-01 16:41:58.000000000 +0200
 @@ -2,9 +2,40 @@
  
  set -e
@@ -52,7 +52,7 @@
  	echo -e "${USE// /\n}" | diff -u -s - $tmp2 | colordiff
  	res_sort="`cat $tmp2`"
  	res_sort="`echo $res_sort`"
-@@ -57,14 +88,13 @@
+@@ -57,32 +88,37 @@
  	source /etc/make.conf
  	GLOBUSE=" $USE "
  
@@ -68,9 +68,20 @@
 -			echo -e "$res2" | sort | uniq > $tmp2
 +			echo -e "$res2" > $tmp2
  			echo "Resulting portage.use file is in $tmp2:"
- 			diff -u -s /etc/portage/package.use $tmp2 | colordiff
+-			diff -u -s /etc/portage/package.use $tmp2 | colordiff
++			diff -u -s /etc/portage/package.use/user $tmp2 | colordiff
  			echo
-@@ -80,9 +110,15 @@
+ 			echo "Done."
+ 			echo "Paste $tmp1 into /etc/make.conf to accept USE flag changes."
+-			echo "Copy file from $tmp2 to /etc/portage/package.use to accept package.use changes."
++			echo "Copy file from $tmp2 to /etc/portage/package.use/user to accept package.use changes."
+ 			echo "Do as root:"
+ 			echo -e "\tcat $tmp1 >> /etc/make.conf"
+-			echo -e "\tcat $tmp2 > /etc/portage/package.use"
++			echo -e "\tcat $tmp2 > /etc/portage/package.use/user"
+ 			echo
+ 			echo "Packages may be listed twice with different USE flags in package.use."
+ 			echo
  			echo "emerge -upvDN world should not list anything new compared to before making the above changes."
  			break
  		fi
