@@ -30,7 +30,7 @@
  }
  
  
-@@ -221,7 +237,7 @@ void CDownloadQueue::LoadSourceSeeds()
+@@ -216,7 +232,7 @@ void CDownloadQueue::LoadSourceSeeds()
  }
  
  
@@ -39,7 +39,7 @@
  {
  	if ( IsFileExisting(toadd->GetFileHash()) ) {
  		return;
-@@ -245,7 +261,7 @@ void CDownloadQueue::AddSearchToDownload
+@@ -240,7 +256,7 @@ void CDownloadQueue::AddSearchToDownload
  	}
  	
  	if ( newfile && newfile->GetStatus() != PS_ERROR ) {
@@ -48,7 +48,7 @@
  		// Add any possible sources
  		if (toadd->GetClientID() && toadd->GetClientPort()) {
  			CMemFile sources(1+4+2);
-@@ -444,6 +460,13 @@ void CDownloadQueue::Process()
+@@ -439,6 +455,13 @@ void CDownloadQueue::Process()
  	}
  	
  	
@@ -62,7 +62,7 @@
  	// Check for new links once per second.
  	if ((::GetTickCount() - m_nLastED2KLinkCheck) >= 1000) {
  		AddLinksFromFile();
-@@ -1020,6 +1043,305 @@ void CDownloadQueue::SendLocalSrcRequest
+@@ -1015,6 +1038,305 @@ void CDownloadQueue::SendLocalSrcRequest
  	m_localServerReqQueue.push_back(sender);
  }
  
@@ -392,7 +392,7 @@
  	
  	
  	/**
-@@ -303,6 +305,20 @@ public:
+@@ -308,6 +310,20 @@ public:
  	
  	void	SetLastKademliaFileRequest()	{lastkademliafilerequest = ::GetTickCount();}
  	
@@ -413,7 +413,7 @@
  private:
  	/**
  	 * This function initializes new observers with the current contents of the queue.
-@@ -353,6 +369,99 @@ private:
+@@ -358,6 +374,99 @@ private:
  	CServer*	m_udpserver;
  
  	
@@ -545,8 +545,8 @@
  			EC_TAG_FILES_ALLOC_FULL_SIZE              = 0x180C,
  			EC_TAG_FILES_CHECK_FREE_SPACE             = 0x180D,
  			EC_TAG_FILES_MIN_FREE_SPACE	          = 0x180E,
-+			EC_TAG_FILES_ASFC_INTERVAL	          = 0x18E0,
-+			EC_TAG_FILES_ASFC_TRESHOLD	          = 0x18E1,
++			EC_TAG_FILES_ASFC_INTERVAL                = 0x18E0,
++			EC_TAG_FILES_ASFC_TRESHOLD                = 0x18E1,
  		EC_TAG_PREFS_SRCDROP                      = 0x1900,
  			EC_TAG_SRCDROP_NONEEDED                   = 0x1901,
  			EC_TAG_SRCDROP_DROP_FQS                   = 0x1902,
@@ -556,8 +556,8 @@
  			EC_TAG_FILES_ALLOC_FULL_SIZE              = 0x180C,
  			EC_TAG_FILES_CHECK_FREE_SPACE             = 0x180D,
  			EC_TAG_FILES_MIN_FREE_SPACE	          = 0x180E,
-+			EC_TAG_FILES_ASFC_INTERVAL	          = 0x18E0,
-+			EC_TAG_FILES_ASFC_TRESHOLD	          = 0x18E1,
++			EC_TAG_FILES_ASFC_INTERVAL                = 0x18E0,
++			EC_TAG_FILES_ASFC_TRESHOLD                = 0x18E1,
  		EC_TAG_PREFS_SRCDROP                      = 0x1900,
  			EC_TAG_SRCDROP_NONEEDED                   = 0x1901,
  			EC_TAG_SRCDROP_DROP_FQS                   = 0x1902,
@@ -567,8 +567,8 @@
  public final static short 		EC_TAG_FILES_ALLOC_FULL_SIZE              = 0x180C;
  public final static short 		EC_TAG_FILES_CHECK_FREE_SPACE             = 0x180D;
  public final static short 		EC_TAG_FILES_MIN_FREE_SPACE	          = 0x180E;
-+public final static short 		EC_TAG_FILES_ASFC_INTERVAL	          = 0x18E0;
-+public final static short 		EC_TAG_FILES_ASFC_TRESHOLD	          = 0x18E1;
++public final static short 		EC_TAG_FILES_ASFC_INTERVAL                = 0x18E0;
++public final static short 		EC_TAG_FILES_ASFC_TRESHOLD                = 0x18E1;
  public final static short 	EC_TAG_PREFS_SRCDROP                      = 0x1900;
  public final static short 		EC_TAG_SRCDROP_NONEEDED                   = 0x1901;
  public final static short 		EC_TAG_SRCDROP_DROP_FQS                   = 0x1902;
@@ -590,7 +590,7 @@
  /* The rest, organize it! */
  wxString	CPreferences::s_nick;
  uint16		CPreferences::s_maxupload;
-@@ -1178,6 +1187,19 @@ void CPreferences::BuildItemList( const 
+@@ -1174,6 +1183,19 @@ void CPreferences::BuildItemList( const 
  	 **/
  	 NewCfgItem(IDC_NEWVERSION,	(new Cfg_Bool( wxT("/eMule/NewVersionCheck"), s_NewVersionCheck, true )));
  	 
@@ -612,7 +612,7 @@
  	  **/
 --- src.org/Preferences.h
 +++ src/Preferences.h
-@@ -502,6 +502,26 @@ public:
+@@ -499,6 +499,26 @@ public:
  	
  	static bool CheckNewVersion() { return s_NewVersionCheck; }
  
@@ -639,7 +639,7 @@
  	// Networks
  	static bool GetNetworkKademlia()		{ return s_ConnectToKad; }
  	static void SetNetworkKademlia(bool val)	{ s_ConnectToKad = val; }
-@@ -741,6 +761,15 @@ protected:
+@@ -736,6 +756,15 @@ protected:
  	// Version check
  	static bool s_NewVersionCheck;
  	
@@ -669,7 +669,7 @@
  #endif
 --- src.org/Statistics.cpp
 +++ src/Statistics.cpp
-@@ -210,6 +210,17 @@ CStatTreeItemSimple*		CStatistics::s_tot
+@@ -212,6 +212,17 @@ CStatTreeItemSimple*		CStatistics::s_tot
  CStatTreeItemSimple*		CStatistics::s_totalFiles;
  CStatTreeItemSimple*		CStatistics::s_serverOccupation;
  
@@ -687,7 +687,7 @@
  // Shared files
  CStatTreeItemCounter*		CStatistics::s_numberOfShared;
  CStatTreeItemCounter*		CStatistics::s_sizeOfShare;
-@@ -754,6 +765,21 @@ void CStatistics::InitStatsTree()
+@@ -761,6 +772,21 @@ void CStatistics::InitStatsTree()
  	s_sizeOfShare = (CStatTreeItemCounter*)tmpRoot1->AddChild(new CStatTreeItemCounter(wxTRANSLATE("Total size of Shared Files: %s")));
  	s_sizeOfShare->SetDisplayMode(dmBytes);
  	tmpRoot1->AddChild(new CStatTreeItemAverage(wxTRANSLATE("Average file size: %s"), s_sizeOfShare, s_numberOfShared, dmBytes));
@@ -709,7 +709,7 @@
  }
  
  
-@@ -768,6 +794,20 @@ void CStatistics::UpdateStatsTree()
+@@ -775,6 +801,20 @@ void CStatistics::UpdateStatsTree()
  
  	s_avgConnections->SetValue(theApp->listensocket->GetAverageConnections());
  
@@ -741,7 +741,7 @@
  #include <deque>		// Needed for std::deque
  
  enum StatsGraphType {
-@@ -462,6 +464,18 @@ class CStatistics {
+@@ -464,6 +466,18 @@ class CStatistics {
  	static	CStatTreeItemSimple*		s_totalFiles;
  	static	CStatTreeItemSimple*		s_serverOccupation;
  

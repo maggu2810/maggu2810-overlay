@@ -8,7 +8,7 @@
  
  	EVT_MENU( MP_WS,			CDownloadListCtrl::OnGetFeedback )
  	EVT_MENU( MP_RAZORSTATS, 		CDownloadListCtrl::OnGetRazorStats )
-@@ -814,14 +815,33 @@ void CDownloadListCtrl::OnViewFiles( wxC
+@@ -821,14 +822,33 @@ void CDownloadListCtrl::OnViewFiles( wxC
  {
  	ItemList sources = ::GetSelectedItems( this, itSOURCES );
  
@@ -45,7 +45,7 @@
  void CDownloadListCtrl::OnAddFriend( wxCommandEvent& WXUNUSED(event) )
  {
  	ItemList sources = ::GetSelectedItems( this, itSOURCES );
-@@ -944,6 +964,7 @@ void CDownloadListCtrl::OnMouseRightClic
+@@ -951,6 +971,7 @@ void CDownloadListCtrl::OnMouseRightClic
  		m_menu->Append(MP_METINFO, _("Show file &details"));
  		m_menu->Append(MP_VIEWFILECOMMENTS,
  			_("Show all comments"));
@@ -55,7 +55,7 @@
  		//-----------------------------------------------------
 --- src.org/DownloadListCtrl.h
 +++ src/DownloadListCtrl.h
-@@ -229,6 +229,7 @@ private:
+@@ -233,6 +233,7 @@ private:
  	void	OnViewFileInfo( wxCommandEvent& event );
  	void	OnViewFileComments( wxCommandEvent& event );
  	void	OnPreviewFile( wxCommandEvent& event );

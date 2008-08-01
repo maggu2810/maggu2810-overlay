@@ -587,7 +587,7 @@
  		m_hpartfile.Close();
  		// Update met file (with current directory entry)
  		SavePartFile();			
-@@ -2368,7 +2368,7 @@ void CPartFile::Delete()
+@@ -2369,7 +2369,7 @@ void CPartFile::Delete()
  	// eMule had same problem with lseek error ... and override with a simple 
  	// check for INVALID_HANDLE_VALUE (that, btw, does not exist on linux)
  	// So we just guess is < 0 on error and > 2 if ok (0 stdin, 1 stdout, 2 stderr)
@@ -607,23 +607,22 @@
  
  /* Proxy */
  CProxyData	CPreferences::s_ProxyData;
-@@ -1207,6 +1209,13 @@ void CPreferences::BuildItemList( const 
+@@ -1203,6 +1205,12 @@ void CPreferences::BuildItemList( const 
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/KadNodesUrl"),			s_KadURL, wxT("http://emule-inside.net/nodes.dat") ) );
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/Ed2kServersUrl"),		s_Ed2kURL, wxT("http://gruk.org/server.met.gz") ) );
- 	
+ 	s_MiscList.push_back( MkCfg_Int( wxT("/eMule/ShowRatesOnTitle"),		s_showRatesOnTitle, 0 ));
 +	/**
 +	 * Dynamic File Opening
 +	 **/
-+	
++
 +	s_MiscList.push_back( MkCfg_Int( wxT("/eMule/DFOMaxOpenFiles"), s_DFOMaxOpenFiles, 100 ) );
 +	// ulimit -n should be at least s_DFOMaxOpenFiles + 200 for sockets, locks, etc.
-+	
+ 
  #ifndef AMULE_DAEMON
  	// Colors have been moved from global prefs to CStatisticsDlg
- 	for ( int i = 0; i < cntStatColors; i++ ) {  
 --- src.org/Preferences.h
 +++ src/Preferences.h
-@@ -489,6 +489,9 @@ public:
+@@ -486,6 +486,9 @@ public:
  	// Can't have it return a reference, will need a pointer later.
  	static const CProxyData *GetProxyData()			{ return &s_ProxyData; }
  	
@@ -633,7 +632,7 @@
  	// Hidden files
  	
  	static bool ShareHiddenFiles() { return s_ShareHiddenFiles; }
-@@ -727,6 +730,9 @@ protected:
+@@ -722,6 +725,9 @@ protected:
  	static wxString 	s_CommentFilterString;
  
  	
@@ -645,15 +644,15 @@
  	
 --- src.org/Statistics.cpp
 +++ src/Statistics.cpp
-@@ -41,6 +41,7 @@
- 	#include "ServerList.h"		// Needed for CServerList (tree)
+@@ -42,6 +42,7 @@
  	#include <cmath>		// Needed for std::floor
  	#include "updownclient.h"	// Needed for CUpDownClient
+ 	#include "DownloadQueue.h"	// Needed for theApp->downloadqueue
 +	#include "CFile.h"		// Needed for CFileOpenList::Instance()
  #else
  	#include "Preferences.h"
  	#include <ec/cpp/RemoteConnect.h>		// Needed for CRemoteConnect
-@@ -217,6 +218,17 @@ CStatTreeItemCounter*		CStatistics::s_si
+@@ -219,6 +220,17 @@ CStatTreeItemCounter*		CStatistics::s_si
  uint64						CStatistics::s_kadNodesTotal;
  uint16						CStatistics::s_kadNodesCur;
  
@@ -671,7 +670,7 @@
  
  CStatistics::CStatistics()
  	: m_graphRunningAvgDown(thePrefs::GetStatsAverageMinutes() * 60 * 1000, true),
-@@ -724,6 +736,19 @@ void CStatistics::InitStatsTree()
+@@ -731,6 +743,19 @@ void CStatistics::InitStatsTree()
  	s_serverOccupation = (CStatTreeItemSimple*)tmpRoot1->AddChild(new CStatTreeItemSimple(wxTRANSLATE("Server Occupation: %.2f%%")));
  	s_serverOccupation->SetValue(0.0);
  
@@ -691,7 +690,7 @@
  	tmpRoot1 = s_statTree->AddChild(new CStatTreeItemBase(wxTRANSLATE("Shared Files")));
  	s_numberOfShared = (CStatTreeItemCounter*)tmpRoot1->AddChild(new CStatTreeItemCounter(wxTRANSLATE("Number of Shared Files: %s")));
  	s_sizeOfShare = (CStatTreeItemCounter*)tmpRoot1->AddChild(new CStatTreeItemCounter(wxTRANSLATE("Total size of Shared Files: %s")));
-@@ -759,6 +784,20 @@ void CStatistics::UpdateStatsTree()
+@@ -766,6 +791,20 @@ void CStatistics::UpdateStatsTree()
  	s_totalUsers->SetValue((uint64)servtuser);
  	s_totalFiles->SetValue((uint64)servtfile);
  	s_serverOccupation->SetValue(servocc);
@@ -722,7 +721,7 @@
  
  #ifndef EC_REMOTE
  
-@@ -468,6 +469,18 @@ class CStatistics {
+@@ -470,6 +471,18 @@ class CStatistics {
  	// Kad nodes
  	static uint64 s_kadNodesTotal;
  	static uint16 s_kadNodesCur;

@@ -1,45 +1,56 @@
 --- src.org/DownloadListCtrl.cpp
 +++ src/DownloadListCtrl.cpp
-@@ -192,7 +192,7 @@ CMuleListCtrl( parent, winid, pos, size,
- 	InsertColumn( 5,  _("Progress"),		wxLIST_FORMAT_LEFT, 170 );
- 	InsertColumn( 6,  _("Sources"),			wxLIST_FORMAT_LEFT,  50 );
- 	InsertColumn( 7,  _("Priority"),		wxLIST_FORMAT_LEFT,  55 );
--	InsertColumn( 8,  _("Status"),			wxLIST_FORMAT_LEFT,  70 );
-+	InsertColumn( 8,  _("Last Seen Part"),		wxLIST_FORMAT_LEFT, 130 );
- 	InsertColumn( 9,  _("Time Remaining"),		wxLIST_FORMAT_LEFT, 110 );
- 	InsertColumn( 10, _("Last Seen Complete"),	wxLIST_FORMAT_LEFT, 220 );
- 	InsertColumn( 11, _("Gained"),			wxLIST_FORMAT_LEFT, 100 );
-@@ -1404,9 +1404,13 @@ void CDownloadListCtrl::DrawFileItem( wx
- 		text = PriorityToStr( file->GetDownPriority(), file->IsAutoDownPriority() );
+@@ -198,6 +198,7 @@ CMuleListCtrl( parent, winid, pos, size,
+ 	InsertColumn( ColumnLastSeenComplete, _("Last Seen Complete"),	wxLIST_FORMAT_LEFT, 220, wxT("c") );
+ 	InsertColumn( ColumnLastReception,	_("Last Reception"),		wxLIST_FORMAT_LEFT, 220, wxT("R") );
+ 	InsertColumn( ColumnGained,			_("Gained"),		wxLIST_FORMAT_LEFT, 100, wxT("xG") );
++	InsertColumn( ColumnLastSeenPart,	_("Last Seen Part"),		wxLIST_FORMAT_LEFT, 220, wxT("xP") );
+ 
+ 	m_category = 0;
+ 	m_completedFiles = 0;
+@@ -1468,6 +1469,16 @@ void CDownloadListCtrl::DrawFileItem( wx
+ 		}
  		break;
- 			
--	// File-status
+ 	}
++
 +	// Last seen part
- 	case 8:
--		text = file->getPartfileStatus();
-+		if ( file->lastseenpart ) {
-+			text = wxDateTime( file->lastseenpart ).Format( _("%y/%m/%d %H:%M:%S") );
++	case ColumnLastSeenPart: {
++		if (file->lastseenpart) {
++			text = wxDateTime( file->lastseenpart ).Format( _("%y/%m/%d %H:%M") );
 +		} else {
 +			text = _("Unknown");
 +		}
- 		break;
- 	
- 	// Remaining
-@@ -1946,11 +1950,11 @@ int CDownloadListCtrl::Compare( const CP
- 			file2->GetDownPriority() );
- 		break;
++		break;
++	}
+ 	} // switch
  
--	// Sort by status
+ 	if ( !text.IsEmpty() ) {
+@@ -2005,6 +2016,13 @@ int CDownloadListCtrl::Compare( const CP
+ 			(sint64) file1->GetCompletedSize() - (sint64) file1->GetTransferred(),
+ 			(sint64) file2->GetCompletedSize() - (sint64) file2->GetTransferred() );
+ 		break;
++
 +	// Sort by last seen part
- 	case 8:
- 		result = CmpAny(
--			file1->getPartfileStatusRang(),
--			file2->getPartfileStatusRang() );
++	case ColumnLastSeenPart:
++		result = CmpAny(
 +			file1->lastseenpart,
 +			file2->lastseenpart );
- 		break;
++		break;
+ 	}
  
- 	// Sort by remaining time
+ 	return result;
+--- src.org/DownloadListCtrl.h
++++ src/DownloadListCtrl.h
+@@ -312,7 +312,8 @@ private:
+ 		ColumnLastSeenComplete,
+ 		ColumnLastReception,
+ 		ColumnNumberOfColumns,
+-		ColumnGained
++		ColumnGained,
++		ColumnLastSeenPart
+ 	};
+ };
+ 
 --- src.org/FileDetailDialog.cpp
 +++ src/FileDetailDialog.cpp
 @@ -133,6 +133,13 @@ void CFileDetailDialog::UpdateData()
@@ -79,7 +90,7 @@
      wxStaticText *item21 = new wxStaticText( parent, IDC_LASTSEENCOMPL, _("N/A"), wxDefaultPosition, wxDefaultSize, 0 );
 --- src.org/PartFile.cpp
 +++ src/PartFile.cpp
-@@ -387,7 +387,28 @@ uint8 CPartFile::LoadPartFile(const CPat
+@@ -387,7 +387,29 @@ uint8 CPartFile::LoadPartFile(const CPat
  
  		uint32 tagcount = metFile.ReadUInt32();
  
@@ -88,6 +99,7 @@
 +			
 +			// bugfix if written tagcount misses a tag
 +			if (j >= tagcount) {
++				break; // we don't check for buggy .met's any more
 +				if (metFile.GetPosition() + 6 >= metFile.GetLength()) {
 +					break;
 +				}
@@ -103,13 +115,13 @@
 +					// this is really the end of the tag list
 +					break;
 +				}
-+				AddLogLineM(true, CFormat(wxT("Found a tag after list of tags in %s. Check your FIXED_TAGS in CPartFile::SavePartFile() !!!")) % filename);
++				AddLogLineM(true, CFormat(wxT("Found a tag after list of tags in %s. Old buggy .met file !?")) % filename);
 +			}
 +			
  			CTag newtag(metFile,true);
  			if (	!getsizeonly ||
  				(getsizeonly && 
-@@ -403,6 +424,13 @@ uint8 CPartFile::LoadPartFile(const CPat
+@@ -403,6 +425,13 @@ uint8 CPartFile::LoadPartFile(const CPat
  					}
  					case FT_LASTSEENCOMPLETE: {
  						lastseencomplete = newtag.GetInt();		
@@ -123,7 +135,7 @@
  						break;
  					}
  					case FT_FILESIZE: {
-@@ -750,6 +778,7 @@ bool CPartFile::SavePartFile(bool Initia
+@@ -750,6 +779,7 @@ bool CPartFile::SavePartFile(bool Initia
  		}
  		
  		uint32 lsc = lastseencomplete;
@@ -131,7 +143,7 @@
  
  		if (!Initial) {
  			CPath::BackupFile(m_fullname, wxT(".backup"));
-@@ -773,7 +802,7 @@ bool CPartFile::SavePartFile(bool Initia
+@@ -773,7 +803,7 @@ bool CPartFile::SavePartFile(bool Initia
  			file.WriteHash(m_hashlist[x]);
  		}
  		// tags		
@@ -140,7 +152,7 @@
  		uint32 tagcount = m_taglist.size() + FIXED_TAGS + (m_gaplist.size()*2);
  		if (!m_corrupted_list.empty()) {			
  			++tagcount;
-@@ -818,6 +847,7 @@ bool CPartFile::SavePartFile(bool Initia
+@@ -818,6 +848,7 @@ bool CPartFile::SavePartFile(bool Initia
  		}
  
  		CTagInt32( FT_LASTSEENCOMPLETE,	lsc			).WriteTagToFile( &file );	// 7
@@ -148,7 +160,7 @@
  
  		if ( IsAutoUpPriority() ) {
  			CTagInt32( FT_ULPRIORITY,	(uint8)PR_AUTO	).WriteTagToFile( &file );	// 8
-@@ -3678,6 +3708,24 @@ void CPartFile::UpdatePartsFrequency( CU
+@@ -3696,6 +3727,24 @@ void CPartFile::UpdatePartsFrequency( CU
  	}
  	
  	if ( increment ) {
@@ -173,7 +185,7 @@
  		for ( unsigned int i = 0; i < size; i++ ) {
  			if ( freq[i] ) {
  				m_SrcpartFrequency[i]++;
-@@ -3803,6 +3851,7 @@ void CPartFile::Init()
+@@ -3821,6 +3870,7 @@ void CPartFile::Init()
  	completedsize=0;
  	m_bPreviewing = false;
  	lastseencomplete = 0;
@@ -183,7 +195,7 @@
  	m_LastNoNeededCheck = 0;
 --- src.org/PartFile.h
 +++ src/PartFile.h
-@@ -169,6 +169,7 @@ public:
+@@ -172,6 +172,7 @@ public:
  	wxString getPartfileStatus() const; //<<--9/21/02
  	sint32	getTimeRemaining() const; //<<--9/21/02
  	time_t	lastseencomplete;

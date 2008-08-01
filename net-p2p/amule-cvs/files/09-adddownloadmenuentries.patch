@@ -9,7 +9,7 @@
  	
  	EVT_MENU( MP_PAUSE,			CDownloadListCtrl::OnSetStatus )
  	EVT_MENU( MP_STOP,			CDownloadListCtrl::OnSetStatus )
-@@ -610,6 +612,52 @@ void CDownloadListCtrl::OnCancelFile(wxC
+@@ -617,6 +619,52 @@ void CDownloadListCtrl::OnCancelFile(wxC
  }
  
  
@@ -62,7 +62,7 @@
  void CDownloadListCtrl::OnSetPriority( wxCommandEvent& event )
  {
  	int priority = 0;
-@@ -930,6 +978,8 @@ void CDownloadListCtrl::OnMouseRightClic
+@@ -937,6 +985,8 @@ void CDownloadListCtrl::OnMouseRightClic
  
  		m_menu->Append(MP_MENU_PRIO, _("Priority"), priomenu);
  		m_menu->Append(MP_CANCEL, _("Cancel"));
@@ -73,7 +73,7 @@
  		m_menu->Append(MP_RESUME, _("&Resume"));
 --- src.org/DownloadListCtrl.h
 +++ src/DownloadListCtrl.h
-@@ -218,6 +218,8 @@ private:
+@@ -222,6 +222,8 @@ private:
  
  	// Event-handlers for files
  	void	OnCancelFile( wxCommandEvent& event );
@@ -221,7 +221,7 @@
  public final static byte EC_OP_ULOAD_QUEUE                   = 0x20;
 --- src.org/PartFile.cpp
 +++ src/PartFile.cpp
-@@ -2227,6 +2227,22 @@ void CPartFile::RemoveAllRequestedBlocks
+@@ -2228,6 +2228,22 @@ void CPartFile::RemoveAllRequestedBlocks
  }
  
  
@@ -246,7 +246,7 @@
  	if (GetKadFileSearchID()) {
 --- src.org/PartFile.h
 +++ src/PartFile.h
-@@ -185,6 +185,8 @@ public:
+@@ -188,6 +188,8 @@ public:
  	void	RemoveBlockFromList(uint64 start,uint64 end);
  	void	RemoveAllSources(bool bTryToSwap);
  	void	Delete();

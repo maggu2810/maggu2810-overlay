@@ -8,7 +8,7 @@
  	m_datarate = 0;
  	m_udpserver = 0;
  	m_lastsorttime = 0;
-@@ -480,6 +481,13 @@ void CDownloadQueue::Process()
+@@ -475,6 +476,13 @@ void CDownloadQueue::Process()
  		SearchForDuplicateFiles();
  		m_nLastSearchForDuplicateFiles = ::GetTickCount();
  	}
@@ -22,7 +22,7 @@
  }
  
  
-@@ -1387,6 +1395,44 @@ void CDownloadQueue::AddLinksFromFile()
+@@ -1382,6 +1390,44 @@ void CDownloadQueue::AddLinksFromFile()
  }
  
  
@@ -69,7 +69,7 @@
  	for ( uint16 i = 0; i < GetFileCount(); i++ ) {
 --- src.org/DownloadQueue.h
 +++ src/DownloadQueue.h
-@@ -340,6 +340,11 @@ private:
+@@ -345,6 +345,11 @@ private:
  	void	AddLinksFromFile();
  
  	/**
@@ -81,7 +81,7 @@
  	 * Stops performing UDP requests.
  	 */
  	void	DoStopUDPRequests();
-@@ -363,6 +368,7 @@ private:
+@@ -368,6 +373,7 @@ private:
  	uint32		m_lastsorttime;
  	uint32		m_lastudpstattime;
  	uint32		m_nLastED2KLinkCheck;

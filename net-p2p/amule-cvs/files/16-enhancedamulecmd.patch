@@ -1,6 +1,6 @@
 --- src.org/DownloadQueue.cpp
 +++ src/DownloadQueue.cpp
-@@ -1646,7 +1646,7 @@ void CDownloadQueue::OnHostnameResolved(
+@@ -1654,7 +1654,7 @@ void CDownloadQueue::OnHostnameResolved(
  }
  
  
@@ -9,7 +9,7 @@
  {
  	wxString uri(link);
  
-@@ -1659,7 +1659,7 @@ bool CDownloadQueue::AddLink( const wxSt
+@@ -1667,7 +1667,7 @@ bool CDownloadQueue::AddLink( const wxSt
  	}
  
  	if (uri.compare(0, 7, wxT("ed2k://")) == 0) {
@@ -18,7 +18,7 @@
  	} else {
  		AddLogLineM(true, CFormat(_("Unknown protocol of link: %s")) % link);
  		return false;
-@@ -1667,7 +1667,7 @@ bool CDownloadQueue::AddLink( const wxSt
+@@ -1675,7 +1675,7 @@ bool CDownloadQueue::AddLink( const wxSt
  }
  
  
@@ -27,7 +27,7 @@
  {
  	wxASSERT( !link.IsEmpty() );
  	wxString URI = link;
-@@ -1680,7 +1680,7 @@ bool CDownloadQueue::AddED2KLink( const 
+@@ -1688,7 +1688,7 @@ bool CDownloadQueue::AddED2KLink( const 
  	try {
  		CScopedPtr<CED2KLink> uri(CED2KLink::CreateLinkFromUrl(URI));
  
@@ -36,7 +36,7 @@
  	} catch ( const wxString& err ) {
  		AddLogLineM( true, CFormat( _("Invalid eD2k link! ERROR: %s")) % err);
  	}
-@@ -1689,11 +1689,11 @@ bool CDownloadQueue::AddED2KLink( const 
+@@ -1697,11 +1697,11 @@ bool CDownloadQueue::AddED2KLink( const 
  }
  
  
@@ -50,7 +50,7 @@
  			
  		case CED2KLink::kServer:
  			return AddED2KLink( dynamic_cast<const CED2KServerLink*>( link ) );
-@@ -1708,7 +1708,7 @@ bool CDownloadQueue::AddED2KLink( const 
+@@ -1716,7 +1716,7 @@ bool CDownloadQueue::AddED2KLink( const 
  
  
  
@@ -59,7 +59,7 @@
  {
  	CPartFile* file = NULL;
  	if (IsFileExisting(link->GetHashKey())) {
-@@ -1734,7 +1734,7 @@ bool CDownloadQueue::AddED2KLink( const 
+@@ -1742,7 +1742,7 @@ bool CDownloadQueue::AddED2KLink( const 
  			return false;
  		}
  		
@@ -70,7 +70,7 @@
  	if (link->HasValidAICHHash()) {
 --- src.org/DownloadQueue.h
 +++ src/DownloadQueue.h
-@@ -267,11 +267,11 @@ public:
+@@ -272,11 +272,11 @@ public:
  	/**
  	 * Adds an ed2k or magnet link to download queue.
  	 */
@@ -268,7 +268,7 @@
  public final static short EC_TAG_PASSWD_HASH                        = 0x0001;
 --- src.org/PartFile.h
 +++ src/PartFile.h
-@@ -429,6 +429,15 @@ public:
+@@ -432,6 +432,15 @@ public:
  	
  	CUpDownClient* GetSlowerDownloadingClient(uint32 speed, CUpDownClient* caller) ;
  

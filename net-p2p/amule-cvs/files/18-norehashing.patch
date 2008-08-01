@@ -1,6 +1,6 @@
 --- src.org/PartFile.cpp
 +++ src/PartFile.cpp
-@@ -740,10 +740,10 @@ uint8 CPartFile::LoadPartFile(const CPat
+@@ -741,10 +741,10 @@ uint8 CPartFile::LoadPartFile(const CPat
  					% partFilePath
  					% (m_lastDateChanged - file_date) );
  				// rehash
