@@ -118,4 +118,16 @@
 		</description>
 	</overlay>
 
+	<overlay
+		type = "git"
+		src  = "git://github.com/eatnumber1/pcsx2-overlay.git"
+		status = "unofficial"
+		contact = "eatnumber1@gmail.com"
+		name = "pcsx2-overlay">
+		<description>
+			Experimental overlay for pcsx2 ebuilds.
+			http://github.com/eatnumber1/pcsx2-overlay/tree/master/layman-local.cfg?raw=true
+		</description>
+	</overlay>
+
 </layman>
