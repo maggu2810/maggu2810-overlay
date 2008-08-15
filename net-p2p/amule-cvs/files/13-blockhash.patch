@@ -309,7 +309,7 @@
  	m_lastDateChanged = wxDateTime::GetTimeNow();
 --- src.org/Preferences.cpp
 +++ src/Preferences.cpp
-@@ -147,6 +147,7 @@ bool		CPreferences::s_checkDiskspace;
+@@ -148,6 +148,7 @@ bool		CPreferences::s_checkDiskspace;
  uint32		CPreferences::s_uMinFreeDiskSpace;
  wxString	CPreferences::s_yourHostname;
  bool		CPreferences::s_bVerbose;
@@ -317,7 +317,7 @@
  bool		CPreferences::s_bmanualhighprio;
  bool		CPreferences::s_btransferfullchunks;
  bool		CPreferences::s_bstartnextfile;
-@@ -1217,6 +1218,8 @@ void CPreferences::BuildItemList( const 
+@@ -1218,6 +1219,8 @@ void CPreferences::BuildItemList( const 
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/YourHostname"),			s_yourHostname, wxEmptyString ) );
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/DateTimeFormat"),		s_datetimeformat, wxT("%A, %x, %X") ) );
  
