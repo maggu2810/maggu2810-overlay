@@ -15,6 +15,14 @@ then
 	exit 0
 fi
 
+# -------------------
+# ensure that LANG and LC_ALL is set
+if [ -e /etc/profile.env ] ; then
+	$(grep -e \ LANG -e \ LC_ /etc/profile.env)
+fi
+# -------------------
+
+
 TMPDIR="/tmp/automount"
 LOGFILE="${TMPDIR}/log"
 SDEVNAME="${DEVNAME//\//_}"		# contains an simple name for the device
@@ -40,14 +48,14 @@ then
 	case "$ID_FS_TYPE" in
 		crypto_LUKS)
 			TMPDEVNAME="${MAPDIR}/${SDEVNAME}"
-			openvt -s -w -- bash -c "TERM=linux clear; $CSETUP luksOpen ${DEVNAME} ${SDEVNAME}"
+			openvt -s -w -- bash -c "TERM=linux clear; ${CSETUP} luksOpen ${DEVNAME} ${SDEVNAME}"
 			;;
 	    	*)
 			TMPDEVNAME="${DEVNAME}"
 			;;
 	esac
 	echo "MY_DEVNAME=${TMPDEVNAME}" >> ${EDEVFILE}
-	$VOLID --export ${TMPDEVNAME} | xargs -I° echo MY_° >> ${EDEVFILE}
+	${VOLID} --export ${TMPDEVNAME} | xargs -I° echo MY_° >> ${EDEVFILE}
 	# -- FIND A NAME FOR THE MOUNT DIRECTORY
 		TMPLABEL=$($VOLID --label ${TMPDEVNAME})
 		if [ "$TMPLABEL" = "" ]
@@ -93,7 +101,9 @@ then
 			;;
 	esac
 
-# ---------------------------------------------------------
+# ---------------------------
+# -- IF DEVICE WAS REMOVED --
+# ---------------------------
 elif [ "$ACTION" = "remove" ]
 then
 	source ${EDEVFILE}
