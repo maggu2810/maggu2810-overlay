@@ -25,7 +25,7 @@
  			case MP_RESUME:	(*it)->ResumeFile();	break;
 --- src.org/ExternalConn.cpp
 +++ src/ExternalConn.cpp
-@@ -618,7 +618,7 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
+@@ -632,7 +632,7 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
  				if ( thePrefs::StartNextFile() && (pfile->GetStatus() != PS_PAUSED) ) {
  					theApp->downloadqueue->StartNextFile(pfile);
  				}

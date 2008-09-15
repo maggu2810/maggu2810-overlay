@@ -317,7 +317,7 @@
  bool		CPreferences::s_bmanualhighprio;
  bool		CPreferences::s_btransferfullchunks;
  bool		CPreferences::s_bstartnextfile;
-@@ -1218,6 +1219,8 @@ void CPreferences::BuildItemList( const 
+@@ -1220,6 +1221,8 @@ void CPreferences::BuildItemList( const 
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/YourHostname"),			s_yourHostname, wxEmptyString ) );
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/DateTimeFormat"),		s_datetimeformat, wxT("%A, %x, %X") ) );
  
@@ -337,7 +337,7 @@
  	// Message Filters
  	
  	static bool		MustFilterMessages()		{ return s_MustFilterMessages; }
-@@ -663,6 +665,8 @@ protected:
+@@ -668,6 +670,8 @@ protected:
  
  	static uint8_t	s_showRatesOnTitle;	// 0=no, 1=after app name, 2=before app name
  

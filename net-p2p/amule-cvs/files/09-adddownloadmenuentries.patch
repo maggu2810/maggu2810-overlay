@@ -84,7 +84,7 @@
  	void	OnSetCategory( wxCommandEvent& event );	
 --- src.org/ExternalConn.cpp
 +++ src/ExternalConn.cpp
-@@ -621,6 +621,14 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
+@@ -635,6 +635,14 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
  				pfile->Delete();
  				break;
  
@@ -99,7 +99,7 @@
  			case EC_OP_PARTFILE_SET_CAT:
  				pfile->SetCategory(hashtag->GetTagByIndexSafe(0)->GetInt());
  				break;
-@@ -1147,6 +1155,8 @@ CECPacket *ExternalConn::ProcessRequest2
+@@ -1161,6 +1169,8 @@ CECPacket *ExternalConn::ProcessRequest2
  		case EC_OP_PARTFILE_STOP:
  		case EC_OP_PARTFILE_PRIO_SET:
  		case EC_OP_PARTFILE_DELETE:
