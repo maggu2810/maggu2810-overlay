@@ -15,14 +15,6 @@ then
 	exit 0
 fi
 
-# -------------------
-# ensure that LANG and LC_ALL is set
-if [ -e /etc/profile.env ] ; then
-	$(grep -e \ LANG -e \ LC_ /etc/profile.env)
-fi
-# -------------------
-
-
 TMPDIR="/tmp/automount"
 LOGFILE="${TMPDIR}/log"
 SDEVNAME="${DEVNAME//\//_}"		# contains an simple name for the device
@@ -32,6 +24,16 @@ MOUNTDIR="/media"
 CSETUP="/sbin/cryptsetup"
 MAPDIR="/dev/mapper"
 VOLID="/sbin/vol_id"
+
+# mount options for all file systems
+OPT="rw,noexec,nosuid,nodev"
+
+# -------------------
+# ensure that LANG and LC_ALL is set
+if [ -e /etc/profile.env ] ; then
+	$(grep -e \ LANG -e \ LC_ /etc/profile.env)
+fi
+# -------------------
 
 mkdir -p ${TMPDIR} ${MOUNTDIR}
 
@@ -48,7 +50,7 @@ then
 	case "$ID_FS_TYPE" in
 		crypto_LUKS)
 			TMPDEVNAME="${MAPDIR}/${SDEVNAME}"
-			openvt -s -w -- bash -c "TERM=linux clear; ${CSETUP} luksOpen ${DEVNAME} ${SDEVNAME}"
+			openvt -s -w -- bash -c "export TERM=linux; clear; ${CSETUP} luksOpen ${DEVNAME} ${SDEVNAME}"
 			;;
 	    	*)
 			TMPDEVNAME="${DEVNAME}"
@@ -85,16 +87,17 @@ then
 # -- MOUNT THE DEVICE                             --
 # -- WE SHOULD ONLY USE VARIABLES WITH MY_ PREFIX --
 # --------------------------------------------------
+
 	mkdir -p ${MY_MOUNT_DIR}
 	case "$MY_ID_FS_TYPE" in
 		ext[23])
-			mount -o rw,noexec,nosuid,nodev ${MY_DEVNAME} ${MY_MOUNT_DIR}
+			mount -o ${OPT} ${MY_DEVNAME} ${MY_MOUNT_DIR}
 			;;
 		ntfs)
-			mount -t ntfs-3g -o rw,noexec,nosuid,nodev,allow_other,force ${MY_DEVNAME} ${MY_MOUNT_DIR}
+			mount -t ntfs-3g -o ${OPT},allow_other,force ${MY_DEVNAME} ${MY_MOUNT_DIR}
 			;;
 		vfat)
-			mount -t vfat -o rw,noexec,nosuid,nodev,umask=0,dmask=0,fmask=0 ${MY_DEVNAME} ${MY_MOUNT_DIR}
+			mount -t vfat -o ${OPT},umask=0000,dmask=0000,fmask=0000 ${MY_DEVNAME} ${MY_MOUNT_DIR}
 			;;
 		*)
 			rmdir ${MY_MOUNT_DIR}
