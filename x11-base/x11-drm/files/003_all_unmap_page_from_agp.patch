@@ -1,0 +1,13 @@
+--- drmold/linux-core/drm_compat.h	2008-04-20 10:26:35.781343700 +0300
++++ drm/linux-core/drm_compat.h	2008-04-20 10:30:03.682343119 +0300
+@@ -209,6 +209,10 @@
+ #define unmap_page_from_agp drm_unmap_page_from_agp
+ #endif
+ 
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,25))
++#define flush_agp_mappings()   do {} while (0)
++#endif
++
+ #if (LINUX_VERSION_CODE < KERNEL_VERSION(2,6,15))
+ extern struct page *get_nopage_retry(void);
+ extern void free_nopage_retry(void);

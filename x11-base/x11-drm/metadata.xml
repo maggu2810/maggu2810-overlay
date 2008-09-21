@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<herd>x11-drivers</herd>
+<maintainer>
+  <email>battousai@gentoo.org</email>
+  <name>Bryan Stine</name>
+</maintainer>
+<longdescription>Kernel modules which provide the Direct Rendering Manager component for X11.</longdescription>
+</pkgmetadata>

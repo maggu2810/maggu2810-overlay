@@ -1,0 +1,594 @@
+# ChangeLog for x11-base/x11-drm
+# Copyright 1999-2007 Gentoo Foundation; Distributed under the GPL v2
+# $Header: /var/cvsroot/gentoo-x86/x11-base/x11-drm/ChangeLog,v 1.55 2007/10/20 04:41:32 battousai Exp $
+
+*x11-drm-20071019 (20 Oct 2007)
+
+  20 Oct 2007; Bryan Stine <battousai@gentoo.org> +x11-drm-20071019.ebuild:
+  Bump to new snapshot. No more i830 module upstream.
+
+  09 Oct 2007; Donnie Berkholz <dberkholz@gentoo.org>;
+  x11-drm-20051223.ebuild, x11-drm-20060608.ebuild,
+  x11-drm-20060608-r1.ebuild, x11-drm-20070314.ebuild:
+  Fix quoting issues caught by latest repoman.
+
+  02 Jul 2007; Piotr Jaroszyński <peper@gentoo.org>
+  x11-drm-20051223.ebuild:
+  (QA) RESTRICT clean up.
+
+  14 Mar 2007; Bryan Stine <battousai@gentoo.org> x11-drm-20060608.ebuild,
+  x11-drm-20060608-r1.ebuild, x11-drm-20070314.ebuild:
+  Ebuild fixes across the board since 20060608 for proper linux-mod and
+  autotools usage, as well as KBUILD_OUTPUT support. Thanks jakub(bug #150957)
+  and Zhang Le(bug #170842).
+
+*x11-drm-20070314 (14 Mar 2007)
+
+  14 Mar 2007; Bryan Stine <battousai@gentoo.org> +x11-drm-20070314.ebuild:
+  New snapshot of upstream git. Mesa upstream drm has removed support for 2.4
+  kernels, so this ebuild will die if the user attempts to build against such
+  sources. Most likely, this means we'll have to keep 20060608 around. The
+  nouveau module is now installed alongside nv, so users can load the one they
+  want (probably nouveau). The updated snapshot should fix bug #165553.
+
+  04 Jan 2007; Bryan Stine <battousai@gentoo.org> x11-drm-20060608.ebuild,
+  x11-drm-20060608-r1.ebuild:
+  Patchset 0.3, added a patch to make the linux/config.h include conditional.
+  This file is no longer available with kernels 2.6.19 and newer. Fixes bug
+  #156784.
+
+  02 Jan 2007; Javier Villavicencio <the_paya@gentoo.org>
+  x11-drm-20060608-r1.ebuild:
+  Fixes i810 video cards selection for FreeBSD.
+
+  02 Jan 2007; Donnie Berkholz <dberkholz@gentoo.org>;
+  x11-drm-20060608-r1.ebuild:
+  We don't need to special-case for unset VIDEO_CARDS, since we now have
+  defaults in profiles.
+
+  20 Dec 2006; Donnie Berkholz <dberkholz@gentoo.org>;
+  x11-drm-20060608-r1.ebuild:
+  Trailing whitespace.
+
+  20 Dec 2006; Donnie Berkholz <dberkholz@gentoo.org>;
+  -x11-drm-4.3.0-r7.ebuild, -x11-drm-20050502.ebuild,
+  -x11-drm-20050807.ebuild, -x11-drm-20051028.ebuild:
+  Clean up.
+
+*x11-drm-20060608-r1 (20 Dec 2006)
+
+  20 Dec 2006; Donnie Berkholz <dberkholz@gentoo.org>;
+  +x11-drm-20060608-r1.ebuild:
+  (#148572) Add FreeBSD support. Significant refactoring to keep OS-specific
+  stuff out of the main ebuild functions. Initial work by Javier Villavicencio,
+  later refactoring by me.
+
+  25 Nov 2006; Bryan Østergaard <kloeri@gentoo.org>
+  x11-drm-20060608.ebuild:
+  Stable on Alpha.
+
+  24 Sep 2006; <blubb@gentoo.org> x11-drm-20060608.ebuild:
+  stable on amd64
+
+  18 Sep 2006; Tim Yamin <plasmaroo@gentoo.org> x11-drm-20060608.ebuild:
+  Stable on IA64; bug #112378.
+
+  18 Sep 2006; Joseph Jezak <josejx@gentoo.org> x11-drm-20060608.ebuild:
+  Marked ppc stable for bug #112378.
+
+  10 Sep 2006; <ticho@gentoo.org> x11-drm-20060608.ebuild:
+  Stable on x86, bug #112378.
+
+  07 Sep 2006; Bryan Stine <battousai@gentoo.org> x11-drm-20051028.ebuild,
+  x11-drm-20051223.ebuild, x11-drm-20060608.ebuild:
+  Snapshot ebuilds is_kernel -> kernel_is. Bump 20060608 patchball version to
+  0.2 with a new patch to define TRUE, FALSE if they don't already exist for
+  some reason. Thanks to Alon Bar-Lev (bug #137712).
+
+  01 Sep 2006; Bryan Stine <battousai@gentoo.org> x11-drm-20050807.ebuild,
+  x11-drm-20051028.ebuild, x11-drm-20051223.ebuild, x11-drm-20060608.ebuild:
+  Set valid WANT_AUTOCONF, bug #143429.
+
+  31 Aug 2006; Bryan Stine <battousai@gentoo.org> x11-drm-20050502.ebuild,
+  x11-drm-20050807.ebuild, x11-drm-20051028.ebuild, x11-drm-20051223.ebuild,
+  x11-drm-20060608.ebuild:
+  Fix linux-mod usage in pkg_postinst.
+
+  07 Jul 2006; Donnie Berkholz <dberkholz@gentoo.org>; ChangeLog:
+  Update to my new email address.
+
+  16 Jun 2006; Bryan Stine <battousai@gentoo.org> x11-drm-20051028.ebuild,
+  x11-drm-20051223.ebuild, x11-drm-20060608.ebuild:
+  Added a patch to 20051223 to fix building with 2.6.17, solving bug #129302.
+  Implemented ebuild fixes for 2.4 module building, solving bug #96952.
+
+*x11-drm-20060608 (08 Jun 2006)
+
+  08 Jun 2006; Bryan Stine <battousai@gentoo.org> +x11-drm-20060608.ebuild:
+  Bump to new snapshot.
+
+  16 Apr 2006; Donnie Berkholz <dberkholz@gentoo.org>;
+  x11-drm-20051223.ebuild:
+  Split out ATI cards again, into mach64, r128 and radeon.
+
+  16 Apr 2006; Donnie Berkholz <dberkholz@gentoo.org>;
+  x11-drm-20051223.ebuild:
+  Alphabetize card ordering.
+
+  16 Apr 2006; Donnie Berkholz <dberkholz@gentoo.org>;
+  x11-drm-4.3.0-r7.ebuild, x11-drm-20050502.ebuild, x11-drm-20050807.ebuild,
+  x11-drm-20051028.ebuild:
+  Change VIDEO_CARDS rage128 to r128 for compatibility with other ebuilds.
+
+  17 Feb 2006; Luca Barbato <lu_zero@gentoo.org> x11-drm-20051223.ebuild:
+  Fix for bug #123094 thanks to Stefano <raistlin@s0ftpj.org>
+
+  03 Feb 2006; Donnie Berkholz <dberkholz@gentoo.org>;
+  x11-drm-20051223.ebuild:
+  Fix up VIDEO_CARDS naming and use to be consistent with xorg-x11.
+
+  28 Jan 2006; Donnie Berkholz <dberkholz@gentoo.org>;
+  x11-drm-20051223.ebuild:
+  Fix up VIDEO_CARDS use so that it shows up for emerge -vp.
+
+  28 Jan 2006; Donnie Berkholz <dberkholz@gentoo.org>;
+  x11-drm-20051223.ebuild:
+  Add VIDEO_CARDS=ati for compatibility with modular X. It enables modules for
+  all ATi cards: r128, radeon, mach64.
+
+  28 Jan 2006; Donnie Berkholz <dberkholz@gentoo.org>;
+  x11-drm-4.3.0-r7.ebuild, x11-drm-20050502.ebuild, x11-drm-20050807.ebuild,
+  x11-drm-20051028.ebuild, x11-drm-20051223.ebuild:
+  Change VIDEO_CARDS=matrox to mga for compatibility with xorg-x11. Also port
+  everything to modular X.
+
+*x11-drm-20051223 (24 Dec 2005)
+
+  24 Dec 2005; Bryan Stine <battousai@gentoo.org> +x11-drm-20051223.ebuild:
+  Snapshot bump to 20051223. Happy holidays.
+
+  14 Dec 2005; Donnie Berkholz <dberkholz@gentoo.org>;
+  x11-drm-20051028.ebuild:
+  Port to modular X. Doesn't actually require virtual/x11 to build.
+
+*x11-drm-20051028 (29 Oct 2005)
+
+  29 Oct 2005; Bryan Stine <battousai@gentoo.org> x11-drm-20050807.ebuild,
+  +x11-drm-20051028.ebuild:
+  Snapshot bump to introduce new skeletal nv driver, provided for speedy EXA
+  via DMA transfers.
+  
+  Applied the patch provided by Alon Bar-Lev to properly identify the kernel
+  source directory and kernel version. Incidentally, also stopped SLOTting
+  against the kernel version. The patch fixes bug #105233.
+  
+  No longer installs libdrm files, since the only parts of libdrm needed for
+  this package are the object files at compile time. Thanks to Alon Bar-Lev
+  for pointing out the conflict with modular x11-libs/libdrm. Fixes bug
+  #108504.
+
+*x11-drm-20050807 (08 Aug 2005)
+
+  08 Aug 2005; Bryan Stine <battousai@gentoo.org> -x11-drm-20040827.ebuild,
+  -x11-drm-20040827-r1.ebuild, x11-drm-20050502.ebuild,
+  +x11-drm-20050807.ebuild:
+  Drop old dated snapshot. Added minor i915 fixes to 20050502 0.2 patchball,
+  marking that snapshot stable. Bumped up to a 20050807 snapshot.
+
+  18 May 2005; Bryan Stine <battousai@gentoo.org> x11-drm-4.3.0-r7.ebuild,
+  x11-drm-20040827.ebuild, x11-drm-20040827-r1.ebuild,
+  x11-drm-20050502.ebuild:
+  Remove invalid PROVIDE. Thanks Mr_Bones_.
+
+  10 May 2005; Bryan Stine <battousai@gentoo.org> -x11-drm-20050104.ebuild:
+  Goodbye, 20050104. You piece of crap.
+
+*x11-drm-20050502 (03 May 2005)
+
+  03 May 2005; Bryan Stine <battousai@gentoo.org> +x11-drm-20050502.ebuild:
+  New snapshot. Builds linux-core now, and as such has checks for proper
+  kernel config. Also warns when AGP is not enabled.
+
+  25 Apr 2005; <brix@gentoo.org> :
+  Dependency update: sys-apps/pcmcia-cs -> app-laptop/pcmcia-cs.
+
+  25 Apr 2005; <brix@gentoo.org> :
+  Dependency update: sys-apps/pcmcia-cs -> app-laptop/pcmcia-cs.
+
+  25 Apr 2005; <brix@gentoo.org> :
+  Dependency update: sys-apps/pcmcia-cs -> app-laptop/pcmcia-cs.
+
+  25 Apr 2005; Donnie Berkholz <dberkholz@gentoo.org>; metadata.xml:
+  Update herd to x11-drivers.
+
+  24 Jan 2005; Bryan Stine <battousai@gentoo.org x11-drm-20050104.ebuild:
+  Forgot to remove IUSE="gatos".
+
+*x11-drm-20050104 (07 Jan 2005)
+
+  07 Jan 2005; Bryan D. Stine <battousai@gentoo.org> +x11-drm-20050104.ebuild:
+  New snapshot, 20050104. This needs testing and is hard-masked currently.
+
+*x11-drm-20040827-r1 (22 Dec 2004)
+
+  22 Dec 2004; Bryan D. Stine <battousai@gentoo.org>
+  +x11-drm-20040827-r1.ebuild, x11-drm-20040827.ebuild:
+  Gah, somehow forgot to bump the patchball revision. Also, ${PF} -> ${P} in
+  patchball SRC_URI.
+
+  15 Dec 2004; Bryan Stine <battousai@gentoo.org>; x11-drm-20040827.ebuild:
+  Add a patch to fix lockfile vulnerability (CAN-2004-1056: Insufficient
+  locking checks in DRM code). This bumps the patchball up to 0.2. Closes bug
+  #74464.
+
+  07 Dec 2004; Bryan Stine <battousai@gentoo.org>; x11-drm-20040827.ebuild:
+  Now with linux-mod eclass goodness, no more kernel-mod.
+
+  23 Nov 2004; Donnie Berkholz <dberkholz@gentoo.org>;
+  -x11-drm-4.3.0-r6.ebuild:
+  Remove old version, last one with USE flags rather than VIDEO_CARDS.
+
+  04 Nov 2004; Bryan Stine <battousai@gentoo.org> x11-drm-20040827.ebuild:
+  Updated 20040827 snapshot ebuild for the kmod deprecation. Thanks to Stefan
+  Schweizer <sschweizer@gmail.com> for the patch. This closes bug #68453.
+
+  31 Oct 2004; Donnie Berkholz <dberkholz@gentoo.org>; :
+  Restore changelog entries from when it was xfree-drm.
+
+  28 Oct 2004; Donnie Berkholz <dberkholz@gentoo.org>;
+  x11-drm-20040827.ebuild, x11-drm-4.3.0-r6.ebuild, x11-drm-4.3.0-r7.ebuild:
+  Inherit x11, not xfree eclass.
+
+  04 Oct 2004; Pieter Van den Abeele <pvdabeel@gentoo.org>; x11-drm-4.3.0-r7.ebuild:
+  moved to ppc stable
+  
+  01 Sep 2004; Bryan Stine <battousai@gentoo.org>; x11-drm-20040827.ebuild,
+  x11-drm-4.3.0-r7.ebuild:
+  Add sed to fix Makefile install location again. Closes 62188.
+
+  31 Aug 2004; Donnie Berkholz <dberkholz@gentoo.org>;
+  x11-drm-20040827.ebuild:
+  Fix use() invocation, thanks to Michael Sterrett <mr_bones_@gentoo.org>.
+
+*x11-drm-4.3.0-r6 (29 Aug 2004)
+
+  29 Aug 2004; Bryan Stine <battousai@gentoo.org>; +metadata.xml,
+  +files/modules.d-x11-drm, +x11-drm-20040827.ebuild,
+  +x11-drm-4.3.0-r6.ebuild, +x11-drm-4.3.0-r7.ebuild:
+  Moved xfree-drm ebuilds to x11-drm. No notable changes have been made to them.
+  Snapshot 20040827 has been added, which begins the new versioning, since this
+  is based on dri.sf.net drm snapshots. Improvements in the new snapshot include
+  2.6 support for 2.6.6+ kernels and koutput, along with many upstream changes.
+
+  26 Jul 2004; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r6.ebuild, xfree-drm-4.3.0-r7.ebuild,
+  xfree-drm-4.3.0-r8.ebuild:
+  /usr/src/linux needs ${ROOT}.
+
+  23 Jun 2004; Aron Griffis <agriffis@gentoo.org> xfree-drm-4.3.0-r6.ebuild,
+  xfree-drm-4.3.0-r7.ebuild, xfree-drm-4.3.0-r8.ebuild:
+  QA - move video card tests into pkg_setup, fix use invocation
+
+  11 Apr 2004; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r6.ebuild, xfree-drm-4.3.0-r7.ebuild,
+  xfree-drm-4.3.0-r8.ebuild:
+  Change x11-base/xfree dependency to virtual/x11.
+
+  08 Apr 2004; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r8.ebuild:
+  Change KEYWORDS to ~x86 only, at genone's request.
+
+  08 Apr 2004; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r8.ebuild:
+  Drop kmod from inherit since it's not around yet.
+
+*xfree-drm-4.3.0-r8 (06 Apr 2004)
+
+  06 Apr 2004; Bryan Stine <bryan@gentoo.org> xfree-drm-4.3.0-r8.ebuild:
+  Added in-development version 4.3.0-r8. This is not ready for use yet. Changes
+  from previous include handling 2.6 kernels and the modules.d fix. I may have
+  forgotten something here and there may be more coming.
+
+  20 Mar 2004; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r2.ebuild:
+  Pull old version. It was the only stable on amd64, but amd64 doesn't support
+  2.4 kernels (#39175).
+
+  16 Mar 2004; Donnie Berkholz <dberkholz@gentoo.org>; :
+  Fixing root@gentoo.org changelog entry.
+
+  14 Mar 2004; Bryan Stine <battousai@gentoo.org> xfree-drm-4.3.0-r7.ebuild,
+  files/modules.d-xfree-drm:
+  Changed the location where modules get installed to /lib/modules/KV/xfree-drm.
+  Consequently, I added the modules.d template to files/.
+
+  09 Mar 2004; <agriffis@gentoo.org> xfree-drm-4.3.0-r7.ebuild:
+  stable on alpha and ia64
+
+  21 Feb 2004; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r7.ebuild:
+  Move einfo for patch exclusion from xfree eclass to ebuild.
+
+  21 Feb 2004; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r7.ebuild:
+  PATCH_VER 0.4. Add 210_ppc_mach64-drm-ioremap-agp.patch, made by David Holm
+  <dholm@gentoo.org> on bug #40314. Also contains a remade
+  010_ppc_drm-ioremap-agp.patch, again thanks to David. Change numbering of
+  patches also.
+
+  21 Feb 2004; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r7.ebuild:
+  Start using new patch_exclude() from xfree.eclass for patch exclusion.
+
+  21 Feb 2004; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r7.ebuild:
+  Cleanup, mostly comments and quotes.
+
+  15 Feb 2004; David Holm <dholm@gentoo.org> xfree-drm-4.3.0-r7.ebuild:
+  Fixed broken ioremap patch and added to ~ppc.
+
+  10 Feb 2004; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r7.ebuild:
+  Fixing for ppc mach64 -- ioremap patch is broken. Trying without it for now to
+  see whether things work. David Holm <dholm@gentoo.org> reports it works with
+  forced PCI mode.
+
+  09 Feb 2004; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r7.ebuild:
+  Adding warning about insecurity of mach64.
+
+  09 Feb 2004; Aron Griffis <agriffis@gentoo.org> xfree-drm-4.3.0-r7.ebuild:
+  Add ~alpha and ~ia64. matrox, i810 and i830 fail to build on alpha, but I'll
+  wait for that to be an issue for somebody before trying to fix it
+
+  08 Feb 2004; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r6.ebuild:
+  Use portage internal USE_EXPAND instead of xfree.eclass vcards(), add
+  IUSE_VIDEO_CARDS line.
+
+  23 Jan 2004; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r7.ebuild:
+  Marking stable on x86. It's been in testing for a month and a half without a
+  whisper. Keep in mind that the gatos USE flag only works in combination with
+  the gatos USE flag on 4.3.0-r4 (soon to be released) and the ati-gatos
+  package.
+
+  19 Jan 2004; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r2.ebuild, xfree-drm-4.3.0-r6.ebuild,
+  xfree-drm-4.3.0-r7.ebuild:
+  Changing homepage to dri.sf.net.
+
+  16 Dec 2003; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r7.ebuild:
+  PATCH_VER 0.3. Update to 004_all_radeon-rage128-pci-id-updates-v2.patch, which
+  adds IGP cards and fixes a small typo in the naming of another card.
+
+  14 Dec 2003; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r7.ebuild:
+  PATCH_VER 0.2. Added 004_all_radeon-rage128-pci-id-updates.patch to try to
+  help newer cards work better. For standard DRM only.
+
+*xfree-drm-4.3.0-r7 (08 Dec 2003)
+
+  08 Dec 2003; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r7.ebuild:
+  20031202 snapshot. Adds support for mach64. Also adds initial support for
+  gatos, accompanied by USE=gatos in xfree and a coming ati-gatos ebuild.
+  Obsoletes USE for video cards, moving to VIDEO_CARDS.
+
+  05 Dec 2003; <agriffis@gentoo.org> xfree-drm-4.3.0-r6.ebuild:
+  Stable on ia64
+
+  24 Nov 2003; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r6.ebuild:
+  Added warning for genkernel users to change processor type to something
+  greater than 386.
+
+  20 Oct 2003; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r6.ebuild:
+  Making warning for uncompiled kernel more verbose. Bug #31556.
+
+  16 Oct 2003; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r6.ebuild:
+  Making 2.6 kernel warning more verbose.
+
+  14 Oct 2003; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r6.ebuild:
+  Revert sis300 to sis, makes things easier.
+
+  14 Oct 2003; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r6.ebuild:
+  Moving VIDEO_CARDS=sis to sis300 to make it more clear that it doesn't work on
+  315 series. Preventing xfree-drm from emerging on 2.6 kernels, it doesn't work
+  yet so the kernel DRM must be used. Adding warning for SiS.
+
+  04 Oct 2003; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r3.ebuild, xfree-drm-4.3.0-r4.ebuild,
+  xfree-drm-4.3.0-r5.ebuild:
+  Pulling broken versions.
+
+  29 Sep 2003; Aron Griffis <agriffis@gentoo.org> xfree-drm-4.3.0-r6.ebuild:
+  Stable on alpha
+
+  12 Aug 2003; Donnie Berkholz <dberkholz@gentoo.org>
+  xfree-drm-4.3.0-r6.ebuild: Fixes for bug #25598 and bug #24415, general
+  cleanup.
+
+  28 Jul 2003; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r6.ebuild:
+  Bumped patchset to 0.3 to fix ppc problems with ioremap patch.
+
+  27 Jul 2003; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r6.ebuild:
+  Added drm-ioremap patch to fix PPC build.
+
+  22 Jul 2003; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r6.ebuild:
+  Moving to stable on x86. ppc still having issues.
+
+  16 Jul 2003; Donnie Berkholz <dberkholz@gentoo.org> xfree-drm-4.3.0-r6.ebuild:
+  Moved to ~arch for x86 and alpha. Still needs work for ppc.
+
+*xfree-drm-4.3.0-r6 (14 Jul 2003)
+
+  14 Jul 2003; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r6.ebuild:
+  Fixed Makefile so it actually uses /usr/src/linux, fixed sandbox issues,
+  updated drm to fix various bugs including i810 problems, fixed pte_offset
+  unresolved symbols issue.
+
+  13 Jul 2003; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r3.ebuild, xfree-drm-4.3.0-r5.ebuild:
+  Moving -r3 through -r5 to -ppc.
+
+  07 Jul 2003; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r5.ebuild:
+  Moving to ~arch after MTRR_TYPE_WRCOMB problems with -r4.
+
+*xfree-drm-4.3.0-r5 (01 Jul 2003)
+
+  01 Jul 2003; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r5.ebuild:
+  Updating to today's DRI, in hopes of solving a couple of problems with
+  MTRR_TYPE_WRCOMB. Masked for testing.
+
+  30 Jun 2003; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r4.ebuild:
+  Changed XFREE_CARDS to VIDEO_CARDS so non-xfree apps can use it. Also made the
+  USE + VIDEO_CARDS work better.
+
+  29 Jun 2003; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r4.ebuild:
+  Moved to -ppc until the patch works.
+
+  29 Jun 2003; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r4.ebuild:
+  Add xfree.eclass for better XFREE_CARDS functionality.
+
+  29 Jun 2003; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r4.ebuild:
+  Updated patch to fix sis not working.
+
+*xfree-drm-4.3.0-r4 (29 Jun 2003)
+
+  29 Jun 2003; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r4.ebuild:
+  Updated sources to June 18 CVS. Added XFREE_CARDS functionality and deprecated
+  USE for video cards, similar to ALSA_CARDS for ALSA.
+
+  27 Jun 2003; Donnie Berkholz <dberkholz@gentoo.org>;
+  xfree-drm-4.3.0-r3.ebuild:
+  Now dies with error instead of compiling all modules when none are specified.
+  Also doesn't compile modules twice anymore.
+
+  15 Jun 2003; Seemant Kulleen <seemant@gentoo.org> xfree-drm-4.3.0-r3.ebuild:
+  reverting
+
+  14 Jun 2003; Seemant Kulleen <seemant@gentoo.org> xfree-drm-4.3.0-r3.ebuild:
+  Magnade in #gentoo-dev fixed up the Makefile so that it installs all the
+  modules by default. Many thanks to him
+
+*xfree-drm-4.3.0-r3 (14 Jun 2003)
+
+  14 Jun 2003; Seemant Kulleen <seemant@gentoo.org> xfree-drm-4.3.0-r1.ebuild,
+  xfree-drm-4.3.0-r2.ebuild, xfree-drm-4.3.0-r3.ebuild,
+  xfree-drm-4.3.0.ebuild, files/xfree-drm-4.3.0-gentoo-Makefile-fixup.patch,
+  files/xfree-drm-4.3.0-gentoo-ppc-Makefile-fixup.patch,
+  files/xfree-drm-4.3.0-r2-dristat.patch,
+  files/xfree-drm-4.3.0-r2-drm-ioremap.patch,
+  files/xfree-drm-4.3.0-r2-gentoo-Makefile-fixup.patch,
+  files/xfree-drm-4.3.0-r2-radeon-resume-v8.patch:
+  moved patches to mirrors. Also version bump to a more recent snapshot, with
+  daenzer's patches. This excellent work and the -r3 ebuild comes to you from
+  dberkholz, who is Donnie Berkholz <donnie.berkholz@richmond.edu>
+
+  24 Apr 2003; Michael Fitzpatrick <leahcim@gentoo.org>
+  xfree-drm-4.3.0-r2.ebuild, files/xfree-drm-4.3.0-r2-dristat.patch: Add
+  dristat (modified patch from Mathias Hasselmann) bug #18799. Fixed slot.
+
+  23 Apr 2003; Luca Barbato <lu_zero@gentoo.org>
+  xfree-drm-4.3.0-r2.ebuild, xfree-drm-4.3.0.ebuild:
+  Fix the KV issue.
+
+*xfree-drm-4.3.0-r2 (22 Apr 2003)
+
+  22 Apr 2003; Michael Fitzpatrick <leahcim@gentoo.org>
+  xfree-drm-4.3.0-r2.ebuild, files/digest-xfree-drm-4.3.0-r2,
+  files/xfree-drm-4.3.0-r2-gentoo-Makefile-fixup.patch,
+  files/xfree-drm-4.3.0-r2-radeon-resume-v8.patch : 
+  Combine x86 and ppc builds. Added "radeon resume/suspend" patch. 
+
+  24 Mar 2003; Martin Schlemmer <azarah@gentoo.org> xfree-drm-4.3.0.ebuild :
+  Update to rather use the "more official" DRM sources from
+  http://www.xfree86.org/~alanh/.  I did though rather create a date versioned
+  tarball on ibibilo, as they are only versioned on that site with the release
+  version of XFree86, and might change in future (bugfixes, etc).
+
+*xfree-drm-4.3.0-r1 (02 Mar 2003)
+
+  15 Mar 2003; Mark Guertin <gerk@gentoo.org> xfree-drm-4.3.0-r1.ebuild :
+  set ppc in keywords
+
+  02 Mar 2003; Mark Guertin <gerk@gentoo.org> xfree-drm-4.3.0-r1.ebuild files/digest-xfree-drm-4.3.0-r1 :
+  rev bump to match current xfree
+
+*xfree-drm-4.3.0 (28 Feb 2003)
+
+  21 Apr 2003; Seemant Kulleen <seemant@gentoo.org> Manifest,
+  xfree-drm-4.3.0.ebuild:
+  changed to stable x86. Awaiting leachim's -r2 which combines x86 and ppc (and
+  others?)
+
+  25 Mar 2003; Seemant Kulleen <seemant@gentoo.org> xfree-drm-4.3.0.ebuild:
+  changed ibm USE to i8x0 USE which is more accurate. Thanks to: Marcin Wisnicki
+  <wisnia21@freeshell.org> in bug #18046
+
+  17 Mar 2003; Seemant Kulleen <seemant@gentoo.org> xfree-drm-4.3.0.ebuild:
+  use KVERS which gets running kernel's version, instead of KV. Closes bug
+  #17545 by Sankara Krishnamoorthy <snkmoorthy@netscape.net>
+
+  05 Mar 2003; Seemant Kulleen <seemant@gentoo.org> xfree-drm-4.3.0.ebuild:
+  using USE variables to determine which specific modules to install
+
+  28 Feb 2003; Seemant Kulleen <seemant@gentoo.org> xfree-drm-4.3.0.ebuild,
+  files/xfree-drm-4.3.0-gentoo-Makefile-fixup.patch:
+  version bump to match xfree's version
+
+*xfree-drm-4.2.99.902 (26 Feb 2003)
+
+  26 Feb 2003; Seemant Kulleen <seemant@gentoo.org> xfree-drm-4.2.99.902.ebuild files/digest-xfree-drm-4.2.99.902 files/xfree-drm-4.2.99.902-gentoo-Makefile-fixup.patch :
+  version bump to match newest X snapshot
+
+*xfree-drm-4.2.99.4-r1 (07 Feb 2003)
+
+  19 Feb 2003; Mark Guertin <gerk@gentoo.org> xfree-drm-4.2.99.4-r1.ebuild :
+  set -r1 to ~ppc only, had major issues with portage eating digests cause it couldn't deal with all the SRC_URI juggling with x86 vs. ppc.
+
+  08 Feb 2003; Seemant Kulleen <seemant@gentoo.org>
+  files/digest-xfree-drm-4.2.99.4-r1 :
+
+  Added digest
+
+  07 Feb 2003; Mark Guertin <gerk@gentoo.org> xfree-drm-4.2.99.4-r1.ebuild
+  files/xfree-drm-4.2.99.4-gentoo-ppc-Makefile-fixup.patch:
+  Major reworking of parts for ppc sections.  Using a drm tarball.
+  x86 not set at all as it's not tested yet (method stays same for 
+  x86). Set only as ~ppc
+
+*xfree-drm-4.2.99.4 (03 Feb 2003)
+
+  03 Feb 2003; Seemant Kulleen <seemant@gentoo.org>
+  xfree-drm-4.2.99.4.ebuild
+  files/xfree-drm-4.2.99.4-gentoo-Makefile-fixup.patch
+  files/digest-xfree-drm-4.2.99.4 :
+
+  version bump for newer snapshot
+
+*xfree-drm-4.2.99.3 (03 Feb 2003)
+
+  03 Feb 2003; Martin Schlemmer <azarah@gentoo.org> xfree-drm-4.2.99.3.ebuild
+  files/xfree-drm-4.2.99.3-gentoo-Makefile-fixup.patch
+  files/digest-xfree-drm-4.2.99.3 :
+
+  Initial version submitted by myself.
+

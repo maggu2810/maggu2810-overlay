@@ -1,0 +1,3 @@
+keep
+path[%PN%]=/lib/modules/%KV%/%PN%
+
