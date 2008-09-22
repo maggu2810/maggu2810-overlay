@@ -1,9 +1,0 @@
-
---This line, and those below, will be ignored--
-
-D    virtual
-M    games-strategy/wormux/Manifest
-M    games-strategy/wormux/wormux-0.8.ebuild
-M    media-tv/atitvout/Manifest
-M    maggu2810-files/update-portage/files/update-portage
-M    maggu2810-files/update-portage/Manifest
