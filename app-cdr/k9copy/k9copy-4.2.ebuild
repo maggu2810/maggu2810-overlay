@@ -4,7 +4,7 @@
 
 EAPI="1"
 
-NEED_KDE="4.1"
+NEED_KDE="4.2"
 
 inherit kde4svn
 
