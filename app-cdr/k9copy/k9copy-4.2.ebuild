@@ -18,7 +18,7 @@ ESVN_REVISION="291"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~amd64"
+KEYWORDS="~x86 ~amd64"
 IUSE=""
 
 #KDE_LINGUAS="ca cs de el es_AR es et fr it nl pl pt_BR ru sr@latin sr tr zh_TW" to do
