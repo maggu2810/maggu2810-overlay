@@ -2,6 +2,8 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
+[ -e "/usr/portage/local/layman/kde4-live/eclass/kde4svn.eclass" ] || exit
+
 EAPI="1"
 
 NEED_KDE="4.2"
