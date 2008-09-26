@@ -45,8 +45,6 @@ DEPEND="${RDEPEND}
 	x11-proto/scrnsaverproto"
 
 src_compile() {
-	epatch "${FILESDIR}/kopete-4.1.67-no-qmovie.patch"
-
 	# Xmms isn't in portage, thus forcefully disabled.
 	mycmakeargs="${mycmakeargs}
 		-DWITH_Xmms=OFF
