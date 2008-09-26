@@ -17,6 +17,21 @@
 	</overlay>
 
 	<overlay
+		type = "git"
+		src  = "git://dev.gentooexperimental.org/kde-overlay.git"
+		contact = "bugs@dev.gentooexperimental.org"
+		status  = "unofficial"
+		name = "kde4-live">
+		<link>
+			http://kde.gentooexperimental.org/
+		</link>
+		<description>
+			Experimental overlay for KDE4
+			http://forums.gentoo.org/viewtopic-t-694231-start-0-postdays-0-postorder-asc-highlight-.html
+		</description>
+	</overlay>
+
+	<overlay
 		type = "svn"
 		src  = "https://cafarelli.fr/svn/voyageur-overlay/"
 		contact = "voyageur@gentoo.org"
