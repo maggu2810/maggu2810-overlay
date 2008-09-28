@@ -37,7 +37,9 @@ src_install() {
 	doins "make.conf"
 
 	exeinto "/etc/init.d"
-	doexe "chroot32"
+	newexe "chroot32.init" "chroot32"
+
+	dobin "chroot32"
 }
 
 pkg_postinst() {
