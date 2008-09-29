@@ -1,5 +1,4 @@
 #!/bin/bash
 
-[ "$1" ] && carg="-c" || carg=""
-
-linux32 chroot /usr/lib/chroot32 /bin/bash $carg "$*"
+cmd="linux32 chroot /usr/lib/chroot32 /bin/bash"
+[ "$1" ] && $cmd -c "$*" || $cmd

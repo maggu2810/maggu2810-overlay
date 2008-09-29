@@ -51,7 +51,7 @@ pkg_postinst() {
 		emerge -1v portage
 		emerge -uvDN @system @world
 	"
-	einfo "To change to your chroot, execute 'linux32 chroot ${INSTALLDIR} /bin/bash'"
+	einfo "To change to your chroot, execute 'chroot32'"
 	einfo "Remember to run 'xhost local:localhost' from the host system
 		if you want to execute X applications."
 }
