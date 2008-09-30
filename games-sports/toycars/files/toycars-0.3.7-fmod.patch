@@ -1,0 +1,10 @@
+--- src/Makefile.am     2008-06-28 14:19:29.000000000 +0200
++++ src/Makefile.am.new 2008-09-30 10:13:42.000000000 +0200
+@@ -3,7 +3,7 @@
+ bin_PROGRAMS = toycars
+
+ AM_CXXFLAGS = -Wall @SDL_CFLAGS@ @GL_CFLAGS@ @GLU_CFLAGS@ @FMOD_CFLAGS@
+-AM_CPPFLAGS = -I $(top_srcdir)/src/glf -I $(top_srcdir)/src/MyFisix -I $(top_srcdir)/src/Scoobie -I $(top_srcdir)/src/tinyxml
++AM_CPPFLAGS = -I $(top_srcdir)/src/glf -I $(top_srcdir)/src/MyFisix -I $(top_srcdir)/src/Scoobie -I $(top_srcdir)/src/tinyxml -I/usr/include/fmodex
+
+ toycars_SOURCES = CarGame.cpp RobotPlayer.cpp Player.cpp Wheel.cpp Kaboom.cpp PlayerBomb.cpp WheelSprite.cpp Minimap.cpp Startline.cpp main.cpp NeedleImage.cpp ToyCar.cpp PacejkaCurve.cpp Vehicle.cpp Menu.cpp TcPreferences.cpp HotPotatoGame.cpp KnockOutGame.cpp TrackEditor.cpp RobotHotPotatoPlayer.cpp StartLight.cpp Controllers.cpp
