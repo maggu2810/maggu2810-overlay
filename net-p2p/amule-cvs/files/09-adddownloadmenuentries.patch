@@ -84,7 +84,7 @@
  	void	OnSetCategory( wxCommandEvent& event );	
 --- src.org/ExternalConn.cpp
 +++ src/ExternalConn.cpp
-@@ -635,6 +635,14 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
+@@ -637,6 +637,14 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
  				pfile->Delete();
  				break;
  
@@ -99,7 +99,7 @@
  			case EC_OP_PARTFILE_SET_CAT:
  				pfile->SetCategory(hashtag->GetTagByIndexSafe(0)->GetInt());
  				break;
-@@ -1161,6 +1169,8 @@ CECPacket *ExternalConn::ProcessRequest2
+@@ -1163,6 +1171,8 @@ CECPacket *ExternalConn::ProcessRequest2
  		case EC_OP_PARTFILE_STOP:
  		case EC_OP_PARTFILE_PRIO_SET:
  		case EC_OP_PARTFILE_DELETE:
@@ -199,7 +199,7 @@
  	EC_OP_ULOAD_QUEUE                   = 0x20,
 --- src.org/libs/ec/cpp/ECCodes.h
 +++ src/libs/ec/cpp/ECCodes.h
-@@ -74,6 +74,8 @@ enum ECOpCodes {
+@@ -75,6 +75,8 @@ enum ECOpCodes {
  	EC_OP_PARTFILE_STOP                 = 0x1B,
  	EC_OP_PARTFILE_PRIO_SET             = 0x1C,
  	EC_OP_PARTFILE_DELETE               = 0x1D,

@@ -88,7 +88,7 @@
  
 --- src.org/ExternalConn.cpp
 +++ src/ExternalConn.cpp
-@@ -647,6 +647,23 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
+@@ -649,6 +649,23 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
  				pfile->SetCategory(hashtag->GetTagByIndexSafe(0)->GetInt());
  				break;
  
@@ -112,7 +112,7 @@
  			default:
  				response = new CECPacket(EC_OP_FAILED);
  				response->AddTag(CECTag(EC_TAG_STRING, wxTRANSLATE("OOPS! OpCode processing error!")));
-@@ -1093,12 +1110,13 @@ CECPacket *ExternalConn::ProcessRequest2
+@@ -1095,12 +1112,13 @@ CECPacket *ExternalConn::ProcessRequest2
  			}
  			break;
  		case EC_OP_ADD_LINK: 
@@ -127,7 +127,7 @@
  					response = new CECPacket(EC_OP_NOOP);
  				} else {
  					// Error messages are printed by the add function.
-@@ -1143,6 +1161,77 @@ CECPacket *ExternalConn::ProcessRequest2
+@@ -1145,6 +1163,77 @@ CECPacket *ExternalConn::ProcessRequest2
  				response = Get_EC_Response_GetDownloadQueue(request, enc_part_map, true);
  			}
  			break;
@@ -205,7 +205,7 @@
  		case EC_OP_GET_ULOAD_QUEUE:
  			if ( request->GetDetailLevel() == EC_DETAIL_INC_UPDATE ) {
  				response = Get_EC_Response_GetUpQueue(objmap);
-@@ -1172,6 +1261,7 @@ CECPacket *ExternalConn::ProcessRequest2
+@@ -1174,6 +1263,7 @@ CECPacket *ExternalConn::ProcessRequest2
  		case EC_OP_PARTFILE_REHASH:
  		case EC_OP_PARTFILE_FORCECOMPL:
  		case EC_OP_PARTFILE_SET_CAT:
@@ -242,7 +242,7 @@
  	EC_TAG_STRING                             = 0x0000,
 --- src.org/libs/ec/cpp/ECCodes.h
 +++ src/libs/ec/cpp/ECCodes.h
-@@ -124,7 +124,10 @@ enum ECOpCodes {
+@@ -125,7 +125,10 @@ enum ECOpCodes {
  	EC_OP_DISCONNECT                    = 0x4B,
  	EC_OP_GET_DLOAD_QUEUE_DETAIL        = 0x4C,
  	EC_OP_KAD_UPDATE_FROM_URL           = 0x4D,
