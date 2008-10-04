@@ -177,7 +177,7 @@
       Opcodes for :
 --- src.org/libs/ec/abstracts/ECCodes.abstract
 +++ src/libs/ec/abstracts/ECCodes.abstract
-@@ -73,6 +73,8 @@ EC_OP_PARTFILE_RESUME               0x1A
+@@ -74,6 +74,8 @@ EC_OP_PARTFILE_RESUME               0x1A
  EC_OP_PARTFILE_STOP                 0x1B
  EC_OP_PARTFILE_PRIO_SET             0x1C
  EC_OP_PARTFILE_DELETE               0x1D
@@ -188,7 +188,7 @@
  EC_OP_DLOAD_QUEUE                   0x1F
 --- src.org/libs/ec/c#/ECCodes.cs
 +++ src/libs/ec/c#/ECCodes.cs
-@@ -66,6 +66,8 @@ public enum ECOpCodes {
+@@ -67,6 +67,8 @@ public enum ECOpCodes {
  	EC_OP_PARTFILE_STOP                 = 0x1B,
  	EC_OP_PARTFILE_PRIO_SET             = 0x1C,
  	EC_OP_PARTFILE_DELETE               = 0x1D,
@@ -210,7 +210,7 @@
  	EC_OP_ULOAD_QUEUE                   = 0x20,
 --- src.org/libs/ec/java/ECCodes.java
 +++ src/libs/ec/java/ECCodes.java
-@@ -64,6 +64,8 @@ public final static byte EC_OP_PARTFILE_
+@@ -65,6 +65,8 @@ public final static byte EC_OP_PARTFILE_
  public final static byte EC_OP_PARTFILE_STOP                 = 0x1B;
  public final static byte EC_OP_PARTFILE_PRIO_SET             = 0x1C;
  public final static byte EC_OP_PARTFILE_DELETE               = 0x1D;

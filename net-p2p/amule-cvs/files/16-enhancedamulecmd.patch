@@ -215,7 +215,7 @@
  		case EC_OP_SHAREDFILES_RELOAD:
 --- src.org/libs/ec/abstracts/ECCodes.abstract
 +++ src/libs/ec/abstracts/ECCodes.abstract
-@@ -138,6 +138,10 @@ EC_OP_GET_DLOAD_QUEUE_DETAIL        0x4C
+@@ -139,6 +139,10 @@ EC_OP_GET_DLOAD_QUEUE_DETAIL        0x4C
  
  EC_OP_KAD_UPDATE_FROM_URL           0x4D
  EC_OP_KAD_BOOTSTRAP_FROM_IP         0x4E
@@ -228,7 +228,7 @@
  [Section Content]
 --- src.org/libs/ec/c#/ECCodes.cs
 +++ src/libs/ec/c#/ECCodes.cs
-@@ -116,7 +116,10 @@ public enum ECOpCodes {
+@@ -117,7 +117,10 @@ public enum ECOpCodes {
  	EC_OP_DISCONNECT                    = 0x4B,
  	EC_OP_GET_DLOAD_QUEUE_DETAIL        = 0x4C,
  	EC_OP_KAD_UPDATE_FROM_URL           = 0x4D,
@@ -256,7 +256,7 @@
  enum ECTagNames {
 --- src.org/libs/ec/java/ECCodes.java
 +++ src/libs/ec/java/ECCodes.java
-@@ -115,6 +115,9 @@ public final static byte EC_OP_DISCONNEC
+@@ -116,6 +116,9 @@ public final static byte EC_OP_DISCONNEC
  public final static byte EC_OP_GET_DLOAD_QUEUE_DETAIL        = 0x4C;
  public final static byte EC_OP_KAD_UPDATE_FROM_URL           = 0x4D;
  public final static byte EC_OP_KAD_BOOTSTRAP_FROM_IP         = 0x4E;

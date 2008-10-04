@@ -530,7 +530,7 @@
  	if ((thisTab = GetTagByName(EC_TAG_PREFS_SRCDROP)) != NULL) {
 --- src.org/libs/ec/abstracts/ECCodes.abstract
 +++ src/libs/ec/abstracts/ECCodes.abstract
-@@ -335,6 +335,8 @@ EC_TAG_SELECT_PREFS                     
+@@ -336,6 +336,8 @@ EC_TAG_SELECT_PREFS                     
  		EC_TAG_FILES_ALLOC_FULL_SIZE              0x180C
  		EC_TAG_FILES_CHECK_FREE_SPACE             0x180D
  		EC_TAG_FILES_MIN_FREE_SPACE	          0x180E
@@ -541,7 +541,7 @@
  		EC_TAG_SRCDROP_NONEEDED                   0x1901
 --- src.org/libs/ec/c#/ECCodes.cs
 +++ src/libs/ec/c#/ECCodes.cs
-@@ -292,6 +292,8 @@ public enum ECTagNames {
+@@ -293,6 +293,8 @@ public enum ECTagNames {
  			EC_TAG_FILES_ALLOC_FULL_SIZE              = 0x180C,
  			EC_TAG_FILES_CHECK_FREE_SPACE             = 0x180D,
  			EC_TAG_FILES_MIN_FREE_SPACE	          = 0x180E,
@@ -563,7 +563,7 @@
  			EC_TAG_SRCDROP_DROP_FQS                   = 0x1902,
 --- src.org/libs/ec/java/ECCodes.java
 +++ src/libs/ec/java/ECCodes.java
-@@ -289,6 +289,8 @@ public final static short 		EC_TAG_FILES
+@@ -290,6 +290,8 @@ public final static short 		EC_TAG_FILES
  public final static short 		EC_TAG_FILES_ALLOC_FULL_SIZE              = 0x180C;
  public final static short 		EC_TAG_FILES_CHECK_FREE_SPACE             = 0x180D;
  public final static short 		EC_TAG_FILES_MIN_FREE_SPACE	          = 0x180E;
