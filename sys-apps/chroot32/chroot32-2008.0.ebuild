@@ -33,8 +33,12 @@ src_install() {
 	mkdir "${D}/${INSTALLDIR}/usr/portage"
 
 	cd "${FILESDIR}"
+
 	insinto "${INSTALLDIR}/etc"
 	doins "make.conf"
+
+	insinto "${INSTALLDIR}/etc/env.d"
+	doins "99chroot32"
 
 	exeinto "/etc/init.d"
 	newexe "chroot32.init" "chroot32"
