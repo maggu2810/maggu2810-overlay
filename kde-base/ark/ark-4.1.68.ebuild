@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-[[ "${PORTDIR_OVERLAY}" =~ kde4-live ]] || exit
+[[ "${PORTDIR_OVERLAY}" =~ kdesvn-portage ]] || exit
 
 EAPI="1"
 
