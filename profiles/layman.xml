@@ -8,7 +8,7 @@
 		status  = "unofficial"
 		name = "maggu2810_overlay">
 		<link>
-			http://opensvn.csie.org/maggu2810_overlay
+			https://opensvn.csie.org/traccgi/maggu2810_overlay/browser
 		</link>
 		<description>
 			maggu2810's test overlay
