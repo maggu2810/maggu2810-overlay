@@ -1,0 +1,60 @@
+diff -Naur k9copy-4.1.org/CMakeLists.txt k9copy-4.1/CMakeLists.txt
+--- k9copy-4.1.org/CMakeLists.txt	2008-10-08 20:37:48.000000000 +0200
++++ k9copy-4.1/CMakeLists.txt	2008-10-08 20:39:50.000000000 +0200
+@@ -94,7 +94,7 @@
+ CHECK_INCLUDE_FILES(unistd.h        HAVE_UNISTD_H)                      # simapi.h
+ CHECK_INCLUDE_FILES(malloc.h        HAVE_MALLOC_H)                      # simapi.h
+ 
+-FINDFFMPEGSCALE("ffmpeg/swscale.h" "swscale")
++FINDFFMPEGSCALE("libswscale/swscale.h" "swscale")
+ 
+ 
+ CONFIGURE_FILE(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
+@@ -107,7 +107,7 @@
+ MESSAGE(STATUS "Checking dependencies" )
+ FINDXINE("xine.h" "xine")
+ FINDDVDREAD("dvdread/ifo_types.h" "dvdread")
+-FINDFFMPEG("ffmpeg/avcodec.h" "avcodec")
++FINDFFMPEG("libavcodec/avcodec.h" "avcodec")
+ 
+ 
+ add_definitions( -D__STDC_LIMIT_MACROS -D__STDC_CONSTANT_MACROS)
+ 
+diff -Naur k9copy-4.1.org/src/import/k9avidecode.cpp k9copy-4.1/src/import/k9avidecode.cpp
+--- k9copy-4.1.org/src/import/k9avidecode.cpp	2008-10-08 20:52:32.000000000 +0200
++++ k9copy-4.1/src/import/k9avidecode.cpp	2008-10-08 20:53:41.000000000 +0200
+@@ -10,14 +10,14 @@
+ //
+ //
+ #include "k9avidecode.h"
+-#include <ffmpeg/avcodec.h>
++#include <libavcodec/avcodec.h>
+ #include <qimage.h>
+ #include <dlfcn.h>
+ #include <klocale.h>
+ 
+ #include "ac.h"
+ #ifdef HAVE_SWSCALE
+-#include "ffmpeg/swscale.h"
++#include <libswscale/swscale.h>
+ 
+ static int sws_flags = SWS_BICUBIC;
+ 
+diff -Naur k9copy-4.1.org/src/import/k9avidecode.h k9copy-4.1/src/import/k9avidecode.h
+--- k9copy-4.1.org/src/import/k9avidecode.h	2008-10-08 20:52:32.000000000 +0200
++++ k9copy-4.1/src/import/k9avidecode.h	2008-10-08 20:53:13.000000000 +0200
+@@ -14,12 +14,12 @@
+ 
+ #include "k9common.h"
+ #include <qobject.h>
+-#include <ffmpeg/avformat.h>
++#include <libavformat/avformat.h>
+ #include <qimage.h>
+ #include <cstdlib>
+ #include <QObject>
+ #ifdef HAVE_SWSCALE
+-#include <ffmpeg/swscale.h>
++#include <libswscale/swscale.h>
+ #endif
+ /**
+ 	@author Jean-Michel PETIT <k9copy@free.fr>

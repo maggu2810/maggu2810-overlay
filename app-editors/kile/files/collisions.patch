@@ -1,0 +1,9 @@
+--- src/data/CMakeLists.txt.org	2008-10-09 16:06:23.000000000 +0200
++++ src/data/CMakeLists.txt	2008-10-09 16:05:29.000000000 +0200
+@@ -4,5 +4,5 @@
+ ADD_SUBDIRECTORY( icons )
+ ADD_SUBDIRECTORY( pics )
+ ADD_SUBDIRECTORY( symbols )
+-ADD_SUBDIRECTORY( syntax )
++#ADD_SUBDIRECTORY( syntax )
+ ADD_SUBDIRECTORY( templates )

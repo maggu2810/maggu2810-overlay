@@ -10,10 +10,7 @@ lt lv nb nds nl nn oc pl pt pt_BR ro ru se sk sl sv tr uk zh_CN zh_TW"
 inherit eutils kde4-base subversion
 SLOT="4.1"
 
-KMNAME="extragear/multimedia"
-
-# Set prefix to KDEDIR to slot the package.
-PREFIX="${KDEDIR}"
+#KMNAME="extragear/multimedia"
 
 DESCRIPTION="K3b, KDE CD Writing Software"
 HOMEPAGE="http://www.k3b.org/"
