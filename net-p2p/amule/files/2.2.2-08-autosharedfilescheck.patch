@@ -62,7 +62,7 @@
  	// Check for new links once per second.
  	if ((::GetTickCount() - m_nLastED2KLinkCheck) >= 1000) {
  		AddLinksFromFile();
-@@ -1015,6 +1038,305 @@ void CDownloadQueue::SendLocalSrcRequest
+@@ -1015,6 +1038,299 @@ void CDownloadQueue::SendLocalSrcRequest
  	m_localServerReqQueue.push_back(sender);
  }
  
@@ -286,13 +286,7 @@
 +		CLOSE_LOG
 +		return;
 +	}
-+	sint64 free = CPath::GetFreeSpaceAt(thePrefs::GetTempDir());
-+	if ( free == wxInvalidOffset ) {
-+		AddDebugLogLineM(true, logDownloadQueue, wxT("AutoSharedFilesCheck: Cannot get free disk space"));
-+		CLOSE_LOG
-+		return;
-+	}
-+	if (free < 5 * 1024 * 1024 * 1024) {
++	if (CPath::GetFreeSpaceAt(thePrefs::GetTempDir()) < 5 * 1024 * 1024 * 1024) {
 +		AddDebugLogLineM(true, logDownloadQueue, wxT("AutoSharedFilesCheck: Skipping shared files requests because we run low on disk space"));
 +		if (logOpened) logfile.AddLine(wxT("Skipped requests: Running low on free disk space"));
 +		CLOSE_LOG
@@ -392,7 +386,7 @@
  	
  	
  	/**
-@@ -308,6 +310,20 @@ public:
+@@ -303,6 +305,20 @@ public:
  	
  	void	SetLastKademliaFileRequest()	{lastkademliafilerequest = ::GetTickCount();}
  	
@@ -413,7 +407,7 @@
  private:
  	/**
  	 * This function initializes new observers with the current contents of the queue.
-@@ -358,6 +374,99 @@ private:
+@@ -353,6 +369,99 @@ private:
  	CServer*	m_udpserver;
  
  	
@@ -515,9 +509,9 @@
  	 */
 --- src.org/ECSpecialMuleTags.cpp
 +++ src/ECSpecialMuleTags.cpp
-@@ -486,6 +486,12 @@ void CEC_Prefs_Packet::Apply()
- 		if ((oneTag = thisTab->GetTagByName(EC_TAG_FILES_MIN_FREE_SPACE)) != NULL) {
- 			thePrefs::SetMinFreeDiskSpaceMB(oneTag->GetInt());
+@@ -444,6 +444,12 @@ void CEC_Prefs_Packet::Apply()
+ 		if ((oneTag = thisTab->GetTagByName(EC_TAG_WEBSERVER_TEMPLATE)) != NULL) {
+ 			thePrefs::SetWebTemplate(oneTag->GetStringData());
  		}
 +		if ((oneTag = thisTab->GetTagByName(EC_TAG_FILES_ASFC_INTERVAL)) != NULL) {
 +			thePrefs::SetASFCInterval(oneTag->GetInt());
@@ -527,54 +521,54 @@
 +		}
  	}
  
- 	if ((thisTab = GetTagByName(EC_TAG_PREFS_SRCDROP)) != NULL) {
+ 	if ((thisTab = GetTagByName(EC_TAG_PREFS_ONLINESIG)) != NULL) {
 --- src.org/libs/ec/abstracts/ECCodes.abstract
 +++ src/libs/ec/abstracts/ECCodes.abstract
-@@ -336,6 +336,8 @@ EC_TAG_SELECT_PREFS                     
+@@ -335,6 +335,8 @@ EC_TAG_SELECT_PREFS                     
  		EC_TAG_FILES_ALLOC_FULL_SIZE              0x180C
  		EC_TAG_FILES_CHECK_FREE_SPACE             0x180D
  		EC_TAG_FILES_MIN_FREE_SPACE	          0x180E
-+		EC_TAG_FILES_ASFC_INTERVAL                0x18E0
-+		EC_TAG_FILES_ASFC_TRESHOLD                0x18E1
++		EC_TAG_FILES_ASFC_INTERVAL	          0x18E0
++		EC_TAG_FILES_ASFC_TRESHOLD	          0x18E1
  
  	EC_TAG_PREFS_SRCDROP                      0x1900
  		EC_TAG_SRCDROP_NONEEDED                   0x1901
 --- src.org/libs/ec/c#/ECCodes.cs
 +++ src/libs/ec/c#/ECCodes.cs
-@@ -293,6 +293,8 @@ public enum ECTagNames {
+@@ -292,6 +292,8 @@ public enum ECTagNames {
  			EC_TAG_FILES_ALLOC_FULL_SIZE              = 0x180C,
  			EC_TAG_FILES_CHECK_FREE_SPACE             = 0x180D,
  			EC_TAG_FILES_MIN_FREE_SPACE	          = 0x180E,
-+			EC_TAG_FILES_ASFC_INTERVAL                = 0x18E0,
-+			EC_TAG_FILES_ASFC_TRESHOLD                = 0x18E1,
++			EC_TAG_FILES_ASFC_INTERVAL	          = 0x18E0,
++			EC_TAG_FILES_ASFC_TRESHOLD	          = 0x18E1,
  		EC_TAG_PREFS_SRCDROP                      = 0x1900,
  			EC_TAG_SRCDROP_NONEEDED                   = 0x1901,
  			EC_TAG_SRCDROP_DROP_FQS                   = 0x1902,
 --- src.org/libs/ec/cpp/ECCodes.h
 +++ src/libs/ec/cpp/ECCodes.h
-@@ -302,6 +302,8 @@ enum ECTagNames {
+@@ -301,6 +301,8 @@ enum ECTagNames {
  			EC_TAG_FILES_ALLOC_FULL_SIZE              = 0x180C,
  			EC_TAG_FILES_CHECK_FREE_SPACE             = 0x180D,
  			EC_TAG_FILES_MIN_FREE_SPACE	          = 0x180E,
-+			EC_TAG_FILES_ASFC_INTERVAL                = 0x18E0,
-+			EC_TAG_FILES_ASFC_TRESHOLD                = 0x18E1,
++			EC_TAG_FILES_ASFC_INTERVAL	          = 0x18E0,
++			EC_TAG_FILES_ASFC_TRESHOLD	          = 0x18E1,
  		EC_TAG_PREFS_SRCDROP                      = 0x1900,
  			EC_TAG_SRCDROP_NONEEDED                   = 0x1901,
  			EC_TAG_SRCDROP_DROP_FQS                   = 0x1902,
 --- src.org/libs/ec/java/ECCodes.java
 +++ src/libs/ec/java/ECCodes.java
-@@ -290,6 +290,8 @@ public final static short 		EC_TAG_FILES
+@@ -289,6 +289,8 @@ public final static short 		EC_TAG_FILES
  public final static short 		EC_TAG_FILES_ALLOC_FULL_SIZE              = 0x180C;
  public final static short 		EC_TAG_FILES_CHECK_FREE_SPACE             = 0x180D;
  public final static short 		EC_TAG_FILES_MIN_FREE_SPACE	          = 0x180E;
-+public final static short 		EC_TAG_FILES_ASFC_INTERVAL                = 0x18E0;
-+public final static short 		EC_TAG_FILES_ASFC_TRESHOLD                = 0x18E1;
++public final static short 		EC_TAG_FILES_ASFC_INTERVAL	          = 0x18E0;
++public final static short 		EC_TAG_FILES_ASFC_TRESHOLD	          = 0x18E1;
  public final static short 	EC_TAG_PREFS_SRCDROP                      = 0x1900;
  public final static short 		EC_TAG_SRCDROP_NONEEDED                   = 0x1901;
  public final static short 		EC_TAG_SRCDROP_DROP_FQS                   = 0x1902;
 --- src.org/Preferences.cpp
 +++ src/Preferences.cpp
-@@ -79,6 +79,15 @@ uint16		CPreferences::s_DFOMaxOpenFiles;
+@@ -77,6 +77,15 @@ uint16		CPreferences::s_DFOMaxOpenFiles;
  /* Proxy */
  CProxyData	CPreferences::s_ProxyData;
  
@@ -590,10 +584,11 @@
  /* The rest, organize it! */
  wxString	CPreferences::s_nick;
  uint16		CPreferences::s_maxupload;
-@@ -1178,6 +1187,19 @@ void CPreferences::BuildItemList( const 
+@@ -1153,6 +1162,19 @@ void CPreferences::BuildItemList( const 
+ 	 * Version check
  	 **/
  	 NewCfgItem(IDC_NEWVERSION,	(new Cfg_Bool( wxT("/eMule/NewVersionCheck"), s_NewVersionCheck, true )));
- 	 
++
 +	/** 
 +	 * Auto Shared Files Check
 +	 **/
@@ -606,13 +601,12 @@
 +	s_MiscList.push_back( new Cfg_Bool( wxT("/eMule/ASFCAddNewFilesPaused"), s_ASFCAddNewFilesPaused, false ) );
 +	s_MiscList.push_back( new Cfg_Bool( wxT("/eMule/ASFCCreateLog"), s_ASFCCreateLog, false ) );
 +	s_MiscList.push_back( MkCfg_Int( wxT("/eMule/ASFCCatForTokens"), s_ASFCCatForTokens, -1 ) );
-+
+ 	 
  	 /**
  	  * Obfuscation
- 	  **/
 --- src.org/Preferences.h
 +++ src/Preferences.h
-@@ -499,6 +499,26 @@ public:
+@@ -503,6 +503,26 @@ public:
  	
  	static bool CheckNewVersion() { return s_NewVersionCheck; }
  
@@ -639,7 +633,7 @@
  	// Networks
  	static bool GetNetworkKademlia()		{ return s_ConnectToKad; }
  	static void SetNetworkKademlia(bool val)	{ s_ConnectToKad = val; }
-@@ -741,6 +761,15 @@ protected:
+@@ -742,6 +762,15 @@ protected:
  	// Version check
  	static bool s_NewVersionCheck;
  	
@@ -669,7 +663,7 @@
  #endif
 --- src.org/Statistics.cpp
 +++ src/Statistics.cpp
-@@ -212,6 +212,17 @@ CStatTreeItemSimple*		CStatistics::s_tot
+@@ -210,6 +210,17 @@ CStatTreeItemSimple*		CStatistics::s_tot
  CStatTreeItemSimple*		CStatistics::s_totalFiles;
  CStatTreeItemSimple*		CStatistics::s_serverOccupation;
  
@@ -687,7 +681,7 @@
  // Shared files
  CStatTreeItemCounter*		CStatistics::s_numberOfShared;
  CStatTreeItemCounter*		CStatistics::s_sizeOfShare;
-@@ -761,6 +772,21 @@ void CStatistics::InitStatsTree()
+@@ -754,6 +765,21 @@ void CStatistics::InitStatsTree()
  	s_sizeOfShare = (CStatTreeItemCounter*)tmpRoot1->AddChild(new CStatTreeItemCounter(wxTRANSLATE("Total size of Shared Files: %s")));
  	s_sizeOfShare->SetDisplayMode(dmBytes);
  	tmpRoot1->AddChild(new CStatTreeItemAverage(wxTRANSLATE("Average file size: %s"), s_sizeOfShare, s_numberOfShared, dmBytes));
@@ -709,7 +703,7 @@
  }
  
  
-@@ -775,6 +801,20 @@ void CStatistics::UpdateStatsTree()
+@@ -768,6 +794,20 @@ void CStatistics::UpdateStatsTree()
  
  	s_avgConnections->SetValue(theApp->listensocket->GetAverageConnections());
  
@@ -741,7 +735,7 @@
  #include <deque>		// Needed for std::deque
  
  enum StatsGraphType {
-@@ -464,6 +466,18 @@ class CStatistics {
+@@ -462,6 +464,18 @@ class CStatistics {
  	static	CStatTreeItemSimple*		s_totalFiles;
  	static	CStatTreeItemSimple*		s_serverOccupation;
  

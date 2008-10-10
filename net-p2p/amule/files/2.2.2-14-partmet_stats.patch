@@ -22,7 +22,7 @@
  }
  
  
-@@ -1382,6 +1390,44 @@ void CDownloadQueue::AddLinksFromFile()
+@@ -1376,6 +1384,44 @@ void CDownloadQueue::AddLinksFromFile()
  }
  
  
@@ -69,7 +69,7 @@
  	for ( uint16 i = 0; i < GetFileCount(); i++ ) {
 --- src.org/DownloadQueue.h
 +++ src/DownloadQueue.h
-@@ -345,6 +345,11 @@ private:
+@@ -340,6 +340,11 @@ private:
  	void	AddLinksFromFile();
  
  	/**
@@ -81,7 +81,7 @@
  	 * Stops performing UDP requests.
  	 */
  	void	DoStopUDPRequests();
-@@ -368,6 +373,7 @@ private:
+@@ -363,6 +368,7 @@ private:
  	uint32		m_lastsorttime;
  	uint32		m_lastudpstattime;
  	uint32		m_nLastED2KLinkCheck;

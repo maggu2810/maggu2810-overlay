@@ -1,0 +1,817 @@
+--- src.org/DownloadQueue.cpp
++++ src/DownloadQueue.cpp
+@@ -32,6 +32,8 @@
+ #include <common/Constants.h>
+ 
+ #include <wx/textfile.h>	// Needed for wxTextFile
++#include <wx/wfstream.h>	// Needed for wxFileInputStream
++#include <wx/txtstrm.h>		// Needed for wxTextInputStream
+ #include <wx/utils.h>
+ 
+ #include "Server.h"		// Needed for CServer
+@@ -90,6 +92,20 @@ CDownloadQueue::CDownloadQueue()
+ 	m_cRequestsSentToServer = 0;
+ 	m_lastDiskCheck = 0;
+ 	SetLastKademliaFileRequest();
++
++#ifdef OH_ASF_CHECK_STATS	
++	m_sfl_request_cnt = 0;
++	m_sfl_received_cnt = 0;
++	m_sf_checked_cnt = 0;
++	m_sf_above_tresh_cnt = 0;
++	m_sf_sum_values = .0;
++	m_sf_max_value = .0;
++#endif
++	m_nLastAutoSharedFilesCheck = 0;
++	m_dl_word_cnt = 0;
++	m_max_priority = 0;
++	m_ignore_cfg_last_mod = 0;
++	m_priority_cfg_last_mod = 0;
+ }
+ 
+ 
+@@ -216,7 +232,7 @@ void CDownloadQueue::LoadSourceSeeds()
+ }
+ 
+ 
+-void CDownloadQueue::AddSearchToDownload(CSearchFile* toadd, uint8 category)
++void CDownloadQueue::AddSearchToDownload(CSearchFile* toadd, uint8 category, bool forcePaused)
+ {
+ 	if ( IsFileExisting(toadd->GetFileHash()) ) {
+ 		return;
+@@ -240,7 +256,7 @@ void CDownloadQueue::AddSearchToDownload
+ 	}
+ 	
+ 	if ( newfile && newfile->GetStatus() != PS_ERROR ) {
+-		AddDownload( newfile, thePrefs::AddNewFilesPaused(), category );
++		AddDownload( newfile, forcePaused || thePrefs::AddNewFilesPaused(), category );
+ 		// Add any possible sources
+ 		if (toadd->GetClientID() && toadd->GetClientPort()) {
+ 			CMemFile sources(1+4+2);
+@@ -439,6 +455,13 @@ void CDownloadQueue::Process()
+ 	}
+ 	
+ 	
++	// Check shared file lists once every 60 seconds (per default).
++	uint32 intv = thePrefs::GetASFCInterval();
++	if (intv && (::GetTickCount() - m_nLastAutoSharedFilesCheck) >= intv) {
++		AutoSharedFilesCheck();
++		m_nLastAutoSharedFilesCheck = ::GetTickCount();
++	}
++	
+ 	// Check for new links once per second.
+ 	if ((::GetTickCount() - m_nLastED2KLinkCheck) >= 1000) {
+ 		AddLinksFromFile();
+@@ -1015,6 +1038,299 @@ void CDownloadQueue::SendLocalSrcRequest
+ 	m_localServerReqQueue.push_back(sender);
+ }
+ 
++float CDownloadQueue::HashTokens(const wxChar *s, uint32 addFactor, TokenMap& tokenMap)
++{
++	const wxChar *p = s - 1;
++	wxChar c;
++	uint32 token = 0, token_cnt = 0, char_cnt = 0;
++	float value = .0;
++	bool in_token = false;
++	do {
++		c = *++p;
++		if (c >= 'A' && c <= 'Z') {
++			token *= 37;
++			token += (c - 'A' + 1);
++			in_token = true;
++			char_cnt++;
++		} else if (c >= 'a' && c <= 'z') {
++			token *= 37;
++			token += (c - 'a' + 1);
++			in_token = true;
++			char_cnt++;
++		} else if (c >= '0' && c <= '9') {
++			token *= 37;
++			token += (c - '0' + 27);
++			in_token = true;
++			char_cnt++;
++		} else if (in_token) {
++			// end of token, check if it's in the ignore map
++			if (char_cnt >= 2 && m_ignore_tokens.find(token) == m_ignore_tokens.end()) {
++				if (addFactor) {
++					// add to token map
++					tokenMap[token] = tokenMap[token] + addFactor;
++				} else {
++					// use value from token map
++					// (increase value if it's in the priority map)
++					// (if the token is only in the priority map use its factor as the value increment)
++					TokenMap::iterator prio_it = m_priority_tokens.find(token);
++					const uint32 fac = (prio_it == m_priority_tokens.end() ? 0 : prio_it->second);
++					const uint32 tokenVal = tokenMap[token];
++					value += ((tokenVal ? tokenVal : 1) * (fac ? fac : 1));
++					token_cnt++;
++				}
++			}
++			in_token = false;
++			token = 0;
++			char_cnt = 0;
++		}
++	} while (c);
++	if (!addFactor) {
++		if (token_cnt) value /= token_cnt;
++		if (m_dl_word_cnt) value /= m_dl_word_cnt;
++		if (m_max_priority) value /= m_max_priority;
++	}
++	AddDebugLogLineM(false, logDownloadQueue,
++		CFormat( _("AutoSharedFilesCheck: HashTokens() '%s' fact %d t_cnt %d w_cnt %d max_pf %d => %.3f") )
++		% s % addFactor % token_cnt % m_dl_word_cnt % m_max_priority % value);
++	return value;
++}
++
++bool CDownloadQueue::ReadTokenFile(wxString fileName, uint32& lastMod, TokenMap& tokenMap)
++{
++	wxFileName wxfn(fileName);
++	if (wxfn.FileExists()) {
++		uint32 mod = wxfn.GetModificationTime().GetTicks();
++		if (lastMod == mod) {
++			return false;
++		}
++		AddDebugLogLineM(false, logDownloadQueue,
++			CFormat( _("AutoSharedFilesCheck: Reloading token file '%s'") ) % fileName);
++		
++		lastMod = mod;
++		tokenMap.clear();
++		
++		wxFileInputStream stream(fileName);
++		wxTextInputStream file(stream);
++		while (!stream.Eof()) {
++			wxString line = file.ReadLine().Trim(false).Trim(true);
++			// ignore empty lines and comments
++			if (!line.IsEmpty() && line.GetChar(0) != '#') {
++				long fact = 4;
++				int index = line.Find(':');
++				if (index > 0) {
++					line.Left(index).ToLong(&fact);
++					line = line.Mid(index + 1).Trim(false);
++				}
++				if (fact > 0) HashTokens(line, fact, tokenMap);
++			}
++		}
++	} else {
++		lastMod = 0;
++		tokenMap.clear();
++	}
++	return true;
++}
++
++void CDownloadQueue::InitializeTokenMaps()
++{
++	if (ReadTokenFile(GetConfigDir() + wxT("ignore-tokens.cfg"), m_ignore_cfg_last_mod, m_ignore_tokens)) {
++		// (re)add ignore list from amule config file
++		HashTokens(thePrefs::GetASFCIgnoreList(), 1, m_ignore_tokens);
++	}
++	ReadTokenFile(GetConfigDir() + wxT("priority-tokens.cfg"), m_priority_cfg_last_mod, m_priority_tokens);
++	
++	// Search for the highest priority factor
++	m_max_priority = 0;
++	TokenMap::iterator tmit = m_priority_tokens.begin();
++	while (tmit != m_priority_tokens.end()) {
++		if (m_max_priority < tmit->second) m_max_priority = tmit->second;
++		tmit++;
++	}
++}
++#define CLOSE_LOG \
++	if (logOpened) { \
++		logfile.Write(); \
++		logfile.Close(); \
++	}
++	
++#define LOG_ADD_SR(s) \
++	if (logOpened) { \
++		searchResults.insert(pair<float, wxString>(value, \
++			CFormat( _("0x%08X - %.8f - "s": %s") ) \
++			% (uint32) id % value % theApp->CreateED2kLink(sf))); \
++	}
++
++void CDownloadQueue::AutoSharedFilesCheck()
++{
++	wxMutexLocker lock( m_mutex );
++	
++	AddDebugLogLineM(false, logDownloadQueue, wxT("Starting AutoSharedFilesCheck"));
++	
++	// process received file lists from the clients of the last AutoSharedFilesCheck()
++	const float tresh = thePrefs::GetASFCTreshold();
++	const int cat = thePrefs::GetASFCCategory();
++	const bool paused = thePrefs::GetASFCAddNewFilesPaused();
++	const int tokenCat = thePrefs::GetASFCCatForTokens();
++	bool first = true, logOpened = false;
++	TokenMap tokenMap;
++	
++	wxTextFile logfile;
++	if (thePrefs::GetASFCCreateLog()) {
++		logOpened = logfile.Create(theApp->ConfigDir + wxDateTime::Now().Format( _("ASFC-%Y-%m-%d-%H-%M-%S.log") ));
++	}
++	
++	if (logOpened) {
++		logfile.AddLine(CFormat( _("Treshold: %.8f Category: %d AddPaused: %d TokenCat: %d") ) % tresh % cat % (int) paused % tokenCat);
++	}
++	
++	std::multimap<float, wxString> searchResults;
++	
++	for (int i = 0; i < MAX_CLIENTS_PER_INVOC; i++) {
++		// the object itself may be invalid at this time !!!
++		// but we can still use the pointer to it as an identifier
++		const uint64 id = m_last_clients[i];
++		if (id) {
++			AddDebugLogLineM(false, logDownloadQueue, CFormat( _("AutoSharedFilesCheck: Checking search results of client 0x%16X") ) % id);
++			if (logOpened) logfile.AddLine(CFormat( _("Checking search list of 0x%16X") ) % id);
++			CSearchResultList srl = theApp->searchlist->GetSearchResults(id);
++			CSearchResultList::iterator it = srl.begin();
++#ifdef OH_ASF_CHECK_STATS
++			if (!srl.empty()) m_sfl_received_cnt++;
++#endif
++			while (it != srl.end()) {
++				if (first) {
++					first = false;
++					// create token hash map for current download list
++					for (uint16 j = 0; j < m_filelist.size(); ++j) {
++						if (tokenCat == -1 || tokenCat == m_filelist[j]->GetCategory()) {
++							HashTokens(m_filelist[j]->GetFileName().GetRaw().c_str(), 1, tokenMap);
++						}
++					}
++					
++					// calculate number of words in the download list
++					m_dl_word_cnt = 0;
++					TokenMap::iterator tmit = tokenMap.begin();
++					while (tmit != tokenMap.end()) m_dl_word_cnt += (*tmit++).second;
++					
++					// initialize token hash maps
++					InitializeTokenMaps();
++				}
++				CSearchFile* sf = *it++;
++				const float value = HashTokens(sf->GetFileName().GetRaw().c_str(), 0, tokenMap);
++#ifdef OH_ASF_CHECK_STATS
++				m_sf_checked_cnt++;
++				m_sf_sum_values += value;
++				if (m_sf_max_value < value) m_sf_max_value = value;
++#endif
++				if (value >= tresh) {
++					// add this search result to the download list if it is a new one
++					if (!theApp->sharedfiles->GetFileByID(sf->GetFileHash()) && !GetFileByID(sf->GetFileHash())) {
++						AddDebugLogLineM(true, logDownloadQueue, CFormat( _("AutoSharedFilesCheck: Adding the search result '%s'") ) % sf->GetFileName());
++						LOG_ADD_SR("A");
++						AddSearchToDownload(sf, cat, paused);
++					} else {
++						AddDebugLogLineM(true, logDownloadQueue, CFormat( _("AutoSharedFilesCheck: Search result '%s' already in download/shared file list") ) % sf->GetFileName());
++						LOG_ADD_SR("I");
++						if (logOpened) logfile.AddLine(wxT("Ignoring above search result: already in download/shared file list"));
++					}
++#ifdef OH_ASF_CHECK_STATS
++					m_sf_above_tresh_cnt++;
++#endif
++				} else LOG_ADD_SR(" ");
++			}
++			theApp->searchlist->RemoveResults(id);
++		}
++		m_last_clients[i] = 0;
++	}
++	
++	if (logOpened) {
++		for (std::multimap<float, wxString>::reverse_iterator sr_it = searchResults.rbegin(); sr_it != searchResults.rend(); ++sr_it) {
++			logfile.AddLine(sr_it->second);
++		}
++		logfile.AddLine(_(""));
++	}
++	
++	// avoid downloading too much if we run low on free space
++	// or already have too many downloads
++	if (m_filelist.size() > 3000) {
++		AddDebugLogLineM(true, logDownloadQueue, wxT("AutoSharedFilesCheck: Skipping shared files requests because we already have too many downloads"));
++		if (logOpened) logfile.AddLine(wxT("Skipped requests: Already too many downloads"));
++		CLOSE_LOG
++		return;
++	}
++	if (CPath::GetFreeSpaceAt(thePrefs::GetTempDir()) < 5 * 1024 * 1024 * 1024) {
++		AddDebugLogLineM(true, logDownloadQueue, wxT("AutoSharedFilesCheck: Skipping shared files requests because we run low on disk space"));
++		if (logOpened) logfile.AddLine(wxT("Skipped requests: Running low on free disk space"));
++		CLOSE_LOG
++		return;
++	}
++	
++	// if we have traversed the whole current list, create a new one and
++	// copy all clients with valid IPs and which may share files
++	if (m_valid_clients.empty() || m_vc_it == m_valid_clients.end()) {
++		m_valid_clients.clear();
++		CClientList::IDMap cl = theApp->clientlist->GetClientList();
++		for (CClientList::IDMap::iterator it = cl.begin(); it != cl.end(); it++) {
++			const CUpDownClient* c = it->second;
++			if (c->HasValidHash() && c->IsConnected() && !c->NoViewSharedFiles()) {
++				m_valid_clients.push_back(c->GetUserHash());
++			}
++		}
++		m_vc_it = m_valid_clients.begin();
++		AddDebugLogLineM(false, logDownloadQueue, CFormat( _("AutoSharedFilesCheck: Refilled m_valid_clients with %d clients") ) % m_valid_clients.size());
++		if (logOpened) logfile.AddLine(CFormat( _("Refilled list of valid clients - contains %d clients now") ) % m_valid_clients.size());
++	}
++	
++	// request shared file lists for the next 5 (MAX_CLIENTS_PER_INVOC) clients
++	int cnt = 0;
++	for ( ; m_vc_it != m_valid_clients.end(); m_vc_it++) {
++		CClientList::SourceList sl = theApp->clientlist->GetClientsByHash(*m_vc_it);
++		for (CClientList::SourceList::iterator sl_it = sl.begin(); sl_it != sl.end(); sl_it++) {
++			CUpDownClient* c = *sl_it;
++			if (::GetTickCount() - m_req_clients[c->GetUserHash()] < 24 * 60 * 60 * 1000) {
++				// Ignore the above client. Already requested within the last 24 hours.
++				AddDebugLogLineM(false, logDownloadQueue, CFormat( _("AutoSharedFilesCheck: Already requested list from '%s'") ) % c->GetClientFullInfo());
++				if (logOpened) logfile.AddLine(CFormat( _("Already requested search list within 24 hours of 0x%16X: %s") ) % (uint64) c % c->GetClientFullInfo());
++				continue;
++			}
++#ifdef OH_ASF_CHECK_STATS
++			m_sfl_request_cnt++;
++#endif
++			c->RequestSharedFileList();
++			m_last_clients[cnt] = (long) c;
++			m_req_clients[c->GetUserHash()] = ::GetTickCount();
++			AddDebugLogLineM(false, logDownloadQueue, CFormat( _("AutoSharedFilesCheck: Requested shared list of '%s'") ) % c->GetClientFullInfo());
++			if (logOpened) logfile.AddLine(CFormat( _("Requested search list of 0x%16X: %s") ) % (uint64) c % c->GetClientFullInfo());
++			if (++cnt == MAX_CLIENTS_PER_INVOC) break;
++		}
++		if (cnt == MAX_CLIENTS_PER_INVOC) break;
++	}
++	
++	CLOSE_LOG
++	
++	AddDebugLogLineM(false, logDownloadQueue, wxT("Finished with AutoSharedFilesCheck"));
++}
++
++
++#ifdef OH_ASF_CHECK_STATS
++void CDownloadQueue::GetStats(uint64& dl_word_cnt, uint64& sfl_request_cnt, uint64& sfl_received_cnt, uint64& sf_checked_cnt, float& sf_avg_value, float& sf_max_value, uint64& sf_above_tresh_cnt) const
++{
++	dl_word_cnt = m_dl_word_cnt;
++	sfl_request_cnt = m_sfl_request_cnt;
++	sfl_received_cnt = m_sfl_received_cnt;
++	sf_checked_cnt = m_sf_checked_cnt;
++	sf_avg_value = m_sf_sum_values / (m_sf_checked_cnt ? m_sf_checked_cnt : 1);
++	sf_max_value = m_sf_max_value;
++	sf_above_tresh_cnt = m_sf_above_tresh_cnt;
++}
++#endif
++
++
++bool CDownloadQueue::WasAutoRequested(const CUpDownClient* client)
++{
++	return ::GetTickCount() - m_req_clients[client->GetUserHash()] < 3 * 60 * 1000;
++}
++
+ 
+ void CDownloadQueue::AddLinksFromFile()
+ {
+--- src.org/DownloadQueue.h
++++ src/DownloadQueue.h
+@@ -32,6 +32,7 @@
+ 
+ 
+ #include <deque>
++#include <map>
+ 
+ 
+ class CSharedFileList;
+@@ -116,11 +117,12 @@ public:
+ 	 *
+ 	 * @param toadd The search-result to add.
+ 	 * @param category The category to assign to the new download.
++	 * @param forcePaused Add in paused mode regardless was thePref says.
+ 	 *
+ 	 * The download will only be started if no identical files are either
+ 	 * being downloaded or shared currently.
+ 	 */
+-	void	AddSearchToDownload(CSearchFile* toadd, uint8 category);
++	void	AddSearchToDownload(CSearchFile* toadd, uint8 category, bool forcePaused = false);
+ 	
+ 	
+ 	/**
+@@ -308,6 +310,20 @@ public:
+ 	
+ 	void	SetLastKademliaFileRequest()	{lastkademliafilerequest = ::GetTickCount();}
+ 	
++#define OH_ASF_CHECK_STATS
++#ifdef OH_ASF_CHECK_STATS
++	/**
++	 * Returns some statistics.
++	 */
++	void GetStats(uint64& dl_word_cnt, uint64& sfl_request_cnt, uint64& sfl_received_cnt, uint64& sf_checked_cnt, float& sf_avg_value, float& sf_max_value, uint64& sf_above_tresh_cnt) const;
++#endif
++	
++	/**
++	 * Returns true if an automatic request has been sent
++	 * to this client within the last few minutes.
++	 */
++	bool WasAutoRequested(const CUpDownClient* client);
++
+ private:
+ 	/**
+ 	 * This function initializes new observers with the current contents of the queue.
+@@ -358,6 +374,99 @@ private:
+ 	CServer*	m_udpserver;
+ 
+ 	
++#define MAX_CLIENTS_PER_INVOC 5
++	typedef std::map<uint32, uint32>	TokenMap;
++	typedef std::vector<CMD4Hash>		ClientList;
++	typedef std::map<CMD4Hash, uint64>	ReqClientMap;
++	
++	//! Last automatic check for shared files of sources
++	uint32					m_nLastAutoSharedFilesCheck;
++	
++	//! List of all clients
++	ClientList				m_valid_clients;
++	
++	//! Iterator for the current position in the above list
++	ClientList::iterator			m_vc_it;
++	
++	//! List of clients which were asked for their shared list on the last invocation
++	long					m_last_clients[MAX_CLIENTS_PER_INVOC];
++	
++	//! Contains a map of hashes of tokens to ignore in HashTokens()
++	//! Values for keys can only be 1.
++	TokenMap				m_ignore_tokens;
++	
++	//! Contains a map of hashes of tokens with extra high priority for HashTokens()
++	//! Values for keys represent the factor for all occurrences of the given token.
++	TokenMap				m_priority_tokens;
++	
++	//! Contains all clients to which a view shared file request was sent as key
++	//! and the last time of this request as value.
++	ReqClientMap				m_req_clients;
++	
++	//! Last modification time of ignore-tokens.cfg
++	uint32					m_ignore_cfg_last_mod;
++	
++	//! Last modification time of priority-tokens.cfg
++	uint32					m_priority_cfg_last_mod;
++	
++	/**	
++	 * If addFactor is >0:
++	 * 	Adds the hashes of all tokens of s to the given tokenMap with a value of addFactor
++	 * 	(or increments counter by addFactor if already contained).
++	 * 	Returns 0.
++	 * If addFactor is 0:
++	 * 	Returns a value between 0.0 and 1.0 where 1.0 means that all tokens in the
++	 * 	string s equal all tokens of all files in the current download list
++	 * 	were each token has the maximum priority factor which is currently defined
++	 * 	in the priority token map.
++	 */
++	float HashTokens(const wxChar *s, uint32 addFactor, TokenMap& tokenMap);
++	
++	/**
++	 * Reads all tokens from given file if the file was modified since lastMod
++	 * and adds them to the token map.
++	 * Returns true if the token map has been modified.
++	 */
++	bool ReadTokenFile(wxString fileName, uint32& lastMod, TokenMap& tokenMap);
++	
++	/**
++	 * Initializes the m_ignore_tokens and m_priority_tokens maps.
++	 */
++	void InitializeTokenMaps();
++	
++	/**
++	 * Check for shared files of sources.
++	 */
++	void AutoSharedFilesCheck();
++	
++#ifdef OH_ASF_CHECK_STATS
++	
++	//! Number of sent shared file requests
++	uint32 m_sfl_request_cnt;
++	
++	//! Number of received shared file requests
++	uint32 m_sfl_received_cnt;
++	
++	//! Number of files in the received shared file requests
++	uint32 m_sf_checked_cnt;
++	
++	//! Number of checked files which were above thePrefs::GetASFCTreshold()
++	uint32 m_sf_above_tresh_cnt;
++	
++	//! Sum of all concordance values.
++	float m_sf_sum_values;
++	
++	//! Maximum concordance values.
++	float m_sf_max_value;
++	
++#endif
++
++	//! Number of words in the download list the last time we received a shared file list.
++	uint32 m_dl_word_cnt;
++	
++	//! Maximum priority factor defined in the priority token map (i.e. priority-tokens.cfg)
++	uint32 m_max_priority;
++	
+ 	/**
+ 	 * Structure used to store sources with dynamic hostnames.
+ 	 */
+--- src.org/ECSpecialMuleTags.cpp
++++ src/ECSpecialMuleTags.cpp
+@@ -486,6 +486,12 @@ void CEC_Prefs_Packet::Apply()
+ 		if ((oneTag = thisTab->GetTagByName(EC_TAG_FILES_MIN_FREE_SPACE)) != NULL) {
+ 			thePrefs::SetMinFreeDiskSpaceMB(oneTag->GetInt());
+ 		}
++		if ((oneTag = thisTab->GetTagByName(EC_TAG_FILES_ASFC_INTERVAL)) != NULL) {
++			thePrefs::SetASFCInterval(oneTag->GetInt());
++		}
++		if ((oneTag = thisTab->GetTagByName(EC_TAG_FILES_ASFC_TRESHOLD)) != NULL) {
++			thePrefs::SetASFCTreshold(oneTag->GetDoubleData());
++		}
+ 	}
+ 
+ 	if ((thisTab = GetTagByName(EC_TAG_PREFS_SRCDROP)) != NULL) {
+--- src.org/libs/ec/abstracts/ECCodes.abstract
++++ src/libs/ec/abstracts/ECCodes.abstract
+@@ -336,6 +336,8 @@ EC_TAG_SELECT_PREFS                     
+ 		EC_TAG_FILES_ALLOC_FULL_SIZE              0x180C
+ 		EC_TAG_FILES_CHECK_FREE_SPACE             0x180D
+ 		EC_TAG_FILES_MIN_FREE_SPACE	          0x180E
++		EC_TAG_FILES_ASFC_INTERVAL                0x18E0
++		EC_TAG_FILES_ASFC_TRESHOLD                0x18E1
+ 
+ 	EC_TAG_PREFS_SRCDROP                      0x1900
+ 		EC_TAG_SRCDROP_NONEEDED                   0x1901
+--- src.org/libs/ec/c#/ECCodes.cs
++++ src/libs/ec/c#/ECCodes.cs
+@@ -293,6 +293,8 @@ public enum ECTagNames {
+ 			EC_TAG_FILES_ALLOC_FULL_SIZE              = 0x180C,
+ 			EC_TAG_FILES_CHECK_FREE_SPACE             = 0x180D,
+ 			EC_TAG_FILES_MIN_FREE_SPACE	          = 0x180E,
++			EC_TAG_FILES_ASFC_INTERVAL                = 0x18E0,
++			EC_TAG_FILES_ASFC_TRESHOLD                = 0x18E1,
+ 		EC_TAG_PREFS_SRCDROP                      = 0x1900,
+ 			EC_TAG_SRCDROP_NONEEDED                   = 0x1901,
+ 			EC_TAG_SRCDROP_DROP_FQS                   = 0x1902,
+--- src.org/libs/ec/cpp/ECCodes.h
++++ src/libs/ec/cpp/ECCodes.h
+@@ -302,6 +302,8 @@ enum ECTagNames {
+ 			EC_TAG_FILES_ALLOC_FULL_SIZE              = 0x180C,
+ 			EC_TAG_FILES_CHECK_FREE_SPACE             = 0x180D,
+ 			EC_TAG_FILES_MIN_FREE_SPACE	          = 0x180E,
++			EC_TAG_FILES_ASFC_INTERVAL                = 0x18E0,
++			EC_TAG_FILES_ASFC_TRESHOLD                = 0x18E1,
+ 		EC_TAG_PREFS_SRCDROP                      = 0x1900,
+ 			EC_TAG_SRCDROP_NONEEDED                   = 0x1901,
+ 			EC_TAG_SRCDROP_DROP_FQS                   = 0x1902,
+--- src.org/libs/ec/java/ECCodes.java
++++ src/libs/ec/java/ECCodes.java
+@@ -290,6 +290,8 @@ public final static short 		EC_TAG_FILES
+ public final static short 		EC_TAG_FILES_ALLOC_FULL_SIZE              = 0x180C;
+ public final static short 		EC_TAG_FILES_CHECK_FREE_SPACE             = 0x180D;
+ public final static short 		EC_TAG_FILES_MIN_FREE_SPACE	          = 0x180E;
++public final static short 		EC_TAG_FILES_ASFC_INTERVAL                = 0x18E0;
++public final static short 		EC_TAG_FILES_ASFC_TRESHOLD                = 0x18E1;
+ public final static short 	EC_TAG_PREFS_SRCDROP                      = 0x1900;
+ public final static short 		EC_TAG_SRCDROP_NONEEDED                   = 0x1901;
+ public final static short 		EC_TAG_SRCDROP_DROP_FQS                   = 0x1902;
+--- src.org/Preferences.cpp
++++ src/Preferences.cpp
+@@ -79,6 +79,15 @@ uint16		CPreferences::s_DFOMaxOpenFiles;
+ /* Proxy */
+ CProxyData	CPreferences::s_ProxyData;
+ 
++/* Auto Shared Files Check */
++uint32		CPreferences::s_ASFCInterval;
++wxString	CPreferences::s_ASFCTreshold;
++uint8		CPreferences::s_ASFCCategory;
++wxString	CPreferences::s_ASFCIgnoreList;
++bool		CPreferences::s_ASFCAddNewFilesPaused;
++bool		CPreferences::s_ASFCCreateLog;
++int 		CPreferences::s_ASFCCatForTokens;
++	
+ /* The rest, organize it! */
+ wxString	CPreferences::s_nick;
+ uint16		CPreferences::s_maxupload;
+@@ -1178,6 +1187,19 @@ void CPreferences::BuildItemList( const 
+ 	 **/
+ 	 NewCfgItem(IDC_NEWVERSION,	(new Cfg_Bool( wxT("/eMule/NewVersionCheck"), s_NewVersionCheck, true )));
+ 	 
++	/** 
++	 * Auto Shared Files Check
++	 **/
++	s_MiscList.push_back( MkCfg_Int( wxT("/eMule/ASFCInterval"), s_ASFCInterval, 60000 ) );
++	wxString asfc_tresh_def;
++	asfc_tresh_def.Printf(wxT("%.8f"), 0.01);
++	s_MiscList.push_back( new Cfg_Str( wxT("/eMule/ASFCTreshold"), s_ASFCTreshold, asfc_tresh_def ) );
++	s_MiscList.push_back( MkCfg_Int( wxT("/eMule/ASFCCategory"), s_ASFCCategory, 0 ) );
++	s_MiscList.push_back( new Cfg_Str( wxT("/eMule/ASFCIgnoreList"), s_ASFCIgnoreList, wxT("mp3 ogg wma mpg mpeg avi wmv asf zip rar arj") ) );
++	s_MiscList.push_back( new Cfg_Bool( wxT("/eMule/ASFCAddNewFilesPaused"), s_ASFCAddNewFilesPaused, false ) );
++	s_MiscList.push_back( new Cfg_Bool( wxT("/eMule/ASFCCreateLog"), s_ASFCCreateLog, false ) );
++	s_MiscList.push_back( MkCfg_Int( wxT("/eMule/ASFCCatForTokens"), s_ASFCCatForTokens, -1 ) );
++
+ 	 /**
+ 	  * Obfuscation
+ 	  **/
+--- src.org/Preferences.h
++++ src/Preferences.h
+@@ -499,6 +499,26 @@ public:
+ 	
+ 	static bool CheckNewVersion() { return s_NewVersionCheck; }
+ 
++	// Auto Shared Files Check
++	static uint32 GetASFCInterval() { return s_ASFCInterval; }
++	static void SetASFCInterval(uint32 interv) { s_ASFCInterval = interv; }
++	static float GetASFCTreshold()
++	{
++		double temp;
++		return s_ASFCTreshold.ToDouble(&temp) ? temp : 0.01;
++	}
++	static void SetASFCTreshold(float tresh)
++	{
++		wxString temp;
++		temp.Printf(wxT("%.5f"), tresh);
++		s_ASFCTreshold = temp;
++	}
++	static uint8 GetASFCCategory() { return s_ASFCCategory; }
++	static wxString GetASFCIgnoreList() { return s_ASFCIgnoreList; }
++	static bool GetASFCAddNewFilesPaused() { return s_ASFCAddNewFilesPaused; }
++	static bool GetASFCCreateLog() { return s_ASFCCreateLog; }
++	static int GetASFCCatForTokens() { return s_ASFCCatForTokens; }
++	
+ 	// Networks
+ 	static bool GetNetworkKademlia()		{ return s_ConnectToKad; }
+ 	static void SetNetworkKademlia(bool val)	{ s_ConnectToKad = val; }
+@@ -741,6 +761,15 @@ protected:
+ 	// Version check
+ 	static bool s_NewVersionCheck;
+ 	
++	// Auto Shared Files Check
++	static uint32	s_ASFCInterval;
++	static wxString s_ASFCTreshold;
++	static uint8	s_ASFCCategory;
++	static wxString s_ASFCIgnoreList;
++	static bool	s_ASFCAddNewFilesPaused;
++	static bool	s_ASFCCreateLog;
++	static int 	s_ASFCCatForTokens;
++	
+ 	// Kad
+ 	static bool s_ConnectToKad;
+ 	static bool s_ConnectToED2K;
+--- src.org/SearchList.cpp
++++ src/SearchList.cpp
+@@ -473,7 +473,8 @@ void CSearchList::ProcessSharedFileList(
+ 	long searchID = reinterpret_cast<wxUIntPtr>(sender);
+ 
+ #ifndef AMULE_DAEMON
+-	if (!theApp->amuledlg->m_searchwnd->CheckTabNameExists(sender->GetUserName())) {
++	if (!theApp->downloadqueue->WasAutoRequested(sender) &&
++		!theApp->amuledlg->m_searchwnd->CheckTabNameExists(sender->GetUserName())) {
+ 		theApp->amuledlg->m_searchwnd->CreateNewTab(sender->GetUserName() + wxT(" (0)"), searchID);
+ 	}
+ #endif
+--- src.org/Statistics.cpp
++++ src/Statistics.cpp
+@@ -212,6 +212,17 @@ CStatTreeItemSimple*		CStatistics::s_tot
+ CStatTreeItemSimple*		CStatistics::s_totalFiles;
+ CStatTreeItemSimple*		CStatistics::s_serverOccupation;
+ 
++#ifdef OH_ASF_CHECK_STATS
++CStatTreeItemSimple*		CStatistics::s_dl_word_cnt;
++CStatTreeItemSimple*		CStatistics::s_sfl_request_cnt;
++CStatTreeItemSimple*		CStatistics::s_sfl_received_cnt;
++CStatTreeItemSimple*		CStatistics::s_sf_checked_cnt;
++CStatTreeItemSimple*		CStatistics::s_sf_avg_value;
++CStatTreeItemSimple*		CStatistics::s_sf_max_value;
++CStatTreeItemSimple*		CStatistics::s_sf_cur_tresh;
++CStatTreeItemSimple*		CStatistics::s_sf_above_tresh_cnt;
++#endif
++
+ // Shared files
+ CStatTreeItemCounter*		CStatistics::s_numberOfShared;
+ CStatTreeItemCounter*		CStatistics::s_sizeOfShare;
+@@ -761,6 +772,21 @@ void CStatistics::InitStatsTree()
+ 	s_sizeOfShare = (CStatTreeItemCounter*)tmpRoot1->AddChild(new CStatTreeItemCounter(wxTRANSLATE("Total size of Shared Files: %s")));
+ 	s_sizeOfShare->SetDisplayMode(dmBytes);
+ 	tmpRoot1->AddChild(new CStatTreeItemAverage(wxTRANSLATE("Average file size: %s"), s_sizeOfShare, s_numberOfShared, dmBytes));
++
++#ifdef OH_ASF_CHECK_STATS
++	tmpRoot1 = s_statTree->AddChild(new CStatTreeItemBase(wxTRANSLATE("Automatic Shared Files Check")));
++	s_dl_word_cnt = (CStatTreeItemSimple*)tmpRoot1->AddChild(new CStatTreeItemSimple(wxTRANSLATE("Number of words in download list: %i")));
++	s_sfl_request_cnt = (CStatTreeItemSimple*)tmpRoot1->AddChild(new CStatTreeItemSimple(wxTRANSLATE("Number of requested shared file lists: %i")));
++	s_sfl_received_cnt = (CStatTreeItemSimple*)tmpRoot1->AddChild(new CStatTreeItemSimple(wxTRANSLATE("Number of received shared file lists: %i")));
++	s_sf_checked_cnt = (CStatTreeItemSimple*)tmpRoot1->AddChild(new CStatTreeItemSimple(wxTRANSLATE("Number of checked shared files: %i")));
++	s_sf_avg_value = (CStatTreeItemSimple*)tmpRoot1->AddChild(new CStatTreeItemSimple(wxTRANSLATE("Average word concordance: %.5f")));
++	s_sf_max_value = (CStatTreeItemSimple*)tmpRoot1->AddChild(new CStatTreeItemSimple(wxTRANSLATE("Maximum word concordance: %.5f")));
++	s_sf_cur_tresh = (CStatTreeItemSimple*)tmpRoot1->AddChild(new CStatTreeItemSimple(wxTRANSLATE("Current word concordance treshold: %.5f")));
++	s_sf_above_tresh_cnt = (CStatTreeItemSimple*)tmpRoot1->AddChild(new CStatTreeItemSimple(wxTRANSLATE("Number of shared files above treshold: %d")));
++	s_sf_avg_value->SetValue(.0);
++	s_sf_max_value->SetValue(.0);
++	s_sf_cur_tresh->SetValue(.0);
++#endif
+ }
+ 
+ 
+@@ -775,6 +801,20 @@ void CStatistics::UpdateStatsTree()
+ 
+ 	s_avgConnections->SetValue(theApp->listensocket->GetAverageConnections());
+ 
++#ifdef OH_ASF_CHECK_STATS
++	uint64 dl_word_cnt, sfl_request_cnt, sfl_received_cnt, sf_checked_cnt, sf_above_tresh_cnt;
++	float sf_avg_value, sf_max_value;
++	theApp->downloadqueue->GetStats(dl_word_cnt, sfl_request_cnt, sfl_received_cnt, sf_checked_cnt, sf_avg_value, sf_max_value, sf_above_tresh_cnt);
++	s_dl_word_cnt->SetValue(dl_word_cnt);
++	s_sfl_request_cnt->SetValue(sfl_request_cnt);
++	s_sfl_received_cnt->SetValue(sfl_received_cnt);
++	s_sf_checked_cnt->SetValue(sf_checked_cnt);
++	s_sf_avg_value->SetValue(sf_avg_value);
++	s_sf_max_value->SetValue(sf_max_value);
++	s_sf_cur_tresh->SetValue(thePrefs::GetASFCTreshold());
++	s_sf_above_tresh_cnt->SetValue(sf_above_tresh_cnt);
++#endif
++
+ 	// get serverstats
+ 	// TODO: make these realtime, too
+ 	uint32 servfail;
+--- src.org/Statistics.h
++++ src/Statistics.h
+@@ -30,6 +30,8 @@
+ #include "StatTree.h"		// Needed for CStatTreeItem* classes
+ #include "GetTickCount.h"	// Needed for GetTickCount64()
+ 
++#include "DownloadQueue.h"	// Needed for OH_ASF_CHECK_STATS define
++
+ #include <deque>		// Needed for std::deque
+ 
+ enum StatsGraphType {
+@@ -464,6 +466,18 @@ class CStatistics {
+ 	static	CStatTreeItemSimple*		s_totalFiles;
+ 	static	CStatTreeItemSimple*		s_serverOccupation;
+ 
++#ifdef OH_ASF_CHECK_STATS
++	// AutoSharedFilesCheck
++	static CStatTreeItemSimple*			s_dl_word_cnt;
++	static CStatTreeItemSimple*			s_sfl_request_cnt;
++	static CStatTreeItemSimple*			s_sfl_received_cnt;
++	static CStatTreeItemSimple*			s_sf_checked_cnt;
++	static CStatTreeItemSimple*			s_sf_avg_value;
++	static CStatTreeItemSimple*			s_sf_max_value;
++	static CStatTreeItemSimple*			s_sf_cur_tresh;
++	static CStatTreeItemSimple*			s_sf_above_tresh_cnt;
++#endif
++
+ 	// Shared files
+ 	static	CStatTreeItemCounter*		s_numberOfShared;
+ 	static	CStatTreeItemCounter*		s_sizeOfShare;
+--- src.org/TextClient.cpp
++++ src/TextClient.cpp
+@@ -100,6 +100,8 @@ enum {
+  	CMD_ID_SET_BWLIMIT_UP,
+  	CMD_ID_SET_BWLIMIT_DOWN,
+  	CMD_ID_GET_BWLIMITS,
++ 	CMD_ID_SET_ASFC_INTERVAL,
++ 	CMD_ID_SET_ASFC_TRESHOLD,
+ 	CMD_ID_STATTREE,
+ 	CMD_ID_SEARCH,
+ 	CMD_ID_SEARCH_GLOBAL,
+@@ -479,6 +481,35 @@ int CamulecmdApp::ProcessCommand(int Cmd
+ 			request_list.push_back(request);
+ 			break;
+ 
++		case CMD_ID_SET_ASFC_INTERVAL:
++			{
++				unsigned long int value;
++				if (args.ToULong(&value)) {
++					request = new CECPacket(EC_OP_SET_PREFERENCES);
++					CECEmptyTag prefs(EC_TAG_PREFS_FILES);
++					prefs.AddTag(CECTag(EC_TAG_FILES_ASFC_INTERVAL, (uint32) value));
++					request->AddTag(prefs);
++					request_list.push_back(request);
++				} else {
++					return CMD_ERR_INVALID_ARG;
++				}
++			}
++			break;
++		case CMD_ID_SET_ASFC_TRESHOLD:
++			{
++				double value;
++				if (args.ToDouble(&value)) {
++					request = new CECPacket(EC_OP_SET_PREFERENCES);
++					CECEmptyTag prefs(EC_TAG_PREFS_FILES);
++					prefs.AddTag(CECTag(EC_TAG_FILES_ASFC_TRESHOLD, value));
++					request->AddTag(prefs);
++					request_list.push_back(request);
++				} else {
++					return CMD_ERR_INVALID_ARG;
++				}
++			}
++			break;
++
+ 		case CMD_ID_STATTREE:
+ 			request = new CECPacket(EC_OP_GET_STATSTREE);
+ 			if (!args.IsEmpty()) {
+@@ -895,6 +926,13 @@ void CamulecmdApp::OnInitCommandSet()
+ 	tmp2->AddCommand(wxT("Down"), CMD_ID_SET_BWLIMIT_DOWN, wxTRANSLATE("Set download bandwidth limit."),
+ 			 wxT("The given value must be in kilobytes/sec.\n"), CMD_PARAM_ALWAYS);
+ 
++	tmp2 = tmp->AddCommand(wxT("ASFC"), CMD_ERR_INCOMPLETE, wxTRANSLATE("Set ASFC values."),
++			       wxEmptyString, CMD_PARAM_NEVER);
++	tmp2->AddCommand(wxT("Interval"), CMD_ID_SET_ASFC_INTERVAL, wxTRANSLATE("Set interval to auto-check for shared files."),
++			 wxT("The given value must be in milliseconds.\n"), CMD_PARAM_ALWAYS);
++	tmp2->AddCommand(wxT("Treshold"), CMD_ID_SET_ASFC_TRESHOLD, wxTRANSLATE("Set the minimum concordance value an auto-add download is allowed to have."),
++			 wxT("The given value must be a float between 0.0 and 1.0.\n"), CMD_PARAM_ALWAYS);
++
+ 	tmp = m_commands.AddCommand(wxT("Get"), CMD_ERR_INCOMPLETE, wxTRANSLATE("Get and display a preference value."),
+ 				    wxEmptyString, CMD_PARAM_NEVER);
+ 

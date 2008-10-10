@@ -1,0 +1,158 @@
+--- src.org/DataToText.cpp
++++ src/DataToText.cpp
+@@ -32,50 +32,50 @@ wxString PriorityToStr( int priority, bo
+ {
+ 	if ( isAuto ) {
+ 		switch ( priority ) {
+-			case PR_LOW:		return _("Auto [Lo]");
+-			case PR_NORMAL:		return _("Auto [No]");
+-			case PR_HIGH:		return _("Auto [Hi]");
++			case PR_LOW:		return _("-[A]");
++			case PR_NORMAL:		return _("o[A]");
++			case PR_HIGH:		return _("+[A]");
+ 		}
+ 	} else {
+ 		switch ( priority ) {
+-			case PR_VERYLOW:	return _("Very low");
+-			case PR_LOW:		return _("Low");
+-			case PR_NORMAL:		return _("Normal");
+-			case PR_HIGH:		return _("High");
+-			case PR_VERYHIGH:	return _("Very High");
+-			case PR_POWERSHARE:	return _("Release");
++			case PR_VERYLOW:	return _("--");
++			case PR_LOW:		return _("-");
++			case PR_NORMAL:		return _("o");
++			case PR_HIGH:		return _("+");
++			case PR_VERYHIGH:	return _("++");
++			case PR_POWERSHARE:	return _("+++");
+ 		}
+ 	}
+ 
+ 	wxASSERT( false );
+ 
+-	return _("Unknown");
++	return _("???");
+ }
+ 
+ 
+ wxString DownloadStateToStr( int state, bool queueFull )
+ {
+ 	switch ( state ) {
+-		case DS_CONNECTING:		return  _("Connecting");
++		case DS_CONNECTING:		return  _("Conn");
+ 		case DS_CONNECTED:		return _("Asking");
+-		case DS_WAITCALLBACK:		return _("Connecting via server");
+-		case DS_ONQUEUE:		return ( queueFull ? _("Queue Full") : _("On Queue") );
+-		case DS_DOWNLOADING:		return _("Transferring");
+-		case DS_REQHASHSET:		return _("Receiving hashset");
+-		case DS_NONEEDEDPARTS:		return _("No needed parts");
+-		case DS_LOWTOLOWIP:		return _("Cannot connect LowID to LowID");
+-		case DS_TOOMANYCONNS:		return _("Too many connections");
+-		case DS_NONE:			return _("Unknown");
+-		case DS_WAITCALLBACKKAD: 	return _("Connecting via Kad");
+-		case DS_TOOMANYCONNSKAD:	return _("Too many Kad connections");
++		case DS_WAITCALLBACK:		return _("Conn-Srv");
++		case DS_ONQUEUE:		return ( queueFull ? _("Q-Full") : _("On-Q") );
++		case DS_DOWNLOADING:		return _("Transf");
++		case DS_REQHASHSET:		return _("Recv hash");
++		case DS_NONEEDEDPARTS:		return _("NN parts");
++		case DS_LOWTOLOWIP:		return _("Low2Low");
++		case DS_TOOMANYCONNS:		return _("Conn-Max");
++		case DS_NONE:			return _("???");
++		case DS_WAITCALLBACKKAD: 	return _("Conn-Kad");
++		case DS_TOOMANYCONNSKAD:	return _("Conn-Kad-Max");
+ 		case DS_BANNED:			return _("Banned");
+-		case DS_ERROR:			return _("Connection Error");
+-		case DS_REMOTEQUEUEFULL:	return _("Remote Queue Full");
++		case DS_ERROR:			return _("Conn-Error");
++		case DS_REMOTEQUEUEFULL:	return _("RQ-Full");
+ 	}
+ 	
+ 	wxASSERT( false );
+ 
+-	return _("Unknown");
++	return _("???");
+ }
+ 
+ 
+@@ -100,20 +100,20 @@ const wxString GetSoftName(unsigned int 
+ 		case SO_HYDRANODE:
+ 			return wxT("HydraNode");
+ 		case SO_MLDONKEY:
+-			return wxTRANSLATE("Old MLDonkey");
++			return wxTRANSLATE("Old MLD");
+ 		case SO_NEW_MLDONKEY:
+ 		case SO_NEW2_MLDONKEY:
+-			return wxTRANSLATE("New MLDonkey");
++			return wxTRANSLATE("New MLD");
+ 		case SO_LPHANT:
+ 			return wxT("lphant");
+ 		case SO_EDONKEYHYBRID:
+-			return wxT("eDonkeyHybrid");
++			return wxT("eD-Hybrid");
+ 		case SO_EDONKEY:
+ 			return wxT("eDonkey");
+ 		case SO_UNKNOWN:
+-			return wxTRANSLATE("Unknown");
++			return wxTRANSLATE("???");
+ 		case SO_COMPAT_UNK:
+-			return wxTRANSLATE("eMule Compatible");
++			return wxTRANSLATE("eMule Comp");
+ 		default:
+ 			return wxEmptyString;
+ 	}
+@@ -123,16 +123,16 @@ const wxString GetSoftName(unsigned int 
+ wxString OriginToText(unsigned int source_from)
+ {
+ 	switch ((ESourceFrom)source_from) {
+-		case SF_LOCAL_SERVER:		return wxTRANSLATE("Local Server");
+-		case SF_REMOTE_SERVER:		return wxTRANSLATE("Remote Server");
++		case SF_LOCAL_SERVER:		return wxTRANSLATE("Loc-Srv");
++		case SF_REMOTE_SERVER:		return wxTRANSLATE("Rem-Srv");
+ 		case SF_KADEMLIA:		return wxTRANSLATE("Kad");
+-		case SF_SOURCE_EXCHANGE: 	return wxTRANSLATE("Source Exchange");
++		case SF_SOURCE_EXCHANGE: 	return wxTRANSLATE("Src-Exch");
+ 		case SF_PASSIVE:		return wxTRANSLATE("Passive");
+ 		case SF_LINK:			return wxTRANSLATE("Link");
+-		case SF_SOURCE_SEEDS:		return wxTRANSLATE("Source Seeds");
+-		case SF_SEARCH_RESULT:          return wxTRANSLATE("Search Result");
++		case SF_SOURCE_SEEDS:		return wxTRANSLATE("Src-Seeds");
++		case SF_SEARCH_RESULT:          return wxTRANSLATE("Srch-Res");
+ 		case SF_NONE:
+-		default:		return wxTRANSLATE("Unknown");
++		default:		return wxTRANSLATE("???");
+ 	}
+ }
+ // File_checked_for_headers
+--- src.org/DownloadListCtrl.cpp
++++ src/DownloadListCtrl.cpp
+@@ -190,19 +190,19 @@ CMuleListCtrl( parent, winid, pos, size,
+ 	m_hilightUnfocusBrush = new wxBrush( colour, wxSOLID );
+ 
+ 	InsertColumn( 0,  _("File Name"),		wxLIST_FORMAT_LEFT, 260 );
+-	InsertColumn( 1,  _("Size"),			wxLIST_FORMAT_LEFT,  60 );
+ 	InsertColumn( 2,  _("Part"),			wxLIST_FORMAT_LEFT,  65 );
+-	InsertColumn( 3,  _("Last Reception"),		wxLIST_FORMAT_LEFT, 130 );
++	InsertColumn( 3,  _("Last Recept"),		wxLIST_FORMAT_LEFT, 130 );
++	InsertColumn( 1,  _("Size"),			wxLIST_FORMAT_LEFT,  60 );
+ 	InsertColumn( 4,  _("Speed"),			wxLIST_FORMAT_LEFT,  65 );
+-	InsertColumn( 5,  _("Progress"),		wxLIST_FORMAT_LEFT, 170 );
+-	InsertColumn( 6,  _("Sources"),			wxLIST_FORMAT_LEFT,  50 );
+-	InsertColumn( 7,  _("Priority"),		wxLIST_FORMAT_LEFT,  55 );
+-	InsertColumn( 8,  _("Last Seen Part"),		wxLIST_FORMAT_LEFT, 130 );
+-	InsertColumn( 9,  _("Time Remaining"),		wxLIST_FORMAT_LEFT, 110 );
+-	InsertColumn( 10, _("Last Seen Complete"),	wxLIST_FORMAT_LEFT, 220 );
++	InsertColumn( 5,  _("Prog"),			wxLIST_FORMAT_LEFT, 170 );
++	InsertColumn( 6,  _("Srcs"),			wxLIST_FORMAT_LEFT,  50 );
++	InsertColumn( 7,  _("Prio"),			wxLIST_FORMAT_LEFT,  55 );
++	InsertColumn( 8,  _("LS Part"),			wxLIST_FORMAT_LEFT, 130 );
++	InsertColumn( 9,  _("Remaining"),		wxLIST_FORMAT_LEFT, 110 );
++	InsertColumn( 10, _("LS Complete"),		wxLIST_FORMAT_LEFT, 220 );
+ 	InsertColumn( 11, _("Gained"),			wxLIST_FORMAT_LEFT, 100 );
+-	InsertColumn( 12, _("Transferred"),		wxLIST_FORMAT_LEFT,  65 );
+-	InsertColumn( 13, _("Completed"),		wxLIST_FORMAT_LEFT,  65 );
++	InsertColumn( 12, _("Transf"),			wxLIST_FORMAT_LEFT,  65 );
++	InsertColumn( 13, _("Compl"),			wxLIST_FORMAT_LEFT,  65 );
+ 
+ 	m_category = 0;
+ 	m_completedFiles = 0;

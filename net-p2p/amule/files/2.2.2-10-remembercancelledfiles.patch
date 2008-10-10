@@ -14,7 +14,7 @@
  	uint16 accepted;
 --- src.org/DownloadQueue.cpp
 +++ src/DownloadQueue.cpp
-@@ -1425,7 +1425,7 @@ void CDownloadQueue::SetCatStatus(uint8 
+@@ -1419,7 +1419,7 @@ void CDownloadQueue::SetCatStatus(uint8 
  		
  	for ( ; it != files.end(); it++ ) {
  		switch ( newstatus ) {
@@ -25,7 +25,7 @@
  			case MP_RESUME:	(*it)->ResumeFile();	break;
 --- src.org/ExternalConn.cpp
 +++ src/ExternalConn.cpp
-@@ -634,7 +634,7 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
+@@ -618,7 +618,7 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
  				if ( thePrefs::StartNextFile() && (pfile->GetStatus() != PS_PAUSED) ) {
  					theApp->downloadqueue->StartNextFile(pfile);
  				}
@@ -78,7 +78,7 @@
  
 --- src.org/KnownFileList.cpp
 +++ src/KnownFileList.cpp
-@@ -66,9 +66,17 @@ CKnownFileList::~CKnownFileList()
+@@ -66,6 +66,13 @@ CKnownFileList::~CKnownFileList()
  
  bool CKnownFileList::Init()
  {
@@ -89,67 +89,23 @@
 +
 +bool CKnownFileList::Init0(bool knownMet)
 +{
-+	wxString name = knownMet ? wxT("known") : wxT("cancelled");
  	CFile file;
  	
--	CPath fullpath = CPath(theApp->ConfigDir + wxT("known.met"));
-+	CPath fullpath = CPath(theApp->ConfigDir + name + wxT(".met"));
- 	if (!fullpath.FileExists()) {
- 		// This is perfectly normal. The file was probably either
- 		// deleted, or this is the first time running aMule.
-@@ -76,40 +84,40 @@ bool CKnownFileList::Init()
- 	}
- 
- 	if (!file.Open(fullpath)) {
--		AddLogLineM(true, _("WARNING: known.met cannot be opened."));
-+		AddLogLineM(true, _("WARNING: ") + name + _(".met cannot be opened."));
- 		return false;
- 	}
- 	
- 	try {
- 		uint8 version = file.ReadUInt8();
- 		if ((version != MET_HEADER) && (version != MET_HEADER_WITH_LARGEFILES)) {
--			AddLogLineM(true, _("WARNING: Known file list corrupted, contains invalid header."));
-+			AddLogLineM(true, _("WARNING: ") + name + _(" file list corrupted, contains invalid header."));
- 			return false;
- 		}
- 		
- 		wxMutexLocker sLock(list_mut);
- 		uint32 RecordsNumber = file.ReadUInt32();
- 		AddDebugLogLineM(false, logKnownFiles,
--			wxString::Format(wxT("Reading %i known files from file format 0x%2.2x."),
--			RecordsNumber, version));
-+			wxString::Format(wxT("Reading %i %ls files from file format 0x%2.2x."),
-+			RecordsNumber, name.c_str(), version));
+ 	CPath fullpath = CPath(theApp->ConfigDir + wxT("known.met"));
+@@ -94,10 +101,10 @@ bool CKnownFileList::Init()
+ 			RecordsNumber, version));
  		for (uint32 i = 0; i < RecordsNumber; i++) {
  			std::auto_ptr<CKnownFile> record(new CKnownFile());
 -			if (record->LoadFromFile(&file)) {
 +			if (knownMet ? record->LoadFromFile(&file) : record->LoadFromCancelledMet(&file)) {
  				AddDebugLogLineM(false, logKnownFiles,
--					CFormat(wxT("Known file read: %s")) % record->GetFileName());
+ 					CFormat(wxT("Known file read: %s")) % record->GetFileName());
 -				Append(record.release());
-+					CFormat(name + wxT(" file read: %s")) % record->GetFileName());
 +				if (knownMet) AppendK(record.release()); else AppendC(record.release());
  			} else {
  				AddLogLineM(true,
--					wxT("Failed to load entry in knownfilelist, file may be corrupt"));
-+					wxT("Failed to load entry in ") + name + wxT("filelist, file may be corrupt"));
- 			}
- 		}
--		AddDebugLogLineM(false, logKnownFiles, wxT("Finished reading known files"));
-+		AddDebugLogLineM(false, logKnownFiles, wxT("Finished reading ") + name + wxT(" files"));
- 	
- 		return true;
- 	} catch (const CInvalidPacket& e) {
--		AddLogLineM(true, wxT("Invalid entry in knownfilelist, file may be corrupt: ") + e.what());
-+		AddLogLineM(true, wxT("Invalid entry in ") + name + wxT("filelist, file may be corrupt: ") + e.what());
- 	} catch (const CSafeIOException& e) {
--		AddLogLineM(true, CFormat(_("IO error while reading known.met file: %s")) % e.what());
-+		AddLogLineM(true, CFormat(_("IO error while reading ") + name + _(".met file: %s")) % e.what());
- 	}	
- 	
- 	return false;
-@@ -118,6 +126,12 @@ bool CKnownFileList::Init()
+ 					wxT("Failed to load entry in knownfilelist, file may be corrupt"));
+@@ -118,6 +125,12 @@ bool CKnownFileList::Init()
  
  void CKnownFileList::Save()
  {
@@ -162,7 +118,7 @@
  	CFile file(theApp->ConfigDir + wxT("known.met"), CFile::write);
  	if (!file.IsOpened()) {
  		return;
-@@ -160,6 +174,32 @@ void CKnownFileList::Save()
+@@ -160,6 +173,32 @@ void CKnownFileList::Save()
  }
  
  
@@ -195,7 +151,7 @@
  void CKnownFileList::Clear()
  {	
  	wxMutexLocker sLock(list_mut);
-@@ -169,6 +209,7 @@ void CKnownFileList::Clear()
+@@ -169,6 +208,7 @@ void CKnownFileList::Clear()
  		delete it->second;
  	}
  	m_knownFileMap.clear();
@@ -203,7 +159,7 @@
  
  	for (KnownFileList::iterator it = m_duplicateFileList.begin();
  	     it != m_duplicateFileList.end(); ++it) {
-@@ -251,15 +292,25 @@ CKnownFile* CKnownFileList::FindKnownFil
+@@ -251,15 +291,25 @@ CKnownFile* CKnownFileList::FindKnownFil
  
  }
  
@@ -231,7 +187,7 @@
  {
  	if (Record->GetFileSize() > 0) {
  		const CMD4Hash& tkey = Record->GetFileHash();
-@@ -297,4 +348,16 @@ bool CKnownFileList::Append(CKnownFile *
+@@ -297,4 +347,16 @@ bool CKnownFileList::Append(CKnownFile *
  	}
  }
  
@@ -329,7 +285,7 @@
  	delete this;
 --- src.org/PartFile.h
 +++ src/PartFile.h
-@@ -187,7 +187,7 @@ public:
+@@ -184,7 +184,7 @@ public:
  
  	void	RemoveBlockFromList(uint64 start,uint64 end);
  	void	RemoveAllSources(bool bTryToSwap);
@@ -340,7 +296,7 @@
  	void	StopFile(bool bCancel = false);
 --- src.org/SearchListCtrl.cpp
 +++ src/SearchListCtrl.cpp
-@@ -312,6 +312,11 @@ void CSearchListCtrl::UpdateItemColor( l
+@@ -306,6 +306,11 @@ void CSearchListCtrl::UpdateItemColor( l
  				green = 128;
  				blue = 128;
  			}

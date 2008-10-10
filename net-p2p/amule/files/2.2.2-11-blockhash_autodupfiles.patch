@@ -22,7 +22,7 @@
  }
  
  
-@@ -1918,4 +1926,163 @@ bool CDownloadQueue::DoKademliaFileReque
+@@ -1899,4 +1907,163 @@ bool CDownloadQueue::DoKademliaFileReque
  {
  	return ((::GetTickCount() - lastkademliafilerequest) > KADEMLIAASKTIME);
  }
@@ -188,7 +188,7 @@
  // File_checked_for_headers
 --- src.org/DownloadQueue.h
 +++ src/DownloadQueue.h
-@@ -500,6 +500,14 @@ private:
+@@ -495,6 +495,14 @@ private:
  	/* Kad Stuff */
  	uint32		lastkademliafilerequest;
  	
@@ -205,23 +205,19 @@
  #endif // DOWNLOADQUEUE_H
 --- src.org/PartFile.cpp
 +++ src/PartFile.cpp
-@@ -1,4 +1,4 @@
--//
-+
- // This file is part of the aMule Project.
- //
- // Copyright (c) 2003-2008 aMule Team ( admin@amule.org / http://www.amule.org )
-@@ -293,6 +293,9 @@ void CPartFile::CreatePartFile()
+@@ -292,7 +292,10 @@ void CPartFile::CreatePartFile()
+ 	}
  
  	SetFilePath(thePrefs::GetTempDir());
- 			
+-			
++
 +	// make sure we have no old .blkhash file laying around
 +	wxRemoveFile(m_fullname.GetRaw() + wxT(".blkhash"));
 +
  	if (thePrefs::GetAllocFullFile()) {
  		SetPartFileStatus(PS_ALLOCATING);
  		CThreadScheduler::AddTask(new CAllocateFileTask(this, thePrefs::AddNewFilesPaused()));
-@@ -3142,6 +3145,11 @@ void CPartFile::FlushBuffer(bool /*force
+@@ -3143,6 +3146,11 @@ void CPartFile::FlushBuffer(bool /*force
  		return;
  	}
  	
@@ -233,7 +229,7 @@
  	// Loop through queue
  	while ( !m_BufferedData_list.empty() ) {
  		// Get top item and remove it from the queue
-@@ -3159,6 +3167,13 @@ void CPartFile::FlushBuffer(bool /*force
+@@ -3160,6 +3168,13 @@ void CPartFile::FlushBuffer(bool /*force
  		}
  		// SLUGFILLER: SafeHash
  		
@@ -247,7 +243,7 @@
  		// Go to the correct position in file and write block of data			
  		try {
  			m_hpartfile.Seek(item->start);
-@@ -3176,6 +3191,59 @@ void CPartFile::FlushBuffer(bool /*force
+@@ -3177,6 +3192,59 @@ void CPartFile::FlushBuffer(bool /*force
  		delete item;
  	}
  	
@@ -309,7 +305,7 @@
  	m_lastDateChanged = wxDateTime::GetTimeNow();
 --- src.org/Preferences.cpp
 +++ src/Preferences.cpp
-@@ -148,6 +148,7 @@ bool		CPreferences::s_checkDiskspace;
+@@ -146,6 +146,7 @@ bool		CPreferences::s_checkDiskspace;
  uint32		CPreferences::s_uMinFreeDiskSpace;
  wxString	CPreferences::s_yourHostname;
  bool		CPreferences::s_bVerbose;
@@ -317,35 +313,33 @@
  bool		CPreferences::s_bmanualhighprio;
  bool		CPreferences::s_btransferfullchunks;
  bool		CPreferences::s_bstartnextfile;
-@@ -1221,6 +1222,8 @@ void CPreferences::BuildItemList( const 
+@@ -1196,6 +1197,7 @@ void CPreferences::BuildItemList( const 
+ 	s_MiscList.push_back(    MkCfg_Int( wxT("/eMule/SplitterbarPosition"),		s_splitterbarPosition, 75 ) );
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/YourHostname"),			s_yourHostname, wxEmptyString ) );
  	s_MiscList.push_back( new Cfg_Str(  wxT("/eMule/DateTimeFormat"),		s_datetimeformat, wxT("%A, %x, %X") ) );
++	s_MiscList.push_back(    MkCfg_Int( wxT("/eMule/SDFInterval"),			s_SDFInterval, 60 * 60 * 1000 ) );
  
-+	s_MiscList.push_back( MkCfg_Int( wxT("/eMule/SDFInterval"), s_SDFInterval, 60 * 60 * 1000 ) );
-+	
  	s_MiscList.push_back(    MkCfg_Int( wxT("/eMule/AllcatType"),			s_allcatType, 0 ) );
  	s_MiscList.push_back( new Cfg_Bool( wxT("/eMule/ShowAllNotCats"),		s_showAllNotCats, false ) );
- 
 --- src.org/Preferences.h
 +++ src/Preferences.h
-@@ -460,6 +460,8 @@ public:
- 	static uint8_t		GetShowRatesOnTitle()		{ return s_showRatesOnTitle; }
- 	static void		SetShowRatesOnTitle(uint8_t val) { s_showRatesOnTitle = val; }
+@@ -463,6 +463,8 @@ public:
+ 	static void LoadAllItems(wxConfigBase* cfg);
+ 	static void SaveAllItems(wxConfigBase* cfg);
  
-+	static uint32           GetSDFInterval()                { return s_SDFInterval; }
-+
- 	// Message Filters
++	static uint32		GetSDFInterval()			{ return s_SDFInterval; }
++	
+ 	static bool 		GetShowRatesOnTitle()		{ return s_ShowRatesOnTitle; }
  	
- 	static bool		MustFilterMessages()		{ return s_MustFilterMessages; }
-@@ -668,6 +670,8 @@ protected:
- 
- 	static uint8_t	s_showRatesOnTitle;	// 0=no, 1=after app name, 2=before app name
- 
+ 	// Message Filters
+@@ -664,6 +666,7 @@ protected:
+ 	static bool	s_bshowoverhead;
+ 	static bool	s_bDAP;
+ 	static bool	s_bUAP;
 +	static uint32	s_SDFInterval;
-+
- 	static wxString	s_VideoPlayer;
- 	static bool	s_moviePreviewBackup;
- 	static bool	s_showAllNotCats;
+ 
+ 	static bool	s_ShowRatesOnTitle;
+ 
 --- src.org/ThreadTasks.cpp
 +++ src/ThreadTasks.cpp
 @@ -455,7 +455,7 @@ void CCompletionTask::Entry()

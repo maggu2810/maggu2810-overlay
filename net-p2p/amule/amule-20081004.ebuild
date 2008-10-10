@@ -1,25 +1,26 @@
 # Copyright 1999-2008 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# Based on the ebuild by 'mascanho' @ forums.gentoo.org
+# $Header: /var/cvsroot/gentoo-x86/net-p2p/amule/amule-2.2.2.ebuild,v 1.1 2008/08/08 19:55:23 armin76 Exp $
 
-inherit eutils flag-o-matic wxwidgets autotools cvs
+inherit eutils flag-o-matic wxwidgets
 
-ECVS_SERVER=""
-ECVS_MODULE="amule"
-ECVS_TOP_DIR="${DISTDIR}/cvs-src/${ECVS_MODULE}"
-ECVS_CO_DATE="${PV}"
-ECVS_UP_OPTS="-D \"${ECVS_CO_DATE} UTC\" -dP"
-ECVS_CO_OPTS="-D \"${ECVS_CO_DATE} UTC\""
+[[ ${PV} =~ 200.* ]] && IS_CVS=true || IS_CVS=false
 
-S="${WORKDIR}/${ECVS_MODULE}"
+$IS_CVS && MY_P=${PN/m/M}-CVS-${PV} || MY_P=${PN/m/M}-${PV}
+S="${WORKDIR}"/${MY_P}
 
 DESCRIPTION="aMule, the all-platform eMule p2p client"
 HOMEPAGE="http://www.amule.org/"
+SRC_URI="mirror://sourceforge/${PN}/${MY_P}.tar.bz2
+	http://www.hirnriss.net/files/cvs/${MY_P}.tar.bz2
+	http://ed2k-serverboard.de/downloads/ihmselbst/amule/sources/${MY_P}.tar.bz2"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="alpha amd64 hppa ppc ppc64 ~sparc x86"
-IUSE="daemon debug geoip gtk nls remote stats unicode upnp"
+$IS_CVS && \
+	KEYWORDS="~alpha ~amd64 ~hppa ~ppc ~ppc64 ~sparc ~x86" || \
+	KEYWORDS="alpha amd64 hppa ppc ppc64 ~sparc x86"
+IUSE="daemon debug geoip gtk nls remote stats unicode upnp patching monolithic"
 
 DEPEND="=x11-libs/wxGTK-2.8*
 		>=dev-libs/crypto++-5.5.2
@@ -30,30 +31,13 @@ DEPEND="=x11-libs/wxGTK-2.8*
 		remote? ( >=media-libs/libpng-1.2.0
 		unicode? ( >=media-libs/gd-2.0.26 ) )"
 
-DEPEND="$DEPEND		
-        !net-p2p/amule
-        !net-p2p/xmule"
-
-IUSE="$IUSE patching monolithic"
-for f in ${FILESDIR}/[0-9][0-9]-*.patch; do
+for f in ${FILESDIR}/${PV}-[0-9][0-9]-*.patch; do
 	u=${f##*/}
+	u=${u#*-}
 	u=${u#*-}
 	u=${u%.*}
 	IUSE="${IUSE} no-$u"
 done
-
-src_unpack() {
-	cvs_src_unpack
-	cd ${S}
-	if use patching; then
-		for f in ${FILESDIR}/[0-9][0-9]-*.patch; do
-			u=${f##*/}
-			u=${u#*-}
-			u=${u%.*}
-			use no-$u && einfo "Skipping $(basename $f)" || epatch $f
-		done
-	fi
-}
 
 pkg_setup() {
 		if ! use gtk && ! use remote && ! use daemon; then
@@ -70,14 +54,14 @@ pkg_setup() {
 				einfo "I will now compile console versions only."
 		fi
 
+		if use stats && ! built_with_use media-libs/gd jpeg; then
+				die "media-libs/gd should be compiled with the jpeg use flag when you have the stats use flag set"
+		fi
+
 		if use monolithic && ! use gtk; then
 				einfo "Note: You would need both the gtk and monolithic USE flags"
 				einfo "to compile aMule monolithic GUI."
 				einfo "I will now compile console versions only."
-		fi
-
-		if use stats && ! built_with_use media-libs/gd jpeg; then
-				die "media-libs/gd should be compiled with the jpeg use flag when you have the stats use flag set"
 		fi
 }
 
@@ -89,6 +73,17 @@ pkg_preinst() {
 }
 
 src_compile() {
+		$IS_CVS && cd amule-cvs
+		if use patching; then
+			for f in ${FILESDIR}/${PV}-[0-9][0-9]-*.patch; do
+				u=${f##*/}
+				u=${u#*-}
+				u=${u#*-}
+				u=${u%.*}
+				use no-$u && einfo "Skipping $(basename $f)" || epatch $f
+			done
+		fi
+
 		local myconf
 
 		WX_GTK_VER="2.8"
@@ -108,8 +103,7 @@ src_compile() {
 				use remote && myconf="${myconf}
 					--enable-amule-gui"
 				use monolithic || myconf="${myconf}
-					--disable-monolithic
-				"
+					--disable-monolithic"
 		else
 				myconf="
 					--disable-monolithic

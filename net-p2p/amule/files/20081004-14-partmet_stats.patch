@@ -1,0 +1,102 @@
+--- src.org/DownloadQueue.cpp
++++ src/DownloadQueue.cpp
+@@ -81,6 +81,7 @@ CDownloadQueue::CDownloadQueue()
+ // Needs to be recursive that that is can own an observer assigned to itself
+ 	: m_mutex( wxMUTEX_RECURSIVE )
+ {
++	m_nLastDownStatsWritten = 0;
+ 	m_datarate = 0;
+ 	m_udpserver = 0;
+ 	m_lastsorttime = 0;
+@@ -475,6 +476,13 @@ void CDownloadQueue::Process()
+ 		SearchForDuplicateFiles();
+ 		m_nLastSearchForDuplicateFiles = ::GetTickCount();
+ 	}
++	
++	// Write download progress once per hour
++	if (::GetTickCount() - m_nLastDownStatsWritten >= 1000 * 60 * 60) {
++		WriteDownloadStats();
++		m_nLastDownStatsWritten = ::GetTickCount();
++	}
++	
+ }
+ 
+ 
+@@ -1376,6 +1384,44 @@ void CDownloadQueue::AddLinksFromFile()
+ }
+ 
+ 
++void CDownloadQueue::WriteDownloadStats()
++{
++	wxDateTime dt;
++	dt.SetToCurrent();
++	uint32 curDT = dt.GetTicks();
++	
++	for ( uint16 i = 0; i < m_filelist.size(); i++ ) {
++		CPartFile *pf = m_filelist[i];
++		
++		const CPath fullPath = CPath(pf->GetFullName().GetRaw() + wxT(".stats"));
++		CFile file;
++		try {
++			if (!file.Open(fullPath, (fullPath.FileExists() ? CFile::read_write : CFile::write))) {
++				throw CIOFailureException(CFormat(wxT("Failed to open file: ")) % fullPath);
++			}
++			if (file.Eof()) {
++				// new / empty file - write signature first
++				file.WriteUInt32(0x5CD8492F);
++			} else {
++				if (file.ReadUInt32() != 0x5CD8492F) {
++					throw CIOFailureException(CFormat(wxT("Invalid signature for file: ")) % fullPath);
++				}
++				file.Seek(0, wxFromEnd);
++			}
++			// write / append current stats - 14 bytes => 10 KB every month
++			file.WriteUInt32(curDT);
++			file.WriteUInt8(pf->GetStatus());
++			file.WriteUInt32((uint32) (pf->GetCompletedSize() / 100));
++			file.WriteUInt16(pf->GetSourceCount());
++			file.WriteUInt16(pf->GetSrcA4AFCount());
++			file.WriteUInt8((uint8) pf->GetTransferingSrcCount());
++		} catch (const CIOFailureException& e) {
++			AddDebugLogLineM(true, logDownloadQueue, wxT("IO failure while writing download stats (Aborting): ") + e.what());
++		}
++	}
++}
++
++
+ void CDownloadQueue::ResetCatParts(uint8 cat)
+ {
+ 	for ( uint16 i = 0; i < GetFileCount(); i++ ) {
+--- src.org/DownloadQueue.h
++++ src/DownloadQueue.h
+@@ -345,6 +345,11 @@ private:
+ 	void	AddLinksFromFile();
+ 
+ 	/**
++	 * Writes stats about downloads to a file.
++	 */
++	void	WriteDownloadStats();
++	
++	/**
+ 	 * Stops performing UDP requests.
+ 	 */
+ 	void	DoStopUDPRequests();
+@@ -368,6 +373,7 @@ private:
+ 	uint32		m_lastsorttime;
+ 	uint32		m_lastudpstattime;
+ 	uint32		m_nLastED2KLinkCheck;
++	uint32		m_nLastDownStatsWritten;
+ 	uint8		m_cRequestsSentToServer;
+ 	uint32		m_dwNextTCPSrcReq;
+ 	uint8		m_udcounter;
+--- src.org/ThreadTasks.cpp
++++ src/ThreadTasks.cpp
+@@ -455,7 +455,7 @@ void CCompletionTask::Entry()
+ 	}
+ 
+ 	// Removes the various other data-files	
+-	const wxChar* otherMetExt[] = { wxT(""), PARTMET_BAK_EXT, wxT(".seeds"), wxT(".blkhash"), NULL };
++	const wxChar* otherMetExt[] = { wxT(""), PARTMET_BAK_EXT, wxT(".seeds"), wxT(".blkhash"), wxT(".stats"), NULL };
+ 	for (size_t i = 0; otherMetExt[i]; ++i) {
+ 		CPath toRemove = m_metPath.AppendExt(otherMetExt[i]);
+ 

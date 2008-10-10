@@ -1,7 +1,7 @@
 #!/sbin/runscript
 # Copyright 1999-2005 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/lib/cvsd/root/portage/net-p2p/amule-cvs/files/amuled.initd,v 1.2 2006/11/17 15:35:05 oliver Exp $
+# $Header: /var/cvsroot/gentoo-x86/net-p2p/amule/files/amuled.initd,v 1.4 2007/07/23 12:07:54 armin76 Exp $
 
 depend() {
 	need net
@@ -13,24 +13,20 @@ start() {
 		return 1
 	fi
 
-        if pgrep -u ${AMULEUSER} amuled >/dev/null; then
-                eerror "An instance of aMule daemon is already running"
-                return 1
-        fi
-
-        rm /var/run/amuled.pid
+	if pgrep -u ${AMULEUSER} amuled >/dev/null; then
+		eerror "An instance of aMule webserver is already running"
+		return 1
+	fi
+	if [ -e /var/run/amuled.pid ]; then
+		 rm /var/run/amuled.pid
+	fi
 
 	ebegin "Starting aMule Daemon"
-	echo "`date`: Starting aMule Daemon" >> ${LOG}
-	echo "`date`: Starting aMule Daemon" >> ${LOG}.err
-	cat "${AMULEHOME}/.aMule/logfile" >> "${AMULEHOME}/.aMule/lastlogs"
-	echo > "${AMULEHOME}/.aMule/logfile"
-	
 	env HOME="${AMULEHOME}" start-stop-daemon --start \
 		--quiet --background \
 		--make-pidfile --pidfile /var/run/amuled.pid \
 		-c ${AMULEUSER} \
-		-x /usr/bin/amuled 2>>${LOG}.err >>${LOG}
+		-x /usr/bin/amuled >${LOG}
 	
 	sleep 2
 	if ! pgrep -u ${AMULEUSER} amuled > /dev/null; then
@@ -40,13 +36,15 @@ start() {
 }
 
 stop() {
-	ebegin "Stopping aMule daemon"
+	ebegin "Stopping aMule daemon -- please wait"
 	start-stop-daemon --oknodo --stop --pidfile /var/run/amuled.pid &>/dev/null
 	eend $?
 }
 
 restart() {
 	svc_stop
-	sleep 30
+	while `pgrep -u ${AMULEUSER} amuled >/dev/null`; do
+		sleep 1
+	done
 	svc_start
 }

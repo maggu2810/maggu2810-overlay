@@ -1,0 +1,559 @@
+--- src.org/DownloadQueue.cpp
++++ src/DownloadQueue.cpp
+@@ -1648,7 +1648,7 @@ void CDownloadQueue::OnHostnameResolved(
+ }
+ 
+ 
+-bool CDownloadQueue::AddLink( const wxString& link, int category )
++bool CDownloadQueue::AddLink( const wxString& link, int category, bool forcePaused )
+ {
+ 	wxString uri(link);
+ 
+@@ -1661,7 +1661,7 @@ bool CDownloadQueue::AddLink( const wxSt
+ 	}
+ 
+ 	if (uri.compare(0, 7, wxT("ed2k://")) == 0) {
+-		return AddED2KLink(uri, category);
++		return AddED2KLink(uri, category, forcePaused);
+ 	} else {
+ 		AddLogLineM(true, CFormat(_("Unknown protocol of link: %s")) % link);
+ 		return false;
+@@ -1669,7 +1669,7 @@ bool CDownloadQueue::AddLink( const wxSt
+ }
+ 
+ 
+-bool CDownloadQueue::AddED2KLink( const wxString& link, int category )
++bool CDownloadQueue::AddED2KLink( const wxString& link, int category, bool forcePaused )
+ {
+ 	wxASSERT( !link.IsEmpty() );
+ 	wxString URI = link;
+@@ -1682,7 +1682,7 @@ bool CDownloadQueue::AddED2KLink( const 
+ 	try {
+ 		CScopedPtr<CED2KLink> uri(CED2KLink::CreateLinkFromUrl(URI));
+ 
+-		return AddED2KLink( uri.get(), category );
++		return AddED2KLink( uri.get(), category, forcePaused );
+ 	} catch ( const wxString& err ) {
+ 		AddLogLineM( true, CFormat( _("Invalid eD2k link! ERROR: %s")) % err);
+ 	}
+@@ -1691,11 +1691,11 @@ bool CDownloadQueue::AddED2KLink( const 
+ }
+ 
+ 
+-bool CDownloadQueue::AddED2KLink( const CED2KLink* link, int category )
++bool CDownloadQueue::AddED2KLink( const CED2KLink* link, int category, bool forcePaused )
+ {
+ 	switch ( link->GetKind() ) {
+ 		case CED2KLink::kFile:
+-			return AddED2KLink( dynamic_cast<const CED2KFileLink*>( link ), category );
++			return AddED2KLink( dynamic_cast<const CED2KFileLink*>( link ), category, forcePaused );
+ 			
+ 		case CED2KLink::kServer:
+ 			return AddED2KLink( dynamic_cast<const CED2KServerLink*>( link ) );
+@@ -1710,7 +1710,7 @@ bool CDownloadQueue::AddED2KLink( const 
+ 
+ 
+ 
+-bool CDownloadQueue::AddED2KLink( const CED2KFileLink* link, int category )
++bool CDownloadQueue::AddED2KLink( const CED2KFileLink* link, int category, bool forcePaused )
+ {
+ 	CPartFile* file = NULL;
+ 	if (IsFileExisting(link->GetHashKey())) {
+@@ -1736,7 +1736,7 @@ bool CDownloadQueue::AddED2KLink( const 
+ 			return false;
+ 		}
+ 		
+-		AddDownload(file, thePrefs::AddNewFilesPaused(), category);
++		AddDownload(file, forcePaused || thePrefs::AddNewFilesPaused(), category);
+ 	}
+ 	
+ 	if (link->HasValidAICHHash()) {
+--- src.org/DownloadQueue.h
++++ src/DownloadQueue.h
+@@ -272,11 +272,11 @@ public:
+ 	/**
+ 	 * Adds an ed2k or magnet link to download queue.
+ 	 */
+-	bool	AddLink( const wxString& link, int category = 0 );
++	bool	AddLink( const wxString& link, int category = 0, bool forcePaused = false );
+ 
+-	bool	AddED2KLink( const wxString& link, int category = 0 );
+-	bool	AddED2KLink( const CED2KLink* link, int category = 0 );
+-	bool	AddED2KLink( const CED2KFileLink* link, int category = 0 );
++	bool	AddED2KLink( const wxString& link, int category = 0, bool forcePaused = false );
++	bool	AddED2KLink( const CED2KLink* link, int category = 0, bool forcePaused = false );
++	bool	AddED2KLink( const CED2KFileLink* link, int category = 0, bool forcePaused = false );
+ 	bool	AddED2KLink( const CED2KServerLink* link );
+ 	bool	AddED2KLink( const CED2KServerListLink* link );
+ 
+--- src.org/ExternalConn.cpp
++++ src/ExternalConn.cpp
+@@ -649,6 +649,23 @@ CECPacket *Get_EC_Response_PartFile_Cmd(
+ 				pfile->SetCategory(hashtag->GetTagByIndexSafe(0)->GetInt());
+ 				break;
+ 
++			case EC_OP_PARTFILE_RENAME: {
++				wxString newName = hashtag->GetTagByIndexSafe(0)->GetStringData();
++				if (newName.IsEmpty()) {
++					response = new CECPacket(EC_OP_FAILED);
++					response->AddTag(CECTag(EC_TAG_STRING, wxTRANSLATE("Invalid file name.")));
++					break;
++				}
++				
++				if (theApp->sharedfiles->RenameFile(pfile, CPath(newName))) {
++					response = new CECPacket(EC_OP_NOOP);
++				} else {
++					response = new CECPacket(EC_OP_FAILED);
++					response->AddTag(CECTag(EC_TAG_STRING, wxTRANSLATE("Unable to rename file.")));
++				}
++				break;
++			}
++
+ 			default:
+ 				response = new CECPacket(EC_OP_FAILED);
+ 				response->AddTag(CECTag(EC_TAG_STRING, wxTRANSLATE("OOPS! OpCode processing error!")));
+@@ -1095,12 +1112,13 @@ CECPacket *ExternalConn::ProcessRequest2
+ 			}
+ 			break;
+ 		case EC_OP_ADD_LINK: 
++		case EC_OP_ED2K_LINK_PAUSED: 
+ 			for(unsigned int i = 0; i < request->GetTagCount();i++) {
+ 				const CECTag *tag = request->GetTagByIndex(i);
+ 				wxString link = tag->GetStringData();
+ 				int category = tag->GetTagByIndexSafe(0)->GetInt();
+ 				AddLogLineM(true, CFormat(_("ExternalConn: adding link '%s'.")) % link);
+-				if ( theApp->downloadqueue->AddLink(link, category) ) {
++				if ( theApp->downloadqueue->AddLink(link, category, request->GetOpCode() == EC_OP_ED2K_LINK_PAUSED) ) {
+ 					response = new CECPacket(EC_OP_NOOP);
+ 				} else {
+ 					// Error messages are printed by the add function.
+@@ -1145,6 +1163,77 @@ CECPacket *ExternalConn::ProcessRequest2
+ 				response = Get_EC_Response_GetDownloadQueue(request, enc_part_map, true);
+ 			}
+ 			break;
++		case EC_OP_GET_RUNTIME_INFO: {
++			int detail = request->GetDetailLevel();
++			uint8 category = request->GetTagByNameSafe(EC_TAG_PARTFILE_CAT)->GetInt();
++			response = new CECPacket(EC_OP_STRINGS);
++			response->AddTag(CECTag(EC_TAG_STRING, wxT("ver 4")));
++			for (unsigned int i = 0; i < theApp->downloadqueue->GetFileCount(); i++) {
++				CPartFile *cur_file = theApp->downloadqueue->GetFileByIndex(i);
++				if (category != 0 && category != cur_file->GetCategory()) {
++					continue;
++				}
++				if (detail == EC_DETAIL_FULL || detail == EC_DETAIL_UPDATE ||
++					/* if detail is EC_DETAIL_INC_UPDATE check for changes */
++					cur_file->GetTransferingSrcCount() > 0 ||
++					cur_file->GetStatus() != cur_file->rtiStatus ||
++					cur_file->GetDownPriority() != cur_file->rtiDownPriority ||
++					cur_file->IsAutoDownPriority() != cur_file->rtiAutoDownPriority ||
++					cur_file->GetSourceCount() != cur_file->rtiSourceCount ||
++					cur_file->GetSrcA4AFCount() != cur_file->rtiSrcA4AFCount ||
++					cur_file->GetTransferingSrcCount() != cur_file->rtiTransferingSrcCount ||
++					cur_file->GetNotCurrentSourcesCount() != cur_file->rtiNotCurrentSourcesCount) {
++					// update status buffer
++					cur_file->rtiStatus = cur_file->GetStatus();
++					cur_file->rtiDownPriority = cur_file->GetDownPriority();
++					cur_file->rtiAutoDownPriority = cur_file->IsAutoDownPriority();
++					cur_file->rtiSourceCount = cur_file->GetSourceCount();
++					cur_file->rtiSrcA4AFCount = cur_file->GetSrcA4AFCount();
++					cur_file->rtiTransferingSrcCount = cur_file->GetTransferingSrcCount();
++					cur_file->rtiNotCurrentSourcesCount = cur_file->GetNotCurrentSourcesCount();
++					// print dynamic runtime content (not stored in the .met files)
++					wxString str = CFormat(
++						wxT("%s %d %d %d %d %d %d %d %s"))
++						% EncodeBase64((const char *) cur_file->GetFileHash().GetHash(), MD4HASH_LENGTH).Left(22)
++						% cur_file->rtiStatus
++						% (cur_file->rtiDownPriority + (cur_file->rtiAutoDownPriority ? 128 : 0))
++						% (uint32) (cur_file->GetKBpsDown() * 1024)
++						% cur_file->rtiSourceCount
++						% cur_file->rtiSrcA4AFCount
++						% cur_file->rtiTransferingSrcCount
++						% cur_file->rtiNotCurrentSourcesCount
++						% cur_file->GetPartMetFileName().GetRaw().BeforeFirst(wxT('.'));
++					for (uint32 j = 0; j < cur_file->m_SrcpartFrequency.size(); j++) {
++						str += (CFormat(_(" %d")) % cur_file->m_SrcpartFrequency[j]);
++					}
++					const CPartFile::CReqBlockPtrList& requestedblocks_list = cur_file->GetRequestedBlockList();
++					CPartFile::CReqBlockPtrList::const_iterator it_rbl = requestedblocks_list.begin();
++					for (; it_rbl != requestedblocks_list.end(); ++it_rbl) {
++						str += (CFormat(_(" %Ld-%Ld")) % (*it_rbl)->StartOffset % (*it_rbl)->EndOffset);
++					}
++					response->AddTag(CECTag(EC_TAG_STRING, str));
++					if (detail == EC_DETAIL_FULL) {
++						// print all static content (the same as in the .met files)
++						str = CFormat(
++							wxT("%Ld %Ld %d %d %d"))
++							% cur_file->GetFileSize()
++							% cur_file->GetTransferred()
++							% cur_file->GetLastChangeDatetime()
++							% cur_file->lastseenpart
++							% cur_file->lastseencomplete;
++						const CPartFile::CGapPtrList& gaplist = cur_file->GetGapList();
++						CPartFile::CGapPtrList::const_iterator it_gl = gaplist.begin();
++						for (; it_gl != gaplist.end(); ++it_gl) {
++							str += (CFormat(_(" %Ld-%Ld")) % (*it_gl)->start % (*it_gl)->end);
++						}
++						response->AddTag(CECTag(EC_TAG_STRING, str));
++						// let the file name have its own line and encode some characters
++						response->AddTag(CECTag(EC_TAG_STRING, URLEncode(cur_file->GetFileName().GetPrintable())));
++					}
++				}
++			}
++			break;
++		}
+ 		case EC_OP_GET_ULOAD_QUEUE:
+ 			if ( request->GetDetailLevel() == EC_DETAIL_INC_UPDATE ) {
+ 				response = Get_EC_Response_GetUpQueue(objmap);
+@@ -1174,6 +1263,7 @@ CECPacket *ExternalConn::ProcessRequest2
+ 		case EC_OP_PARTFILE_REHASH:
+ 		case EC_OP_PARTFILE_FORCECOMPL:
+ 		case EC_OP_PARTFILE_SET_CAT:
++		case EC_OP_PARTFILE_RENAME:
+ 			response = Get_EC_Response_PartFile_Cmd(request);
+ 			break;
+ 		case EC_OP_SHAREDFILES_RELOAD:
+--- src.org/libs/ec/abstracts/ECCodes.abstract
++++ src/libs/ec/abstracts/ECCodes.abstract
+@@ -139,6 +139,10 @@ EC_OP_GET_DLOAD_QUEUE_DETAIL        0x4C
+ 
+ EC_OP_KAD_UPDATE_FROM_URL           0x4D
+ EC_OP_KAD_BOOTSTRAP_FROM_IP         0x4E
++
++EC_OP_PARTFILE_RENAME               0x62
++EC_OP_ED2K_LINK_PAUSED              0x63
++EC_OP_GET_RUNTIME_INFO              0x64
+ [/Section]
+ 
+ [Section Content]
+--- src.org/libs/ec/c#/ECCodes.cs
++++ src/libs/ec/c#/ECCodes.cs
+@@ -117,7 +117,10 @@ public enum ECOpCodes {
+ 	EC_OP_DISCONNECT                    = 0x4B,
+ 	EC_OP_GET_DLOAD_QUEUE_DETAIL        = 0x4C,
+ 	EC_OP_KAD_UPDATE_FROM_URL           = 0x4D,
+-	EC_OP_KAD_BOOTSTRAP_FROM_IP         = 0x4E
++	EC_OP_KAD_BOOTSTRAP_FROM_IP         = 0x4E,
++	EC_OP_PARTFILE_RENAME               = 0x62,
++	EC_OP_ED2K_LINK_PAUSED              = 0x63,
++	EC_OP_GET_RUNTIME_INFO              = 0x64
+ };
+ public enum ECTagNames {
+ 	EC_TAG_STRING                             = 0x0000,
+--- src.org/libs/ec/cpp/ECCodes.h
++++ src/libs/ec/cpp/ECCodes.h
+@@ -125,7 +125,10 @@ enum ECOpCodes {
+ 	EC_OP_DISCONNECT                    = 0x4B,
+ 	EC_OP_GET_DLOAD_QUEUE_DETAIL        = 0x4C,
+ 	EC_OP_KAD_UPDATE_FROM_URL           = 0x4D,
+-	EC_OP_KAD_BOOTSTRAP_FROM_IP         = 0x4E
++	EC_OP_KAD_BOOTSTRAP_FROM_IP         = 0x4E,
++	EC_OP_PARTFILE_RENAME               = 0x62,
++	EC_OP_ED2K_LINK_PAUSED              = 0x63,
++	EC_OP_GET_RUNTIME_INFO              = 0x64
+ };
+ 
+ enum ECTagNames {
+--- src.org/libs/ec/java/ECCodes.java
++++ src/libs/ec/java/ECCodes.java
+@@ -116,6 +116,9 @@ public final static byte EC_OP_DISCONNEC
+ public final static byte EC_OP_GET_DLOAD_QUEUE_DETAIL        = 0x4C;
+ public final static byte EC_OP_KAD_UPDATE_FROM_URL           = 0x4D;
+ public final static byte EC_OP_KAD_BOOTSTRAP_FROM_IP         = 0x4E;
++public final static byte EC_OP_PARTFILE_RENAME               = 0x62;
++public final static byte EC_OP_ED2K_LINK_PAUSED              = 0x63;
++public final static byte EC_OP_GET_RUNTIME_INFO              = 0x64;
+ 
+ public final static short EC_TAG_STRING                             = 0x0000;
+ public final static short EC_TAG_PASSWD_HASH                        = 0x0001;
+--- src.org/PartFile.h
++++ src/PartFile.h
+@@ -432,6 +432,15 @@ public:
+ 	
+ 	CUpDownClient* GetSlowerDownloadingClient(uint32 speed, CUpDownClient* caller) ;
+ 
++	// Needed for EC_OP_GET_RUNTIME_INFO in ExternConn
++	uint8 rtiStatus;
++	uint8 rtiDownPriority;
++	uint8 rtiAutoDownPriority;
++	uint16 rtiSourceCount;
++	uint16 rtiSrcA4AFCount;
++	uint16 rtiTransferingSrcCount;
++	uint16 rtiNotCurrentSourcesCount;
++	
+ private:
+ 	/* downloading sources list */
+ 	CClientPtrList m_downloadingSourcesList;
+--- src.org/TextClient.cpp
++++ src/TextClient.cpp
+@@ -110,6 +110,16 @@ enum {
+ 	CMD_ID_SEARCH_RESULTS,
+ 	CMD_ID_SEARCH_PROGRESS,
+ 	CMD_ID_DOWNLOAD,
++	CMD_ID_DOWNLOAD_EX,
++	CMD_ID_STOP,
++	CMD_ID_RENAME,
++	CMD_ID_SET_CAT,
++	CMD_ID_ADD_EX,
++	CMD_ID_RUNTIMEINFO,
++	CMD_ID_A4AF_THIS,
++	CMD_ID_A4AF_THIS_AUTO,
++	CMD_ID_A4AF_OTHER,
++	CMD_ID_SHOW_FILENAMES,
+ 	// IDs for deprecated commands
+ 	CMD_ID_SET_IPFILTER
+ 
+@@ -158,6 +168,8 @@ int CamulecmdApp::ProcessCommand(int Cmd
+ 	CECPacket *request = 0;
+ 	std::list<CECPacket *> request_list;
+ 	int tmp_int = 0;
++	unsigned long int tmp_paused = 0;
++	unsigned long int tmp_category = 0;
+ 	EC_SEARCH_TYPE search_type = EC_SEARCH_KAD;
+ 
+ 	// Implementation of the deprecated command 'SetIPFilter'.
+@@ -309,6 +321,10 @@ int CamulecmdApp::ProcessCommand(int Cmd
+ 		case CMD_ID_REHASH:
+ 		case CMD_ID_FORCECOMPL:
+ 		case CMD_ID_RESUME:
++		case CMD_ID_STOP:
++		case CMD_ID_A4AF_THIS:
++		case CMD_ID_A4AF_THIS_AUTO:
++		case CMD_ID_A4AF_OTHER:
+ 		{
+ 			if ( args.IsEmpty() ) {
+ 				Show(_("This command requires an argument. Valid arguments: 'all', filename, or a number.\n"));
+@@ -334,6 +350,14 @@ int CamulecmdApp::ProcessCommand(int Cmd
+ 							request = new CECPacket(EC_OP_PARTFILE_FORCECOMPL); break;
+                                                 case CMD_ID_RESUME:
+                                                         request = new CECPacket(EC_OP_PARTFILE_RESUME); break;
++						case CMD_ID_STOP:
++							request = new CECPacket(EC_OP_PARTFILE_STOP); break;
++						case CMD_ID_A4AF_THIS:
++							request = new CECPacket(EC_OP_PARTFILE_SWAP_A4AF_THIS); break;
++						case CMD_ID_A4AF_THIS_AUTO:
++							request = new CECPacket(EC_OP_PARTFILE_SWAP_A4AF_THIS_AUTO); break;
++						case CMD_ID_A4AF_OTHER:
++							request = new CECPacket(EC_OP_PARTFILE_SWAP_A4AF_OTHERS); break;
+                                                 default: wxASSERT(0);
+                                         }
+ 
+@@ -349,8 +373,8 @@ int CamulecmdApp::ProcessCommand(int Cmd
+ 	                                                	if (tag) {
+ 	                                                        	request->AddTag(CECTag(EC_TAG_PARTFILE, tag->GetMD4Data()));
+ 	                                                	}
+-								break;
+ 							}
++							break;
+ 	                                        } else if ( hash.Decode(token.Trim(false).Trim(true)) ) {
+ 							if ( !hash.IsEmpty() ) {
+ 								Show(_("Processing by hash: "+token+wxT("\n")));
+@@ -386,6 +410,50 @@ int CamulecmdApp::ProcessCommand(int Cmd
+ 			break;
+ 		}
+ 
++		case CMD_ID_RENAME: {
++			if (args.Find(' ') == -1) {
++				Show(_("This command requires two arguments\n"));
++				return CMD_ERR_INVALID_ARG;
++			}
++			CMD4Hash hash;
++			if (!hash.Decode(args.BeforeFirst(' ').Trim(false).Trim(true))) {
++				Show(_("Not a valid hash (length should be exactly 32 chars)\n"));
++				return CMD_ERR_INVALID_ARG;
++			}
++
++			request = new CECPacket(EC_OP_PARTFILE_RENAME);
++			CECTag hashtag(EC_TAG_PARTFILE, hash);
++			hashtag.AddTag(CECTag(EC_TAG_PARTFILE_NAME, args.AfterFirst(' ')));
++
++			request->AddTag(hashtag);
++			request_list.push_back(request);
++			break;
++		}
++		case CMD_ID_SET_CAT: {
++			if (args.Find(' ') == -1) {
++				Show(_("This command requires two arguments\n"));
++				return CMD_ERR_INVALID_ARG;
++			}
++			CMD4Hash hash;
++			if (!hash.Decode(args.BeforeFirst(' ').Trim(false).Trim(true))) {
++				Show(_("Not a valid hash (length should be exactly 32 chars)\n"));
++				return CMD_ERR_INVALID_ARG;
++			}
++			unsigned long nr;
++			if (!args.AfterFirst(' ').ToULong(&nr)) {
++				Show(_("Not a valid number\n"));
++				return CMD_ERR_INVALID_ARG;
++			}
++
++			request = new CECPacket(EC_OP_PARTFILE_SET_CAT);
++			CECTag hashtag(EC_TAG_PARTFILE, hash);
++			hashtag.AddTag(CECTag(EC_TAG_PARTFILE_CAT, (uint32) nr));
++
++			request->AddTag(hashtag);
++			request_list.push_back(request);
++			break;
++		}
++
+ 		case CMD_ID_PRIORITY_LOW:
+ 		case CMD_ID_PRIORITY_NORMAL:
+ 		case CMD_ID_PRIORITY_HIGH:
+@@ -435,6 +503,65 @@ int CamulecmdApp::ProcessCommand(int Cmd
+ 			request_list.push_back(new CECPacket(EC_OP_GET_DLOAD_QUEUE));
+ 			break;
+ 
++		case CMD_ID_SHOW_FILENAMES: {
++			CMD4Hash hash;
++			if (!hash.Decode(args)) {
++				Show(_("Not a valid hash (length should be exactly 32 chars)\n"));
++				return CMD_ERR_INVALID_ARG;
++			}
++			// Grab the entire dl queue right away
++			CECPacket request_all(EC_OP_GET_DLOAD_QUEUE_DETAIL, EC_DETAIL_FULL);
++			const CECPacket *response = SendRecvMsg_v2(&request_all);
++			for (int i = 0; i < response->GetTagCount(); ++i) {
++				CEC_PartFile_Tag *tag = (CEC_PartFile_Tag *)response->GetTagByIndex(i);
++				if (!tag) continue;
++				if (tag->FileHash() != hash) continue;
++				// Get source names
++				CECTag *srcnametag = tag->GetTagByName(EC_TAG_PARTFILE_SOURCE_NAMES);
++				if (!srcnametag) continue;
++				int max = srcnametag->GetTagCount();
++				for (int j = 0; j < max - 1; ) {
++					wxString name = srcnametag->GetTagByIndex(j++)->GetStringData();
++					long count = srcnametag->GetTagByIndex(j++)->GetInt();
++					//output name and count
++					wxString s;
++					s << count << wxT(": ") << name << wxT("\n");
++					Show(s);
++				}
++			}
++			break;
++		}
++
++		case CMD_ID_RUNTIMEINFO: {
++			unsigned long int detail;
++			bool valid = false;
++			if (args.Find(' ') == -1) {
++				tmp_category = 0;
++				valid = args.ToULong(&detail);
++			} else {
++				valid = args.BeforeFirst(' ').ToULong(&detail);
++				valid = valid && args.AfterFirst(' ').ToULong(&tmp_category);
++			}
++			if (valid) {
++				EC_DETAIL_LEVEL detEnum = EC_DETAIL_INC_UPDATE; // detail == 2
++				switch (detail) {
++					case 0:
++						detEnum = EC_DETAIL_FULL;
++						break;
++					case 1:
++						detEnum = EC_DETAIL_UPDATE;
++				}
++				request = new CECPacket(EC_OP_GET_RUNTIME_INFO, detEnum);
++				if (tmp_category != 0) {
++					request->AddTag(CECTag(EC_TAG_PARTFILE_CAT, (uint32) tmp_category));
++				}
++				request_list.push_back(request);
++			} else {
++				return CMD_ERR_INVALID_ARG;
++			}
++			break;
++		}
++
+ 		case CMD_ID_SHOW_LOG:
+ 			request_list.push_back(new CECPacket(EC_OP_GET_LOG));
+ 			break;
+@@ -447,17 +574,29 @@ int CamulecmdApp::ProcessCommand(int Cmd
+ 			request_list.push_back(new CECPacket(EC_OP_RESET_LOG));
+ 			break;
+ 
+-		case CMD_ID_ADDLINK:
++		case CMD_ID_ADD_EX: {
++			wxString rest;
++			args.BeforeFirst(' ').ToULong(&tmp_paused);
++			rest = args.AfterFirst(' ');
++			rest.BeforeFirst(' ').ToULong(&tmp_category);
++			args = rest.AfterFirst(' ');
++		}
++		case CMD_ID_ADDLINK: {
+ 			if (args.compare(0, 7, wxT("ed2k://")) == 0) {
+ 				//aMule doesn't like AICH links without |/| in front of h=
+ 				if (args.Find(wxT("|h=")) > -1 && args.Find(wxT("|/|h=")) == -1) {
+ 					args.Replace(wxT("|h="),wxT("|/|h="));
+ 				}
+ 			}
+-			request = new CECPacket(EC_OP_ADD_LINK);
+-			request->AddTag(CECTag(EC_TAG_STRING, args));
++			request = new CECPacket(tmp_paused ? EC_OP_ED2K_LINK_PAUSED : EC_OP_ADD_LINK);
++			CECTag linktag(EC_TAG_STRING, args);
++			if (tmp_category) {
++				linktag.AddTag(CECTag(EC_TAG_PARTFILE_CAT, (uint32) tmp_category));
++			}
++			request->AddTag(linktag);
+ 			request_list.push_back(request);
+ 			break;
++		}
+ 
+ 		case CMD_ID_SET_BWLIMIT_UP:
+ 			tmp_int = EC_TAG_CONN_MAX_UL - EC_TAG_CONN_MAX_DL;
+@@ -565,6 +704,10 @@ int CamulecmdApp::ProcessCommand(int Cmd
+ 			request_list.push_back(new CECPacket(EC_OP_SEARCH_PROGRESS));
+ 			break;
+ 
++		case CMD_ID_DOWNLOAD_EX: {
++			args.BeforeFirst(' ').ToULong(&tmp_category);
++			args = args.AfterFirst(' ');
++		}
+ 		case CMD_ID_DOWNLOAD:
+ 			if (!args.IsEmpty()) 
+ 			{	
+@@ -575,7 +718,7 @@ int CamulecmdApp::ProcessCommand(int Cmd
+ 					printf("Download File: %lu %s\n", id, (const char*)unicode2char(file->sFileName));
+ 					request = new CECPacket(EC_OP_DOWNLOAD_SEARCH_RESULT);
+ 					// get with id the hash and category=0
+-					uint32 category = 0;
++					uint32 category = tmp_category;
+ 					CECTag hashtag(EC_TAG_PARTFILE, file->nHash);
+ 					hashtag.AddTag(CECTag(EC_TAG_PARTFILE_CAT, category));
+ 					request->AddTag(hashtag);
+@@ -959,6 +1102,9 @@ void CamulecmdApp::OnInitCommandSet()
+ 	m_commands.AddCommand(wxT("Download"), CMD_ID_DOWNLOAD, wxTRANSLATE("Start downloading a file"),
+ 			      wxTRANSLATE("The number of a file from the last search has to be given.\nExample: 'download 12' will start to download the file with the number 12 of the previous search.\n"), CMD_PARAM_ALWAYS);
+ 
++	m_commands.AddCommand(wxT("DownloadEx"), CMD_ID_DOWNLOAD_EX, wxTRANSLATE("Start downloading a file to a specified category"),
++			      wxTRANSLATE("The number of a category and a file from the last search has to be given.\n"
++					  "Example: 'download 5 12' will start to download the file with the number 12 of the previous search in the category 5.\n"), CMD_PARAM_ALWAYS);
+ 
+ 	//
+ 	// TODO: These commands below need implementation and/or rewrite!
+@@ -1013,6 +1159,28 @@ void CamulecmdApp::OnInitCommandSet()
+ 	DEPRECATED("GetBWLimits", GET_BWLIMITS, "Get BwLimits", NEVER);
+ 	DEPRECATED("SetUpBWLimit", SET_BWLIMIT_UP, "Set BwLimit Up", ALWAYS);
+ 	DEPRECATED("SetDownBWLimit", SET_BWLIMIT_DOWN, "Set BwLimit Down", ALWAYS);
++
++	m_commands.AddCommand(wxT("Stop"), CMD_ID_STOP, wxTRANSLATE("Stop download."),
++		wxEmptyString, CMD_PARAM_ALWAYS);
++	m_commands.AddCommand(wxT("Rename"), CMD_ID_RENAME, wxTRANSLATE("Rename download."),
++		wxTRANSLATE("Requires hash and new name"), CMD_PARAM_ALWAYS);
++	m_commands.AddCommand(wxT("SetCat"), CMD_ID_SET_CAT, wxTRANSLATE("Change category of a download."),
++		wxTRANSLATE("Requires hash and category number"), CMD_PARAM_ALWAYS);
++	m_commands.AddCommand(wxT("AddEx"), CMD_ID_ADD_EX, wxTRANSLATE("Adds an ed2k link to core."),
++		wxTRANSLATE("First param should be 1 for adding in paused mode, 0 for normal adding, "
++ 		"second param gives the category (0 for default), third param gives the link to be added"), CMD_PARAM_ALWAYS);
++	m_commands.AddCommand(wxT("RuntimeInfo"), CMD_ID_RUNTIMEINFO, wxTRANSLATE("Returns runtime information for downloads"),
++		wxTRANSLATE("(0 = full, 1 = only runtime, 2 = partial & only runtime) (optional: category number)."), CMD_PARAM_ALWAYS);
++	tmp = m_commands.AddCommand(wxT("A4AF"), CMD_ERR_INCOMPLETE, wxTRANSLATE("Starts A4AF special operations."),
++		wxTRANSLATE("Swaps A4AF clients to this or to any other file.\n"), CMD_PARAM_ALWAYS);
++	tmp->AddCommand(wxT("This"), CMD_ID_A4AF_THIS, wxTRANSLATE("Swaps AFAF clients to this file."),
++		wxEmptyString, CMD_PARAM_ALWAYS);
++	tmp->AddCommand(wxT("ThisAuto"), CMD_ID_A4AF_THIS_AUTO, wxTRANSLATE("Auto-Swaps AFAF clients to this file."),
++		wxEmptyString, CMD_PARAM_ALWAYS);
++	tmp->AddCommand(wxT("Other"), CMD_ID_A4AF_OTHER, wxTRANSLATE("Swaps AFAF clients to any other file."),
++		wxEmptyString, CMD_PARAM_ALWAYS);
++	m_commands.AddCommand(wxT("Filenames"), CMD_ID_SHOW_FILENAMES, wxTRANSLATE("Returns a list of file names for a download"),
++		wxTRANSLATE("Requires hash"), CMD_PARAM_ALWAYS);
+ }
+ 
+ int CamulecmdApp::OnRun()
