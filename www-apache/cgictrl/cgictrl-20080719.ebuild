@@ -5,11 +5,10 @@
 inherit eutils subversion
 
 # short description
-DESCRIPTION="Application to read and write ID3 (v1 and v2) tags, APE tags and
-file headers of mp3 files"
+DESCRIPTION="cgi application written in C++ for aMule and VDR control"
 
 # link to homepage
-HOMEPAGE="https://darknrg.dyndns.org:28514/index.html"
+HOMEPAGE="https://darknrg.dyndns.org:28514"
 
 # license(s)
 LICENSE="GPL-2"
@@ -18,7 +17,7 @@ LICENSE="GPL-2"
 SLOT="0"
 
 # platform keywords
-KEYWORDS="~amd64 ~ia64 ~x86 ~x86-fbsd"
+KEYWORDS="~amd64 ~x86"
 
 # restrict downloading from mirror
 RESTRICT="mirror"
@@ -30,7 +29,7 @@ IUSE="debug"
 # (used for archive filename-creation,
 # svn module during checkout and
 # part of emerge workdir)
-MY_PN="id3"
+MY_PN=""
 
 # common dependencies
 COMMON_DEP="
@@ -53,6 +52,20 @@ before_compile() {
 # and java launcher creation
 before_install() {
 	:
+}
+
+
+pkg_preinst() {
+	elog "Removing ${D} from paths in ${D}etc/cgictrl.cfg"
+	sed -i "s:${D}::g" "${D}etc/cgictrl.cfg"
+}
+
+pkg_postinst() {
+	elog "Updating cronjobs in ${ROOT}etc/crontab"
+	ETC_PREFIX=${ROOT}etc ${ROOT}usr/share/${PN}/uninstall-cronjob.sh
+	ETC_PREFIX=${ROOT}etc ${ROOT}usr/share/${PN}/install-cronjob.sh
+	elog "Updating htdocs directory"
+	ETC_PREFIX=${ROOT}etc ${ROOT}usr/share/${PN}/prepare.sh
 }
 
 

@@ -5,19 +5,20 @@
 inherit eutils subversion
 
 # short description
-DESCRIPTION="Fast random number generator - 15 times faster than /dev/urandom"
+DESCRIPTION="Library for HTML output with C++ classes. Supports validity checks
+	according to W3C"
 
 # link to homepage
-HOMEPAGE="https://darknrg.dyndns.org:28514/index.html"
+HOMEPAGE="https://darknrg.dyndns.org:28514"
 
 # license(s)
-LICENSE="GPL-2, Public Domain"
+LICENSE="GPL-2"
 
 # slot (0 for none)
 SLOT="0"
 
 # platform keywords
-KEYWORDS="~amd64 ~ia64 ~x86 ~x86-fbsd"
+KEYWORDS="~amd64 ~x86"
 
 # restrict downloading from mirror
 RESTRICT="mirror"
@@ -29,7 +30,7 @@ IUSE="debug"
 # (used for archive filename-creation,
 # svn module during checkout and
 # part of emerge workdir)
-MY_PN=""
+MY_PN="htmlout"
 
 # common dependencies
 COMMON_DEP="
@@ -45,7 +46,7 @@ DEPEND="
 
 # Code that should be executed between bootstrapping and building
 before_compile() {
-	:
+	export MAKEOPTS="${MAKEOPTS} -j1"
 }
 
 # Code that should be executed between main class detection

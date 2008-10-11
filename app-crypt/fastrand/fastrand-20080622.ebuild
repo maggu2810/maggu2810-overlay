@@ -5,19 +5,19 @@
 inherit eutils subversion
 
 # short description
-DESCRIPTION="Extended version of cp with progress bar and color support"
+DESCRIPTION="Fast random number generator - 15 times faster than /dev/urandom"
 
 # link to homepage
-HOMEPAGE="https://darknrg.dyndns.org:28514/index.html"
+HOMEPAGE="https://darknrg.dyndns.org:28514"
 
 # license(s)
-LICENSE="GPL-2"
+LICENSE="GPL-2, Public Domain"
 
 # slot (0 for none)
 SLOT="0"
 
 # platform keywords
-KEYWORDS="~amd64 ~ia64 ~x86 ~x86-fbsd"
+KEYWORDS="~amd64 ~x86"
 
 # restrict downloading from mirror
 RESTRICT="mirror"

@@ -5,11 +5,10 @@
 inherit eutils subversion
 
 # short description
-DESCRIPTION="Extended version of rm which supports delayed deletion (like a
-recycle-bin)."
+DESCRIPTION="Extended version of cp with progress bar and color support"
 
 # link to homepage
-HOMEPAGE="https://darknrg.dyndns.org:28514/index.html"
+HOMEPAGE="https://darknrg.dyndns.org:28514"
 
 # license(s)
 LICENSE="GPL-2"
@@ -18,7 +17,7 @@ LICENSE="GPL-2"
 SLOT="0"
 
 # platform keywords
-KEYWORDS="~amd64 ~ia64 ~x86 ~x86-fbsd"
+KEYWORDS="~amd64 ~x86"
 
 # restrict downloading from mirror
 RESTRICT="mirror"
@@ -52,7 +51,7 @@ before_compile() {
 # Code that should be executed between main class detection
 # and java launcher creation
 before_install() {
-	./install-cronjob.sh
+	:
 }
 
 

@@ -1,10 +1,10 @@
 inherit eutils java-pkg-2 java-ant-2 subversion
 
 # short description
-DESCRIPTION="Audio, Video, Image and Hex-File Viewer, written in Java"
+DESCRIPTION="Support classes and native functions for java applications"
 
 # link to homepage
-HOMEPAGE="https://darknrg.dyndns.org:28514/index.html"
+HOMEPAGE="https://darknrg.dyndns.org:28514"
 
 # license(s)
 LICENSE="GPL-2"
@@ -13,20 +13,20 @@ LICENSE="GPL-2"
 SLOT="0"
 
 # platform keywords
-KEYWORDS="~amd64 ~ia64 ~x86 ~x86-fbsd"
+KEYWORDS="~amd64 ~x86"
 
 # restrict downloading from mirror
 RESTRICT="mirror"
 
 # use flags
 # (doc and source should not be removed)
-IUSE="doc source truecrypt"
+IUSE="debug doc source"
 
 # real name of package
 # (used for archive filename-creation,
 # cvs module during checkout and
 # part of emerge workdir)
-MY_PN="FileViewer"
+MY_PN="HFMNUtils"
 
 # subdirectory under ${S} with source files
 # (leave empty for auto-detection)
@@ -34,16 +34,14 @@ MY_SRC=""
 
 # class path to main class
 # (leave empty for auto-detection)
-MY_MAIN=""
+MY_MAIN="-"
 
 # additional arguments for JRE
 # (for example: -Xmx512M)
 MY_JAVA_ARGS=""
 
 # common dependencies
-COMMON_DEP="
-	=dev-java/jmf-bin-2*
-	=dev-java/hfmnutils-${PV}"
+COMMON_DEP=""
 
 # dependencies needed for runtime
 RDEPEND="
@@ -62,18 +60,43 @@ DEPEND="
 # for example:
 # MY_JAVA_PKGS[0]="jdom-1.0 jdom.jar" with COMMON_DEP="=dev-java/jdom-1.0*")
 declare -a MY_JAVA_PKGS
-MY_JAVA_PKGS[0]="jmf-bin jmf.jar"
-MY_JAVA_PKGS[1]="hfmnutils HFMNUtils.jar"
 
 # Code that should be executed between linking and building
 before_compile() {
-	echo -n
+	if [ -f check.sh ]; then
+		chmod 755 check.sh || die "chmod failed"
+		./check.sh || die "calling check.sh failed"
+	fi
+	
+	cd resources || die "cd for native lib failed"
+	ln -s ${JDK_HOME}/include/jni.h jni.h
+	ln -s ${JDK_HOME}/include/linux/jni_md.h jni_md.h
+	[ -e bootstrap ] && {
+		sed -i "s:-Wstrict-overflow=5::" Makefile.am
+		./bootstrap || die "bootstrapping for native lib failed"
+		econf `use_enable debug` || die "configure for native lib failed"
+		emake || die "make for native lib failed"
+	} || {
+		make || die "old-style make for native lib failed"
+	}
+	cd .. || die "cd for native lib failed"
 }
 
 # Code that should be executed between main class detection
 # and java launcher creation
 before_install() {
-	echo -n
+	cd resources || die "cd for native lib failed"
+	[ -e bootstrap ] && {
+		emake DESTDIR=${D} install || die "make install for native lib failed"
+	} || {
+		if grep -q "INST_DIR=" Makefile; then
+			sed -i "s:INST_DIR=:INST_DIR=${D}:" Makefile
+		else
+			sed -i "s:/usr/local/lib:${D}:" Makefile
+		fi
+		make install || die "old-style make install for native lib failed"
+	}
+	cd .. || die "cd for native lib failed"
 }
 
 

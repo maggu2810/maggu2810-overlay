@@ -5,11 +5,11 @@
 inherit eutils subversion
 
 # short description
-DESCRIPTION="Application to read and write ID3 (v1 and v2) tags, APE tags and
-file headers of mp3 files"
+DESCRIPTION="ASFCLogger creates readable HTML file structures of aMule ASFC
+	files (created by aMule with darknrg patchsets enabled)"
 
 # link to homepage
-HOMEPAGE="https://darknrg.dyndns.org:28514/index.html"
+HOMEPAGE="https://darknrg.dyndns.org:28514"
 
 # license(s)
 LICENSE="GPL-2"
@@ -18,7 +18,7 @@ LICENSE="GPL-2"
 SLOT="0"
 
 # platform keywords
-KEYWORDS="~amd64 ~ia64 ~x86 ~x86-fbsd"
+KEYWORDS="~amd64 ~x86"
 
 # restrict downloading from mirror
 RESTRICT="mirror"
@@ -30,11 +30,11 @@ IUSE="debug"
 # (used for archive filename-creation,
 # svn module during checkout and
 # part of emerge workdir)
-MY_PN="id3"
+MY_PN="ASFCLogger"
 
 # common dependencies
 COMMON_DEP="
-	"
+	net-libs/htmlout"
 
 # dependencies needed for runtime
 RDEPEND="

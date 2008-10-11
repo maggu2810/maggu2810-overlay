@@ -8,7 +8,7 @@ inherit eutils java-pkg-2 java-ant-2 subversion
 DESCRIPTION=""
 
 # link to homepage
-HOMEPAGE="https://darknrg.dyndns.org:28514/index.html"
+HOMEPAGE="https://darknrg.dyndns.org:28514"
 
 # license(s)
 LICENSE="GPL-2"
@@ -17,7 +17,7 @@ LICENSE="GPL-2"
 SLOT="0"
 
 # platform keywords
-KEYWORDS="~amd64 ~ia64 ~x86 ~x86-fbsd"
+KEYWORDS="~amd64 ~x86"
 
 # restrict downloading from mirror
 RESTRICT="mirror"

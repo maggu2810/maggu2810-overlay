@@ -4,7 +4,7 @@ inherit eutils java-pkg-2 java-ant-2 subversion
 DESCRIPTION="File and directory manager, written in java"
 
 # link to homepage
-HOMEPAGE="https://darknrg.dyndns.org:28514/index.html"
+HOMEPAGE="https://darknrg.dyndns.org:28514"
 
 # license(s)
 LICENSE="GPL-2"
@@ -13,7 +13,7 @@ LICENSE="GPL-2"
 SLOT="0"
 
 # platform keywords
-KEYWORDS="~amd64 ~ia64 ~x86 ~x86-fbsd"
+KEYWORDS="~amd64 ~x86"
 
 # restrict downloading from mirror
 RESTRICT="mirror"
@@ -43,8 +43,8 @@ MY_JAVA_ARGS="-Xmx1G -Djava.library.path=/usr/lib"
 # common dependencies
 COMMON_DEP="
 	=dev-java/jmf-bin-2*
-	=dev-java/hfmnutils-${PV}
-	=app-misc/fileviewer-${PV}"
+	dev-java/hfmnutils
+	app-misc/fileviewer"
 
 # dependencies needed for runtime
 RDEPEND="

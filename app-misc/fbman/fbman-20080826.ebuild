@@ -1,10 +1,10 @@
 inherit eutils java-pkg-2 java-ant-2 subversion
 
 # short description
-DESCRIPTION="File and directory manager, written in java"
+DESCRIPTION="Fluxbox key, menu and icon creator"
 
 # link to homepage
-HOMEPAGE="https://darknrg.dyndns.org:28514/index.html"
+HOMEPAGE="https://darknrg.dyndns.org:28514"
 
 # license(s)
 LICENSE="GPL-2"
@@ -13,20 +13,20 @@ LICENSE="GPL-2"
 SLOT="0"
 
 # platform keywords
-KEYWORDS="~amd64 ~ia64 ~x86 ~x86-fbsd"
+KEYWORDS="~amd64 ~x86"
 
 # restrict downloading from mirror
 RESTRICT="mirror"
 
 # use flags
 # (doc and source should not be removed)
-IUSE="doc source truecrypt"
+IUSE="doc source firefox mmaker"
 
 # real name of package
 # (used for archive filename-creation,
 # cvs module during checkout and
 # part of emerge workdir)
-MY_PN="FileMan"
+MY_PN="FBMan"
 
 # subdirectory under ${S} with source files
 # (leave empty for auto-detection)
@@ -38,20 +38,21 @@ MY_MAIN=""
 
 # additional arguments for JRE
 # (for example: -Xmx512M)
-MY_JAVA_ARGS="-Xmx1G -Djava.library.path=/usr/lib"
+MY_JAVA_ARGS=""
 
 # common dependencies
 COMMON_DEP="
-	=dev-java/jmf-bin-2*
-	=dev-java/hfmnutils-${PV}
-	=app-misc/fileviewer-${PV}"
+	=dev-java/hfmnutils-${PV}"
 
 # dependencies needed for runtime
 RDEPEND="
 	>=virtual/jre-1.6
-	sys-apps/file
-	sys-apps/coreutils
-	truecrypt? ( app-crypt/truecrypt )
+	app-portage/gentoolkit
+	sys-process/psmisc
+	x11-terms/xterm
+	firefox? ( www-client/mozilla-firefox )
+	mmaker? ( x11-misc/menumaker )
+	|| ( sys-apps/slocate sys-apps/rlocate )
 	${COMMON_DEP}"
 
 # dependencies needed for build time
@@ -66,13 +67,11 @@ DEPEND="
 # for example:
 # MY_JAVA_PKGS[0]="jdom-1.0 jdom.jar" with COMMON_DEP="=dev-java/jdom-1.0*")
 declare -a MY_JAVA_PKGS
-MY_JAVA_PKGS[0]="jmf-bin jmf.jar"
-MY_JAVA_PKGS[1]="hfmnutils HFMNUtils.jar"
-MY_JAVA_PKGS[2]="fileviewer FileViewer.jar"
+MY_JAVA_PKGS[0]="hfmnutils HFMNUtils.jar"
 
 # Code that should be executed between linking and building
 before_compile() {
-	./update-module-list.sh || die
+	echo -n
 }
 
 # Code that should be executed between main class detection

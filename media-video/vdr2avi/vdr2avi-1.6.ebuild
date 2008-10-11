@@ -5,7 +5,7 @@
 inherit eutils
 
 DESCRIPTION=""
-HOMEPAGE="https://darknrg.dyndns.org:28514/index.html"
+HOMEPAGE="https://darknrg.dyndns.org:28514"
 SRC_URI=""
 
 LICENSE="GPL-2"

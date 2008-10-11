@@ -1,5 +1,5 @@
---- atprepare.sh	2007-11-04 23:45:17.000000000 +0100
-+++ /usr/local/bin/atprepare	2008-02-09 16:55:56.000000000 +0100
+--- dev-util/atprepare/files/atprepare.sh	2008-05-01 15:46:26.000000000 +0200
++++ /usr/bin/atprepare	2008-10-11 14:55:11.000000000 +0200
 @@ -4,11 +4,12 @@
  
  HAS_C=0
@@ -75,7 +75,7 @@
  	rm -f configure.scan autoscan-*.log
  }
  
-@@ -103,49 +125,84 @@
+@@ -103,49 +125,86 @@
  config.status
  configure
  stamp-h1
@@ -135,7 +135,8 @@
  }
  
 +[ "$1" == "dist" ] && {
-+	[ "$2" ] && ver=$2 || ver="1.0"
++	[ "$2" ] && ver=$2 || ver=`svn log -q -l1 --xml | grep "<date>" | \
++		sed "s:^<date>\([0-9-]*\)T.*:\1:" | sed "s:-::g"`
 +	echo "Checking out in temp dir ..."
 +	tmp=`mktemp -d`
 +	olddir=`pwd`
@@ -155,6 +156,7 @@
 +	cd $olddir
 +	rm -fr $tmp
 +	echo "Done - archive is in $trg"
++	echo "mv $trg /var/www/localhost/htdocs/files/pkgs"
 +	exit
 +}
 +
@@ -176,7 +178,7 @@
  rm -f makefile Makefile configure.in
  [ -e "Makefile.am" ] && skip="skip" || skip=""
  if [ -d "src" ]; then
-@@ -161,6 +218,7 @@
+@@ -161,6 +220,7 @@
  fi
  
  echo "Running AutoTools..."
