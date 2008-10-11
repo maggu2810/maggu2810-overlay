@@ -17,9 +17,7 @@ SRC_URI="mirror://sourceforge/${PN}/${MY_P}.tar.bz2
 
 LICENSE="GPL-2"
 SLOT="0"
-$IS_CVS && \
-	KEYWORDS="~alpha ~amd64 ~hppa ~ppc ~ppc64 ~sparc ~x86" || \
-	KEYWORDS="alpha amd64 hppa ppc ppc64 ~sparc x86"
+$IS_CVS && KEYWORDS="" || KEYWORDS="alpha amd64 hppa ppc ppc64 ~sparc x86"
 IUSE="daemon debug geoip gtk nls remote stats unicode upnp patching monolithic"
 
 DEPEND="=x11-libs/wxGTK-2.8*
