@@ -133,6 +133,7 @@ src_compile() {
 }
 
 src_install() {
+		$IS_CVS && cd amule-cvs
 		emake DESTDIR="${D}" install || die
 
 		if use daemon; then
