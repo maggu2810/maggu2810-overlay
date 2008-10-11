@@ -5,7 +5,7 @@
 inherit eutils
 
 # short description
-DESCRIPTION=""
+DESCRIPTION="Creates and exchanges DSA SSH keys between two machines"
 
 # link to homepage
 HOMEPAGE="https://darknrg.dyndns.org:28514"
