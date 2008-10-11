@@ -1,8 +1,0 @@
-DIST find_applet-0.2.1.tar.bz2 731257 RMD160 f32ba9f241ad560d27672c5e74f47ef29f7fcd52 SHA1 fee923ef36c6f0f0ce5913cc8678da4e9b722a8a SHA256 1e4bd44de0ff9b3b071b5e35b68b94e0578cd10c7e68c0ad70d98ba55bac3e9f
-EBUILD find_applet-0.2.1.ebuild 524 RMD160 0a3108c8a78ba180afb8a96280f8d1c50fd33ad8 SHA1 777d4c5b15e89faf648c6d12228b89ee48f7703a SHA256 b835d876b41c02d5cb1b9d472987999eb129c287f8a4b59f4aa686d22e36e36d
-MD5 f68adf08731197671d95164bebcc33cb find_applet-0.2.1.ebuild 524
-RMD160 0a3108c8a78ba180afb8a96280f8d1c50fd33ad8 find_applet-0.2.1.ebuild 524
-SHA256 b835d876b41c02d5cb1b9d472987999eb129c287f8a4b59f4aa686d22e36e36d find_applet-0.2.1.ebuild 524
-MD5 8932b430526fb735bbb9be0db46a5b39 files/digest-find_applet-0.2.1 256
-RMD160 ae2dc4fa21dcfe442eaf96233359ed6bbea55e84 files/digest-find_applet-0.2.1 256
-SHA256 a787fe86ddeac17a6b81c0385fa2b55cf7acccb50c446a5b9b304a7a4e19e6ae files/digest-find_applet-0.2.1 256

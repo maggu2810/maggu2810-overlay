@@ -13,7 +13,7 @@ ESVN_REPO_URI="https://kdenlive.svn.sourceforge.net/svnroot/kdenlive/trunk/kdenl
 
 SLOT="0"
 LICENSE="GPL-2"
-KEYWORDS="~x86 ~ppc ~amd64"
+KEYWORDS=""
 IUSE="theora quicktime"
 
 RDEPEND=">=media-libs/libsdl-1.2.8-r1

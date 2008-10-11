@@ -1,21 +1,13 @@
---- cat ebuild.diff | sed s/EBUILD/mplayer-1.0.20070814.ebuild/ | patch -p0
-+++ EBUILD
-@@ -5,7 +5,7 @@
- inherit eutils flag-o-matic multilib
+--- /usr/portage/media-video/mplayer/mplayer-1.0_rc2_p27725-r1.ebuild	2008-10-07 16:43:15.000000000 +0200
++++ mplayer-1.0_rc2_p27725-r1.ebuild	2008-10-09 15:42:07.000000000 +0200
+@@ -227,7 +227,10 @@
  
- RESTRICT="strip"
--IUSE="3dnow 3dnowext a52 aac aalib alsa altivec amrnb amrwb arts bidi bl bindist
-+IUSE="darknrg 3dnow 3dnowext a52 aac aalib alsa altivec amrnb amrwb arts bidi bl bindist
- cddb cpudetection custom-cflags dga doc dts dvb cdparanoia directfb dvd
- dvdnav dv enca encode esd fbcon ftp gif ggi gtk iconv ipv6 ivtv jack joystick
- jpeg libcaca lirc live livecd lzo mad md5sum mmx mmxext mp2 mp3 musepack nas
-@@ -189,7 +189,9 @@
- 
- 	# Fix XShape detection
- 	epatch ${FILESDIR}/${PN}-xshape.patch
-	epatch ${FILESDIR}/${PN}-dpms.patch
+ 	# Fix polish spelling errors
+ 	[[ -n ${LINGUAS} ]] && sed -e 's:Zarządano:Zażądano:' -i help/help_mp-pl.h
 +
 +	use darknrg && epatch ${FILESDIR}/darknrg.patch
  }
++IUSE="${IUSE} darknrg"
  
  src_compile() {
+ 
