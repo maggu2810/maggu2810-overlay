@@ -42,7 +42,7 @@ MY_JAVA_ARGS=""
 
 # common dependencies
 COMMON_DEP="
-	=dev-java/hfmnutils-${PV}"
+	dev-java/hfmnutils"
 
 # dependencies needed for runtime
 RDEPEND="
