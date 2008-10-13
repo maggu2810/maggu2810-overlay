@@ -29,6 +29,7 @@ for pkg in `find -mindepth 2 -maxdepth 2 -type d -not -name ".svn" -printf "%P\n
 			fi
 		fi
 		for ebuild in $pkg/*.ebuild; do
+			diff -u proto-$1.ebuild $ebuild | colordiff
 			if [ $first != $ebuild ]; then
 				if ! diff -q $first $ebuild >/dev/null; then
 					diff -u $first $ebuild | colordiff

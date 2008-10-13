@@ -31,6 +31,7 @@ COMMONDEP="
 	sys-apps/coreutils
 	sys-apps/grep
 	sys-apps/sed
+
 	media-sound/id3
 	media-sound/lame
 	media-sound/mp3gain

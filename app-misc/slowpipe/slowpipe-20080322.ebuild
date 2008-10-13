@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-inherit eutils subversion
+inherit eutils
 
 # short description
 DESCRIPTION="Pipes all data from stdin to stdout with at most a given rate of bytes per second."
@@ -32,8 +32,7 @@ IUSE="debug"
 MY_PN=""
 
 # common dependencies
-COMMON_DEP="
-	"
+COMMON_DEP=""
 
 # dependencies needed for runtime
 RDEPEND="
@@ -64,18 +63,25 @@ S=${WORKDIR}/${MY_PN}
 
 [ ${#MY_PN} -eq 0 ] && MY_PN=${PN}
 
-[ "${PV}" != "9999" ] && \
+[ "${PV}" == "99999999" ] && {
+	inherit subversion
+	KEYWORDS=""
+	ESVN_REPO_URI="svn+ssh://darknrg.dyndns.org/var/svn/repos/trunk/root/${MY_PN}"
+} || {
+	KEYWORDS="~amd64 ~x86"
 	SRC_URI="https://darknrg.dyndns.org:28514/files/pkgs/${MY_PN}-${PV}.tar.bz2"
-
-ESVN_REPO_URI="svn+ssh://darknrg.dyndns.org/var/svn/repos/trunk/root/${MY_PN}"
+}
 
 src_unpack() {
-	[ "${PV}" == "9999" ] && subversion_src_unpack || unpack ${A}
+	[ "${PV}" == "99999999" ] && subversion_src_unpack || unpack ${A}
 }
 
 src_compile() {
 	[ -d ${MY_PN} ] && cd ${MY_PN}
-	[ -e bootstrap ] && ./bootstrap
+	if [ -e bootstrap ]; then
+		chmod +x bootstrap
+		./bootstrap || die
+	fi
 	econf `use_enable debug` || die
 	before_compile || die
 	emake || die

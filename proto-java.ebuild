@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-inherit eutils java-pkg-2 java-ant-2 subversion
+inherit eutils java-pkg-2 java-ant-2
 
 # short description
 DESCRIPTION=""
@@ -23,8 +23,7 @@ KEYWORDS="~amd64 ~x86"
 RESTRICT="mirror"
 
 # use flags
-# (doc and source should not be removed)
-IUSE="doc source"
+IUSE="debug doc source"
 
 # real name of package
 # (used for archive filename-creation,
@@ -33,7 +32,7 @@ IUSE="doc source"
 MY_PN=""
 
 # subdirectory under ${S} with source files
-# (leave empty for auto-detection)
+# (leave empty for auto-detection, use - for none)
 MY_SRC=""
 
 # class path to main class
@@ -45,8 +44,7 @@ MY_MAIN=""
 MY_JAVA_ARGS=""
 
 # common dependencies
-COMMON_DEP="
-	"
+COMMON_DEP=""
 
 # dependencies needed for runtime
 RDEPEND="
@@ -87,13 +85,17 @@ S=${WORKDIR}/${MY_PN}
 
 [ ${#MY_PN} -eq 0 ] && MY_PN=${PN}
 
-[ "${PV}" != "9999" ] && \
+[ "${PV}" == "99999999" ] && {
+	inherit subversion
+	KEYWORDS=""
+	ESVN_REPO_URI="svn+ssh://darknrg.dyndns.org/var/svn/repos/trunk/root/${MY_PN}"
+} || {
+	KEYWORDS="~amd64 ~x86"
 	SRC_URI="https://darknrg.dyndns.org:28514/files/pkgs/${MY_PN}-${PV}.tar.bz2"
-
-ESVN_REPO_URI="svn+ssh://darknrg.dyndns.org/var/svn/repos/trunk/root/${MY_PN}"
+}
 
 src_unpack() {
-	[ "${PV}" == "9999" ] && subversion_src_unpack || unpack ${A}
+	[ "${PV}" == "99999999" ] && subversion_src_unpack || unpack ${A}
 }
 
 src_compile() {
@@ -102,14 +104,16 @@ src_compile() {
 		for ((i = 0; ${i} < ${#MY_JAVA_PKGS[@]}; i++ )); do
 			JP=${MY_JAVA_PKGS[${i}]}
 			echo "Linking package ${JP} ..."
-			java-pkg_jar-from ${JP} lib/${JP##* }
+			java-pkg_jar-from ${JP} lib/${JP##* } || die
 		done
 	fi
 
 	before_compile || die
 
-	eant build makejar
-	use doc && eant makedoc
+	eant build makejar || die
+	if use doc; then
+		eant makedoc || die
+	fi
 }
 
 src_install() {
@@ -149,7 +153,7 @@ src_install() {
 	
 	[ ${#MY_JAVA_ARGS} -gt 0 ] && JAVA_ARGS="--java_args" || JAVA_ARGS=""
 	[ "${MY_MAIN}" != "-" ] && java-pkg_dolauncher ${PN} --main ${MY_MAIN} ${JAVA_ARGS} ${MY_JAVA_ARGS}
-	java-pkg_dojar ${S}/dist/${MY_PN}.jar
+	java-pkg_dojar ${S}/dist/${MY_PN}.jar || die
 
 	if use doc; then
 		einfo "Creating documents from ${S}/dist/docs"
