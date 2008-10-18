@@ -284,6 +284,8 @@
  private:
  	/* downloading sources list */
  	CClientPtrList m_downloadingSourcesList;
+--- src.org/TextClient.cpp
++++ src/TextClient.cpp
 @@ -110,6 +110,17 @@ enum {
  	CMD_ID_SEARCH_RESULTS,
  	CMD_ID_SEARCH_PROGRESS,
