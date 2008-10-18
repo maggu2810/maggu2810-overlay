@@ -286,7 +286,7 @@
  	CClientPtrList m_downloadingSourcesList;
 --- src.org/TextClient.cpp
 +++ src/TextClient.cpp
-@@ -110,6 +110,16 @@ enum {
+@@ -110,6 +110,17 @@ enum {
  	CMD_ID_SEARCH_RESULTS,
  	CMD_ID_SEARCH_PROGRESS,
  	CMD_ID_DOWNLOAD,
@@ -300,10 +300,11 @@
 +	CMD_ID_A4AF_THIS_AUTO,
 +	CMD_ID_A4AF_OTHER,
 +	CMD_ID_SHOW_FILENAMES,
++	CMD_ID_SHOW_COMMENTS,
  	// IDs for deprecated commands
  	CMD_ID_SET_IPFILTER
  
-@@ -158,6 +168,8 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -158,6 +169,8 @@ int CamulecmdApp::ProcessCommand(int Cmd
  	CECPacket *request = 0;
  	std::list<CECPacket *> request_list;
  	int tmp_int = 0;
@@ -312,7 +313,7 @@
  	EC_SEARCH_TYPE search_type = EC_SEARCH_KAD;
  
  	// Implementation of the deprecated command 'SetIPFilter'.
-@@ -309,6 +321,10 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -309,6 +322,10 @@ int CamulecmdApp::ProcessCommand(int Cmd
  		case CMD_ID_REHASH:
  		case CMD_ID_FORCECOMPL:
  		case CMD_ID_RESUME:
@@ -323,7 +324,7 @@
  		{
  			if ( args.IsEmpty() ) {
  				Show(_("This command requires an argument. Valid arguments: 'all', filename, or a number.\n"));
-@@ -334,6 +350,14 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -334,6 +351,14 @@ int CamulecmdApp::ProcessCommand(int Cmd
  							request = new CECPacket(EC_OP_PARTFILE_FORCECOMPL); break;
                                                  case CMD_ID_RESUME:
                                                          request = new CECPacket(EC_OP_PARTFILE_RESUME); break;
@@ -338,7 +339,7 @@
                                                  default: wxASSERT(0);
                                          }
  
-@@ -349,8 +373,8 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -349,8 +374,8 @@ int CamulecmdApp::ProcessCommand(int Cmd
  	                                                	if (tag) {
  	                                                        	request->AddTag(CECTag(EC_TAG_PARTFILE, tag->GetMD4Data()));
  	                                                	}
@@ -348,7 +349,7 @@
  	                                        } else if ( hash.Decode(token.Trim(false).Trim(true)) ) {
  							if ( !hash.IsEmpty() ) {
  								Show(_("Processing by hash: "+token+wxT("\n")));
-@@ -386,6 +410,50 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -386,6 +411,50 @@ int CamulecmdApp::ProcessCommand(int Cmd
  			break;
  		}
  
@@ -399,34 +400,63 @@
  		case CMD_ID_PRIORITY_LOW:
  		case CMD_ID_PRIORITY_NORMAL:
  		case CMD_ID_PRIORITY_HIGH:
-@@ -435,6 +503,65 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -435,6 +504,94 @@ int CamulecmdApp::ProcessCommand(int Cmd
  			request_list.push_back(new CECPacket(EC_OP_GET_DLOAD_QUEUE));
  			break;
  
++		case CMD_ID_SHOW_COMMENTS:
 +		case CMD_ID_SHOW_FILENAMES: {
 +			CMD4Hash hash;
-+			if (!hash.Decode(args)) {
++			bool checkHash = args != wxT("all");
++			if (checkHash && !hash.Decode(args)) {
 +				Show(_("Not a valid hash (length should be exactly 32 chars)\n"));
 +				return CMD_ERR_INVALID_ARG;
 +			}
 +			// Grab the entire dl queue right away
 +			CECPacket request_all(EC_OP_GET_DLOAD_QUEUE_DETAIL, EC_DETAIL_FULL);
 +			const CECPacket *response = SendRecvMsg_v2(&request_all);
-+			for (int i = 0; i < response->GetTagCount(); ++i) {
++			for (uint i = 0; i < response->GetTagCount(); ++i) {
 +				CEC_PartFile_Tag *tag = (CEC_PartFile_Tag *)response->GetTagByIndex(i);
 +				if (!tag) continue;
-+				if (tag->FileHash() != hash) continue;
-+				// Get source names
-+				CECTag *srcnametag = tag->GetTagByName(EC_TAG_PARTFILE_SOURCE_NAMES);
-+				if (!srcnametag) continue;
-+				int max = srcnametag->GetTagCount();
-+				for (int j = 0; j < max - 1; ) {
-+					wxString name = srcnametag->GetTagByIndex(j++)->GetStringData();
-+					long count = srcnametag->GetTagByIndex(j++)->GetInt();
-+					//output name and count
-+					wxString s;
-+					s << count << wxT(": ") << name << wxT("\n");
-+					Show(s);
++				if (checkHash && tag->FileHash() != hash) continue;
++				if (CmdId == CMD_ID_SHOW_FILENAMES) {
++					// Get source names
++					CECTag *srcnametag = tag->GetTagByName(EC_TAG_PARTFILE_SOURCE_NAMES);
++					if (!srcnametag) continue;
++					int max = srcnametag->GetTagCount();
++					for (int j = 0; j < max - 1; ) {
++						wxString name = srcnametag->GetTagByIndex(j++)->GetStringData();
++						long count = srcnametag->GetTagByIndex(j++)->GetInt();
++						//output name and count
++						wxString s;
++						s << count << wxT(": ") << name << wxT("\n");
++						Show(s);
++					}
++				} else {
++					// Get comments
++					CECTag *srccmttag = tag->GetTagByName(EC_TAG_PARTFILE_COMMENTS);
++					if (!srccmttag) continue;
++					int max = srccmttag->GetTagCount();
++					for (int j = 0; j < max - 3; ) {
++						wxString username = srccmttag->GetTagByIndex(j++)->GetStringData();
++						wxString filename = srccmttag->GetTagByIndex(j++)->GetStringData();
++						int rating = srccmttag->GetTagByIndex(j++)->GetInt();
++						wxString comment = srccmttag->GetTagByIndex(j++)->GetStringData();
++						//output fields
++						wxChar c;
++						switch (rating) {
++							case 1: c = 'I'; break;
++							case 2: c = 'P'; break;
++							case 3: c = 'F'; break;
++							case 4: c = 'G'; break;
++							case 5: c = 'E'; break;
++							default: c= '-';
++						}
++						wxString s;
++						s << c << wxT("\t") << username << wxT("\t") << filename
++							<< wxT("\t") << comment << wxT("\n");
++						Show(s);
++					}
 +				}
 +			}
 +			break;
@@ -465,7 +495,7 @@
  		case CMD_ID_SHOW_LOG:
  			request_list.push_back(new CECPacket(EC_OP_GET_LOG));
  			break;
-@@ -447,17 +574,29 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -447,17 +604,29 @@ int CamulecmdApp::ProcessCommand(int Cmd
  			request_list.push_back(new CECPacket(EC_OP_RESET_LOG));
  			break;
  
@@ -498,7 +528,7 @@
  
  		case CMD_ID_SET_BWLIMIT_UP:
  			tmp_int = EC_TAG_CONN_MAX_UL - EC_TAG_CONN_MAX_DL;
-@@ -565,6 +704,10 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -565,6 +734,10 @@ int CamulecmdApp::ProcessCommand(int Cmd
  			request_list.push_back(new CECPacket(EC_OP_SEARCH_PROGRESS));
  			break;
  
@@ -509,7 +539,7 @@
  		case CMD_ID_DOWNLOAD:
  			if (!args.IsEmpty()) 
  			{	
-@@ -575,7 +718,7 @@ int CamulecmdApp::ProcessCommand(int Cmd
+@@ -575,7 +748,7 @@ int CamulecmdApp::ProcessCommand(int Cmd
  					printf("Download File: %lu %s\n", id, (const char*)unicode2char(file->sFileName));
  					request = new CECPacket(EC_OP_DOWNLOAD_SEARCH_RESULT);
  					// get with id the hash and category=0
@@ -518,7 +548,7 @@
  					CECTag hashtag(EC_TAG_PARTFILE, file->nHash);
  					hashtag.AddTag(CECTag(EC_TAG_PARTFILE_CAT, category));
  					request->AddTag(hashtag);
-@@ -959,6 +1102,9 @@ void CamulecmdApp::OnInitCommandSet()
+@@ -959,6 +1132,9 @@ void CamulecmdApp::OnInitCommandSet()
  	m_commands.AddCommand(wxT("Download"), CMD_ID_DOWNLOAD, wxTRANSLATE("Start downloading a file"),
  			      wxTRANSLATE("The number of a file from the last search has to be given.\nExample: 'download 12' will start to download the file with the number 12 of the previous search.\n"), CMD_PARAM_ALWAYS);
  
@@ -528,7 +558,7 @@
  
  	//
  	// TODO: These commands below need implementation and/or rewrite!
-@@ -1013,6 +1159,28 @@ void CamulecmdApp::OnInitCommandSet()
+@@ -1013,6 +1189,30 @@ void CamulecmdApp::OnInitCommandSet()
  	DEPRECATED("GetBWLimits", GET_BWLIMITS, "Get BwLimits", NEVER);
  	DEPRECATED("SetUpBWLimit", SET_BWLIMIT_UP, "Set BwLimit Up", ALWAYS);
  	DEPRECATED("SetDownBWLimit", SET_BWLIMIT_DOWN, "Set BwLimit Down", ALWAYS);
@@ -553,6 +583,8 @@
 +	tmp->AddCommand(wxT("Other"), CMD_ID_A4AF_OTHER, wxTRANSLATE("Swaps AFAF clients to any other file."),
 +		wxEmptyString, CMD_PARAM_ALWAYS);
 +	m_commands.AddCommand(wxT("Filenames"), CMD_ID_SHOW_FILENAMES, wxTRANSLATE("Returns a list of file names for a download"),
++		wxTRANSLATE("Requires hash"), CMD_PARAM_ALWAYS);
++	m_commands.AddCommand(wxT("Comments"), CMD_ID_SHOW_COMMENTS, wxTRANSLATE("Returns a list of comments for a download"),
 +		wxTRANSLATE("Requires hash"), CMD_PARAM_ALWAYS);
  }
  
