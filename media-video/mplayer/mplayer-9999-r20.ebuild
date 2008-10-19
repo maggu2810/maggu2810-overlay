@@ -6,15 +6,15 @@ EAPI="1"
 inherit eutils flag-o-matic multilib subversion
 
 RESTRICT="strip"
-IUSE="X 3dfx 3dnow 3dnowext +a52 +aac -aalib +alsa altivec amrnb amrwb -arts +srt
-	bidi bindist bl cddb cdio cdparanoia cpudetection -custom-cflags debug
-	dga dirac doc dvb directfb dts +dvd dv dvdnav eac3 enca encode esd
-	fbcon fpm ftp gif ggi -gtk i8x0 ipv6 ivtv jack joystick jpeg ladspa
+IUSE="X 3dfx 3dnow 3dnowext +a52 +aac -aalib +alsa altivec amrnb amrwb -arts
+	bidi bindist bl cddb cdio cdparanoia -cpudetection -custom-cflags debug
+	dga dirac doc dvb directfb +dts +dvd dv dvdnav +enca encode -esd
+	fbcon fpm ftp gif ggi -gtk i8x0 -icc ipv6 ivtv jack joystick jpeg ladspa
 	libcaca lirc live livecd lzo matrox mga mmx mmxext +mp2 +mp3 +mpeg musepack
-	nas nemesi nls nut nvidia openal opengl oss +png pnm pulseaudio pvr quicktime
-	radio rar -real rtc samba schroedinger sdl speex sse sse2 ssse3 svga tga
-	+theora tivo +truetype +unicode v4l v4l2 vidix +vorbis -win32codecs +x264
-	xanim xinerama +xscreensaver +xv +xvid xvmc zoran"
+	nas nemesi nls nut openal opengl oss +png pnm pulseaudio pvr quicktime
+	radio rar -real rtc samba schroedinger sdl speex +srt sse sse2 ssse3 svga
+	tga	+theora tivo +truetype +unicode v4l v4l2 vidix +vorbis -win32codecs
+	+x264 xanim xinerama +xscreensaver +xv +xvid xvmc zoran"
 
 VIDEO_CARDS="s3virge mga tdfx vesa"
 
@@ -141,7 +141,7 @@ DEPEND="${RDEPEND}
 
 SLOT="0"
 LICENSE="GPL-2"
-KEYWORDS=""
+KEYWORDS="~alpha ~amd64 ~hppa ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
 
 pkg_setup() {
 	if use real && use x86 ; then
@@ -219,20 +219,8 @@ src_unpack() {
 
 	cd "${S}"
 
-	epatch "${FILESDIR}/disable-version-rebranding.patch"
-
-	# eac3 patches from the GSoC project
-	if use eac3
-	then
-		cd "${WORKDIR}"
-		einfo "Fetching eac3 sources..."
-		svn co svn://svn.mplayerhq.hu/soc/eac3 eac3
-		cd "${S}"
-		einfo "Applying eac3 patches..."
-		epatch "${WORKDIR}/eac3/ffmpeg.patch"
-		cp ../eac3/*.c ./libavcodec/ || die "copying eac3 files failed"
-	fi
-
+	epatch "${FILESDIR}"/disable-version-rebranding.patch
+	use icc && epatch "${FILESDIR}"/ffmpeg-icc.patch
 	# Fix hppa compilation
 	use hppa && sed -i -e "s/-O4/-O1/" "${S}/configure"
 
@@ -246,11 +234,12 @@ src_unpack() {
 		mv "${WORKDIR}/svgalib_helper" "${S}/libdha"
 	fi
 
-	epatch ${FILESDIR}/darknrg.patch
-
 	# Fix polish spelling errors
 	[[ -n ${LINGUAS} ]] && sed -e 's:Zarządano:Zażądano:' -i help/help_mp-pl.h
+
+	use darknrg && epatch ${FILESDIR}/darknrg.patch
 }
+IUSE="${IUSE} darknrg"
 
 src_compile() {
 
@@ -310,7 +299,6 @@ src_compile() {
 	# and this mplayer against external dvdread.
 	if ! use dvd; then
 		myconf="${myconf} --disable-dvdnav --disable-dvdread"
-		use a52 || myconf="${myconf} --disable-liba52"
 	fi
 	if use dvd && use dvdnav; then
 		myconf="${myconf} --disable-dvdread-internal \
@@ -376,6 +364,7 @@ src_compile() {
 	done
 	use aac || myconf="${myconf} --disable-faad-internal"
 	use aac && use fpm && myconf="${myconf} --enable-faad-fixed"
+	use a52 || myconf="${myconf} --disable-liba52"
 	use dirac || myconf="${myconf} --disable-libdirac-lavc"
 	use schroedinger || myconf="${myconf} --disable-libschroedinger-lavc"
 	use dts || myconf="${myconf} --disable-libdca"
@@ -577,7 +566,7 @@ EOT
 	dosym ../../../etc/mplayer/mplayer.conf /usr/share/mplayer/mplayer.conf
 
 	# copy the midentify script to /usr/bin
-	cp "${D}"/usr/share/doc/${PF}/TOOLS/midentify "${D}"/usr/bin
+	cp "${D}"/usr/share/doc/${PF}/TOOLS/midentify.sh "${D}"/usr/bin/midentify
 	chmod a+x "${D}"/usr/bin/midentify
 
 	insinto /usr/share/mplayer
