@@ -13,8 +13,8 @@ IUSE="X 3dfx 3dnow 3dnowext +a52 +aac -aalib +alsa altivec amrnb amrwb -arts
 	libcaca lirc live livecd lzo matrox mga mmx mmxext +mp2 +mp3 +mpeg musepack
 	nas nemesi nls nut openal opengl oss +png pnm pulseaudio pvr quicktime
 	radio rar -real rtc samba schroedinger sdl speex +srt sse sse2 ssse3 svga
-	tga	+theora tivo +truetype +unicode v4l v4l2 vidix +vorbis -win32codecs
-	+x264 xanim xinerama +xscreensaver +xv +xvid xvmc zoran"
+	tga	+theora tivo +truetype +unicode v4l v4l2 vidix +volume +vorbis
+	-win32codecs +x264 xanim xinerama +xscreensaver +xv +xvid xvmc zoran"
 
 VIDEO_CARDS="s3virge mga tdfx vesa"
 
@@ -67,7 +67,7 @@ RDEPEND="sys-libs/ncurses
 		dv? ( media-libs/libdv )
 		mp2? ( media-sound/twolame )
 		mp3? ( media-sound/lame )
-		x264? ( media-libs/x264 )
+		x264? ( >=media-libs/x264-0.0.20081006 )
 		)
 	esd? ( media-sound/esound )
 	fontconfig? ( media-libs/fontconfig )
@@ -220,6 +220,7 @@ src_unpack() {
 	cd "${S}"
 
 	epatch "${FILESDIR}"/disable-version-rebranding.patch
+	use volume && epatch "${FILESDIR}"/startupvol.patch
 	use icc && epatch "${FILESDIR}"/ffmpeg-icc.patch
 	# Fix hppa compilation
 	use hppa && sed -i -e "s/-O4/-O1/" "${S}/configure"

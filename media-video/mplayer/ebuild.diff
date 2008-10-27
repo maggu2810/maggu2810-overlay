@@ -1,6 +1,15 @@
 --- org	2008-10-07 16:43:15.000000000 +0200
 +++ new	2008-10-09 15:42:07.000000000 +0200
-@@ -227,7 +227,10 @@
+@@ -141,7 +141,7 @@
+ 
+ SLOT="0"
+ LICENSE="GPL-2"
+-KEYWORDS="~alpha ~amd64 ~hppa ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
++KEYWORDS=""
+ 
+ pkg_setup() {
+ 	if use real && use x86 ; then
+@@ -237,7 +236,10 @@
  
  	# Fix polish spelling errors
  	[[ -n ${LINGUAS} ]] && sed -e 's:Zarządano:Zażądano:' -i help/help_mp-pl.h
