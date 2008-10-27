@@ -130,4 +130,34 @@
 		</description>
 	</overlay>
 
+	<overlay
+		type = "git"
+		src  = "git+ssh://git@git.lightning.homelinux.com/jeckhart-overlay.git"
+		contact = "jeckhart@us.ibm.com"
+		status = "official"
+		name = "jeckhart-overlay-dev">
+		<link>
+			http://w3.opensource.ibm.com/~gentoo-ebuilds
+		</link>
+		<description>
+			This is a development overlay for jeckhart.
+			It typically contains whatever new ideas he is working on at the time
+		</description>
+	</overlay>
+
+	<overlay
+		type = "git"
+		src  = "git://lightning.homelinux.com/jeckhart-overlay.git"
+		contact = "jeckhart@us.ibm.com"
+		status = "official"
+		name = "jeckhart-overlay">
+		<link>
+			http://w3.opensource.ibm.com/~gentoo-ebuilds
+		</link>
+		<description>
+			This is a personal overlay for jeckhart.
+			It typically contains whatever new ideas he is working on at the time
+		</description>
+	</overlay>
+
 </layman>
