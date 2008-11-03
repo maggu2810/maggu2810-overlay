@@ -7,6 +7,8 @@ inherit cvs eutils
 DESCRIPTION=""
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86"
 
+SLOT="0"
+
 DEPEND=">=x11-libs/libX11-1.0.3
 	>=media-libs/mesa-6.5"
 
