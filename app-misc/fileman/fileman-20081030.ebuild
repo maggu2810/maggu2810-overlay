@@ -37,7 +37,7 @@ MY_SRC=""
 
 # class path to main class
 # (leave empty for auto-detection, use - for none)
-MY_MAIN=""
+MY_MAIN="info/hfmn/fman/Main"
 
 # additional arguments for JRE
 # (for example: -Xmx512M)
@@ -47,7 +47,8 @@ MY_JAVA_ARGS="-Xmx1G -Djava.library.path=/usr/lib"
 COMMON_DEP="
 	=dev-java/jmf-bin-2*
 	dev-java/hfmnutils
-	app-misc/fileviewer"
+	app-misc/fileviewer
+	>=dev-java/jdbc-mysql-5"
 
 # dependencies needed for runtime
 RDEPEND="
@@ -72,6 +73,7 @@ declare -a MY_JAVA_PKGS
 MY_JAVA_PKGS[0]="jmf-bin jmf.jar"
 MY_JAVA_PKGS[1]="hfmnutils HFMNUtils.jar"
 MY_JAVA_PKGS[2]="fileviewer FileViewer.jar"
+MY_JAVA_PKGS[3]="jdbc-mysql jdbc-mysql.jar"
 
 # Code that should be executed between linking and building
 before_compile() {
