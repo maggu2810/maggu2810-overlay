@@ -1,4 +1,0 @@
-#!/bin/bash
-
-cmd="linux32 chroot /usr/lib/chroot32 /bin/bash"
-[ "$1" ] && $cmd -c "$*" || $cmd
