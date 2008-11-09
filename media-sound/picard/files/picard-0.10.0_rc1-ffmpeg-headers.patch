@@ -1,0 +1,18 @@
+Source: Imported from Berkano overlay, by Ben de Groot.
+Upstream: Sent, http://bugs.musicbrainz.org/ticket/3777
+Reason: Compatibility with new ffmpeg headers,
+        starting from media-video/ffmpeg-0.4.9_p20080326.
+--- picard-0.10.0rc1-orig/picard/musicdns/avcodec.c 2008-05-29 00:10:50.000000000 +0200
++++ picard-0.10.0rc1/picard/musicdns/avcodec.c  2008-05-29 00:11:17.000000000 +0200
+@@ -24,8 +24,8 @@
+ #define inline __inline
+ #endif
+ 
+-#include <avcodec.h>
+-#include <avformat.h>
++#include <libavcodec/avcodec.h>
++#include <libavformat/avformat.h>
+ #include <Python.h>
+ 
+ #ifdef _WIN32
+
