@@ -18,6 +18,20 @@
 
 	<overlay
 		type = "svn"
+		src  = "http://opensvn.csie.org/darknrg_gentoo_overlay/"
+		contact = "darknrg@gmx.de"
+		status  = "unofficial"
+		name = "darknrg_gentoo_overlay">
+		<link>
+			https://opensvn.csie.org/traccgi/darknrg_gentoo_overlay/browser
+		</link>
+		<description>
+			darknrg_gentoo_overlay
+		</description>
+	</overlay>
+
+	<overlay
+		type = "svn"
 		src  = "https://cafarelli.fr/svn/voyageur-overlay/"
 		contact = "voyageur@gentoo.org"
 		status  = "unofficial"
