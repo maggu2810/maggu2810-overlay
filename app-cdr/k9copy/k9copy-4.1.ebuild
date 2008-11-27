@@ -32,8 +32,8 @@ RDEPEND="${DEPEND}
 	media-video/dvdauthor"
 
 src_unpack() {
-        subversion_src_unpack
-        subversion_wc_info
+	subversion_src_unpack
+	subversion_wc_info
 	epatch "${FILESDIR}/ffmpeg.patch"
 }
 
