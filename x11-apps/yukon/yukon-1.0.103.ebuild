@@ -15,6 +15,8 @@ LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
 
+IUSE=""
+
 DEPEND="x11-libs/seom"
 RDEPEND="${DEPEND}"
 

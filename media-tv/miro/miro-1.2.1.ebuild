@@ -12,7 +12,9 @@ SRC_URI="http://ftp.osuosl.org/pub/pculture.org/miro/src/${MY_P}.tar.gz"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~x86 ~amd64"
+
 #IUSE="doc libnotify"
+IUSE=""
 
 # FIXME: This is simply rewritten from setup.cfg. Adding version requirements is strongly recommended.
 # FIXME: the following deps were removed because setup.py isn't clear about it.

@@ -1,6 +1,6 @@
-# Copyright 1999-2006 Gentoo Foundation
+# Copyright 1999-2008 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: 
+# $Header: $
 
 inherit cvs eutils
 
@@ -8,6 +8,8 @@ DESCRIPTION="Utility to replace a desktop background with a movie, screensaver, 
 KEYWORDS="~alpha ~amd64 ~arm ~hppa ~mips ~ppc ~ppc64 ~s390 ~sh ~sparc ~x86"
 
 SLOT="0"
+
+IUSE=""
 
 DEPEND=">=x11-libs/libX11-1.0.3
 	>=media-libs/mesa-6.5"

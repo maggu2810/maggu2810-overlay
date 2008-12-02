@@ -1,3 +1,7 @@
+# Copyright 1999-2008 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: $
+
 MOD_DESC="total transformation realism based mod"
 MOD_NAME="Urban Terror"
 MOD_DIR="q3ut4"
@@ -19,6 +23,8 @@ SLOT="4"
 RESTRICT="mirror strip"
 
 KEYWORDS="-* ~amd64 ~ppc ~x86"
+
+IUSE=""
 
 RDEPEND="ppc? ( games-fps/${GAME} )
 		!ppc? (

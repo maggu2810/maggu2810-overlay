@@ -1,6 +1,6 @@
-# Copyright 1999-2007 Gentoo Foundation
+# Copyright 1999-2008 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/x11-base/x11-drm/x11-drm-20071019.ebuild,v 1.1 2007/10/20 04:41:32 battousai Exp $
+# $Header: $
 
 WANT_AUTOCONF="latest"
 WANT_AUTOMAKE="1.7"

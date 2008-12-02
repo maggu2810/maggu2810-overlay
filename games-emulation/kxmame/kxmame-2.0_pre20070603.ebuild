@@ -14,6 +14,8 @@ LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~x86 ~amd64"
 
+IUSE=""
+
 RDEPEND="${DEPEND}
 	dev-util/pkgconfig
 	dev-libs/glib"

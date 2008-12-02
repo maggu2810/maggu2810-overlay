@@ -1,5 +1,4 @@
-# Copyright 2007 Remo Wenger <potrmwn@gmail.com>
-# Some changes were done by Markus Rathgeb <maggu2810@googlemail.com>
+# Copyright 1999-2008 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 

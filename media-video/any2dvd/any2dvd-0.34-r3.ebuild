@@ -1,3 +1,7 @@
+# Copyright 1999-2008 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header: $
+
 inherit eutils
 
 DESCRIPTION="Tool to transform PC multimedia file(s) in any format, into a DVD complete with menus & suitable for playback on a standalone DVD player"
