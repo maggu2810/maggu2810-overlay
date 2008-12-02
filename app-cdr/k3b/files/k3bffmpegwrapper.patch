@@ -1,0 +1,39 @@
+--- k3b-2.0_pre20081201/plugins/decoder/ffmpeg/k3bffmpegwrapper.cpp.org	2008-12-02 18:19:32.000000000 +0100
++++ k3b-2.0_pre20081201/plugins/decoder/ffmpeg/k3bffmpegwrapper.cpp	2008-12-02 18:27:55.000000000 +0100
+@@ -198,8 +198,13 @@
+         return i18n("Windows Media v1");
+     case CODEC_ID_WMAV2:
+         return i18n("Windows Media v2");
++#if LIBAVCODEC_VERSION_MAJOR >= 52
++    case CODEC_ID_MP3:
++        return i18n("MPEG 1 Layer III");
++#else
+     case CODEC_ID_MP3LAME:
+         return i18n("MPEG 1 Layer III");
++#endif
+     case CODEC_ID_AAC:
+         return i18n("Advanced Audio Coding (AAC)");
+     default:
+@@ -291,6 +296,14 @@
+ 
+         d->outputBufferPos = d->outputBuffer;
+ 
++#if LIBAVCODEC_VERSION_MAJOR >= 52
++	d->outputBufferSize = AVCODEC_MAX_AUDIO_FRAME_SIZE;
++        int len = avcodec_decode_audio2(
++            d->formatContext->streams[0]->codec,
++            (short*)d->outputBuffer,
++            &d->outputBufferSize,
++            d->packetData, d->packetSize );
++#else
+         int len = avcodec_decode_audio(
+ #ifdef FFMPEG_BUILD_PRE_4629
+             &d->formatContext->streams[0]->codec,
+@@ -300,6 +313,7 @@
+             (short*)d->outputBuffer,
+             &d->outputBufferSize,
+             d->packetData, d->packetSize );
++#endif
+ 
+         d->packetSize -= len;
+         d->packetData += len;
