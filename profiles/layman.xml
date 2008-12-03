@@ -76,11 +76,11 @@
         </overlay>
 
         <overlay
-		contact="java@gentoo.org"
-		name="java-experimental"
-		src="http://overlays.gentoo.org/svn/proj/java/java-experimental/"
-		status="unofficial"
-		type="svn">
+		contact = "java@gentoo.org"
+		name = "java-experimental"
+		src = "http://overlays.gentoo.org/svn/proj/java/java-experimental/"
+		status = "unofficial"
+		type = "svn">
 		<link>
 			http://overlays.gentoo.org/proj/java
 		</link>
@@ -98,11 +98,11 @@
 	</overlay>
 
         <overlay
-		contact="chewi@aura-online.co.uk"
-		name="chewi-overlay"
-		src="http://overlays.gentoo.org/svn/proj/java/chewi-overlay/"
-		status="unofficial"
-		type="svn">
+		contact = "chewi@aura-online.co.uk"
+		name = "chewi-overlay"
+		src = "http://overlays.gentoo.org/svn/proj/java/chewi-overlay/"
+		status = "unofficial"
+		type = "svn">
 		<link>
 			http://overlays.gentoo.org/proj/java
 		</link>
