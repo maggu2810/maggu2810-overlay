@@ -176,7 +176,7 @@
 
 	<overlay
 		type = "git"
-		src  = "http://git.fox.geek.nz/kentexperimental/.git"
+		src  = "http://git.fox.geek.nz/kentexperimental/.git kentexperimental"
 		contact = "kentfredric@gmail.com"
 		status = "unofficial"
 		name = "kentexperimental">
