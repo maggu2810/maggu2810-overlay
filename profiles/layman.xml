@@ -47,9 +47,9 @@
 	<overlay
 		type = "svn"
 		src  = "https://arcon.svn.sourceforge.net/svnroot/arcon/trunk/overlay/"
+		contact = "rafkup@gmail.com"
 		status = "unofficial"
-		name = "arcon-portage"
-		contact = "rafkup@gmail.com">
+		name = "arcon-portage">
 		<link>
 			http://arcon.svn.sourceforge.net/viewvc/arcon/trunk/overlay/
 		</link>
@@ -76,11 +76,11 @@
         </overlay>
 
         <overlay
-		contact = "java@gentoo.org"
-		name = "java-experimental"
+		type = "svn"
 		src = "http://overlays.gentoo.org/svn/proj/java/java-experimental/"
+		contact = "java@gentoo.org"
 		status = "unofficial"
-		type = "svn">
+		name = "java-experimental">
 		<link>
 			http://overlays.gentoo.org/proj/java
 		</link>
@@ -98,11 +98,11 @@
 	</overlay>
 
         <overlay
-		contact = "chewi@aura-online.co.uk"
-		name = "chewi-overlay"
+		type = "svn"
 		src = "http://overlays.gentoo.org/svn/proj/java/chewi-overlay/"
+		contact = "chewi@aura-online.co.uk"
 		status = "unofficial"
-		type = "svn">
+		name = "chewi-overlay">
 		<link>
 			http://overlays.gentoo.org/proj/java
 		</link>
@@ -135,8 +135,8 @@
 	<overlay
 		type = "git"
 		src  = "git://github.com/eatnumber1/pcsx2-overlay.git"
-		status = "unofficial"
 		contact = "eatnumber1@gmail.com"
+		status = "unofficial"
 		name = "pcsx2-overlay">
 		<description>
 			Experimental overlay for pcsx2 ebuilds.
