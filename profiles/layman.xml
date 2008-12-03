@@ -174,4 +174,19 @@
 		</description>
 	</overlay>
 
+	<overlay
+		type = "git"
+		src  = "http://git.fox.geek.nz/kentexperimental/.git"
+		contact = "kentfredric@gmail.com"
+		status = "unofficial"
+		name = "kentexperimental">
+		<link>
+			http://git.fox.geek.nz/kentexperimental/
+		</link>
+		<description>
+			A Gentoo Portage Overlay in which Kent Fredric maintain 
+			many of the packages that he have tailored / produced for his own use. 
+		</description>
+	</overlay>
+
 </layman>
