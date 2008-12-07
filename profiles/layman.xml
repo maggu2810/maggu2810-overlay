@@ -189,4 +189,21 @@
 		</description>
 	</overlay>
 
+        <overlay
+                type = "svn"
+                src  = "http://yarik-overlay.googlecode.com/svn/trunk/overlay"
+                contact = "ygorbunov@gmail.com"
+                status  = "unofficial"
+                name = "yarik-overlay">
+                <link>
+                        http://code.google.com/p/yarik-overlay/
+                </link>
+                <description>
+                  Yarik-overlay contains patches and ebuilds for some packages from official tree
+                  that still havn't commited. All patches added in Gentoo Bug tracking system. 
+                  TrueCrypt is masked in the official tree due to legal problems. 
+                  Overlay contains truecrypt-6.1 compatible with gcc-4.3
+                </description>
+        </overlay>
+
 </layman>
