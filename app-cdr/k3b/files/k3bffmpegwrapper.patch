@@ -1,5 +1,5 @@
---- k3b-2.0_pre20081201/plugins/decoder/ffmpeg/k3bffmpegwrapper.cpp.org	2008-12-02 18:19:32.000000000 +0100
-+++ k3b-2.0_pre20081201/plugins/decoder/ffmpeg/k3bffmpegwrapper.cpp	2008-12-02 18:27:55.000000000 +0100
+--- plugins/decoder/ffmpeg/k3bffmpegwrapper.cpp.org	2008-12-02 18:19:32.000000000 +0100
++++ plugins/decoder/ffmpeg/k3bffmpegwrapper.cpp	2008-12-02 18:27:55.000000000 +0100
 @@ -198,8 +198,13 @@
          return i18n("Windows Media v1");
      case CODEC_ID_WMAV2:

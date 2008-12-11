@@ -7,7 +7,7 @@ EAPI="2"
 NEED_KDE=":4.1"
 KDE_LINGUAS="ar be bg ca da de el en_GB eo es et eu fi fr ga gl hi hu it ja km
 lt lv nb nds nl nn oc pl pt pt_BR ro ru se sk sl sv tr uk zh_CN zh_TW"
-inherit eutils kde4-base subversion
+inherit eutils subversion kde4-base
 SLOT="4.1"
 
 #KMNAME="extragear/multimedia"
@@ -58,27 +58,14 @@ RDEPEND="${DEPEND}
 	vcd? ( media-video/vcdimager )
 	"
 
-pkg_setup() {
-	use ffmpeg && ewarn "FFMpeg seems to be badly broken in this snapshot. Use it at your own risk!"
-	if use flac && ! built_with_use media-libs/flac cxx ; then
-		eerror "In order to build "
-		eerror "you need media-libs/flac built with cxx USE flag enabled."
-		die "no cxx support in flac"
-	fi
-	if use encode && use dvdread && ! built_with_use media-video/transcode dvdread ; then
-		eerror "In order to build "
-		eerror "you need media-video/transcode built with dvdread USE flag"
-		die "no dvdread support in transcode"
-	fi
-}
-
 src_unpack() {
         subversion_src_unpack
         subversion_wc_info
+	cd "${S}"
 	epatch "${FILESDIR}"/k3bffmpegwrapper.patch
 }
 
-src_compile() {
+src_configure() {
 	if use debug; then
 		mycmakeargs="${mycmakeargs} -DADD_K3B_DEBUG=On"
 	else
@@ -87,7 +74,6 @@ src_compile() {
 
 	mycmakeargs="${mycmakeargs} -DK3BSETUP_BUILD=Off
 		-DWITH_Samplerate=On
-		-DNEWFFMPEGAVCODECPATH
 		$(cmake-utils_use_with dvdread DvdRead)
 		$(cmake-utils_use_with ffmpeg FFmpeg)
 		$(cmake-utils_use_with flac Flac)
@@ -96,16 +82,14 @@ src_compile() {
 		$(cmake-utils_use_with mp3 Mad)
 		$(cmake-utils_use_with musepack Muse)
 		$(cmake-utils_use_with sndfile Sndfile)
-		$(cmake-utils_use_with vorbis OggVorbis)"
-
-	# Build process of K3b
-	kde4-base_src_compile
+		$(cmake-utils_use_with vorbis OggVorbis)
+	"
+	kde4-base_src_configure
 }
 
 src_install() {
 	kde4-base_src_install
 	dodoc "${S}"/{FAQ,KNOWNBUGS,PERMISSIONS} || die "Installing additional docs failed."
-#	dodoc "${S}"/${PN}/{FAQ,KNOWNBUGS,PERMISSIONS} || die "Installing additional docs failed."
 }
 
 pkg_postinst() {
@@ -120,5 +104,6 @@ pkg_postinst() {
 	elog "Make sure you have proper read/write permissions on the cdrom device(s)."
 	elog "Usually, it is sufficient to be in the ${group} group."
 	echo
+	
 	kde4-base_pkg_postinst
 }
