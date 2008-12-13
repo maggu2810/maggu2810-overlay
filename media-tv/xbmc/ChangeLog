@@ -1,0 +1,9 @@
+# ChangeLog for media-tv/xbmc
+# Copyright 1999-2008 Gentoo Foundation; Distributed under the GPL v2
+# $Header: $
+
+*xbmc-8.10-r2 (13 Dec 2008)
+
+  13 Dec 2008; Markus Rathgeb <maggu2810@web.de> +xmbc-8.10-r2.ebuild:
+  Initial import.  Ebuild submitted by Rick Harris <rickfharris@yahoo.com.au>.
+  http://bugs.gentoo.org/show_bug.cgi?id=198849
