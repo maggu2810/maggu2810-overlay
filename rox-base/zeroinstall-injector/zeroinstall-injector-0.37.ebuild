@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/rox-base/zeroinstall-injector/zeroinstall-injector-0.33.ebuild,v 1.5 2008/08/31 17:58:14 armin76 Exp $
 
-inherit distutils
+inherit eutils distutils
 
 DESCRIPTION="Zeroinstall Injector allows regular users to install software themselves"
 HOMEPAGE="http://0install.net/"
@@ -23,6 +23,7 @@ src_unpack() {
 
 	# Change manpage install path (Bug 207495)
 	sed -i 's:man/man1:share/man/man1:' setup.py
+	epatch "${FILESDIR}"/distribution_check.patch
 }
 
 src_install() {

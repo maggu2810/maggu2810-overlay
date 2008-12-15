@@ -7,6 +7,7 @@
   15 Dec 2008; Markus Rathgeb <maggu2810@web.de>
   +zeroinstall-injector-0.37.ebuild
   New version 0.37 was released
+  Added patch for distribution check (upstream git)
 
   31 Aug 2008; Raúl Porcel <armin76@gentoo.org>
   zeroinstall-injector-0.33.ebuild:
