@@ -4,11 +4,11 @@
 
 EAPI="2"
 
-NEED_KDE="4.1"
-KDE_LINGUAS="ar be bg ca da de el en_GB eo es et eu fi fr ga gl hi hu it ja km
-lt lv nb nds nl nn oc pl pt pt_BR ro ru se sk sl sv tr uk zh_CN zh_TW"
+NEED_KDE="latest"
+#KDE_LINGUAS="ar be bg ca da de el en_GB eo es et eu fi fr ga gl hi hu it ja km
+#lt lv nb nds nl nn oc pl pt pt_BR ro ru se sk sl sv tr uk zh_CN zh_TW"
 inherit eutils subversion kde4-base
-SLOT="4.1"
+SLOT="0"
 
 DESCRIPTION="A Latex Editor and TeX shell for kde"
 HOMEPAGE="http://kile.sourceforge.net/"
@@ -42,7 +42,6 @@ src_unpack() {
         subversion_src_unpack
         subversion_wc_info
 	cd "${S}"
-        epatch "${FILESDIR}/collisions.patch"
 	mv "${S}/src/data/icons/actions/hi64-action-preview.png" \
 		"${S}/src/data/icons/actions/hi64-action-preview_kile.png"
 }
