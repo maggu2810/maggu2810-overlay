@@ -16,7 +16,7 @@ DESCRIPTION="K3b, KDE CD Writing Software"
 HOMEPAGE="http://www.k3b.org/"
 
 LICENSE="GPL-2"
-KEYWORDS="~x86"
+KEYWORDS=""
 IUSE="css debug dvdr dvdread encode -ffmpeg flac hal htmlhandbook mp3 musepack
 	sndfile vcd vorbis emovix"
 ESVN_REPO_URI="svn://anonsvn.kde.org/home/kde/trunk/extragear/multimedia/${PN}/@{${PV/2.0_pre/}}"
