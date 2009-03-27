@@ -6,12 +6,14 @@ EAPI=0
 
 inherit eutils
 
+SPV=${PV%.*}
+
 DESCRIPTION="PTXdist is a build system for userlands, started by Pengutronix"
 
 HOMEPAGE="http://www.pengutronix.de/software/ptxdist/"
 
-SRC_URI="http://www.pengutronix.de/software/${PN}/download/v1.99/${P}.tgz
-	patches? ( http://www.pengutronix.de/software/${PN}/download/v1.99/${P}-patches.tgz )"
+SRC_URI="http://www.pengutronix.de/software/${PN}/download/v${SPV}/${P}.tgz
+	patches? ( http://www.pengutronix.de/software/${PN}/download/v${SPV}/${P}-patches.tgz )"
 
 LICENSE="GPL-2"
 
@@ -23,7 +25,8 @@ IUSE="+patches"
 
 #RESTRICT="strip"
 
-DEPEND=""
+DEPEND=">=sys-libs/ncurses-5.6-r2
+	>=dev-tcltk/expect-5.42.1-r1"
 
 RDEPEND="${DEPEND}"
 
@@ -44,7 +47,7 @@ src_install() {
 
 pkg_postinst() {
         elog ""
-        elog "Do not forget to run '${PN} setup'"
+        elog "Do not forget to run '${PN} setup' as the user"
+	elog "who wants use ${PN}."
         elog ""
 }
-
