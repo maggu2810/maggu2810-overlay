@@ -22,7 +22,9 @@ SLOT="0"
 IUSE=""
 KEYWORDS="~amd64 ~x86"
 
-DEPEND=""
+DEPEND="virtual/opengl
+        media-libs/openal
+        media-libs/libsdl"
 RDEPEND="${DEPEND}
 	games-fps/${MY_PN}-data"
 
