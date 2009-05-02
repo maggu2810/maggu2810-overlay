@@ -1,0 +1,6 @@
+#!/bin/bash
+ARGS="${@}"
+LAST="${ARGS##* }"
+REST="${ARGS% *}"
+echo "maggu2810 - workaround: wrapper for 'mf'"
+exec mf "\\${REST} ${LAST}"
