@@ -1,0 +1,22 @@
+sys-devel/crossdev
+sys-devel/crossdev-wrappers
+
+app-text/docbook-sgml
+dev-tcltk/expect
+
+# mkseries-dev of socketcan
+dev-util/quilt
+
+dev-embedded/u-boot-tools
+
+net-print/poster
+
+app-arch/ipkg-utils
+
+sys-apps/fakeroot-ng
+sys-apps/fakeroot
+
+app-misc/ckermit
+net-dialup/minicom
+
+net-ftp/atftp

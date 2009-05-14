@@ -1,0 +1,8 @@
+net-dns/dnsmasq
+net-analyzer/netcat6
+net-analyzer/wireshark
+net-analyzer/nmap
+net-dns/bind-tools
+net-misc/dhcpcd
+net-misc/ntp
+net-misc/whois

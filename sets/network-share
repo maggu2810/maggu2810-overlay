@@ -1,0 +1,4 @@
+net-fs/samba
+net-fs/mount-cifs
+net-fs/nfs-utils
+net-fs/fusesmb
