@@ -9,7 +9,7 @@ MY_PN="${PN/-svn/}"
 MY_PREV="${PV##*${MY_DELIM}}"
 MY_PV="${PV/${MY_DELIM}${MY_PREV}/}"
 
-ESVN_REPO_URI="https://${MY_PN}.svn.sourceforge.net/svnroot/${MY_PN}/branches/@${MY_PREV}"
+ESVN_REPO_URI="https://${MY_PN}.svn.sourceforge.net/svnroot/${MY_PN}/trunk/@${MY_PREV}"
 
 inherit eutils games subversion
 
