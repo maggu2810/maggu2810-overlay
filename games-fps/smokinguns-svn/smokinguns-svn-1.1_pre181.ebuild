@@ -28,18 +28,35 @@ DEPEND="virtual/opengl
 RDEPEND="${DEPEND}
 	games-fps/${MY_PN}-data"
 
-MY_S="${WORKDIR}"/"${P}"/"${MY_PV}"
+#MY_S="${WORKDIR}"/"${P}"/"${MY_PV}"
 MY_DEST="${GAMES_DATADIR}"/"${MY_PN}"
 
-src_compile() {
-	cd "${MY_S}"
-	emake
-}
+#src_compile() {
+#	cd "${MY_S}"
+#	emake
+#}
 
 src_install() {
-	cd "${MY_S}"
-	COPYDIR="${D}"/"${MY_DEST}" make copyfiles
+	#cd "${MY_S}"
+	#COPYDIR="${D}"/"${MY_DEST}" make copyfiles
+
+	#dodir ${MY_DEST}
+	#insinto ${MY_DEST}
+	#doins install/smokinguns*${ARCH}
+
+	mkdir -p "${D}/${MY_DEST}/"
+	cp -R install/* "${D}/${MY_DEST}/." || die "Install failed!"
+	
 	games_make_wrapper "${MY_PN}" "${MY_DEST}"/"${MY_PN}"."${ARCH}" "${MY_DEST}" "${MY_DEST}"
 	games_make_wrapper "${MY_PN}"_dedicated "${MY_DEST}"/"${MY_PN}"_dedicated."${ARCH}" "${MY_DEST}" "${MY_DEST}"
 	prepgamesdirs
+}
+
+pkg_postinst() {
+	default
+
+	elog "If you want to use the contained 'vm',"
+	elog "you should run the following command as user:"
+	elog "mkdir -p ~/.smokinguns/smokinguns/vm"
+	elog "ln -s /usr/share/games/smokinguns/smokinguns/vm ~/.smokinguns/smokinguns/vm"
 }
