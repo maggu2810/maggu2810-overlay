@@ -53,10 +53,11 @@ src_install() {
 }
 
 pkg_postinst() {
-	default
+	games_pkg_postinst
 
 	elog "If you want to use the contained 'vm',"
 	elog "you should run the following command as user:"
-	elog "mkdir -p ~/.smokinguns/smokinguns/vm"
-	elog "ln -s /usr/share/games/smokinguns/smokinguns/vm ~/.smokinguns/smokinguns/vm"
+	elog "   mkdir -p ~/.smokinguns/smokinguns/vm"
+	elog "   ln -s /usr/share/games/smokinguns/smokinguns/vm \\"
+	elog "         ~/.smokinguns/smokinguns/vm"
 }
