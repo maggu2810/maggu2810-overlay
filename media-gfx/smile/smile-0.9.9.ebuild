@@ -20,10 +20,10 @@ for X in ${LANGS};do
 	IUSE="${IUSE} linguas_${X}"
 done
 
-DEPEND="media-sound/sox
+DEPEND=">=media-sound/sox-14.0.0
 	media-video/mplayer
-	x11-libs/qt-opengl:4
-	x11-libs/qt-webkit:4
+	>=x11-libs/qt-opengl-4.4
+	>=x11-libs/qt-webkit-4.4
 	media-gfx/imagemagick"
 RDEPEND="${DEPEND}"
 
