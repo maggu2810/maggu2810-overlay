@@ -14,17 +14,17 @@ IUSE=""
 LICENSE="GPL-2"
 SLOT="0"
 
-SRC_URI="mirror://sourceforge/${PN}/${P/-bin/}.tar.gz"
+MY_P=${P/-bin/}
+MY_PN=${PN/-bin/}
+
+SRC_URI="http://dfn.dl.sourceforge.net/sourceforge/${MY_PN}/${MY_P}.tar.gz"
+SRC_URI="mirror://sourceforge/${MY_PN}/${MY_P}.tar.gz"
 
 RDEPEND="virtual/jre"
 
 S="${WORKDIR}/${P/-bin/}"
 
 INSTALLDIR="/opt/${P}"
-MY_PN=${PN/-bin/}
-MY_P=${P/-bin/}
-
-# src_compile() { :; }
 
 src_install() {
 	cd "${S}"
@@ -33,4 +33,6 @@ src_install() {
 
         dodir /opt/bin
         dosym "${INSTALLDIR}/${MY_PN}.sh" "/opt/bin/${MY_PN}"
+
+	domenu "${MY_PN}.desktop"
 }
