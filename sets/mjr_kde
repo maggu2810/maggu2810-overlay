@@ -1,3 +1,4 @@
+dev-util/kdesvn
 kde-base/kdeadmin-meta
 kde-base/kdebase-meta
 kde-base/kdegraphics-meta
@@ -6,5 +7,5 @@ kde-base/kdenetwork-meta
 kde-base/kdepim-meta
 kde-base/kdesdk-meta
 kde-base/kdeutils-meta
-kde-base/kommander
 kde-misc/krusader
+media-video/smplayer
