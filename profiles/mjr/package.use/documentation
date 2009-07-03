@@ -2,9 +2,9 @@
 
 dev-libs/boost doc
 
-dev-java/sun-jdk doc
-dev-java/jdom doc examples
-dev-java/rxtx doc source
+#dev-java/sun-jdk doc
+#dev-java/jdom doc examples
+#dev-java/rxtx doc source
 
 sci-electronics/eagle doc
 
