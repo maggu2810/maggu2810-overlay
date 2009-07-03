@@ -1,5 +1,4 @@
 app-text/djvu qt3
-=app-text/djvu-3.5.21_p20090103 qt3
 
 # there is no other qt frontend
 app-crypt/pinentry qt3
