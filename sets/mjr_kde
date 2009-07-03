@@ -1,3 +1,4 @@
+app-cdr/k3b
 dev-util/kdesvn
 kde-base/kdeadmin-meta
 kde-base/kdebase-meta
@@ -8,4 +9,5 @@ kde-base/kdepim-meta
 kde-base/kdesdk-meta
 kde-base/kdeutils-meta
 kde-misc/krusader
+media-sound/amarok
 media-video/smplayer
