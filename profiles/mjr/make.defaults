@@ -1,0 +1,159 @@
+################################################################################
+################################################################################
+# The following options are for the most of my machines
+################################################################################
+################################################################################
+
+EMERGE_DEFAULT_OPTS="--with-bdeps=y"
+
+################################################################################
+
+# INSTANT MESSENGER
+USE="${USE} aim icq jabber msn oscar yahoo"
+
+# FONTS
+USE="${USE} bitmap-fonts fontconfig freetype freetype2 truetype truetype-fonts type1-fonts"
+
+# CD/DVD
+USE="${USE} cdr dvd dvdr vcd"
+
+# THREADS
+USE="${USE} nptl nptlonly threads threadsafe"
+
+# OVER THE AIR AND NETWORKING STUFF
+USE="${USE} bluetooth irda irmc wifi"
+
+# APACHE, HTML, NETWORKING ...
+USE="${USE} apache2 cgi php tidy"
+USE="${USE} css curl curlwrappers dhcp ftp http net network networking nfs samba"
+USE="${USE} howl-compat mdnsresponder-compat"
+USE="${USE} avahi zeroconf l7filter"
+
+# MOBILE PHONE
+USE="${USE} gnokii obex sms"
+
+# FILESYSTEMS
+USE="${USE} fuse ntfs reiserfs sysfs"
+
+# LANGUAGE AND CODING STUFF
+USE="${USE} nls unicode userlocales"
+
+# SERVICES AND SOME SUPPORT STUFF
+USE="${USE} acpi -apm dbus hal"
+
+# PERIPHAL DEVICES
+USE="${USE} usb"
+	# printing support (deactivate xprint, because from time to time there are built errors when it is set)
+USE="${USE} cups -xprint"
+	# scanner
+USE="${USE} ocr scanner"
+	# other
+USE="${USE} ipod joystick logitech-mouse"
+
+# ALGEBRA IMPLEMENTATIONS
+USE="${USE} blas lapack"
+
+# CMS
+USE="${USE} cvs darcs git subversion"
+
+# the following USE-Flags must be sorted
+USE="${USE} \
+     accessibility acl \
+     bash-completion \
+     chroot chm cjk consolekit cxx \
+     dvi djvu \
+     fam festival flash fmod \
+     gd gimp gmedia gphoto2 graphviz gs \
+     idn ieee1394 imagemagick imlib inkjar \
+     lcms libnotify libshout lirc logrotate \
+     mime mono musicbrainz \
+     nsplugin \
+     pam pcmcia postscript pdf plotutils ppds \
+     slang spell srt stream streamripper \
+     udev \
+     v4l v4l2 videos vidix \
+     xattr xcb xml \
+     xulrunner -firefox"
+
+# KDE4
+USE="${USE} nepomuk plasma webkit"
+
+# gnome
+USE="${USE} gnome-keyring"
+
+# TEX
+USE="${USE} kpathsea latex" #tetex
+
+# JAVA
+USE="${USE} java javamail javascript"
+
+# DATABASE STUFF
+USE="${USE} mysql sql sqlite sqlite3"
+
+# [DE]COMPRESS
+USE="${USE} 7zip bzip2 lzo rar zlib"
+
+# CRYPT - USE=crypt has been changed to USE=loop-aes
+USE="${USE} crypt gnutls libgcrypt loop-aes nss otr ssl"
+
+# MULTIMEDIA, IMAGE
+	# support engines, framework...
+USE="${USE} -oss"
+USE="${USE} alsa amarok fame ffmpeg gstreamer jingle lame mjpeg mplayer phonon shorten soundtouch sox telepathy wavpack xine"
+	# support codecs, container
+USE="${USE} a52 aac aften amr amrnb amrwb asf dirac divx dts dv faac faad flac"
+USE="${USE} mad matroska mp2 mp3 mp4 midi mpeg mpegts musepack nut"
+USE="${USE} ogg ogm pcm quicktime real realmedia schroedinger speex theora twolame"
+USE="${USE} vorbis win32codecs wma wmp x264 xvid" 
+	# others
+USE="${USE} audiofile cdaudio cdda cddax cddb cdio cdparanoia daap dvb dvdread dvdnav encode ladspa libsamplerate mikmod openal osc pvr sndfile sound timidity vcdinfo vcdx vhook"
+USE="${USE} live mp4live rtsp"
+USE="${USE} id3tag taglib tagwriting"
+USE="${USE} exif gif jpeg jpeg2k mng openexr png pnm svg tiff wmf xpm"
+# text to speach
+USE="${USE} mbrola"
+
+# X: window manager, graphic, sound
+	# deactivate sound daemons
+USE="${USE} -arts -esd"
+	# deactivate gnome, gtk
+USE="${USE} -gnome -gtk -gtk2 -wxwindows"
+	# language tcl and the tk gui
+USE="${USE} tcl tcltk tk"
+	# activate kde, qt
+USE="${USE} kde kipi konqueror qt -qt3 qt3support qt4 qt-dbus qt-webkit"
+	# deactivate the kde handbook stuff
+USE="${USE} -handbook"
+	# 3D, graphic acceleration, ...
+USE="${USE} aiglx cairo dri glitz opengl sdl xinerama"
+	# others
+USE="${USE} X xcomposite xosd xscreensaver xv"
+
+# FRAMEBUFFER SUPPORT
+USE="${USE} fbcon fbdev fbsplash directfb"
+
+# objective C[++] support
+USE="${USE} objc objc++ objc-gc"
+
+
+################################################################################
+
+#DISTDIR="/media/wd500gb_a1/distfiles"
+
+#GENTOO_MIRRORS="http://pandemonium.tiscali.de/pub/gentoo/ ftp://pandemonium.tiscali.de/pub/gentoo/ http://ftp-stud.fht-esslingen.de/pub/Mirrors/gentoo/ ftp://ftp-stud.fht-esslingen.de/pub/Mirrors/gentoo/"
+#GENTOO_MIRRORS="http://ftp-stud.fht-esslingen.de/pub/Mirrors/gentoo/ ftp://ftp-stud.fht-esslingen.de/pub/Mirrors/gentoo/"
+#GENTOO_MIRRORS="http://pandemonium.tiscali.de/pub/gentoo/ ftp://pandemonium.tiscali.de/pub/gentoo/"
+SYNC="rsync://rsync.europe.gentoo.org/gentoo-portage"
+
+APACHE2_MODULES="actions alias auth_basic auth_digest authn_anon authn_dbd authn_dbm authn_default authn_file authz_dbm authz_default authz_groupfile authz_host authz_owner authz_user autoindex cache dav dav_fs dav_lock dbd deflate dir disk_cache env expires ext_filter file_cache filter headers ident imagemap include info log_config logio mem_cache mime mime_magic negotiation proxy proxy_ajp proxy_balancer proxy_connect proxy_http rewrite setenvif so speling status unique_id userdir usertrack vhost_alias"
+APACHE2_MPMS="worker"
+
+#SANE_BACKENDS="the_name_of_your_backend_goes_here"
+
+PORTAGE_ELOG_CLASSES="warn error info"
+PORTAGE_ELOG_SYSTEM="save"
+
+#####
+
+# for revdep-rebuild
+SEARCH_DIRS_MASK="/usr/lib/gcc/i686-pc-linux-uclibc /usr/lib/zattoo /usr/share/zattoo_player"

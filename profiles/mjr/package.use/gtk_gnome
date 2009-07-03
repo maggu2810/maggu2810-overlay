@@ -1,0 +1,6 @@
+# for the nvidia-settings configuration gui
+x11-drivers/nvidia-drivers gtk
+
+# dependency required by "net-im/empathy-2.26.2" [ebuild]
+=net-libs/libsoup-2.26.2 gnome
+media-libs/libcanberra gtk
