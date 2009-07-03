@@ -1,0 +1,34 @@
+cross-i686-pc-linux-uclibc/binutils x86 ~x86
+cross-i686-pc-linux-uclibc/gcc x86 ~x86
+cross-i686-pc-linux-uclibc/linux-headers x86 ~x86
+cross-i686-pc-linux-uclibc/uclibc x86 ~x86
+cross-i686-pc-linux-uclibc/gdb x86 ~x86
+cross-i686-pc-linux-uclibc/insight x86 ~x86
+
+cross-i386-mips-linux-uclibc/binutils x86 ~x86
+cross-i386-mips-linux-uclibc/gcc x86 ~x86
+cross-i386-mips-linux-uclibc/linux-headers x86 ~x86
+cross-i386-mips-linux-uclibc/uclibc x86 ~x86
+cross-i386-mips-linux-uclibc/gdb x86 ~x86
+cross-i386-mips-linux-uclibc/insight x86 ~x86
+
+cross-mips-unknown-linux-uclibc/binutils mips ~mips -x86 -~x86
+cross-mips-unknown-linux-uclibc/gcc mips ~mips -x86 -~x86
+cross-mips-unknown-linux-uclibc/linux-headers mips ~mips -x86 -~x86
+cross-mips-unknown-linux-uclibc/uclibc mips ~mips -x86 -~x86
+cross-mips-unknown-linux-uclibc/gdb mips ~mips -x86 -~x86
+cross-mips-unknown-linux-uclibc/insight mips ~mips -x86 -~x86
+
+cross-powerpc-603e-linux-gnu/binutils ppc ~ppc -x86 -~x86
+cross-powerpc-603e-linux-gnu/gcc ppc ~ppc -x86 -~x86
+cross-powerpc-603e-linux-gnu/linux-headers ppc ~ppc -x86 -~x86
+cross-powerpc-603e-linux-gnu/glibc ppc ~ppc -x86 -~x86
+cross-powerpc-603e-linux-gnu/gdb ppc ~ppc -x86 -~x86
+cross-powerpc-603e-linux-gnu/insight ppc ~ppc -x86 -~x86
+
+cross-ppc-unknown-linux-gnu/binutils * ~* -x86 -~x86
+cross-ppc-unknown-linux-gnu/gcc * ~* -x86 -~x86
+cross-ppc-unknown-linux-gnu/linux-headers * ~* -x86 -~x86
+cross-ppc-unknown-linux-gnu/glibc * ~* -x86 -~x86
+cross-ppc-unknown-linux-gnu/gdb * ~* -x86 -~x86
+cross-ppc-unknown-linux-gnu/insight * ~* -x86 -~x86

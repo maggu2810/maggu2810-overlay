@@ -1,0 +1,25 @@
+## workaround
+net-analyzer/nmap lua
+
+media-sound/noteedit tse3
+
+## let know kopete a set of plugins and protocols
+kde-base/kopete addbookmarks alias autoreplace connectionstatus contactnotes crypt gadu groupwise highlight history irc jingle latex messenger netmeeting nowlistening qq sametime slp sms ssl statistics telepathy testbed texteffect translator webpresence winpopup yahoo
+## like to use kmplayer (plugin) to play flash over the netscape plugin
+media-video/kmplayer npp
+
+## use NOT a static-qt skype version (fonts could be missing)
+net-im/skype -qt-static
+net-im/psi extras
+net-misc/aria2 metalink
+
+
+app-editors/vim vim-with-x
+
+app-emulation/virtualbox-ose additions
+app-emulation/virtualbox-bin additions
+
+app-misc/screen multiuser
+dev-games/cegui devil
+sys-apps/hal laptop disk-partition
+net-dialup/slmodem -usb

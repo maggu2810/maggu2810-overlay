@@ -1,0 +1,4 @@
+# for sys-apps/qingy-0.9.9 the X use flag of
+# directfb >= 1.2.6 must be deactivated
+
+dev-libs/DirectFB -X

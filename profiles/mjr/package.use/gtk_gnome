@@ -1,6 +1,36 @@
 # for the nvidia-settings configuration gui
 x11-drivers/nvidia-drivers gtk
 
+
+# this is needed by gnome-control-center
 # dependency required by "net-im/empathy-2.26.2" [ebuild]
 =net-libs/libsoup-2.26.2 gnome
 media-libs/libcanberra gtk
+
+
+dev-dotnet/mono-addins gtk # needed by dev-util/monodevelop
+dev-lang/mono moonlight
+
+
+# because there is only a gtk frontend and no qt lets build this (besser than none)
+net-analyzer/wireshark gtk
+
+
+#**************************************************************
+#                ARE YOU SURE YOU WANT TO BUILD WITHOUT GTK?
+# BECAUSE mplayerplug-in WITHOUT GTK TAKES AWAY FUNCITIONALITY
+#**************************************************************
+www-plugins/mplayerplug-in gtk
+
+
+# this is needed by gimp
+app-text/poppler-bindings gtk
+
+
+# the qt frontend is broken (2009-03-16)
+media-video/avidemux gtk
+net-libs/libsoup gnome
+
+
+# amarok need libgpod with +gtk (2009-06-08)
+media-libs/libgpod gtk

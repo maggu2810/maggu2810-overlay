@@ -1,0 +1,2 @@
+# gtk is needed for nsplugin
+www-plugins/gnash -fb -kde -kde4 gtk
