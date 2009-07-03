@@ -1,0 +1,30 @@
+################################################################################
+################################################################################
+# The following options must be uncommented and adjusted for the machines
+################################################################################
+################################################################################
+
+#CHOST="i686-pc-linux-gnu"
+#CFLAGS="-O2 -march=native -pipe -ggdb" # -march=athlon64
+#CXXFLAGS="${CFLAGS}"
+#MAKEOPTS="-j2"
+
+#ACCEPT_KEYWORDS="~x86"
+
+### DirectFB: linuxinput lirc ps2mouse
+#INPUT_DEVICES="keyboard mouse evdev joystick synaptics linuxinput lirc ps2mouse"
+#VIDEO_CARDS="vesa fbdev radeon fglrx"
+#ALSA_CARDS="usb-audio via82xx via82xx-modem"
+#LIRC_DEVICES="devinput inputlirc irlink"
+
+#PORTAGE_NICENESS=19
+#FEATURES="splitdebug parallel-fetch collision-protect" # collision-protect
+#LINGUAS="en de"
+
+### CPU-FLAGS
+#USE="${USE} 3dnow 3dnowext mmx mmxext pae sse sse2"
+
+#PORTDIR_OVERLAY="/usr/local/portage/overlay"
+#source /usr/local/portage/layman/make.conf
+#PORTDIR_OVERLAY="${PORTDIR_OVERLAY} /usr/local/portage/overlay"
+
