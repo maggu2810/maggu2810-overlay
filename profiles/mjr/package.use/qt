@@ -1,4 +1,0 @@
-# >>> Emerging (2 of 3) x11-libs/qt-gui-4.4.2-r2
-# * This package requires '~x11-libs/qt-core-4.4.2' to be built with the following USE flags: 'glib*'.
-
-x11-libs/qt-core glib* glib
