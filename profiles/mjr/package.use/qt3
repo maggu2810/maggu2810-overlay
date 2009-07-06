@@ -1,4 +1,1 @@
 app-text/djvu qt3
-
-# there is no other qt frontend
-app-crypt/pinentry qt3
