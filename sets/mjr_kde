@@ -9,6 +9,7 @@ kde-base/kdenetwork-meta
 kde-base/kdepim-meta
 kde-base/kdesdk-meta
 kde-base/kdeutils-meta
+kde-misc/kdiff3
 kde-misc/krusader
 media-sound/amarok
 media-video/smplayer
