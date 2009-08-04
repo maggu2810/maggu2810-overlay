@@ -10,7 +10,6 @@ media-video/kmplayer npp
 
 ## use NOT a static-qt skype version (fonts could be missing)
 net-im/skype -qt-static
-net-im/psi extras
 net-misc/aria2 metalink
 
 
