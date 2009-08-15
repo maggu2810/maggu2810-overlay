@@ -25,9 +25,9 @@ USE="${USE} bluetooth irda irmc wifi"
 
 # APACHE, HTML, NETWORKING ...
 USE="${USE} apache2 cgi php tidy"
-USE="${USE} css curl curlwrappers dhcp ftp http net network networking nfs samba"
+USE="${USE} css curl curlwrappers dhcp ftp http net network networking nfs samba webdav"
 USE="${USE} howl-compat mdnsresponder-compat"
-USE="${USE} avahi zeroconf l7filter"
+USE="${USE} avahi bonjour upnp zeroconf l7filter"
 
 # MOBILE PHONE
 USE="${USE} gnokii obex sms"
