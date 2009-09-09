@@ -1,4 +1,5 @@
 net-fs/samba
-net-fs/mount-cifs
+net-fs/samba-client
+#net-fs/samba-server
 net-fs/nfs-utils
 net-fs/fusesmb
