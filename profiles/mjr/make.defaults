@@ -39,7 +39,7 @@ USE="${USE} fuse ntfs reiserfs sysfs"
 USE="${USE} nls unicode userlocales"
 
 # SERVICES AND SOME SUPPORT STUFF
-USE="${USE} acpi -apm dbus hal"
+USE="${USE} acpi -apm consolekit dbus hal policykit"
 
 # PERIPHAL DEVICES
 USE="${USE} usb"
@@ -60,7 +60,7 @@ USE="${USE} cvs darcs git subversion"
 USE="${USE} \
      accessibility acl \
      bash-completion \
-     chroot chm cjk consolekit cxx \
+     chroot chm cjk cxx \
      dvi djvu \
      fam festival flash fmod \
      gd gimp gmedia gphoto2 graphviz gs \
