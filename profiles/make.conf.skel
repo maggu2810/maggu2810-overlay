@@ -24,7 +24,5 @@
 ### CPU-FLAGS
 #USE="${USE} 3dnow 3dnowext mmx mmxext pae sse sse2"
 
-#PORTDIR_OVERLAY="/usr/local/portage/overlay"
-#source /usr/local/portage/layman/make.conf
 #PORTDIR_OVERLAY="${PORTDIR_OVERLAY} /usr/local/portage/overlay"
-
+#source /usr/local/portage/layman/make.conf

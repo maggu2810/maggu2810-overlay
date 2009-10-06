@@ -3,7 +3,7 @@
 
 	<overlay
 		type = "svn"
-		src  = "http://opensvn.csie.org/maggu2810_overlay/"
+		src  = "https://opensvn.csie.org/maggu2810_overlay/"
 		contact = "maggu2810@gentooforum.de"
 		status  = "unofficial"
 		name = "maggu2810_overlay">
