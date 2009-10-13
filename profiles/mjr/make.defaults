@@ -91,7 +91,7 @@ USE="${USE} java javamail javascript"
 USE="${USE} mysql sql sqlite sqlite3"
 
 # [DE]COMPRESS
-USE="${USE} 7zip bzip2 lzo rar zlib"
+USE="${USE} 7zip bzip2 lzma lzo rar zip zlib"
 
 # CRYPT - USE=crypt has been changed to USE=loop-aes
 USE="${USE} crypt gnutls libgcrypt loop-aes nss otr ssl"
