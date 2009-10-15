@@ -98,8 +98,8 @@ USE="${USE} crypt gnutls libgcrypt loop-aes nss otr ssl"
 
 # MULTIMEDIA, IMAGE
 	# support engines, framework...
-USE="${USE} -oss"
-USE="${USE} alsa amarok fame ffmpeg gstreamer jingle lame mjpeg mplayer phonon shorten soundtouch sox telepathy wavpack xine"
+USE="${USE} alsa -oss pulseaudio"
+USE="${USE} amarok fame ffmpeg gstreamer jingle lame mjpeg mplayer phonon shorten soundtouch sox telepathy wavpack xine"
 	# support codecs, container
 USE="${USE} amr amrnb amrwb opencore-amr"
 USE="${USE} a52 aac aften asf dirac divx dts dv faac faad flac gsm"
