@@ -1,3 +1,7 @@
+# needed by grip
+gnome-base/gvfs gnome
+
+
 # for the nvidia-settings configuration gui
 x11-drivers/nvidia-drivers gtk
 
