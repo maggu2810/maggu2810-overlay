@@ -1,3 +1,5 @@
+net-analyzer/iptraf
+net-analyzer/nethogs
 net-dns/dnsmasq
 net-analyzer/netcat6
 net-analyzer/wireshark

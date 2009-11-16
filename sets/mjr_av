@@ -1,6 +1,9 @@
 media-libs/libdvdcss
 media-sound/picard
+media-video/avidemux
 media-video/ffmpeg
+media-video/lsdvd
 media-video/mplayer
 media-video/transcode
 media-video/vcdgear
+media-video/vlc
