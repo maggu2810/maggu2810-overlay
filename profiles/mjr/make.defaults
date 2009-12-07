@@ -155,7 +155,7 @@ APACHE2_MPMS="worker"
 
 #SANE_BACKENDS="the_name_of_your_backend_goes_here"
 
-PORTAGE_ELOG_CLASSES="warn error info"
+PORTAGE_ELOG_CLASSES="warn error info" # log qa
 PORTAGE_ELOG_SYSTEM="save"
 
 #####
