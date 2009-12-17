@@ -1,5 +1,5 @@
 app-admin/testdisk
-sys-block/gpart
+#sys-block/gpart
 sys-fs/dosfstools
 sys-fs/mtd-utils
 sys-fs/multipath-tools
