@@ -1,7 +1,7 @@
 app-shells/gentoo-bashcomp
 
-sys-devel/crossdev
-sys-devel/crossdev-wrappers
+#sys-devel/crossdev
+#sys-devel/crossdev-wrappers
 
 app-text/docbook-sgml
 dev-tcltk/expect
