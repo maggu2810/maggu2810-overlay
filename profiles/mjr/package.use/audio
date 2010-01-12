@@ -1,0 +1,4 @@
+# use for analog tv
+# padsp sox -c 2 -s -r 32000 -t ossdsp /dev/dsp1 -t ossdsp -r 32000 /dev/dsp
+# padsp sox -t ossdsp /dev/dsp1 -t ossdsp /dev/dsp
+media-sound/sox oss
