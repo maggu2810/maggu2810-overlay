@@ -1,4 +1,4 @@
 x11-themes/gtk-engines-qtcurve
 #x11-themes/qtcurve # need kdelibs:3.5
 x11-themes/qtcurve-qt4
-x11-themes/gtk-engines-qt
+kde-misc/kcm_gtk
