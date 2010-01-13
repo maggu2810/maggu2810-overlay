@@ -1,2 +1,3 @@
-# 2009-12-17 needed by firefox
-dev-db/sqlite fts3
+# 2009-12-17 needed by firefox: fts3
+# 2010-01-12 needed by 'dev-util/git-1.6.6-r2', 'dev-perl/DBD-SQLite-1.29-r1': extensions
+dev-db/sqlite fts3 extensions
