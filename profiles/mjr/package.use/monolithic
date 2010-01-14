@@ -8,8 +8,13 @@ kde-base/kopete addbookmarks alias autoreplace connectionstatus contactnotes cry
 ## like to use kmplayer (plugin) to play flash over the netscape plugin
 media-video/kmplayer npp
 
+
 ## use NOT a static-qt skype version (fonts could be missing)
-net-im/skype -qt-static
+#net-im/skype -qt-static
+## 2009-12-09: USE a static-qt skype version (skype is not working with Qt 4.6)
+net-im/skype qt-static
+
+
 net-misc/aria2 metalink
 
 
