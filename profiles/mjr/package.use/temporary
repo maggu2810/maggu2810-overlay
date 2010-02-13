@@ -2,3 +2,6 @@
 =sys-apps/util-linux-2.16 -loop-aes
 =sys-apps/util-linux-2.16.1 -loop-aes
 sys-apps/util-linux -loop-aes
+
+# 2010-02-03: need older than actual version of xulrunner
+=media-video/vlc-1.0.5 -nsplugin
