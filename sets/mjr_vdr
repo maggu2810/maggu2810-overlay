@@ -1,6 +1,6 @@
 media-plugins/vdr-analogtv
 media-plugins/vdr-epgsearch
-media-plugins/vdr-music
+#media-plugins/vdr-music
 media-plugins/vdr-osdteletext
 media-plugins/vdr-remote
 media-plugins/vdr-wirbelscan
