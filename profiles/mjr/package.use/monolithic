@@ -4,7 +4,7 @@ net-analyzer/nmap lua
 media-sound/noteedit tse3
 
 ## let know kopete a set of plugins and protocols
-kde-base/kopete addbookmarks alias autoreplace connectionstatus contactnotes crypt gadu groupwise highlight history irc jingle latex messenger netmeeting nowlistening qq sametime skype slp sms ssl statistics telepathy testbed texteffect translator webpresence winpopup yahoo
+kde-base/kopete addbookmarks alias autoreplace connectionstatus contactnotes crypt gadu groupwise highlight history irc jingle latex meanwhile messenger netmeeting nowlistening qq sametime skype slp sms ssl statistics telepathy testbed texteffect translator webpresence winpopup yahoo
 ## like to use kmplayer (plugin) to play flash over the netscape plugin
 media-video/kmplayer npp
 

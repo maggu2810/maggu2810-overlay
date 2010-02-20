@@ -1,3 +1,4 @@
 # 2009-12-17 needed by firefox: fts3
 # 2010-01-12 needed by 'dev-util/git-1.6.6-r2', 'dev-perl/DBD-SQLite-1.29-r1': extensions
-dev-db/sqlite fts3 extensions
+# 2010-02-14 needed by firefox: secure-delete
+dev-db/sqlite fts3 extensions secure-delete
