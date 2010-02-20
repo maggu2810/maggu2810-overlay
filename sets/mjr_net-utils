@@ -1,0 +1,13 @@
+net-analyzer/iptraf
+net-analyzer/nethogs
+net-dns/avahi
+net-dns/dnsmasq
+net-analyzer/arptools
+net-analyzer/netcat6
+net-analyzer/wireshark
+net-analyzer/nmap
+net-dns/bind-tools
+net-misc/dhcpcd
+net-misc/jwhois
+net-misc/ntp
+sys-auth/nss-mdns
