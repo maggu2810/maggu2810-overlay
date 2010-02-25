@@ -38,3 +38,10 @@ net-libs/libsoup gnome
 
 # amarok need libgpod with +gtk (2009-06-08)
 media-libs/libgpod gtk
+
+# without gtk only cli
+net-im/pidgin gtk
+
+# needed by gnucash
+x11-libs/goffice gnome
+gnome-extra/libgsf gnome
