@@ -1,4 +1,4 @@
-# Copyright 1999-2008 Gentoo Foundation
+# Copyright 1999-2006 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -21,6 +21,7 @@ RDEPEND="dev-games/physfs
 # Some of the data files are zipped
 DEPEND="${RDEPEND}
 	app-arch/zip
+	dev-libs/boost
 	dev-util/cmake"
 
 dir=${GAMES_DATADIR}/${PN}
