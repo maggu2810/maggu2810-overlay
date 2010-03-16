@@ -5,7 +5,7 @@
 inherit autotools subversion eutils games
 
 DESCRIPTION="Blobby Volley 2 - 1-on-1 volleyball"
-HOMEPAGE="http://blobby.redio.de"
+HOMEPAGE="http://blobby.sourceforge.net"
 SRC_URI=""
 
 ESVN_REPO_URI="https://blobby.svn.sourceforge.net/svnroot/blobby/trunk"
