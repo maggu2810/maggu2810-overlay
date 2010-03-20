@@ -233,4 +233,19 @@
 		</description>
 	</overlay>
 
+    <overlay
+        type = "svn"
+        src  = "http://svn.xmw.de/gentoo-overlay"
+        contact = "gentoo@xmw.de"
+        status  = "unofficial"
+        name = "xmw">
+        <link>
+            http://svn.xmw.de/gentoo-overlay
+	    http://xmw.de/mwiki/index.php/Linux_Contributions
+        </link>
+        <description>
+	    dem Michael Weber sein lusties overlay
+        </description>
+    </overlay>
+
 </layman>
