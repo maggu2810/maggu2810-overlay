@@ -1,6 +1,5 @@
 dev-util/subversion
 dev-util/cvs
-#dev-util/darcs
-dev-util/git
-dev-util/mercurial
+dev-vcs/git
+dev-vcs/mercurial
 

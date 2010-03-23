@@ -58,7 +58,7 @@ USE="${USE} ipod joystick logitech-mouse"
 USE="${USE} blas lapack"
 
 # CMS
-USE="${USE} cvs darcs git subversion"
+USE="${USE} cvs git subversion"
 
 # the following USE-Flags must be sorted
 USE="${USE} \
