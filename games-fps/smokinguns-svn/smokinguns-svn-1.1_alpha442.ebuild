@@ -4,7 +4,7 @@
 
 EAPI="2"
 
-MY_DELIM="_pre"
+MY_DELIM="_alpha"
 MY_PN="${PN/-svn/}"
 MY_PREV="${PV##*${MY_DELIM}}"
 MY_PV="${PV/${MY_DELIM}${MY_PREV}/}"

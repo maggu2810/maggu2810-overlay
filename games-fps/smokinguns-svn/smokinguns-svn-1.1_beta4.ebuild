@@ -4,10 +4,16 @@
 
 EAPI="2"
 
-MY_DELIM="_pre"
+# To look with revision is tagged for which version:
+# http://smokinguns.svn.sourceforge.net/viewvc/smokinguns/tags/
+MY_PREV=494
+
+# remove the -svn for the package name
 MY_PN="${PN/-svn/}"
-MY_PREV="${PV##*${MY_DELIM}}"
-MY_PV="${PV/${MY_DELIM}${MY_PREV}/}"
+
+# remove _pre, _beta, etc. for the package version
+MY_DELIM="_"
+MY_PV="${PV%%${MY_DELIM}*}"
 
 ESVN_REPO_URI="https://${MY_PN}.svn.sourceforge.net/svnroot/${MY_PN}/branches/@${MY_PREV}"
 
