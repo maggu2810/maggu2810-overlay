@@ -1,6 +1,6 @@
-# Copyright 1999-2009 Gentoo Foundation
+# Copyright 1999-2010 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/sci-libs/libmems/libmems-9999.ebuild,v 1.1 2009/04/03 16:36:24 weaver Exp $
+# $Header: $
 
 EAPI="2"
 
@@ -23,8 +23,8 @@ IUSE=""
 KEYWORDS=""
 
 DEPEND="virtual/opengl
-        media-libs/openal
-        media-libs/libsdl"
+	media-libs/openal
+	media-libs/libsdl"
 RDEPEND="${DEPEND}
 	games-fps/${MY_PN}-data"
 
@@ -57,7 +57,7 @@ src_install() {
 	#	build/release-linux-"${ARCH}"/"${MY_PN}"."${ARCH}" \
 	#	"${D}/${MY_DEST}/." || die "Install failed!"
 	# ------------------------------------------------
-	
+
 	# ------------------------------------------------
 	# common section
 	games_make_wrapper "${MY_PN}"           "${MY_DEST}"/"${MY_PN}"."${ARCH}"           "${MY_DEST}" "${MY_DEST}"
