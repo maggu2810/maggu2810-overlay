@@ -127,7 +127,7 @@ USE="${USE} -gnome -gtk -gtk2 -wxwindows"
 	# language tcl and the tk gui
 USE="${USE} tcl tcltk tk"
 	# activate kde, qt
-USE="${USE} kde kipi konqueror qt -qt3 qt3support qt4 qt-dbus qt-webkit"
+USE="${USE} kde kipi konqueror qt qt3support qt4 qt-dbus qt-webkit"
 	# deactivate the kde handbook stuff
 USE="${USE} -handbook"
 	# 3D, graphic acceleration, ...
