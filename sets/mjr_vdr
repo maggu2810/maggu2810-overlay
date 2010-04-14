@@ -1,12 +1,13 @@
-media-plugins/vdr-analogtv
 media-plugins/vdr-epgsearch
 #media-plugins/vdr-music
 media-plugins/vdr-osdteletext
 media-plugins/vdr-remote
-media-plugins/vdr-wirbelscan
 media-plugins/vdr-xineliboutput
 media-tv/linuxtv-dvb-apps
 media-tv/w_scan
 media-video/noad
 media-video/vdr
 www-misc/vdradmin-am
+
+# check legal issues of your country
+#media-plugins/vdr-sc

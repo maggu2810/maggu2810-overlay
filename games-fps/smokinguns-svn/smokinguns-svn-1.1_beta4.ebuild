@@ -1,13 +1,19 @@
-# Copyright 1999-2009 Gentoo Foundation
+# Copyright 1999-2010 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/sci-libs/libmems/libmems-9999.ebuild,v 1.1 2009/04/03 16:36:24 weaver Exp $
+# $Header: $
 
 EAPI="2"
 
-MY_DELIM="_pre"
+# To look with revision is tagged for which version:
+# http://smokinguns.svn.sourceforge.net/viewvc/smokinguns/tags/
+MY_PREV=494
+
+# remove the -svn for the package name
 MY_PN="${PN/-svn/}"
-MY_PREV="${PV##*${MY_DELIM}}"
-MY_PV="${PV/${MY_DELIM}${MY_PREV}/}"
+
+# remove _pre, _beta, etc. for the package version
+MY_DELIM="_"
+MY_PV="${PV%%${MY_DELIM}*}"
 
 ESVN_REPO_URI="https://${MY_PN}.svn.sourceforge.net/svnroot/${MY_PN}/branches/@${MY_PREV}"
 
@@ -23,8 +29,8 @@ IUSE=""
 KEYWORDS=""
 
 DEPEND="virtual/opengl
-        media-libs/openal
-        media-libs/libsdl"
+	media-libs/openal
+	media-libs/libsdl"
 RDEPEND="${DEPEND}
 	games-fps/${MY_PN}-data"
 
@@ -57,7 +63,7 @@ src_install() {
 	#	build/release-linux-"${ARCH}"/"${MY_PN}"."${ARCH}" \
 	#	"${D}/${MY_DEST}/." || die "Install failed!"
 	# ------------------------------------------------
-	
+
 	# ------------------------------------------------
 	# common section
 	games_make_wrapper "${MY_PN}"           "${MY_DEST}"/"${MY_PN}"."${ARCH}"           "${MY_DEST}" "${MY_DEST}"
