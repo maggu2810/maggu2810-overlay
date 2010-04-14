@@ -22,3 +22,5 @@ app-misc/ckermit
 net-dialup/minicom
 
 net-ftp/atftp
+
+dev-libs/libelf
