@@ -1,3 +1,0 @@
-net-wireless/wpa_supplicant qt4 -qt3
-app-text/poppler-bindings qt4 -qt3
-net-dns/avahi qt4 -qt3
