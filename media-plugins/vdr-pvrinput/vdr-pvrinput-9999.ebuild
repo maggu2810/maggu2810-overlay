@@ -14,9 +14,11 @@ if [[ ${PV} == "9999" ]] ; then
 		EGIT_PROJECT="pvrinput"
 		inherit git
         KEYWORDS=""
+		DEPEND=">=media-video/vdr-1.7.13"
 else
 		SRC_URI="http://projects.vdr-developer.org/attachments/download/278/${MY_P}.tgz"
         KEYWORDS="~x86"
+		DEPEND=">=media-video/vdr-1.2."
 fi
 
 DESCRIPTION="VDR Plugin: Use a PVR* card as input device"
@@ -27,7 +29,6 @@ SLOT="0"
 KEYWORDS="~x86"
 IUSE=""
 
-DEPEND=">=media-video/vdr-1.2.6"
 RDEPEND="${DEPEND}"
 
 S="${WORKDIR}/${MY_P#vdr-}"
