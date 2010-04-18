@@ -10,15 +10,15 @@ MY_PV=$(replace_all_version_separators '-')
 MY_P="${PN}-${MY_PV}"
 
 if [[ ${PV} == "9999" ]] ; then
-        EGIT_REPO_URI="git://projects.vdr-developer.org/vdr-plugin-pvrinput.git"
+		EGIT_REPO_URI="git://projects.vdr-developer.org/vdr-plugin-pvrinput.git"
 		EGIT_PROJECT="pvrinput"
 		inherit git
-        KEYWORDS=""
+		KEYWORDS=""
 		DEPEND=">=media-video/vdr-1.7.13"
 else
 		SRC_URI="http://projects.vdr-developer.org/attachments/download/278/${MY_P}.tgz"
-        KEYWORDS="~x86"
-		DEPEND=">=media-video/vdr-1.2."
+		KEYWORDS="~x86"
+		DEPEND=">=media-video/vdr-1.2.6"
 fi
 
 DESCRIPTION="VDR Plugin: Use a PVR* card as input device"
