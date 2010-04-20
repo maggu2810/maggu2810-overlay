@@ -36,11 +36,9 @@ src_prepare() {
 }
 
 src_compile() {
-#	cd "${S}/build/autotools"
 	emake || die "Failed to compilerize"
 }
 
 src_install() {
-#	cd "${S}/build/autotools"
 	emake DESTDIR="${D}" install || die "Failed to installerize"
 }
