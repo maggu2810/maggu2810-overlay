@@ -1,0 +1,48 @@
+--- ioq3-urt-git/ioq3-urt/Makefile.old	2010-03-07 04:56:29.000000000 +0100
++++ ioq3-urt-git/ioq3-urt/Makefile	2010-04-07 23:36:29.861053960 +0200
+@@ -1313,7 +1313,6 @@
+ 
+ Q3OBJ = \
+   $(B)/client/ioq3-urt.o \
+-  $(B)/client/sam.o \
+   $(B)/client/cl_cgame.o \
+   $(B)/client/cl_cin.o \
+   $(B)/client/cl_console.o \
+--- ioq3-urt-git/ioq3-urt/code/client/cl_console.c.old	2010-03-17 14:47:39.000000000 +0100
++++ ioq3-urt-git/ioq3-urt/code/client/cl_console.c	2010-04-07 23:53:32.355377480 +0200
+@@ -82,7 +82,9 @@
+ 	Con_ClearNotify ();
+ 	Key_SetCatcher( Key_GetCatcher( ) ^ KEYCATCH_CONSOLE );
+ 
++#ifdef _WIN32
+ 	clu.SDL_EnableKeyRepeatWin(); //ioq3-urt: replenish the repeat/interval values for keyboard
++#endif
+ }
+ 
+ /*
+--- ioq3-urt-git/ioq3-urt/code/client/cl_keys.c.old	2010-03-17 14:33:10.000000000 +0100
++++ ioq3-urt-git/ioq3-urt/code/client/cl_keys.c	2010-04-07 23:56:47.758210635 +0200
+@@ -1387,7 +1387,9 @@
+ 		Key_ClearStates( );
+ 
+ 	keyCatchers = catcher;
++#ifdef _WIN32
+ 	clu.keyboard_done = qfalse;
++#endif
+ }
+ 
+ // This must not exceed MAX_CMD_LINE
+--- ioq3-urt-git/ioq3-urt/code/renderer/qgl.h.old	2010-02-22 22:17:35.000000000 +0100
++++ ioq3-urt-git/ioq3-urt/code/renderer/qgl.h	2010-04-08 00:06:19.238381253 +0200
+@@ -27,9 +27,9 @@
+ #define __QGL_H__
+ 
+ #ifdef USE_LOCAL_HEADERS
+-#	include "../SDL12/include/SDL_opengl.h"
++#	include "SDL_opengl.h"
+ #else
+-#	include <SDL_opengl.h>
++#	include <SDL/SDL_opengl.h>
+ #endif
+ 
+ extern void (APIENTRYP qglActiveTextureARB) (GLenum texture);
