@@ -1,4 +1,4 @@
-# Copyright 1999-2009 Gentoo Foundation
+# Copyright 1999-2010 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -19,7 +19,8 @@ SLOT="0"
 KEYWORDS="~amd64 ~x86"
 
 IUSE="css doc gtk"
-RDEPEND="sys-libs/zlib
+RDEPEND="=sys-devel/automake-1.10*
+	sys-libs/zlib
 	css? ( media-libs/libdvdcss )
 	gtk? (	>=x11-libs/gtk+-2.8
 			dev-libs/dbus-glib
@@ -31,7 +32,7 @@ RDEPEND="sys-libs/zlib
 	)"
 DEPEND="dev-lang/yasm
 	dev-lang/python
-	|| ( net-misc/wget net-misc/curl ) 
+	|| ( net-misc/wget net-misc/curl )
 	${RDEPEND}"
 
 src_configure() {
