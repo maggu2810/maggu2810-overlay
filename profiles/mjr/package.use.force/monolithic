@@ -9,8 +9,6 @@ kde-base/kopete addbookmarks alias autoreplace connectionstatus contactnotes cry
 media-video/kmplayer npp
 
 
-## use NOT a static-qt skype version (fonts could be missing)
-#net-im/skype -qt-static
 ## 2009-12-09: USE a static-qt skype version (skype is not working with Qt 4.6)
 net-im/skype qt-static
 
@@ -26,4 +24,3 @@ app-emulation/virtualbox-bin additions
 app-misc/screen multiuser
 dev-games/cegui devil
 sys-apps/hal laptop disk-partition
-net-dialup/slmodem -usb

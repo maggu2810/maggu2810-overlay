@@ -1,4 +1,0 @@
-cross-powerpc-603e-linux-gnu/binutils -selinux
-cross-powerpc-603e-linux-gnu/linux-headers -selinux
-cross-powerpc-603e-linux-gnu/glibc -selinux
-cross-powerpc-603e-linux-gnu/gcc -selinux -boundschecking -d -gtk -gcj -libffi -mudflap -objc -objc++ -objc-gc -openmp

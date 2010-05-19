@@ -1,0 +1,3 @@
+# * ERROR: net-irc/kvirc-4.0_pre4200 failed:
+# *   USE="audiofile" requires USE="oss"
+net-irc/kvirc audiofile

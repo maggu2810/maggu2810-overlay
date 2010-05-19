@@ -1,4 +1,2 @@
-kde-base/kdelibs semantic-desktop
-
 # dev-vcr/kdesvn like deactivated subversion use flag of kdesdk-kioslaves
-kde-base/kdesdk-kioslaves -subversion
+kde-base/kdesdk-kioslaves subversion
