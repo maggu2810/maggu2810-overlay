@@ -14,7 +14,7 @@
 ### DirectFB: linuxinput lirc ps2mouse
 #INPUT_DEVICES="keyboard mouse evdev joystick synaptics linuxinput lirc ps2mouse"
 #VIDEO_CARDS="vesa fbdev radeon fglrx"
-#ALSA_CARDS="usb-audio via82xx via82xx-modem"
+#ALSA_CARDS="usb-audio via82xx via82xx-modem" # not used anymore?
 #LIRC_DEVICES="devinput inputlirc irlink"
 
 #PORTAGE_NICENESS=19
@@ -22,7 +22,7 @@
 #LINGUAS="en de"
 
 ### CPU-FLAGS
-#USE="${USE} 3dnow 3dnowext mmx mmxext pae sse sse2"
+#USE="${USE} 3dnow 3dnowext 3dnowprefetch mmx mmxext pae sse sse2 sse4a svm"
 
 #PORTDIR_OVERLAY="${PORTDIR_OVERLAY} /usr/local/portage/overlay"
 #source /var/lib/layman/make.conf
