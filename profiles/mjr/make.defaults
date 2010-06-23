@@ -57,7 +57,7 @@ USE="${USE} ipod joystick logitech-mouse"
 # ALGEBRA IMPLEMENTATIONS
 USE="${USE} blas lapack"
 
-# CMS
+# VCS
 USE="${USE} cvs git subversion"
 
 # the following USE-Flags must be sorted
@@ -74,7 +74,7 @@ USE="${USE} \
      nsplugin \
      pam pcmcia postscript pdf plotutils ppds \
      slang spell srt stream streamripper \
-     v4l v4l2 videos vidix \
+     videos vidix \
      xattr xcb xml \
      xulrunner -firefox"
 
@@ -102,18 +102,19 @@ USE="${USE} crypt gnutls libgcrypt loop-aes nss otr ssl"
 # MULTIMEDIA, IMAGE
 	# support engines, framework...
 USE="${USE} alsa -oss pulseaudio"
+USE="${USE} libv4l libv4l2 v4l v4l2"
 USE="${USE} video"
-USE="${USE} vdpau"
+USE="${USE} vaapi vdpau"
 USE="${USE} amarok fame ffmpeg gstreamer jingle lame mjpeg mplayer phonon shorten soundtouch sox telepathy wavpack xine"
 	# support codecs, container
 USE="${USE} amr amrnb amrwb opencore-amr"
 USE="${USE} a52 aac aften asf dirac divx dts dv faac faad flac gsm"
 USE="${USE} mad matroska mp2 mp3 mp4 midi mpeg mpegts musepack nut"
 USE="${USE} ogg ogm pcm quicktime real realmedia schroedinger speex theora twolame"
-USE="${USE} vorbis win32codecs wma wmp x264 xvid" 
+USE="${USE} vorbis vpx win32codecs wma wmp x264 xvid" 
 	# others
 USE="${USE} audiofile cdaudio cdda cddax cddb cdio cdparanoia daap dvb dvdread dvdnav encode ladspa libsamplerate mikmod openal osc pvr sndfile sound timidity vcdinfo vcdx vhook"
-USE="${USE} live mp4live rtsp"
+USE="${USE} live mp4live rtmp rtsp"
 USE="${USE} id3tag taglib tagwriting"
 USE="${USE} exif gif jpeg jpeg2k mng openexr png pnm svg tiff wmf xpm"
 # text to speach
