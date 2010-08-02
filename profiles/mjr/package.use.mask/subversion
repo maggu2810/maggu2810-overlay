@@ -1,1 +1,1 @@
-dev-util/subversion -dso perl
+dev-vcs/subversion dso
