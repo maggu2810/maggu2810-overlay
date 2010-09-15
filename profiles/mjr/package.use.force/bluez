@@ -1,2 +1,2 @@
 net-wireless/bluez-utils examples test-programs old-daemons
-net-wireless/bluez examples test-programs old-daemons
+net-wireless/bluez examples test-programs old-daemons attrib mcap pnat
