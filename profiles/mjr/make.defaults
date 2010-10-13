@@ -91,7 +91,7 @@ USE="${USE} kpathsea latex" #tetex
 USE="${USE} java javamail javascript"
 
 # DATABASE STUFF
-USE="${USE} mysql sql sqlite sqlite3"
+USE="${USE} sql sqlite sqlite3"
 
 # [DE]COMPRESS
 USE="${USE} 7zip bzip2 lzma lzo rar zip zlib"
