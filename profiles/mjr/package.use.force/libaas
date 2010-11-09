@@ -1,0 +1,4 @@
+#emerge: there are no ebuilds built with USE flags to satisfy ">=media-libs/libass-0.9.10[enca]".
+#        (dependency required by "media-video/mplayer-1.0_rc4_p20101107" [ebuild])
+
+>=media-libs/libass-0.9.11 enca
