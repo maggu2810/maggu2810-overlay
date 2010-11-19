@@ -58,7 +58,7 @@ USE="${USE} ipod joystick logitech-mouse"
 USE="${USE} blas lapack"
 
 # VCS
-USE="${USE} cvs git subversion"
+USE="${USE} cvs git mercurial subversion"
 
 # the following USE-Flags must be sorted
 USE="${USE} \
@@ -138,6 +138,7 @@ USE="${USE} X xcomposite xosd xscreensaver xv"
 
 # FRAMEBUFFER SUPPORT
 USE="${USE} fbcon fbdev fbsplash directfb"
+USE="${USE} gpm" # not really framebuffer, but also used for comfortable console working
 
 # objective C[++] support
 USE="${USE} objc objc++ objc-gc"
