@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<herd>no-herd</herd>
+<maintainer>
+	<email>foo@gentoo.com</email>
+	<name>foo bar</name>
+	<description>Maintainer. Assign bugs to him</description>
+</maintainer>
+<maintainer>
+	<email>ziapannocchia@gmail.com</email>
+	<name>foo bar</name>
+	<description>Proxy maintainer. CC him on bugs</description>
+</maintainer>
+<longdescription lang="en">
+	A collection of Linux tools written in C for interfacing to the Nintendo Wiimote.
+	source from http://abstrakraft.org/cwiid
+	added because of this bug:
+	http://github.com/abstrakraft/cwiid/issues#issue/7
+	no other updated gentoo ebuilds seem available.
+</longdescription>
+<use>
+    <flag name="old-bluez-libs">Flag to build against hard masked bluez-libs.
+		Needed for cwiid-0.6.00
+	</flag>
+</use>
+<upstream>
+	<maintainer>
+		<email>donnie.smith@gatech.edu</email>
+    	<name>L. Donnie Smith</name>
+	</maintainer>
+	<changelog>https://github.com/abstrakraft/cwiid/blob/master/ChangeLog</changelog>
+	<doc>http://abstrakraft.org/cwiid</doc>
+	<bugs-to>https://github.com/abstrakraft/cwiid/issues</bugs-to>
+	<!--remote-id type="github">foobar</remote-id-->
+</upstream>
+</pkgmetadata>
+
