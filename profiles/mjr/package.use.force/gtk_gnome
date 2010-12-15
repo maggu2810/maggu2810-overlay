@@ -11,8 +11,9 @@ x11-drivers/nvidia-drivers gtk
 =net-libs/libsoup-2.26.2 gnome
 media-libs/libcanberra gtk
 
+# nedded by dev-util/monofrbrlop
+dev-dotnet/mono-addins gtk
 
-dev-dotnet/mono-addins gtk # needed by dev-util/monodevelop
 dev-lang/mono moonlight
 
 
