@@ -2,11 +2,11 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-inherit multilib
+inherit eutils multilib
 
 DESCRIPTION="External library to compress/decompress S3TC textures"
-HOMEPAGE="http://homepage.hispeed.ch/rscheidegger/dri_experimental/s3tc_index.html"
-SRC_URI="http://homepage.hispeed.ch/rscheidegger/dri_experimental/${PN}${PV}.tar.gz"
+HOMEPAGE="http://people.freedesktop.org/~cbrill/libtxc_dxtn/"
+SRC_URI="http://cgit.freedesktop.org/~cbrill/libtxc_dxtn/snapshot/${PN}${PV}.tar.gz"
 RESTRICT="mirror"
 LICENSE="BSD"
 SLOT="0"
@@ -28,14 +28,16 @@ src_unpack() {
 src_compile() {
 	local ABI
 	for ABI in `get_all_abis` ; do
-		emake -C "${ABI}/${PN}" || die "emake (ABI=${ABI})"
+		multilib_toolchain_setup ${ABI}
+		CC=$(tc-getCC)
+		emake -C "${ABI}/${PN}${PV}" || die "emake (ABI=${ABI})"
 	done
 }
 
 src_install() {
 	local ABI
 	for ABI in `get_all_abis` ; do
-		dolib.so "${ABI}/${PN}/libtxc_dxtn.so" || die "dolib.so libtxc_dxtn.so (ABI=${ABI})"
+		dolib.so "${ABI}/${PN}${PV}/libtxc_dxtn.so" || die "dolib.so libtxc_dxtn.so (ABI=${ABI})"
 	done
 }
 
@@ -52,7 +54,7 @@ pkg_postinst() {
 	einfo "the laws of your country, not mine!\""
 	einfo ""
 	einfo "source:"
-	einfo "http://homepage.hispeed.ch/rscheidegger/dri_experimental/s3tc_index.html"
+	einfo "${HOMEPAGE}"
 	einfo ""
 	einfo "DO NOT CONTACT the libtxc_dxtn author with support questions"
 }
