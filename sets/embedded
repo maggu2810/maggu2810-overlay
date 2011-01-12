@@ -24,3 +24,5 @@ net-dialup/minicom
 net-ftp/atftp
 
 dev-libs/libelf
+
+app-arch/lzop
