@@ -16,8 +16,6 @@ net-misc/aria2 metalink
 
 app-editors/vim vim-with-x
 
-app-emulation/virtualbox-ose additions
-app-emulation/virtualbox-bin additions
 
 app-misc/screen multiuser
 dev-games/cegui devil
