@@ -16,4 +16,5 @@ kde-misc/krename
 kde-misc/krusader
 media-plugins/kipi-plugins
 media-sound/amarok
-media-video/smplayer
+#media-video/smplayer
+www-plugins/kpartsplugin
