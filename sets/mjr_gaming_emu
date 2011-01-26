@@ -1,4 +1,5 @@
 games-emulation/qmc2
 games-emulation/sdlmame
 games-emulation/zsnes
-
+games-emulation/dosbox
+app-emulation/uae
