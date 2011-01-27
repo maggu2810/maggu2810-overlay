@@ -12,7 +12,7 @@ ESVN_REPO_URI="https://blobby.svn.sourceforge.net/svnroot/blobby/trunk"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS=""
 IUSE=""
 
 RDEPEND="dev-games/physfs
