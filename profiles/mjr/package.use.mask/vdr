@@ -1,1 +1,3 @@
 media-libs/xine-lib musepack
+kde-base/phonon-kde xine
+media-sound/phonon xine

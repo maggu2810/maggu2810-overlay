@@ -1,0 +1,3 @@
+media-libs/xine-lib vdr
+media-video/xine-ui vdr
+media-plugins/vdr-xineliboutput vdr xine X
