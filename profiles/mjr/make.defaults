@@ -73,7 +73,7 @@ USE="${USE} \
      mime mono musicbrainz \
      nsplugin \
      pam pcmcia postscript pdf plotutils ppds \
-     slang spell srt stream streamripper \
+     spell srt stream streamripper \
      videos vidix \
      xattr xcb xml \
      xulrunner -firefox"
