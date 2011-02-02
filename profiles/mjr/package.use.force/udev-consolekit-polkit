@@ -1,0 +1,3 @@
+gnome-base/gvfs gdu
+sys-block/parted device-mapper
+sys-fs/udev extras

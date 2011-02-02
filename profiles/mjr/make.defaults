@@ -43,7 +43,8 @@ USE="${USE} fuse ntfs reiserfs sysfs"
 USE="${USE} nls unicode userlocales"
 
 # SERVICES AND SOME SUPPORT STUFF
-USE="${USE} acpi -apm consolekit dbus hal policykit udev"
+USE="${USE} acpi -apm consolekit dbus -hal pam policykit udev"
+USE="${USE} device-mapper lvm"
 
 # PERIPHAL DEVICES
 USE="${USE} usb"
@@ -72,7 +73,7 @@ USE="${USE} \
      lcms libnotify libshout lirc logrotate \
      mime mono musicbrainz \
      nsplugin \
-     pam pcmcia postscript pdf plotutils ppds \
+     pcmcia postscript pdf plotutils ppds \
      spell srt stream streamripper \
      videos vidix \
      xattr xcb xml \

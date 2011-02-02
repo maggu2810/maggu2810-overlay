@@ -1,0 +1,19 @@
+gnome-base/gvfs
+sys-fs/udisks
+sys-power/upower
+sys-auth/polkit
+sys-auth/consolekit
+sys-fs/udev
+
+#
+# choose an authentication agent
+# to replace plain "Not authorized." dialog with useful password dialog
+#
+# kde
+sys-auth/polkit-kde-agent
+#
+# gtk
+#gnome-extra/polkit-gnome
+#
+# alternatively
+#lxde-base/lxpolit

@@ -46,3 +46,7 @@ net-im/pidgin gtk
 # needed by gnucash
 x11-libs/goffice gnome
 gnome-extra/libgsf gnome
+
+
+# @mjr_udev-consolekit-polkit -> gnome-base/gvfs -> sys-apps/gnome-disk-utility ->
+net-dns/avahi gtk
