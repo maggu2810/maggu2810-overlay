@@ -1,5 +1,12 @@
 games-emulation/qmc2
+
 games-emulation/sdlmame
+
 games-emulation/zsnes
+
 games-emulation/dosbox
+
+# Gamecube and Wii emulator
+games-emulation/dolphin-emu
+
 app-emulation/uae
