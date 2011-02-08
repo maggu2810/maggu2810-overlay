@@ -1,9 +1,14 @@
+# MAME
+games-emulation/sdlmame
 games-emulation/qmc2
 
-games-emulation/sdlmame
+# NES
+games-emulation/gfceux
 
+# SNES
 games-emulation/zsnes
 
+# DOS
 games-emulation/dosbox
 
 # Gamecube and Wii emulator
