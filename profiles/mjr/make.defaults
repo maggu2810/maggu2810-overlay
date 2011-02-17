@@ -143,10 +143,6 @@ USE="${USE} X xcomposite xosd xscreensaver xv"
 USE="${USE} fbcon fbdev fbsplash directfb"
 USE="${USE} gpm" # not really framebuffer, but also used for comfortable console working
 
-# objective C[++] support
-USE="${USE} objc objc++ objc-gc"
-
-
 ################################################################################
 
 #DISTDIR="/media/wd500gb_a1/distfiles"
