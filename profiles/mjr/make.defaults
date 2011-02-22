@@ -40,7 +40,7 @@ USE="${USE} gnokii obex sms"
 USE="${USE} fuse ntfs reiserfs sysfs"
 
 # LANGUAGE AND CODING STUFF
-USE="${USE} nls unicode userlocales"
+USE="${USE} icu nls unicode userlocales"
 
 # SERVICES AND SOME SUPPORT STUFF
 USE="${USE} acpi -apm consolekit dbus -hal pam policykit udev"
