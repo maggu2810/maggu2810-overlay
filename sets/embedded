@@ -21,7 +21,7 @@ sys-apps/fakeroot
 app-misc/ckermit
 net-dialup/minicom
 
-net-ftp/atftp
+net-ftp/netkit-tftp
 
 dev-libs/libelf
 
