@@ -4,6 +4,7 @@ sys-power/upower
 sys-auth/polkit
 sys-auth/consolekit
 sys-fs/udev
+sys-fs/cryptsetup
 
 #
 # choose an authentication agent
