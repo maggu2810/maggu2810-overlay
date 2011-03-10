@@ -1,0 +1,31 @@
+--- src/osd/sdl/sdl.mak
++++ src/osd/sdl/sdl.mak
+@@ -37,6 +37,10 @@
+ 
+ # NO_X11 = 1
+ 
++# comment next line to build with debugging support
++
++NO_DEBUGGER = 1
++
+ # uncomment and adapt next line to link against specific GL-Library
+ # this will also add a rpath to the executable
+ # MESA_INSTALL_ROOT = /usr/local/dfb_GL
+@@ -297,12 +301,17 @@
+ # the new debugger relies on GTK+ in addition to the base SDLMAME needs
+ # Non-X11 builds can not use the debugger
+ ifndef NO_X11
++ifndef NO_DEBUGGER
+ OSDCOREOBJS += $(SDLOBJ)/debugwin.o $(SDLOBJ)/dview.o $(SDLOBJ)/debug-sup.o $(SDLOBJ)/debug-intf.o
+ CFLAGS += `pkg-config --cflags gtk+-2.0` `pkg-config --cflags gconf-2.0` 
+ LIBS += `pkg-config --libs gtk+-2.0` `pkg-config --libs gconf-2.0`
+ CFLAGS += -DGTK_DISABLE_DEPRECATED
+ else
+ OSDCOREOBJS += $(SDLOBJ)/debugwin.o
++DEFS += -DNO_DEBUGGER
++endif # NO_DEBUGGER
++else
++OSDCOREOBJS += $(SDLOBJ)/debugwin.o
+ endif # NO_X11
+ 
+ # make sure we can find X headers
