@@ -45,7 +45,6 @@ media-plugins/gst-plugins-speex
 media-plugins/gst-plugins-taglib
 media-plugins/gst-plugins-theora
 media-plugins/gst-plugins-twolame
-media-plugins/gst-plugins-v4l
 media-plugins/gst-plugins-v4l2
 media-plugins/gst-plugins-vorbis
 media-plugins/gst-plugins-wavpack
