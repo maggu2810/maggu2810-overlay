@@ -78,7 +78,7 @@ USE="${USE} \
      spell srt stream streamripper \
      videos vidix \
      xattr xcb xml \
-     xulrunner -firefox"
+     "
 
 # KDE4
 USE="${USE} nepomuk plasma semantic-desktop webkit"
