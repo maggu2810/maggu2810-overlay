@@ -29,7 +29,8 @@ USE="${USE} bluetooth irda irmc wifi"
 
 # APACHE, HTML, NETWORKING ...
 USE="${USE} apache2 cgi php tidy"
-USE="${USE} css curl curlwrappers dhcp ftp http net network networking nfs samba webdav"
+USE="${USE} css curl curlwrappers dhcp ftp httpnet network networking nfs samba webdav"
+USE="${USE} ldap openldap"
 USE="${USE} howl-compat mdnsresponder-compat"
 USE="${USE} avahi bonjour upnp zeroconf l7filter"
 
@@ -77,10 +78,10 @@ USE="${USE} \
      spell srt stream streamripper \
      videos vidix \
      xattr xcb xml \
-     xulrunner -firefox"
+     "
 
 # KDE4
-USE="${USE} nepomuk plasma webkit"
+USE="${USE} nepomuk plasma semantic-desktop webkit"
 
 # gnome
 USE="${USE} gnome-keyring"
@@ -120,7 +121,7 @@ USE="${USE} audiofile cdaudio cdda cddax cddb cdio cdparanoia daap dvb dvdread d
 USE="${USE} ladspa libsamplerate mikmod openal osc pvr sndfile sound timidity vcdinfo vcdx vhook"
 USE="${USE} live mp4live rtmp rtsp"
 USE="${USE} id3tag taglib tagwriting"
-USE="${USE} exif gif jpeg jpeg2k mng openexr png pnm svg tiff wmf xpm"
+USE="${USE} exif gif jpeg jpeg2k mng openexr png apng pnm svg tiff webp wmf xpm"
 # text to speach
 USE="${USE} mbrola"
 
