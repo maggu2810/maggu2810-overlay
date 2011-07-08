@@ -12,5 +12,3 @@ sys-apps/portage doc
 
 x11-drivers/ati-drivers doc
 
-dev-util/qt-creator doc
-x11-libs/qt-core doc
