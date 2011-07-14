@@ -45,3 +45,6 @@ net-im/pidgin gtk
 
 # @mjr_udev-consolekit-polkit -> gnome-base/gvfs -> sys-apps/gnome-disk-utility ->
 net-dns/avahi gtk
+
+# GUI
+sys-apps/systemd gtk
