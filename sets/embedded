@@ -23,6 +23,7 @@ net-dialup/minicom
 
 net-ftp/netkit-tftp
 
-dev-libs/libelf
+#dev-libs/libelf
+dev-libs/elfutils
 
 app-arch/lzop
