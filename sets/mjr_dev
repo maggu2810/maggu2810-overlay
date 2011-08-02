@@ -1,2 +1,5 @@
 sys-devel/gdb
 app-doc/doxygen
+
+# see "man 5 make.conf" feature "installsources"
+dev-util/debugedit
