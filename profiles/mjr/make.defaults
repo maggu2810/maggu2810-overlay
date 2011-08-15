@@ -122,8 +122,10 @@ USE="${USE} ladspa libsamplerate mikmod openal osc pvr sndfile sound timidity vc
 USE="${USE} live mp4live rtmp rtsp"
 USE="${USE} id3tag taglib tagwriting"
 USE="${USE} exif gif jpeg jpeg2k mng openexr png apng pnm svg tiff webp wmf xpm"
-# text to speach
+    # text to speach
 USE="${USE} mbrola"
+    # online content
+USE="${USE} lastfm"
 
 # X: window manager, graphic, sound
 	# deactivate sound daemons
