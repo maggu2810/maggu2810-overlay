@@ -4,14 +4,13 @@
 
 EAPI="3"
 
-EMULTILIB_PKG="true"
-
 inherit versionator toolchain-funcs multilib
+
+EMULTILIB_PKG="true"
 
 if [[ ${PV} == "9999" ]] ; then
 	inherit git-2
 	EGIT_REPO_URI="git://github.com/wereHamster/${PN}.git"
-	EGIT_NOUNPACK=1
 	SRC_URI=""
 	#KEYWORDS=""
 else
@@ -19,6 +18,8 @@ else
 	KEYWORDS="~amd64 ~x86"
 fi
 
+DESCRIPTION="OpenGL video capturing library"
+HOMEPAGE="http://neopsis.com/projects/seom"
 LICENSE="GPL-2"
 SLOT="0"
 
@@ -27,12 +28,9 @@ IUSE=""
 DEPEND=">=dev-lang/yasm-0.6.0"
 RDEPEND=""
 
-DESCRIPTION="OpenGL video capturing library"
-HOMEPAGE="http://neopsis.com/projects/seom"
-
 src_unpack() {
 	if [[ ${PV} == "9999" ]] ; then
-		export EGIT_NOUNPACK=1
+		EGIT_NOUNPACK=1
 		git-2_src_unpack $@
 	fi
 
