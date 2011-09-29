@@ -1,0 +1,2 @@
+# curl: nss forces !gnutls
+net-misc/curl gnutls
