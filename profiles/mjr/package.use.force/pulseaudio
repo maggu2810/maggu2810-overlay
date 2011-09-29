@@ -1,0 +1,3 @@
+#required by media-sound/paprefs-0.9.9-r1, required by @mjr_pulseaudio, required by @selected, required by @world (argument)
+#=media-sound/pulseaudio-0.9.23-r1 gnome
+media-sound/pulseaudio gnome
