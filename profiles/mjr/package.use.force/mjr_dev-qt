@@ -1,4 +1,4 @@
-dev-util/qt-creator doc
+dev-util/qt-creator doc bineditor bookmarks fakevim perforce qtscript rss
 
 x11-libs/qt-assistant doc
 x11-libs/qt-core doc
