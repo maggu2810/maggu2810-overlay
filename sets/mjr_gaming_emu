@@ -6,7 +6,8 @@ games-emulation/qmc2
 games-emulation/gfceux
 
 # SNES
-games-emulation/zsnes
+#games-emulation/zsnes
+games-emulation/snes9x
 
 # DOS
 games-emulation/dosbox
