@@ -89,8 +89,11 @@ USE="${USE} gnome-keyring"
 # TEX
 USE="${USE} kpathsea latex" #tetex
 
+# LANGUAGE BINDINGS: etc.
 # JAVA
 USE="${USE} java javamail javascript"
+# PYTHON
+USE="${USE} python python3"
 
 # DATABASE STUFF
 USE="${USE} sql sqlite sqlite3"
