@@ -1,7 +1,7 @@
 app-admin/eselect-esd
 media-plugins/alsa-plugins
 media-plugins/gst-plugins-pulse
-media-sound/padevchooser
+#media-sound/padevchooser
 media-sound/paprefs
 media-sound/pavucontrol
 media-sound/pavumeter
