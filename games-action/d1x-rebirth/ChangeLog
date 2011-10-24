@@ -1,0 +1,46 @@
+# ChangeLog for games-action/d1x-rebirth
+# Copyright 1999-2011 Gentoo Foundation; Distributed under the GPL v2
+# $Header: /var/cvsroot/gentoo-x86/games-action/d1x-rebirth/ChangeLog,v 1.6 2011/06/20 09:20:19 tupone Exp $
+
+*d1x-rebirth-0.57.1 (24 Oct 2011)
+
+  24 Oct 2011; Markus Rathgeb <maggu2810@googlemail.com> d1x-rebirth-0.57.1.ebuild,
+  +d1x-rebirth-0.57.1.ebuild,
+  +files/d1x-rebirth-0.57.1-underlink.patch:
+  Imported from official gentoo portage tree and bumped and edited to v0.57.1
+  by me.
+
+  20 Jun 2011; Tupone Alfredo <tupone@gentoo.org> d1x-rebirth-0.56.ebuild,
+  +files/d1x-rebirth-0.56-underlink.patch:
+  Fix underlink. Bug #369483 by Diego Elio Pettenò
+
+*d1x-rebirth-0.56 (14 Oct 2010)
+
+  14 Oct 2010; Michael Sterrett <mr_bones_@gentoo.org>
+  +d1x-rebirth-0.56.ebuild:
+  version bump
+
+  09 Mar 2010; Jonathan Callen <abcd@gentoo.org> d1x-rebirth-0.50.ebuild,
+  d1x-rebirth-0.55.1.ebuild:
+  QA: When not using an absolute path, you MUST NOT use a file extension
+  (.png, .svg, or .xpm) on the icon name for make_desktop_entry
+
+*d1x-rebirth-0.55.1 (24 Aug 2009)
+
+  24 Aug 2009; Michael Sterrett <mr_bones_@gentoo.org>
+  +d1x-rebirth-0.55.1.ebuild:
+  version bump (bug #167339)
+
+  10 Jan 2007; Chris Gianelloni <wolf31o2@gentoo.org>
+  d1x-rebirth-0.50.ebuild:
+  Stable on x86 since this actually works, d1x is busted, and descent1-maps
+  complains via repoman and I don't want to mask that package, which works
+  with both.
+
+*d1x-rebirth-0.50 (09 Jan 2007)
+
+  09 Jan 2007; Chris Gianelloni <wolf31o2@gentoo.org> +metadata.xml,
+  +d1x-rebirth-0.50.ebuild:
+  Initial import. Original ebuild by Paul Bredbury <brebs@sent.com> and edited
+  by me. Closing bug #154590.
+
