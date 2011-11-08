@@ -3,13 +3,13 @@
 # $Header: $
 EAPI="3"
 
-inherit cmake-utils eutils flag-o-matic games subversion wxwidgets
+inherit cmake-utils eutils flag-o-matic games git-2 wxwidgets
 
-DESCRIPTION="Free. open source emulator for Nintendo GameCube and Wii"
+DESCRIPTION="A gamecube/wii/triforce emulator."
 HOMEPAGE="http://www.dolphin-emu.com/"
 SRC_URI=""
-ESVN_REPO_URI="http://dolphin-emu.googlecode.com/svn/trunk/"
-ESVN_PROJECT="dolphin-emu-read-only"
+EGIT_REPO_URI="http://code.google.com/p/dolphin-emu/"
+EGIT_PROJECT="dolphin-emu"
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -22,6 +22,7 @@ RDEPEND=">=media-libs/glew-1.5
 	sys-libs/readline
 	x11-libs/libXext
 	>=x11-libs/wxGTK-2.8
+	<media-libs/libsfml-2.0
 	ao? ( media-libs/libao )
 	alsa? ( media-libs/alsa-lib )
 	bluetooth? ( net-wireless/bluez )
@@ -35,7 +36,7 @@ RDEPEND=">=media-libs/glew-1.5
 	portaudio? ( media-libs/portaudio )
 	pulseaudio? ( media-sound/pulseaudio )
 	xrandr? ( x11-libs/libXrandr )
-	media-libs/jpeg
+	virtual/jpeg
 	sys-libs/zlib
 	x11-libs/cairo
 	x11-libs/libXxf86vm"
@@ -55,9 +56,11 @@ src_configure() {
 		-DCMAKE_INSTALL_PREFIX=${GAMES_PREFIX}
 		-DCMAKE_INCLUDE_PATH=/opt/nvidia-cg-toolkit/include
 		-DCMAKE_LIBRARY_PATH=/opt/nvidia-cg-toolkit/lib
+		-DwxWidgets_ROOT_DIR=/usr/lib
 		-Dprefix=${GAMES_PREFIX}
 		-Ddatadir=${GAMES_DATADIR}/${PN}
 		-Dplugindir=$(games_get_libdir)/${PN}
+		$(cmake-utils_use portaudio)
 		$(cmake-utils_use !wxwidgets DISABLE_WX)
 		$(cmake-utils_use encode ENCODE_FRAMEDUMPS)"
 	cmake-utils_src_configure
