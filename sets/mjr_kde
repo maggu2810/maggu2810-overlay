@@ -6,10 +6,9 @@ kde-base/kdebase-meta
 kde-base/kdegraphics-meta
 kde-base/kdemultimedia-meta
 kde-base/kdenetwork-meta
-kde-base/kdepim-meta
+#kde-base/kdepim-meta
 kde-base/kdesdk-meta
 kde-base/kdeutils-meta
-kde-base/nepomuk # 4.4 want this
 kde-misc/kcm_gtk
 kde-misc/kdiff3
 kde-misc/krename

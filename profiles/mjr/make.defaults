@@ -81,7 +81,8 @@ USE="${USE} \
      "
 
 # KDE4
-USE="${USE} nepomuk plasma semantic-desktop webkit"
+USE="${USE} plasma webkit"
+USE="${USE} -nepomuk -semantic-desktop"
 
 # gnome
 USE="${USE} gnome-keyring"
