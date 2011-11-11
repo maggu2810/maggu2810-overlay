@@ -6,9 +6,6 @@ sys-auth/consolekit
 sys-fs/udev
 sys-fs/cryptsetup
 
-sys-fs/ntfs3g
-sys-fs/ntfsprogs
-
 #
 # choose an authentication agent
 # to replace plain "Not authorized." dialog with useful password dialog
