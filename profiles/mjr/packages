@@ -1,0 +1,2 @@
+# Add less (so we can use it as pager) to the base packages
+*sys-apps/less
