@@ -8,3 +8,7 @@ dev-java/ibm-jdk-bin
 dev-java/ibm-jre-bin
 dev-java/ecj-gcj
 dev-java/gcj-jdk
+dev-java/eclipse-ecj:3.3
+dev-java/eclipse-ecj:3.4
+dev-java/eclipse-ecj:3.5
+dev-java/eclipse-ecj:3.6
