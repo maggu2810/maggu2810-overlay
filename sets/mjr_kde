@@ -3,6 +3,7 @@ app-cdr/k3b
 dev-vcs/kdesvn
 kde-base/kdeadmin-meta
 kde-base/kdebase-meta
+kde-base/kdebase-runtime-meta
 kde-base/kdegraphics-meta
 kde-base/kdemultimedia-meta
 kde-base/kdenetwork-meta
