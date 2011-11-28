@@ -103,7 +103,8 @@ USE="${USE} sql sqlite sqlite3"
 USE="${USE} 7zip bzip2 lzma lzo rar zip zlib"
 
 # CRYPT - USE=crypt has been changed to USE=loop-aes
-USE="${USE} crypt gnutls libgcrypt loop-aes nss otr ssl"
+# do not use gnutls. because there are packages where we mast choose between gnutls XOR nss
+USE="${USE} crypt libgcrypt loop-aes nss otr ssl"
 
 # MULTIMEDIA, IMAGE
 	# support engines, framework...
