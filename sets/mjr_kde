@@ -10,8 +10,9 @@ kde-base/kdenetwork-meta
 #kde-base/kdepim-meta
 kde-base/kdesdk-meta
 kde-base/kdeutils-meta
-kde-misc/kcm_gtk
+kde-misc/kcm-gtk-config
 kde-misc/kdiff3
+kde-misc/kio-upnp-ms
 kde-misc/krename
 kde-misc/krusader
 media-plugins/kipi-plugins
