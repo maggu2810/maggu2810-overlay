@@ -10,7 +10,6 @@ media-plugins/gst-plugins-cdparanoia
 media-plugins/gst-plugins-dv
 media-plugins/gst-plugins-dvb
 media-plugins/gst-plugins-dvdread
-media-plugins/gst-plugins-esd
 media-plugins/gst-plugins-faac
 media-plugins/gst-plugins-faad
 media-plugins/gst-plugins-ffmpeg
