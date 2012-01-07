@@ -1,1 +1,6 @@
 dev-java/lucene analyzers
+
+#
+# nsplugin needs gtk
+#
+app-office/libreoffice gtk
