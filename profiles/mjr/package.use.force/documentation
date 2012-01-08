@@ -2,13 +2,6 @@
 
 dev-libs/boost doc
 
-#dev-java/sun-jdk doc
-#dev-java/jdom doc examples
-#dev-java/rxtx doc source
-
 sci-electronics/eagle doc
 
 sys-apps/portage doc
-
-x11-drivers/ati-drivers doc
-
