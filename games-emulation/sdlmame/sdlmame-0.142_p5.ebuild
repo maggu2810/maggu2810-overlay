@@ -1,6 +1,6 @@
 # Copyright 1999-2011 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/games-emulation/sdlmame/sdlmame-0.141_p2.ebuild,v 1.1 2011/02/11 06:06:50 mr_bones_ Exp $
+# $Header: /var/cvsroot/gentoo-x86/games-emulation/sdlmame/sdlmame-0.142_p5.ebuild,v 1.4 2011/09/30 16:50:10 vapier Exp $
 
 EAPI=2
 inherit eutils flag-o-matic games
@@ -19,7 +19,7 @@ SRC_URI="mirror://gentoo/${MY_P/sdl}s.zip $UPDATES
 
 LICENSE="XMAME"
 SLOT="0"
-KEYWORDS="~amd64 ~ppc ~x86"
+KEYWORDS="amd64 ~ppc x86"
 IUSE="debug opengl"
 
 RDEPEND=">=media-libs/libsdl-1.2.10[audio,joystick,opengl?,video]
@@ -60,18 +60,14 @@ src_unpack() {
 
 src_prepare() {
 	if [[ $PV == *_p* ]] ; then
-		edos2unix $(grep +++ *diff | awk '{ print $2 }' | sort -u) *diff 2> /dev/null
+		edos2unix $(find $(grep +++ *diff | awk '{ print $2 }' | sort -u) 2>/dev/null) *diff
 		einfo "Patching release with source updates"
 		epatch ${MY_PV%%_p*}*.diff
 	fi
-	sed -i \
-		-e '/CFLAGS += -O$(OPTIMIZE)/s:^:# :' \
-		-e '/CFLAGS += -pipe/s:^:# :' \
-		-e '/LDFLAGS += -s/s:^:# :' \
-		-e '/LDFLAGS =/d' \
-		-e 's:-Werror::' \
-		makefile \
-		|| die "sed failed"
+	epatch \
+			"${FILESDIR}"/${P}-makefile.patch \
+			"${FILESDIR}"/${P}-no-opengl.patch
+
 	# Don't compile zlib and expat
 	einfo "Disabling embedded libraries: zlib and expat"
 	disable_feature BUILD_ZLIB
