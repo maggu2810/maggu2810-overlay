@@ -19,7 +19,7 @@ USE="${USE} aim icq jabber msn oscar yahoo"
 USE="${USE} bitmap-fonts fontconfig freetype freetype2 truetype truetype-fonts type1-fonts"
 
 # CD/DVD
-USE="${USE} cdr dvd dvdr vcd"
+USE="${USE} cdr bluray dvd dvdr vcd"
 
 # THREADS
 USE="${USE} nptl nptlonly threads threadsafe"
