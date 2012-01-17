@@ -15,4 +15,8 @@ games-emulation/dosbox
 # Gamecube and Wii emulator
 games-emulation/dolphin-emu
 
+# Amiga
 app-emulation/uae
+
+# N64
+games-emulation/mupen64plus
