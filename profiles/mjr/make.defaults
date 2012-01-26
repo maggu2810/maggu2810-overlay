@@ -74,6 +74,7 @@ USE="${USE} \
      lcms libnotify libshout lirc logrotate \
      mime mono musicbrainz \
      nsplugin \
+     ofr \
      pcmcia postscript pdf plotutils ppds \
      spell srt stream streamripper \
      videos vidix \
