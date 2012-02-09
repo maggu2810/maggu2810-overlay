@@ -18,4 +18,5 @@ kde-misc/krusader
 media-plugins/kipi-plugins
 media-sound/amarok
 #media-video/smplayer
+net-im/kde-telepathy-meta
 www-plugins/kpartsplugin
