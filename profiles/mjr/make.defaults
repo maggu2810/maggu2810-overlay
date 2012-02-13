@@ -113,6 +113,7 @@ USE="${USE} alsa -oss pulseaudio"
 USE="${USE} libv4l libv4l2 v4l v4l2"
 USE="${USE} video"
 USE="${USE} vaapi vdpau"
+USE="${USE} xv xvmc"
 USE="${USE} amarok fame ffmpeg gstreamer jingle lame mjpeg mplayer phonon shorten soundtouch sox telepathy wavpack"
 # removed because of 1.1.x and 1.2.x incompatibility of xine-lib
 #USE="${USE} xine"
@@ -147,7 +148,7 @@ USE="${USE} -handbook"
 	# 3D, graphic acceleration, ...
 USE="${USE} aiglx cairo dri glitz opengl sdl xinerama"
 	# others
-USE="${USE} X xcomposite xosd xscreensaver xv"
+USE="${USE} wayland X xcomposite xosd xscreensaver"
 
 # FRAMEBUFFER SUPPORT
 USE="${USE} fbcon fbdev fbsplash directfb"
