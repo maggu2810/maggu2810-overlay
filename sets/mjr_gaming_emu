@@ -20,3 +20,6 @@ app-emulation/uae
 
 # N64
 games-emulation/mupen64plus
+
+# Sega x, y, z
+games-emulation/gens
