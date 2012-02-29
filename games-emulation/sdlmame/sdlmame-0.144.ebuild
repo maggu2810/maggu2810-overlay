@@ -89,8 +89,9 @@ src_prepare() {
 		einfo "Enabling debug support"
 		enable_feature DEBUG
 	else
-		einfo "Disabling debug support"
-		enable_feature NO_X11 src/osd/sdl/sdl.mak
+	    # Need X11 support for wiimote patch
+		einfo "Disabling debug support... (skipped for WiiMote support)"
+		#enable_feature NO_X11 src/osd/sdl/sdl.mak
 	fi
 
 	if ! use opengl ; then

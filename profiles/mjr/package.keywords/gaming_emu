@@ -1,1 +1,2 @@
-=games-emulation/dolphin-emu-9999 ~x86
+=games-emulation/dolphin-emu-9999 ~x86 ~amd64
+games-emulation/gens ~amd64
