@@ -438,3 +438,15 @@ diff -Naur a/src/osd/sdl/window.c b/src/osd/sdl/window.c
  #endif
  }
  
+diff -Naur a/src/osd/sdl/sdl.mak b/src/osd/sdl/sdl.mak
+--- a/src/osd/sdl/sdl.mak       2011-05-30 21:58:56.000000000 +0200
++++ b/src/osd/sdl/sdl.mak       2012-01-06 14:02:56.175030770 +0100
+@@ -482,7 +482,7 @@
+ else
+ # Default libs
+ DEFS += -DSDLMAME_X11
+-LIBS += -lX11 -lXinerama
++LIBS += -lX11 -lXinerama -lXext -lXi
+ 
+ # the new debugger relies on GTK+ in addition to the base SDLMAME needs
+ # Non-X11 builds can not use the debugger
