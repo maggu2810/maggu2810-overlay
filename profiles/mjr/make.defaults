@@ -12,54 +12,112 @@ EMERGE_DEFAULT_OPTS="--with-bdeps=y"
 
 ################################################################################
 
+#
 # INSTANT MESSENGER
+#
+
 USE="${USE} aim icq jabber msn oscar yahoo"
 
+
+#
 # FONTS
+#
+
 USE="${USE} bitmap-fonts fontconfig freetype freetype2 truetype truetype-fonts type1-fonts"
 
-# CD/DVD
+
+#
+# CD, DVD, Blu-Ray
+#
+
 USE="${USE} cdr bluray dvd dvdr vcd"
 
+
+#
 # THREADS
+#
+#
 USE="${USE} nptl nptlonly threads threadsafe"
 
+
+#
 # OVER THE AIR AND NETWORKING STUFF
+#
+
 USE="${USE} bluetooth irda irmc wifi"
 
+#
 # APACHE, HTML, NETWORKING ...
+#
+#
+
 USE="${USE} apache2 cgi php tidy"
+
 USE="${USE} css curl curlwrappers dhcp ftp httpnet network networking nfs samba webdav"
-USE="${USE} ldap openldap"
+
+#USE="${USE} ldap openldap"
+
 USE="${USE} howl-compat mdnsresponder-compat"
+
 USE="${USE} avahi bonjour upnp zeroconf l7filter"
 
+
+#
 # MOBILE PHONE
+#
+#
+
 USE="${USE} gnokii obex sms"
 
-# FILESYSTEMS
-USE="${USE} fuse ntfs reiserfs sysfs"
 
+#
+# FILESYSTEMS
+#
+
+USE="${USE} fuse ntfs sysfs" # reiserfs
+
+
+#
 # LANGUAGE AND CODING STUFF
+#
+
 USE="${USE} icu nls unicode userlocales"
 
+
+#
 # SERVICES AND SOME SUPPORT STUFF
+#
+
 USE="${USE} acpi -apm consolekit dbus -hal pam policykit udev udisks upower"
 USE="${USE} device-mapper lvm"
 
+#
 # PERIPHAL DEVICES
+#
+
 USE="${USE} usb"
-	# printing support (deactivate xprint, because from time to time there are built errors when it is set)
+USE="${USE} lirc"
+
+# printing support (deactivate xprint, because from time to time there are built errors when it is set)
 USE="${USE} cups -xprint"
-	# scanner
+
+# scanner
 USE="${USE} ocr scanner"
-	# other
+
+# other
 USE="${USE} ipod joystick logitech-mouse"
 
+
+#
 # ALGEBRA IMPLEMENTATIONS
+#
+
 USE="${USE} blas lapack"
 
-# VCS
+#
+# VCS - version control system(s)
+#
+#
 USE="${USE} cvs git mercurial subversion"
 
 # the following USE-Flags must be sorted
@@ -71,88 +129,143 @@ USE="${USE} \
      fam festival flash fmod \
      gd gimp gmedia gphoto2 graphviz gs \
      idn ieee1394 imagemagick imlib inkjar \
-     lcms libnotify libshout lirc logrotate \
+     lcms libnotify libshout logrotate \
      mime mono musicbrainz \
      nsplugin \
      ofr \
      pcmcia postscript pdf plotutils ppds \
-     spell srt stream streamripper \
+     spell srt stream streamripper systemd \
      videos vidix \
      xattr xcb xml \
      "
 
-# KDE4
-USE="${USE} plasma webkit"
-USE="${USE} -nepomuk -semantic-desktop"
-
-# gnome
-USE="${USE} gnome-keyring"
-
+#
 # TEX
+#
 USE="${USE} kpathsea latex" #tetex
 
+#
 # LANGUAGE BINDINGS: etc.
-# JAVA
+#
+
+# Java
 USE="${USE} java javamail javascript"
-# PYTHON
+
+# Python
 USE="${USE} python python3"
 
+
+#
 # DATABASE STUFF
+#
+
 USE="${USE} sql sqlite sqlite3"
 
+
+#
 # [DE]COMPRESS
+#
+
 USE="${USE} 7zip bzip2 lzma lzo rar zip zlib"
 
+
+#
 # CRYPT - USE=crypt has been changed to USE=loop-aes
 # do not use gnutls. because there are packages where we mast choose between gnutls XOR nss
+#
 USE="${USE} crypt libgcrypt loop-aes nss otr ssl"
 
+
+#
 # MULTIMEDIA, IMAGE
-	# support engines, framework...
-USE="${USE} alsa -oss pulseaudio"
+#
+
+# support engines, framework...
+USE="${USE} -arts -esd -oss"
+USE="${USE} alsa pulseaudio"
 USE="${USE} libv4l libv4l2 v4l v4l2"
 USE="${USE} video"
 USE="${USE} g3dvl vaapi vdpau xv xvmc"
 USE="${USE} xv xvmc"
 USE="${USE} amarok fame ffmpeg gstreamer jingle lame mjpeg mplayer phonon shorten soundtouch sox telepathy wavpack"
+
 # removed because of 1.1.x and 1.2.x incompatibility of xine-lib
 #USE="${USE} xine"
-	# support codecs, container
+
+# support codecs, container
 USE="${USE} amr amrnb amrwb opencore-amr"
-USE="${USE} a52 aac aften asf dirac divx dts dv faac faad flac gsm"
+USE="${USE} a52 aac aacplus aften asf dirac divx dts dv faac faad flac gsm"
 USE="${USE} mad matroska mp2 mp3 mp4 midi mpeg mpegts musepack nut"
 USE="${USE} ogg ogm pcm quicktime real realmedia schroedinger speex theora twolame"
 USE="${USE} vorbis vpx win32codecs wma wmp x264 xvid" 
-	# others
-USE="${USE} audiofile cdaudio cdda cddax cddb cdio cdparanoia daap dvb dvdread dvdnav encode frei0r"
+
+# others
+USE="${USE} ass audiofile cdaudio cdda cddax cddb cdio cdparanoia daap dvb dvdread dvdnav encode frei0r"
 USE="${USE} ladspa libsamplerate mikmod openal osc pvr sndfile sound timidity vcdinfo vcdx vhook"
 USE="${USE} live mp4live rtmp rtsp"
 USE="${USE} id3tag taglib tagwriting"
-USE="${USE} exif gif jpeg jpeg2k mng openexr png apng pnm svg tiff webp wmf xpm"
-    # text to speach
+USE="${USE} exif gif jpeg jpeg2k mng openexr png apng pnm svg tiff webgl webm webp wmf xpm"
+
+# text to speach
 USE="${USE} mbrola"
-    # online content
+
+# online content
 USE="${USE} lastfm"
 
-# X: window manager, graphic, sound
-	# deactivate sound daemons
-USE="${USE} -arts -esd"
-	# deactivate gnome, gtk
+
+#
+# Gtk, Gnome stuff
+#
+
+USE="${USE} gnome-keyring"
 USE="${USE} -gnome -gtk -gtk2 -wxwindows"
-	# language tcl and the tk gui
+
+
+#
+# Wx stuff
+# 
+
+USE="${USE} -wxwindows"
+
+
+#
+# TCL/TK stuff
+#
+
 USE="${USE} tcl tcltk tk"
-	# activate kde, qt
-USE="${USE} kde kipi konqueror qt qt3support qt4 qt-dbus qt-webkit"
-	# deactivate the kde handbook stuff
-USE="${USE} -handbook"
-	# 3D, graphic acceleration, ...
+
+
+#
+# KDE stuff
+#
+
+USE="${USE} kde kipi konqueror"
+USE="${USE} plasma webkit"
+USE="${USE} -handbook -nepomuk -semantic-desktop"
+
+
+#
+# Qt stuff
+#
+USE="${USE} qt qt3support qt4 qt-dbus qt-webkit"
+
+
+#
+# Graphic
+#
+
+# 3D, graphic acceleration, ...
 USE="${USE} aiglx cairo dri glitz opengl sdl xinerama"
-	# others
+
+# others
 USE="${USE} wayland X xcomposite xosd xscreensaver"
 
-# FRAMEBUFFER SUPPORT
-USE="${USE} fbcon fbdev fbsplash directfb"
-USE="${USE} gpm" # not really framebuffer, but also used for comfortable console working
+#
+# Framebuffer
+#
+
+#USE="${USE} fbcon fbdev fbsplash directfb"
+#USE="${USE} gpm" # not really framebuffer, but also used for comfortable console working
 
 ################################################################################
 
@@ -170,8 +283,12 @@ APACHE2_MPMS="worker"
 
 RUBY_TARGETS="ruby19"
 
-PORTAGE_ELOG_CLASSES="warn error info" # log qa
-PORTAGE_ELOG_SYSTEM="save"
+PORTAGE_ELOG_CLASSES="warn error info log qa"
+PORTAGE_ELOG_SYSTEM="echo save"
+
+INPUT_DEVICES="${INPUT_DEVICES} evdev"
+LIRC_DEVICES="${LIRC_DEVICES} devinput"
+
 
 #####
 
