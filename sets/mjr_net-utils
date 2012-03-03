@@ -2,7 +2,7 @@ net-analyzer/iptraf-ng
 net-analyzer/nethogs
 net-dns/avahi
 net-dns/dnsmasq
-net-analyzer/arptools
+#net-analyzer/arptools
 net-analyzer/netcat6
 net-analyzer/wireshark
 net-analyzer/nmap
