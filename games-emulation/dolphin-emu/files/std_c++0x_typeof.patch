@@ -1,0 +1,11 @@
+diff -Naur a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt	2012-03-03 17:17:50.303444767 +0000
++++ b/CMakeLists.txt	2012-03-03 17:17:03.688443435 +0000
+@@ -553,6 +553,7 @@
+ # Start compiling our code
+ #
+ add_definitions(-std=c++0x)
++add_definitions(-Dtypeof=__typeof__)
+ add_subdirectory(Source)
+ 
+ 

@@ -47,6 +47,7 @@ DEPEND="${RDEPEND}
 
 src_prepare() {
 	epatch "${FILESDIR}/linking_cg_cggl.patch"
+	epatch "${FILESDIR}/std_c++0x_typeof.patch"
 	cmake-utils_src_prepare
 }
 src_configure() {
