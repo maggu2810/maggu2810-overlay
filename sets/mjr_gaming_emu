@@ -22,4 +22,6 @@ app-emulation/uae
 games-emulation/mupen64plus
 
 # Sega x, y, z
-games-emulation/gens
+# gens is better, but do not work on amd64
+#games-emulation/gens
+games-emulation/generator
