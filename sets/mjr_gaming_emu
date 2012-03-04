@@ -14,6 +14,7 @@ games-emulation/dosbox
 
 # Gamecube and Wii emulator
 games-emulation/dolphin-emu
+app-misc/cwiid
 
 # Amiga
 app-emulation/uae
