@@ -1,0 +1,86 @@
+diff -Naur a/cwiid-20110107/wminput/conf.c b/cwiid-20110107/wminput/conf.c
+--- a/cwiid-20110107/wminput/conf.c	2010-02-21 16:56:59.000000000 +0100
++++ b/cwiid-20110107/wminput/conf.c	2012-01-08 22:27:01.109971476 +0100
+@@ -42,11 +42,17 @@
+ struct plugin *get_plugin(struct conf *conf, const char *name);
+ 
+ int conf_load(struct conf *conf, const char *conf_name,
+-              char *config_search_dirs[], char *plugin_search_dirs[])
++              char *config_search_dirs[], char *plugin_search_dirs[],
++              const char *dev_name)
+ {
+ 	conf_init(conf);
+ 	cur_conf = conf;
+ 
++	if (dev_name != NULL)
++	{
++		strncpy(cur_conf->dev.name, dev_name, sizeof(cur_conf->dev.name));
++	}
++	
+ 	cur_conf->config_search_dirs = config_search_dirs;
+ 	cur_conf->plugin_search_dirs = plugin_search_dirs;
+ 	if (!(yyin = conf_push_config(cur_conf, conf_name, NULL))) {
+diff -Naur a/cwiid-20110107/wminput/conf.h b/cwiid-20110107/wminput/conf.h
+--- a/cwiid-20110107/wminput/conf.h	2010-02-21 16:56:59.000000000 +0100
++++ b/cwiid-20110107/wminput/conf.h	2012-01-08 22:22:33.741958727 +0100
+@@ -170,7 +170,8 @@
+ };
+ 
+ int conf_load(struct conf *conf, const char *conf_name,
+-              char *config_search_dirs[], char *plugin_search_dirs[]);
++              char *config_search_dirs[], char *plugin_search_dirs[],
++              const char *dev_name);
+ int conf_unload(struct conf *conf);
+ 
+ int conf_ff(struct conf *conf, unsigned char enabled);
+diff -Naur a/cwiid-20110107/wminput/main.c b/cwiid-20110107/wminput/main.c
+--- a/cwiid-20110107/wminput/main.c	2010-02-21 16:56:59.000000000 +0100
++++ b/cwiid-20110107/wminput/main.c	2012-01-08 22:27:21.291972438 +0100
+@@ -73,6 +73,7 @@
+ 	printf("\t-q, --quiet\t\tReduce output to errors\n");
+ 	printf("\t-r, --reconnect [wait]\tAutomatically try reconnect after wiimote disconnect.\n");
+ 	printf("\t-w, --wait\t\tWait indefinitely for wiimote to connect.\n");
++	printf("\t-n, --name [name]\tName for the created input device.\n");
+ }
+ 
+ void cwiid_err_connect(struct wiimote *wiimote, const char *str, va_list ap)
+@@ -92,6 +93,7 @@
+ 	char home_config_dir[HOME_DIR_LEN];
+ 	char home_plugin_dir[HOME_DIR_LEN];
+ 	char *tmp;
++	const char *dev_name = NULL;
+ 	int c, i;
+ 	char *str_addr;
+ 	bdaddr_t bdaddr, current_bdaddr;
+@@ -114,10 +116,11 @@
+ 			{"quiet", 0, 0, 'q'},
+ 			{"reconnect", 2, 0, 'r'},
+ 			{"wait", 0, 0, 'w'},
++			{"name", 1, 0, 'n'},
+ 			{0, 0, 0, 0}
+ 		};
+ 
+-		c = getopt_long (argc, argv, "hvc:dqr::w", long_options, &option_index);
++		c = getopt_long (argc, argv, "hvc:dqr::wn:", long_options, &option_index);
+ 
+ 		if (c == -1) {
+ 			break;
+@@ -156,6 +159,9 @@
+ 		case 'w':
+ 			wait_forever = 1;
+ 			break;
++		case 'n':
++			dev_name = optarg;
++			break;
+ 		case '?':
+ 			printf("Try `wminput --help` for more information\n");
+ 			return 1;
+@@ -195,7 +201,7 @@
+ 	}
+ 
+ 	if (conf_load(&conf, config_filename, config_search_dirs,
+-	  plugin_search_dirs)) {
++	  plugin_search_dirs, dev_name)) {
+ 		return -1;
+ 	}
+ 
