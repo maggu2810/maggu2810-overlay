@@ -15,6 +15,7 @@ kde-misc/kdiff3
 kde-misc/kio-upnp-ms
 kde-misc/krename
 kde-misc/krusader
+kde-misc/networkmanagement
 media-plugins/kipi-plugins
 media-sound/amarok
 #media-video/smplayer
