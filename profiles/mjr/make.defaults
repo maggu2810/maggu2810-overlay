@@ -90,6 +90,7 @@ USE="${USE} icu nls unicode userlocales"
 
 USE="${USE} acpi -apm consolekit dbus -hal pam policykit udev udisks upower"
 USE="${USE} device-mapper lvm"
+USE="${USE} networkmanager systemd"
 
 #
 # PERIPHAL DEVICES
@@ -117,7 +118,6 @@ USE="${USE} blas lapack"
 #
 # VCS - version control system(s)
 #
-#
 USE="${USE} cvs git mercurial subversion"
 
 # the following USE-Flags must be sorted
@@ -134,7 +134,7 @@ USE="${USE} \
      nsplugin \
      ofr \
      pcmcia postscript pdf plotutils ppds \
-     spell srt stream streamripper systemd \
+     spell srt stream streamripper \
      videos vidix \
      xattr xcb xml \
      "
