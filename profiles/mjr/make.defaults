@@ -135,7 +135,6 @@ USE="${USE} \
      ofr \
      pcmcia postscript pdf plotutils ppds \
      spell srt stream streamripper \
-     videos vidix \
      xattr xcb xml \
      "
 
@@ -184,7 +183,7 @@ USE="${USE} crypt libgcrypt loop-aes nss otr ssl"
 USE="${USE} -arts -esd -oss"
 USE="${USE} alsa pulseaudio"
 USE="${USE} libv4l libv4l2 v4l v4l2"
-USE="${USE} video"
+USE="${USE} video videos"
 USE="${USE} g3dvl vaapi vdpau xv xvmc"
 USE="${USE} xv xvmc"
 USE="${USE} amarok fame ffmpeg gstreamer jingle lame mjpeg mplayer phonon shorten soundtouch sox telepathy wavpack"
@@ -200,7 +199,8 @@ USE="${USE} ogg ogm pcm quicktime real realmedia schroedinger speex theora twola
 USE="${USE} vorbis vpx win32codecs wma wmp x264 xvid" 
 
 # others
-USE="${USE} ass audiofile cdaudio cdda cddax cddb cdio cdparanoia daap dvb dvdread dvdnav encode frei0r"
+USE="${USE} aalib ass audiofile cdaudio cdda cddax cddb cdio cdparanoia"
+USE="${USE} daap dvb dvdread dvdnav encode frei0r"
 USE="${USE} ladspa libsamplerate mikmod openal osc pvr sndfile sound timidity vcdinfo vcdx vhook"
 USE="${USE} live mp4live rtmp rtsp"
 USE="${USE} id3tag taglib tagwriting"
