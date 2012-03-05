@@ -13,8 +13,6 @@ dev-embedded/u-boot-tools
 
 net-print/poster
 
-app-arch/ipkg-utils
-
 sys-apps/fakeroot-ng
 sys-apps/fakeroot
 
@@ -25,5 +23,3 @@ net-ftp/netkit-tftp
 
 #dev-libs/libelf
 dev-libs/elfutils
-
-app-arch/lzop
