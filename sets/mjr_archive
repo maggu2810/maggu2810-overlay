@@ -6,7 +6,7 @@ app-arch/lha
 app-arch/lzop
 app-arch/p7zip
 app-arch/rpm
-app-arch/stuffit
+#app-arch/stuffit
 app-arch/unace
 app-arch/unrar
 app-arch/unzip
