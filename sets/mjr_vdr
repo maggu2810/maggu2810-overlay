@@ -11,3 +11,5 @@ www-misc/vdradmin-am
 
 # check legal issues of your country
 media-plugins/vdr-sc
+
+media-plugins/vdr-vdrmanager
