@@ -7,3 +7,5 @@ net-dns/avahi gtk3
 # required by networkmanager
 net-dns/avahi autoipd
 
+# for a working avahi-discover utility
+net-dns/avahi utils
