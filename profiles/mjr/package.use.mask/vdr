@@ -1,3 +1,2 @@
-media-libs/xine-lib musepack v4l
-kde-base/phonon-kde xine
-media-sound/phonon xine
+#media-libs/xine-lib musepack v4l
+media-plugins/vdr-sc mmx
