@@ -1,6 +1,0 @@
-cross-arm-softfloat-linux-uclibc/binutils arm ~arm -x86 -~x86
-cross-arm-softfloat-linux-uclibc/gcc arm ~arm -x86 -~x86
-cross-arm-softfloat-linux-uclibc/linux-headers arm ~arm -x86 -~x86
-cross-arm-softfloat-linux-uclibc/uclibc arm ~arm -x86 -~x86
-cross-arm-softfloat-linux-uclibc/gdb arm ~arm -x86 -~x86
-cross-arm-softfloat-linux-uclibc/insight arm ~arm -x86 -~x86

@@ -1,6 +1,0 @@
-cross-arm-v5te-linux-uclibc/binutils * ~* **
-cross-arm-v5te-linux-uclibc/gcc * ~* **
-cross-arm-v5te-linux-uclibc/linux-headers * ~* **
-cross-arm-v5te-linux-uclibc/uclibc * ~* **
-cross-arm-v5te-linux-uclibc/gdb arm ~arm -x86 -~x86
-cross-arm-v5te-linux-uclibc/insight arm ~arm -x86 -~x86
