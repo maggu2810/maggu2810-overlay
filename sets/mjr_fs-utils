@@ -4,5 +4,5 @@ sys-fs/dosfstools
 sys-fs/mtd-utils
 sys-fs/multipath-tools
 sys-fs/ntfs3g
-sys-fs/ntfsprogs
+#sys-fs/ntfsprogs
 
