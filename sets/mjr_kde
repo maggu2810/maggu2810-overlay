@@ -10,12 +10,14 @@ kde-base/kdenetwork-meta
 #kde-base/kdepim-meta
 kde-base/kdesdk-meta
 kde-base/kdeutils-meta
+kde-base/svgpart
 kde-misc/kcm-gtk-config
 kde-misc/kdiff3
 kde-misc/kio-upnp-ms
 kde-misc/krename
 kde-misc/krusader
 kde-misc/networkmanagement
+media-gfx/icoutils         # dolphin: For .exe file preview support
 media-plugins/kipi-plugins
 media-sound/amarok
 #media-video/smplayer
