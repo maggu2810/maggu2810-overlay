@@ -3,10 +3,13 @@ net-analyzer/nethogs
 net-dns/avahi
 net-dns/dnsmasq
 #net-analyzer/arptools
+net-analyzer/dsniff
 net-analyzer/netcat6
-net-analyzer/wireshark
 net-analyzer/nmap
+net-analyzer/sslsniff
+net-analyzer/wireshark
 net-dns/bind-tools
+net-firewall/iptables
 net-misc/dhcpcd
 net-misc/jwhois
 net-misc/ntp
