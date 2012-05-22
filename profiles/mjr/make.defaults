@@ -170,9 +170,10 @@ USE="${USE} 7zip bzip2 lzma lzo rar zip zlib"
 
 #
 # CRYPT - USE=crypt has been changed to USE=loop-aes
-# do not use gnutls. because there are packages where we mast choose between gnutls XOR nss
+# Do not use gnutls. because there are packages where we mast choose between gnutls XOR nss.
+# Do not force nss usage. nss will be used instead of openssl for some packages.
 #
-USE="${USE} crypt libgcrypt loop-aes nss otr ssl"
+USE="${USE} crypt libgcrypt loop-aes otr openssl ssl"
 
 
 #

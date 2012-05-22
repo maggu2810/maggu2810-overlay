@@ -1,0 +1,2 @@
+# The usage of nss will force curl with ssl implementation by nss (not using openssl)
+net-libs/liboauth nss
