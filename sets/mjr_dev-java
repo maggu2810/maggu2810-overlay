@@ -4,4 +4,4 @@ dev-java/ant
 # It seem that netbeans 7.1 includes already maven support
 #dev-java/maven-bin
 
-dev-util/netbeans
+#dev-util/netbeans
