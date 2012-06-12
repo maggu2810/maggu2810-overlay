@@ -87,7 +87,7 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
 +    int		num_devices;
 +    int		len = strlen(name);
 +    Bool	is_id = True;
-+    XID		id=0;
++    XID		idi = (XID)-1;
 +
 +    for(loop=0; loop<len; loop++) {
 +	if (!isdigit(name[loop])) {
@@ -318,9 +318,9 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
 +	return devinfo;
 +}
 +
-+int normalize_absolute_axis(int raw, int rawmin, int rawmax)
++INT32 normalize_absolute_axis(INT32 raw, INT32 rawmin, INT32 rawmax)
 +{
-+	int center = (rawmax + rawmin) / 2;
++	INT32 center = ((INT64)rawmax + (INT64)rawmin) / 2;
 +
 +	// make sure we have valid data
 +	if (rawmin >= rawmax)
@@ -329,14 +329,14 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
 +	// above center
 +	if (raw >= center)
 +	{
-+		int result = (long)(raw - center) * (long)INPUT_ABSOLUTE_MAX / (long)(rawmax - center);
++		INT32 result = (INT64)(raw - center) * (INT64)INPUT_ABSOLUTE_MAX / (INT64)(rawmax - center);
 +		return MIN(result, INPUT_ABSOLUTE_MAX);
 +	}
 +
 +	// below center
 +	else
 +	{
-+		int result = -((long)(center - raw) * (long)-INPUT_ABSOLUTE_MIN / (long)(center - rawmin));
++		INT32 result = -((INT64)(center - raw) * (INT64)-INPUT_ABSOLUTE_MIN / (INT64)(center - rawmin));
 +		return MAX(result, INPUT_ABSOLUTE_MIN);
 +	}
 +}
