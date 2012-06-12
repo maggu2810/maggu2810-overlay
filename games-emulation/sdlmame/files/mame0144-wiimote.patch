@@ -87,7 +87,7 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
 +    int		num_devices;
 +    int		len = strlen(name);
 +    Bool	is_id = True;
-+    XID		idi = (XID)-1;
++    XID		id = (XID)-1;
 +
 +    for(loop=0; loop<len; loop++) {
 +	if (!isdigit(name[loop])) {
