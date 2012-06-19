@@ -1,6 +1,6 @@
-diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
---- a/src/osd/sdl/input.c	2011-05-30 21:58:56.000000000 +0200
-+++ b/src/osd/sdl/input.c	2012-01-06 14:02:56.175030770 +0100
+diff -Naur without_wii_patch/src/osd/sdl/input.c with_wii_patch/src/osd/sdl/input.c
+--- without_wii_patch/src/osd/sdl/input.c	2011-05-30 21:58:56.000000000 +0200
++++ with_wii_patch/src/osd/sdl/input.c	2012-06-19 00:06:46.484025960 +0200
 @@ -17,6 +17,11 @@
  #include <ctype.h>
  #include <stddef.h>
@@ -68,7 +68,7 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
  
  //============================================================
  //  PROTOTYPES
-@@ -874,6 +902,213 @@
+@@ -874,6 +902,223 @@
  }
  #endif
  
@@ -248,10 +248,20 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
 +			    a = (XAxisInfoPtr) ((char *) v + sizeof (XValuatorInfo));
 +			    for (j=0; j<v->num_axes; j++, a++) {
 +				if (j==0) {
++#if MJR_DEBUG
++                    fprintf(stderr, "For index %d: Set minx=%d, maxx=%d\n",
++                            index,
++                            a->min_value, a->max_value);
++#endif
 +				    devinfo->lightgun.maxx=a->max_value;
 +				    devinfo->lightgun.minx=a->min_value;
 +				}
 +				if (j==1) {
++#if MJR_DEBUG
++                    fprintf(stderr, "For index %d: Set miny=%d, maxy=%d\n",
++                            index,
++                            a->min_value, a->max_value);
++#endif
 +				    devinfo->lightgun.maxy=a->max_value;
 +				    devinfo->lightgun.miny=a->min_value;
 +				}
@@ -282,7 +292,7 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
  
  //============================================================
  //  lookup_sdl_code
-@@ -1119,6 +1354,9 @@
+@@ -1119,6 +1364,9 @@
  	// register the mice
  	sdlinput_register_mice(machine);
  
@@ -292,7 +302,7 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
  	if (machine.debug_flags & DEBUG_FLAG_OSD_ENABLED)
  	{
  		mame_printf_warning("Debug Build: Disabling input grab for -debug\n");
-@@ -1134,8 +1372,8 @@
+@@ -1134,8 +1382,8 @@
  	// now reset all devices
  	device_list_reset_devices(keyboard_list);
  	device_list_reset_devices(mouse_list);
@@ -302,7 +312,7 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
  }
  
  
-@@ -1253,6 +1491,40 @@
+@@ -1253,6 +1501,56 @@
  	}
  }
  
@@ -320,30 +330,46 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
 +
 +INT32 normalize_absolute_axis(INT32 raw, INT32 rawmin, INT32 rawmax)
 +{
++    INT32 rv;
++
 +	INT32 center = ((INT64)rawmax + (INT64)rawmin) / 2;
 +
 +	// make sure we have valid data
 +	if (rawmin >= rawmax)
-+		return raw;
++    {
++        rv = raw;
++        goto out;
++    }
 +
 +	// above center
 +	if (raw >= center)
 +	{
 +		INT32 result = (INT64)(raw - center) * (INT64)INPUT_ABSOLUTE_MAX / (INT64)(rawmax - center);
-+		return MIN(result, INPUT_ABSOLUTE_MAX);
++		rv = MIN(result, INPUT_ABSOLUTE_MAX);
++        goto out;
 +	}
 +
 +	// below center
 +	else
 +	{
 +		INT32 result = -((INT64)(center - raw) * (INT64)-INPUT_ABSOLUTE_MIN / (INT64)(center - rawmin));
-+		return MAX(result, INPUT_ABSOLUTE_MIN);
++		rv = MAX(result, INPUT_ABSOLUTE_MIN);
++        goto out;
 +	}
++
++    out:
++
++#if MJR_DEBUG
++    fprintf(stderr, "raw: %d, rawmin: %d, rawmax: %d, center: %d, rv: %d, ABS_MIN: %d, ABS_MAX: %d\n",
++            raw, rawmin, rawmax, center, rv, INPUT_ABSOLUTE_MIN, INPUT_ABSOLUTE_MAX);
++#endif
++
++    return rv;
 +}
  
  void sdlinput_poll(running_machine &machine)
  {
-@@ -1264,6 +1536,8 @@
+@@ -1264,6 +1562,8 @@
  	SDL_Event			loc_event_buf[MAX_BUF_EVENTS];
  	int					loc_event_buf_count;
  	int bufp;
@@ -352,7 +378,7 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
  
  	for (index=0; ;index++)
  	{
-@@ -1274,6 +1548,25 @@
+@@ -1274,6 +1574,100 @@
  		devinfo->mouse.lY = 0;
  	}
  
@@ -363,9 +389,84 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
 +		if (xevent.type==motion_type)
 +		{
 +			XDeviceMotionEvent *motion = (XDeviceMotionEvent *) &xevent;
++
++#if MJR_DEBUG
++            /*
++             * print a lot of debug informations of the motion event(s).
++             */
++            fprintf(stderr,
++                    "XDeviceMotionEvent:\n"
++                    "  type: %d\n"
++                    "  serial: %lu\n"
++                    "  send_event: %d\n"
++                    "  display: %p\n"
++                    "  window: --\n"
++                    "  deviceid: %lu\n"
++                    "  root: --\n"
++                    "  subwindow: --\n"
++                    "  time: --\n"
++                    "  x: %d, y: %d\n"
++                    "  x_root: %d, y_root: %d\n"
++                    "  state: %u\n"
++                    "  is_hint: %2.2X\n"
++                    "  same_screen: %d\n"
++                    "  device_state: %u\n"
++                    "  axes_count: %2.2X\n"
++                    "  first_axis: %2.2X\n"
++                    "  axis_data[6]: {%d,%d,%d,%d,%d,%d}\n",
++                    motion->type,
++                    motion->serial,
++                    motion->send_event,
++                    motion->display,
++                    /* motion->window, */
++                    motion->deviceid,
++                    /* motion->root */
++                    /* motion->subwindow */
++                    /* motion->time, */
++                    motion->x, motion->y,
++                    motion->x_root, motion->y_root,
++                    motion->state,
++                    motion->is_hint,
++                    motion->same_screen,
++                    motion->device_state,
++                    motion->axes_count,
++                    motion->first_axis,
++                    motion->axis_data[0], motion->axis_data[1], motion->axis_data[2], motion->axis_data[3], motion->axis_data[4], motion->axis_data[5]
++                   );
++#endif
++
 +			devinfo=get_lightgun_info_for_deviceid(motion->deviceid);
-+			devinfo->lightgun.lX=normalize_absolute_axis(motion->axis_data[0], devinfo->lightgun.minx, devinfo->lightgun.maxx);
-+			devinfo->lightgun.lY=normalize_absolute_axis(motion->axis_data[1], devinfo->lightgun.miny, devinfo->lightgun.maxy);
++
++            /*
++             * We have to check with axis will start on array index 0.
++             * We have also to check the number of axes that are stored in the array.
++             */
++            switch (motion->first_axis)
++            {
++                /*
++                 * Starting with x, check number of axis, if there is also the y axis stored.
++                 */
++                case 0:
++                    if (motion->axes_count >= 1)
++                    {
++			            devinfo->lightgun.lX=normalize_absolute_axis(motion->axis_data[0], devinfo->lightgun.minx, devinfo->lightgun.maxx);
++                        if (motion->axes_count >= 2)
++                        {
++			                devinfo->lightgun.lY=normalize_absolute_axis(motion->axis_data[1], devinfo->lightgun.miny, devinfo->lightgun.maxy);
++                        }
++                    }
++                    break;
++
++                /*
++                 * Starting with y, ...
++                 */
++                case 1:
++                    if (motion->axes_count >= 1)
++                    {
++			                devinfo->lightgun.lY=normalize_absolute_axis(motion->axis_data[0], devinfo->lightgun.miny, devinfo->lightgun.maxy);
++                    }
++                    break;
++            }
 +		}
 +		else if (xevent.type==button_press_type || xevent.type==button_release_type)
 +		{
@@ -378,9 +479,9 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
  	if (SDLMAME_EVENTS_IN_WORKER_THREAD)
  	{
  		osd_lock_acquire(input_lock);
-diff -Naur a/src/osd/sdl/osdsdl.h b/src/osd/sdl/osdsdl.h
---- a/src/osd/sdl/osdsdl.h	2011-05-30 20:07:20.000000000 +0200
-+++ b/src/osd/sdl/osdsdl.h	2012-01-06 14:02:56.180030770 +0100
+diff -Naur without_wii_patch/src/osd/sdl/osdsdl.h with_wii_patch/src/osd/sdl/osdsdl.h
+--- without_wii_patch/src/osd/sdl/osdsdl.h	2011-05-30 20:07:20.000000000 +0200
++++ with_wii_patch/src/osd/sdl/osdsdl.h	2012-06-18 23:47:30.374970833 +0200
 @@ -87,6 +87,7 @@
  #define SDLOPTION_JOYINDEX				"joy_idx"
  #define SDLOPTION_KEYBINDEX				"keyb_idx"
@@ -389,9 +490,9 @@ diff -Naur a/src/osd/sdl/osdsdl.h b/src/osd/sdl/osdsdl.h
  
  #define SDLOPTION_SHADER_MAME			"glsl_shader_mame"
  #define SDLOPTION_SHADER_SCREEN			"glsl_shader_screen"
-diff -Naur a/src/osd/sdl/sdlmain.c b/src/osd/sdl/sdlmain.c
---- a/src/osd/sdl/sdlmain.c	2011-10-31 02:30:26.000000000 +0100
-+++ b/src/osd/sdl/sdlmain.c	2012-01-06 14:07:56.803045104 +0100
+diff -Naur without_wii_patch/src/osd/sdl/sdlmain.c with_wii_patch/src/osd/sdl/sdlmain.c
+--- without_wii_patch/src/osd/sdl/sdlmain.c	2011-10-31 02:30:26.000000000 +0100
++++ with_wii_patch/src/osd/sdl/sdlmain.c	2012-06-18 23:47:30.375970833 +0200
 @@ -216,6 +216,17 @@
  	{ SDLOPTION_JOYINDEX "8",                SDLOPTVAL_AUTO, OPTION_STRING,         "name of joystick mapped to joystick #8" },
  	{ SDLOPTION_SIXAXIS,			         "0",	 OPTION_BOOLEAN,    "Use special handling for PS3 Sixaxis controllers" },
@@ -410,9 +511,21 @@ diff -Naur a/src/osd/sdl/sdlmain.c b/src/osd/sdl/sdlmain.c
  #if (SDL_VERSION_ATLEAST(1,3,0))
  	{ NULL, 		                         NULL,   OPTION_HEADER,     "SDL MOUSE MAPPING" },
  	{ SDLOPTION_MOUSEINDEX "1",              SDLOPTVAL_AUTO, OPTION_STRING,         "name of mouse mapped to mouse #1" },
-diff -Naur a/src/osd/sdl/window.c b/src/osd/sdl/window.c
---- a/src/osd/sdl/window.c	2011-04-27 21:34:46.000000000 +0200
-+++ b/src/osd/sdl/window.c	2012-01-06 14:02:56.197030770 +0100
+diff -Naur without_wii_patch/src/osd/sdl/sdl.mak with_wii_patch/src/osd/sdl/sdl.mak
+--- without_wii_patch/src/osd/sdl/sdl.mak	2011-10-31 02:30:26.000000000 +0100
++++ with_wii_patch/src/osd/sdl/sdl.mak	2012-06-18 23:47:30.377970833 +0200
+@@ -482,7 +482,7 @@
+ else
+ # Default libs
+ DEFS += -DSDLMAME_X11
+-LIBS += -lX11 -lXinerama
++LIBS += -lX11 -lXinerama -lXext -lXi
+ 
+ # the new debugger relies on GTK+ in addition to the base SDLMAME needs
+ # Non-X11 builds can not use the debugger
+diff -Naur without_wii_patch/src/osd/sdl/window.c with_wii_patch/src/osd/sdl/window.c
+--- without_wii_patch/src/osd/sdl/window.c	2011-04-27 21:34:46.000000000 +0200
++++ with_wii_patch/src/osd/sdl/window.c	2012-06-18 23:47:30.376970833 +0200
 @@ -619,6 +619,15 @@
  	}
  
@@ -438,15 +551,3 @@ diff -Naur a/src/osd/sdl/window.c b/src/osd/sdl/window.c
  #endif
  }
  
-diff -Naur a/src/osd/sdl/sdl.mak b/src/osd/sdl/sdl.mak
---- a/src/osd/sdl/sdl.mak       2011-05-30 21:58:56.000000000 +0200
-+++ b/src/osd/sdl/sdl.mak       2012-01-06 14:02:56.175030770 +0100
-@@ -482,7 +482,7 @@
- else
- # Default libs
- DEFS += -DSDLMAME_X11
--LIBS += -lX11 -lXinerama
-+LIBS += -lX11 -lXinerama -lXext -lXi
- 
- # the new debugger relies on GTK+ in addition to the base SDLMAME needs
- # Non-X11 builds can not use the debugger
