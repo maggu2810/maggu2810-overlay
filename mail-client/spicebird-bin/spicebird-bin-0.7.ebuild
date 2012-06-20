@@ -1,8 +1,9 @@
 # Copyright 2004-2008 Sabayon Linux
 # Distributed under the terms of the GNU General Public License v2
 
-inherit eutils multilib
 EAPI=1
+
+inherit eutils multilib
 
 MY_PN="spicebird"
 MY_P="${MY_PN}-beta-${PV}"
