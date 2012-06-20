@@ -10,7 +10,6 @@ kde-base/kdenetwork-meta
 #kde-base/kdepim-meta
 kde-base/kdesdk-meta
 kde-base/kdeutils-meta
-kde-base/svgpart
 kde-misc/kde-gtk-config
 kde-misc/kdiff3
 kde-misc/kio-upnp-ms
@@ -18,9 +17,19 @@ kde-misc/krename
 kde-misc/krusader
 kde-misc/networkmanagement
 media-gfx/icoutils         # dolphin: For .exe file preview support
-media-plugins/kipi-plugins
 media-sound/amarok
 #media-video/smplayer
 net-im/kde-telepathy-meta
 www-plugins/kpartsplugin
 x11-themes/oxygen-gtk
+
+# kde-base/kgpg-4.8.3
+# For improved key search functionality, install app-crypt/dirmngr.
+app-crypt/dirmngr
+
+# kde-base/gwenview-4.8.3
+# For SVG support, emerge -va kde-base/svgpart
+# The plugins for the KIPI inteface can be found in media-plugins/kipi-plugins
+kde-base/svgpart
+media-plugins/kipi-plugins
+
