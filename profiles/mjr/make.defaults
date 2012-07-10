@@ -257,7 +257,7 @@ USE="${USE} qt qt3support qt4 qt-dbus qt-webkit"
 #
 
 # 3D, graphic acceleration, ...
-USE="${USE} aiglx cairo dri glitz opengl sdl xinerama"
+USE="${USE} aiglx cairo dri glitz opengl sdl xinerama xrandr"
 
 # others
 USE="${USE} wayland X xcomposite xosd xscreensaver"
