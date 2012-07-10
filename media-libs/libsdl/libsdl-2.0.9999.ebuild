@@ -15,7 +15,7 @@ LICENSE="ZLIB"
 
 SLOT="2.0"
 
-KEYWORDS="~x86 ~amd64"
+KEYWORDS=""
 
 # WARNING:
 # If you turn on the custom-cflags use flag in USE and something breaks,
