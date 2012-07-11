@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI=3
+EAPI=4
 
 inherit eutils cmake-utils
 
@@ -12,7 +12,7 @@ SRC_URI="http://www.raknet.com/raknet/downloads/RakNet_PC-${PV}.zip"
 LICENSE="CCPL-Attribution-NonCommercial-2.5"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="boost mysql fmod ogre ois portaudio postgres scaleform speex irrlicht"
+IUSE="static-libs boost mysql fmod ogre ois portaudio postgres scaleform speex irrlicht"
 
 RDEPEND="speex? ( media-libs/speex )
 	boost? ( dev-libs/boost )
@@ -24,40 +24,29 @@ RDEPEND="speex? ( media-libs/speex )
 	postgres? ( dev-db/postgresql-base )
 	irrlicht? ( dev-games/irrlicht )"
 DEPEND="${RDEPEND}
+    app-arch/unzip
 	sys-devel/libtool
 	virtual/pkgconfig"
 
-src_unpack() {
-	mkdir "${S}"
-	cd "${S}"
-	unpack ${A}
-}
+S=${WORKDIR}
 
 src_prepare() {
-	# disable examples completely
+	epatch "${FILESDIR}"/"${P}"-fix-install-dirs.patch
+
+	# disable examples completely (DISABLE_EXAMPLES seems not to be enough)
 	sed -i -e \
 		's:add_subdirectory(DependentExtensions):#add_subdirectory(DependentExtensions):g' \
 		"${S}"/CMakeLists.txt || die
-	sed -i -e \
-		's:INSTALL(TARGETS RakNetDynamic DESTINATION ${RakNet_SOURCE_DIR}/Lib/DLL):INSTALL(TARGETS RakNetDynamic DESTINATION lib):g' \
-		"${S}"/Lib/DLL/CMakeLists.txt || die
-	sed -i -e \
-		's:INSTALL(TARGETS RakNetStatic DESTINATION ${RakNet_SOURCE_DIR}/Lib/LibStatic):INSTALL(TARGETS RakNetStatic DESTINATION lib):g' \
-		"${S}"/Lib/LibStatic/CMakeLists.txt|| die
-	sed -i -e \
-		's:INSTALL(FILES ${ALL_HEADER_SRCS} DESTINATION ${RakNet_SOURCE_DIR}/include/raknet):INSTALL(FILES ${ALL_HEADER_SRCS} DESTINATION include/raknet):g' \
-		"${S}"/Lib/LibStatic/CMakeLists.txt|| die
-
 }
 
 src_configure() {
-
 	local mycmakeargs=(
 		-DDISABLE_EXAMPLES=ON
 		-DCMAKE_INSTALL_PREFIX=/usr/
 	)
 
 	mycmakeargs+=(
+			$(cmake-utils_use !static-libs DISABLE_STATICLIB)
 			$(cmake-utils_use boost USEBOOST)
 			$(cmake-utils_use mysql USEMYSQL)
 			$(cmake-utils_use fmod USEFMOD)
@@ -75,8 +64,4 @@ src_configure() {
 		-DIRRKLANG=ON
 	)
 	cmake-utils_src_configure
-}
-
-src_compile() {
-	cmake-utils_src_install
 }
