@@ -106,7 +106,7 @@ USE="${USE} cups -xprint"
 USE="${USE} ocr scanner"
 
 # other
-USE="${USE} ipod joystick logitech-mouse"
+USE="${USE} ipod joystick logitech-mouse wiimote"
 
 
 #
