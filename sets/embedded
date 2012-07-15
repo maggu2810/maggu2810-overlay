@@ -19,7 +19,7 @@ sys-apps/fakeroot
 app-misc/ckermit
 net-dialup/minicom
 
-net-ftp/netkit-tftp
+net-ftp/tftp-hpa
 
 #dev-libs/libelf
 dev-libs/elfutils
