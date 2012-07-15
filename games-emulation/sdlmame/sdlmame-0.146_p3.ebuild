@@ -68,6 +68,7 @@ src_prepare() {
 
 	if use wiimote; then
 		epatch "${FILESDIR}"/${MY_CONF_PN}${MY_PV}-wiimote.patch
+		enable_feature MJR_WIIMOTE src/osd/sdl/sdl.mak
 	fi
 
 	epatch \

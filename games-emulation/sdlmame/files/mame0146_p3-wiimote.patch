@@ -1,0 +1,606 @@
+Author: Markus Rathgeb <maggu2810@gmail.com>
+
+Enable support to use WiiMote devices for lightguns.
+
+The original patch I use as a template could be found here:
+http://spritesmods.com/wiimote-mamegun/mame-0137-wiimote.diff
+
+The patch allows to use any XInput device for a lightgun.
+The input device is refered by the X input device name.
+The intention of this patch is to use WiiMote devices (using
+the IR pointer mode) to play games using lightguns (e.g. lethal
+enforcers) with the WiiMote.
+
+
+diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
+--- a/src/osd/sdl/input.c	2012-05-03 11:00:10.000000000 +0200
++++ b/src/osd/sdl/input.c	2012-07-15 18:23:31.242987721 +0200
+@@ -17,6 +17,13 @@
+ #include <ctype.h>
+ #include <stddef.h>
+ 
++#if (MJR_WIIMOTE)
++// for xinput
++#include <X11/Xlib.h>
++#include <X11/extensions/XInput.h>
++#include <X11/Xutil.h>
++#endif
++
+ // MAME headers
+ #include "emu.h"
+ #include "ui.h"
+@@ -53,6 +60,18 @@
+ #define MAX_POV				4
+ #define MAX_DEVMAP_ENTRIES	16
+ 
++#if (MJR_WIIMOTE)
++//For xinput
++#define INVALID_EVENT_TYPE     -1
++static int           motion_type = INVALID_EVENT_TYPE;
++static int           button_press_type = INVALID_EVENT_TYPE;
++static int           button_release_type = INVALID_EVENT_TYPE;
++static int           key_press_type = INVALID_EVENT_TYPE;
++static int           key_release_type = INVALID_EVENT_TYPE;
++static int           proximity_in_type = INVALID_EVENT_TYPE;
++static int           proximity_out_type = INVALID_EVENT_TYPE;
++#endif
++
+ //============================================================
+ //  MACROS
+ //============================================================
+@@ -98,6 +117,19 @@
+ 	INT32 balls[MAX_AXES];
+ };
+ 
++#if (MJR_WIIMOTE)
++// state information for a lightgun
++typedef struct _lightgun_state lightgun_state;
++struct _lightgun_state
++{
++    INT32 lX, lY;
++    INT32 buttons[MAX_BUTTONS];
++    XID deviceid; //Xinput device id
++    INT32 maxx,maxy;
++    INT32 minx,miny;
++};
++#endif
++
+ // generic device information
+ typedef struct _device_info device_info;
+ struct _device_info
+@@ -116,6 +148,9 @@
+ 		keyboard_state		keyboard;
+ 		mouse_state		mouse;
+ 		joystick_state		joystick;
++#if (MJR_WIIMOTE)
++        lightgun_state          lightgun;
++#endif
+ 	};
+ };
+ 
+@@ -166,7 +201,10 @@
+ static device_map_t joy_map;
+ static device_map_t mouse_map;
+ static device_map_t keyboard_map;
+-
++#if (MJR_WIIMOTE)
++static device_map_t lightgun_map;
++Display *XDisplay;
++#endif
+ static int sixaxis_mode;
+ 
+ 
+@@ -889,6 +927,225 @@
+ }
+ #endif
+ 
++#if (MJR_WIIMOTE)
++//============================================================
++//  lightgun helpers: copy-past from xinfo
++//============================================================
++
++XDeviceInfo*
++find_device_info(Display    *display,
++         char       *name,
++         Bool       only_extended)
++{
++    XDeviceInfo *devices;
++    XDeviceInfo *found = NULL;
++    int     loop;
++    int     num_devices;
++    int     len = strlen(name);
++    Bool    is_id = True;
++    XID     id = (XID)-1;
++
++    for(loop=0; loop<len; loop++) {
++    if (!isdigit(name[loop])) {
++        is_id = False;
++        break;
++    }
++    }
++
++    if (is_id) {
++    id = atoi(name);
++    }
++
++    devices = XListInputDevices(display, &num_devices);
++
++    for(loop=0; loop<num_devices; loop++) {
++    if ((!only_extended || (devices[loop].use >= IsXExtensionDevice)) &&
++        ((!is_id && strcmp(devices[loop].name, name) == 0) ||
++         (is_id && devices[loop].id == id))) {
++        if (found) {
++            fprintf(stderr,
++                    "Warning: There are multiple devices named \"%s\".\n"
++                    "To ensure the correct one is selected, please use "
++                    "the device ID instead.\n\n", name);
++        } else {
++        found = &devices[loop];
++        }
++    }
++    }
++    return found;
++}
++
++//Copypasted from xinfo
++static int
++register_events(Display     *dpy,
++        XDeviceInfo *info,
++        char        *dev_name,
++        Bool        handle_proximity)
++{
++    int         number = 0; /* number of events registered */
++    XEventClass     event_list[7];
++    int         i;
++    XDevice     *device;
++    Window      root_win;
++    unsigned long   screen;
++    XInputClassInfo *ip;
++
++    screen = DefaultScreen(dpy);
++    root_win = RootWindow(dpy, screen);
++
++    device = XOpenDevice(dpy, info->id);
++
++    if (!device) {
++    fprintf(stderr, "unable to open device %s\n", dev_name);
++    return 0;
++    }
++
++    if (device->num_classes > 0) {
++    for (ip = device->classes, i=0; i<info->num_classes; ip++, i++) {
++        switch (ip->input_class) {
++        case KeyClass:
++        DeviceKeyPress(device, key_press_type, event_list[number]); number++;
++        DeviceKeyRelease(device, key_release_type, event_list[number]); number++;
++        break;
++
++        case ButtonClass:
++        DeviceButtonPress(device, button_press_type, event_list[number]); number++;
++        DeviceButtonRelease(device, button_release_type, event_list[number]); number++;
++        break;
++
++        case ValuatorClass:
++        DeviceMotionNotify(device, motion_type, event_list[number]); number++;
++        fprintf(stderr, "Motion = %i\n",motion_type);
++        if (handle_proximity) {
++            ProximityIn(device, proximity_in_type, event_list[number]); number++;
++            ProximityOut(device, proximity_out_type, event_list[number]); number++;
++        }
++        break;
++
++        default:
++        fprintf(stderr, "unknown class\n");
++        break;
++        }
++    }
++
++    if (XSelectExtensionEvent(dpy, root_win, event_list, number)) {
++        fprintf(stderr, "error selecting extended events\n");
++        return 0;
++    }
++    }
++    return number;
++}
++
++//============================================================
++//  sdlinput_register_lightguns
++//============================================================
++
++static void sdlinput_register_lightguns(running_machine &machine)
++{
++    int index;
++    XExtensionVersion   *version;
++    
++    lightgun_enabled = machine.options().lightgun();
++    devmap_init(machine, &lightgun_map, SDLOPTION_LIGHTGUNINDEX, 8, "Lightgun mapping");    
++    
++    XDisplay = XOpenDisplay(NULL);
++
++    if (XDisplay == NULL) {
++        fprintf(stderr, "Unable to connect to X server\n");
++        return;
++    }
++
++    version = XGetExtensionVersion(XDisplay, INAME);
++
++    if (!version || (version == (XExtensionVersion*) NoSuchExtension)) {
++        fprintf(stderr, "xinput extension not available!\n");
++        return;
++    }
++
++
++    for (index=0; index<8; index++) {
++        XDeviceInfo *info;
++        if (strlen(lightgun_map.map[index].name)!=0) {
++        device_info *devinfo;
++        char *name=lightgun_map.map[index].name;
++        char defname[512];
++        devinfo = devmap_class_register(machine, &lightgun_map, index, &lightgun_list, DEVICE_CLASS_LIGHTGUN);
++        fprintf(stderr, "%i: %s\n",index, name);
++        info=find_device_info(XDisplay, name, 0);
++        if (!info) continue;
++
++        //Grab device info and translate to stuff mame can use
++        if (info->num_classes > 0) {
++            XAnyClassPtr any = (XAnyClassPtr) (info->inputclassinfo);
++            int i;
++            for (i=0; i<info->num_classes; i++) {
++            int button;
++            XValuatorInfoPtr v;
++            XAxisInfoPtr a;
++            int j;
++            XButtonInfoPtr b;
++#if defined(__cplusplus) || defined(c_plusplus)
++                       switch (any->c_class) {
++#else
++                       switch (any->class) {
++#endif
++            case ButtonClass:
++                b = (XButtonInfoPtr) any;
++                for (button = 0; button < b->num_buttons; button++)
++                {
++                input_item_id itemid;
++                itemid = (input_item_id) (ITEM_ID_BUTTON1 + button);
++                sprintf(defname, "B%d", button + 1);
++                devinfo->device->add_item(defname, itemid, generic_button_get_state, &devinfo->lightgun.buttons[button]);
++                }
++                break;
++            case ValuatorClass:
++                v = (XValuatorInfoPtr) any;
++                a = (XAxisInfoPtr) ((char *) v + sizeof (XValuatorInfo));
++                for (j=0; j<v->num_axes; j++, a++) {
++                if (j==0) {
++#if (MJR_DEBUG)
++                    fprintf(stderr, "For index %d: Set minx=%d, maxx=%d\n",
++                            index,
++                            a->min_value, a->max_value);
++#endif
++                    devinfo->lightgun.maxx=a->max_value;
++                    devinfo->lightgun.minx=a->min_value;
++                }
++                if (j==1) {
++#if (MJR_DEBUG)
++                    fprintf(stderr, "For index %d: Set miny=%d, maxy=%d\n",
++                            index,
++                            a->min_value, a->max_value);
++#endif
++                    devinfo->lightgun.maxy=a->max_value;
++                    devinfo->lightgun.miny=a->min_value;
++                }
++                }
++                break;
++            }
++            any = (XAnyClassPtr) ((char *) any + any->length);
++            }
++        }
++
++
++        sprintf(defname, "X %s", devinfo->name);
++        devinfo->device->add_item(defname, ITEM_ID_XAXIS, generic_axis_get_state, &devinfo->lightgun.lX);
++        sprintf(defname, "Y %s", devinfo->name);
++        devinfo->device->add_item(defname, ITEM_ID_YAXIS, generic_axis_get_state, &devinfo->lightgun.lY);
++
++
++        devinfo->lightgun.deviceid=info->id;
++        if (!info) {
++            fprintf(stderr, "Can't find device %s!\n", lightgun_map.map[index].name);
++        } else {
++            fprintf(stderr, "Device %i: Registered %i events.\n",(int)info->id, register_events(XDisplay, info, lightgun_map.map[index].name, 0));
++        }
++        }
++    }
++    mame_printf_verbose("Lightgun: End initialization\n");
++}
++#endif
+ 
+ //============================================================
+ //  lookup_sdl_code
+@@ -1142,6 +1399,11 @@
+ 	// register the mice
+ 	sdlinput_register_mice(machine);
+ 
++#if (MJR_WIIMOTE)
++    // register the lightguns
++    sdlinput_register_lightguns(machine);
++#endif
++
+ 	if (machine.debug_flags & DEBUG_FLAG_OSD_ENABLED)
+ 	{
+ 		mame_printf_warning("Debug Build: Disabling input grab for -debug\n");
+@@ -1158,7 +1420,9 @@
+ 	device_list_reset_devices(keyboard_list);
+ 	device_list_reset_devices(mouse_list);
+ 	device_list_reset_devices(joystick_list);
+-
++#if (MJR_WIIMOTE)
++    device_list_reset_devices(lightgun_list);
++#endif
+ }
+ 
+ 
+@@ -1211,6 +1475,58 @@
+ 		return sdl_window_list;
+ }
+ 
++#if (MJR_WIIMOTE)
++device_info *get_lightgun_info_for_deviceid(XID deviceid) {
++    device_info *devinfo;
++    int index;
++    //Find lightgun according to device id
++    for (index=0; ; index++) {
++        devinfo = generic_device_find_index(lightgun_list, index);
++        if (devinfo==NULL) break;
++        if (devinfo->lightgun.deviceid==deviceid) break;
++    }
++    return devinfo;
++}
++
++INT32 normalize_absolute_axis(INT32 raw, INT32 rawmin, INT32 rawmax)
++{
++    INT32 rv;
++
++    INT32 center = ((INT64)rawmax + (INT64)rawmin) / 2;
++
++    // make sure we have valid data
++    if (rawmin >= rawmax)
++    {
++        rv = raw;
++        goto out;
++    }
++
++    // above center
++    if (raw >= center)
++    {
++        INT32 result = (INT64)(raw - center) * (INT64)INPUT_ABSOLUTE_MAX / (INT64)(rawmax - center);
++        rv = MIN(result, INPUT_ABSOLUTE_MAX);
++        goto out;
++    }
++
++    // below center
++    else
++    {
++        INT32 result = -((INT64)(center - raw) * (INT64)-INPUT_ABSOLUTE_MIN / (INT64)(center - rawmin));
++        rv = MAX(result, INPUT_ABSOLUTE_MIN);
++        goto out;
++    }
++
++    out:
++
++#if (MJR_DEBUG)
++    fprintf(stderr, "raw: %d, rawmin: %d, rawmax: %d, center: %d, rv: %d, ABS_MIN: %d, ABS_MAX: %d\n",
++            raw, rawmin, rawmax, center, rv, INPUT_ABSOLUTE_MIN, INPUT_ABSOLUTE_MAX);
++#endif
++
++    return rv;
++}
++#endif
+ 
+ //============================================================
+ //  sdlinput_poll
+@@ -1288,6 +1604,10 @@
+ 	int					loc_event_buf_count;
+ 	int bufp;
+ 
++#if (MJR_WIIMOTE)
++    XEvent xevent;
++#endif
++
+ 	for (index=0; ;index++)
+ 	{
+ 		devinfo = generic_device_find_index( mouse_list, index);
+@@ -1297,6 +1617,102 @@
+ 		devinfo->mouse.lY = 0;
+ 	}
+ 
++#if (MJR_WIIMOTE)
++    //Get XInput events
++    while (XPending(XDisplay)!=0)
++    {
++        XNextEvent(XDisplay, &xevent);
++        if (xevent.type==motion_type)
++        {
++            XDeviceMotionEvent *motion = (XDeviceMotionEvent *) &xevent;
++
++#if (MJR_DEBUG)
++            /*
++             * print a lot of debug informations of the motion event(s).
++             */
++            fprintf(stderr,
++                    "XDeviceMotionEvent:\n"
++                    "  type: %d\n"
++                    "  serial: %lu\n"
++                    "  send_event: %d\n"
++                    "  display: %p\n"
++                    "  window: --\n"
++                    "  deviceid: %lu\n"
++                    "  root: --\n"
++                    "  subwindow: --\n"
++                    "  time: --\n"
++                    "  x: %d, y: %d\n"
++                    "  x_root: %d, y_root: %d\n"
++                    "  state: %u\n"
++                    "  is_hint: %2.2X\n"
++                    "  same_screen: %d\n"
++                    "  device_state: %u\n"
++                    "  axes_count: %2.2X\n"
++                    "  first_axis: %2.2X\n"
++                    "  axis_data[6]: {%d,%d,%d,%d,%d,%d}\n",
++                    motion->type,
++                    motion->serial,
++                    motion->send_event,
++                    motion->display,
++                    /* motion->window, */
++                    motion->deviceid,
++                    /* motion->root */
++                    /* motion->subwindow */
++                    /* motion->time, */
++                    motion->x, motion->y,
++                    motion->x_root, motion->y_root,
++                    motion->state,
++                    motion->is_hint,
++                    motion->same_screen,
++                    motion->device_state,
++                    motion->axes_count,
++                    motion->first_axis,
++                    motion->axis_data[0], motion->axis_data[1], motion->axis_data[2], motion->axis_data[3], motion->axis_data[4], motion->axis_data[5]
++                   );
++#endif
++
++            devinfo=get_lightgun_info_for_deviceid(motion->deviceid);
++
++            /*
++             * We have to check with axis will start on array index 0.
++             * We have also to check the number of axes that are stored in the array.
++             */
++            switch (motion->first_axis)
++            {
++                /*
++                 * Starting with x, check number of axis, if there is also the y axis stored.
++                 */
++                case 0:
++                    if (motion->axes_count >= 1)
++                    {
++                        devinfo->lightgun.lX=normalize_absolute_axis(motion->axis_data[0], devinfo->lightgun.minx, devinfo->lightgun.maxx);
++                        if (motion->axes_count >= 2)
++                        {
++                            devinfo->lightgun.lY=normalize_absolute_axis(motion->axis_data[1], devinfo->lightgun.miny, devinfo->lightgun.maxy);
++                        }
++                    }
++                    break;
++
++                /*
++                 * Starting with y, ...
++                 */
++                case 1:
++                    if (motion->axes_count >= 1)
++                    {
++                            devinfo->lightgun.lY=normalize_absolute_axis(motion->axis_data[0], devinfo->lightgun.miny, devinfo->lightgun.maxy);
++                    }
++                    break;
++            }
++        }
++        else if (xevent.type==button_press_type || xevent.type==button_release_type)
++        {
++            XDeviceButtonEvent *button = (XDeviceButtonEvent *) &xevent;
++            devinfo=get_lightgun_info_for_deviceid(button->deviceid);
++            devinfo->lightgun.buttons[button->button]=(xevent.type==button_press_type)?0x80:0;
++        }
++    }
++#endif
++
+ 	if (SDLMAME_EVENTS_IN_WORKER_THREAD)
+ 	{
+ 		osd_lock_acquire(input_lock);
+diff -Naur a/src/osd/sdl/osdsdl.h b/src/osd/sdl/osdsdl.h
+--- a/src/osd/sdl/osdsdl.h	2012-07-15 17:46:54.840989527 +0200
++++ b/src/osd/sdl/osdsdl.h	2012-07-15 18:24:15.184987686 +0200
+@@ -78,6 +78,9 @@
+ #define SDLOPTION_JOYINDEX				"joy_idx"
+ #define SDLOPTION_KEYBINDEX				"keyb_idx"
+ #define SDLOPTION_MOUSEINDEX			"mouse_index"
++#if (MJR_WIIMOTE)
++#define SDLOPTION_LIGHTGUNINDEX         "lightgun_index"
++#endif
+ 
+ #define SDLOPTION_SHADER_MAME			"glsl_shader_mame"
+ #define SDLOPTION_SHADER_SCREEN			"glsl_shader_screen"
+diff -Naur a/src/osd/sdl/sdlmain.c b/src/osd/sdl/sdlmain.c
+--- a/src/osd/sdl/sdlmain.c	2012-07-15 17:46:53.392989528 +0200
++++ b/src/osd/sdl/sdlmain.c	2012-07-15 18:24:57.270987652 +0200
+@@ -216,6 +216,19 @@
+ 	{ SDLOPTION_JOYINDEX "8",                SDLOPTVAL_AUTO, OPTION_STRING,         "name of joystick mapped to joystick #8" },
+ 	{ SDLOPTION_SIXAXIS,			         "0",	 OPTION_BOOLEAN,    "Use special handling for PS3 Sixaxis controllers" },
+ 
++#if (MJR_WIIMOTE)
++    // lightgun mapping
++    { NULL,                                  NULL,   OPTION_HEADER,     "SDL LIGHTGUN MAPPING" },
++    { SDLOPTION_LIGHTGUNINDEX "1",           SDLOPTVAL_AUTO, OPTION_STRING,         "name of lightgun mapped to lightgun #1" },
++    { SDLOPTION_LIGHTGUNINDEX "2",           SDLOPTVAL_AUTO, OPTION_STRING,         "name of lightgun mapped to lightgun #2" },
++    { SDLOPTION_LIGHTGUNINDEX "3",           SDLOPTVAL_AUTO, OPTION_STRING,         "name of lightgun mapped to lightgun #3" },
++    { SDLOPTION_LIGHTGUNINDEX "4",           SDLOPTVAL_AUTO, OPTION_STRING,         "name of lightgun mapped to lightgun #4" },
++    { SDLOPTION_LIGHTGUNINDEX "5",           SDLOPTVAL_AUTO, OPTION_STRING,         "name of lightgun mapped to lightgun #5" },
++    { SDLOPTION_LIGHTGUNINDEX "6",           SDLOPTVAL_AUTO, OPTION_STRING,         "name of lightgun mapped to lightgun #6" },
++    { SDLOPTION_LIGHTGUNINDEX "7",           SDLOPTVAL_AUTO, OPTION_STRING,         "name of lightgun mapped to lightgun #7" },
++    { SDLOPTION_LIGHTGUNINDEX "8",           SDLOPTVAL_AUTO, OPTION_STRING,         "name of lightgun mapped to lightgun #8" },
++#endif
++
+ #if (SDLMAME_SDL2)
+ 	{ NULL, 		                         NULL,   OPTION_HEADER,     "SDL MOUSE MAPPING" },
+ 	{ SDLOPTION_MOUSEINDEX "1",              SDLOPTVAL_AUTO, OPTION_STRING,         "name of mouse mapped to mouse #1" },
+diff -Naur a/src/osd/sdl/sdl.mak b/src/osd/sdl/sdl.mak
+--- a/src/osd/sdl/sdl.mak	2012-07-15 17:46:54.122989527 +0200
++++ b/src/osd/sdl/sdl.mak	2012-07-15 18:39:04.745986955 +0200
+@@ -37,6 +37,12 @@
+ 
+ # NO_X11 = 1
+ 
++# uncomment next line to build with lightgun patches to support
++# using WiiMote or other XInput devices as lightgun.
++# The option NO_X11 must be disabled, to support this feature.
++
++# MJR_WIIMOTE = 1
++
+ # uncomment and adapt next line to link against specific GL-Library
+ # this will also add a rpath to the executable
+ # MESA_INSTALL_ROOT = /usr/local/dfb_GL
+@@ -535,6 +541,11 @@
+ DEFS += -DSDLMAME_X11
+ LIBS += -lX11 -lXinerama
+ 
++ifeq ($(MJR_WIIMOTE),1)
++DEFS += -DMJR_WIIMOTE=1
++LIBS += -lXext -lXi
++endif # MJR_WIIMOTE
++
+ # the new debugger relies on GTK+ in addition to the base SDLMAME needs
+ # Non-X11 builds can not use the debugger
+ INCPATH += `pkg-config --cflags-only-I gtk+-2.0` `pkg-config --cflags-only-I gconf-2.0`
+diff -Naur a/src/osd/sdl/window.c b/src/osd/sdl/window.c
+--- a/src/osd/sdl/window.c	2012-02-12 22:59:26.000000000 +0100
++++ b/src/osd/sdl/window.c	2012-07-15 18:28:22.132987483 +0200
+@@ -599,6 +599,16 @@
+ 
+ static void sdlwindow_update_cursor_state(running_machine &machine, sdl_window_info *window)
+ {
++#if (MJR_WIIMOTE)
++    // Hack for wii-lightguns:
++    // they stop working with a grabbed mouse;
++    // even a ShowCursor(SDL_DISABLE) already does this.
++    // To make the cursor disappear, we'll just set an empty cursor image.
++    unsigned char data[]={0,0,0,0,0,0,0,0};
++    SDL_Cursor *c;
++    c=SDL_CreateCursor(data, data, 8, 8, 0, 0);
++    SDL_SetCursor(c);
++#else
+ #if (SDLMAME_SDL2)
+ 	// do not do mouse capture if the debugger's enabled to avoid
+ 	// the possibility of losing control
+@@ -645,6 +655,7 @@
+ 		}
+ 	}
+ #endif
++#endif
+ }
+ 
+ 
