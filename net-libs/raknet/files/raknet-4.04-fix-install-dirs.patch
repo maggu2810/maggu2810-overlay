@@ -1,0 +1,24 @@
+diff -Naur a/Lib/DLL/CMakeLists.txt b/Lib/DLL/CMakeLists.txt
+--- a/Lib/DLL/CMakeLists.txt	2011-01-05 09:11:32.000000000 +0100
++++ b/Lib/DLL/CMakeLists.txt	2012-07-12 00:27:44.216253747 +0200
+@@ -14,5 +14,5 @@
+ ELSE(WIN32 AND NOT UNIX)
+ 	add_library(RakNetDynamic SHARED ${ALL_CPP_SRCS} ${ALL_HEADER_SRCS} readme.txt)
+ 	target_link_libraries (RakNetDynamic ${RAKNET_LIBRARY_LIBS})
+-	INSTALL(TARGETS RakNetDynamic DESTINATION ${RakNet_SOURCE_DIR}/Lib/DLL)
++	INSTALL(TARGETS RakNetDynamic DESTINATION lib)
+ ENDIF(WIN32 AND NOT UNIX)
+diff -Naur a/Lib/LibStatic/CMakeLists.txt b/Lib/LibStatic/CMakeLists.txt
+--- a/Lib/LibStatic/CMakeLists.txt	2011-01-05 09:11:32.000000000 +0100
++++ b/Lib/LibStatic/CMakeLists.txt	2012-07-12 00:28:20.400253718 +0200
+@@ -33,8 +33,8 @@
+ 
+ ELSE(WIN32 AND NOT UNIX)
+ 	target_link_libraries (RakNetStatic ${RAKNET_LIBRARY_LIBS})
+-	INSTALL(TARGETS RakNetStatic DESTINATION ${RakNet_SOURCE_DIR}/Lib/LibStatic)
+-	INSTALL(FILES ${ALL_HEADER_SRCS} DESTINATION ${RakNet_SOURCE_DIR}/include/raknet)
++	INSTALL(TARGETS RakNetStatic DESTINATION lib)
++	INSTALL(FILES ${ALL_HEADER_SRCS} DESTINATION include/raknet)
+ ENDIF(WIN32 AND NOT UNIX)
+ 
+ 
