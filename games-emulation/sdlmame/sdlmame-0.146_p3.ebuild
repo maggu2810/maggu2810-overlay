@@ -25,6 +25,9 @@ IUSE="debug opengl wiimote"
 RDEPEND=">=media-libs/libsdl-1.2.10[audio,joystick,opengl?,video]
 	media-libs/sdl-ttf
 	dev-libs/expat
+	sys-libs/zlib
+	media-libs/flac
+	virtual/jpeg
 	debug? (
 		x11-libs/gtk+:2
 		gnome-base/gconf
@@ -67,18 +70,21 @@ src_prepare() {
 	edos2unix src/osd/sdl/osdsdl.h
 
 	if use wiimote; then
-		epatch "${FILESDIR}"/${MY_CONF_PN}${MY_PV}-wiimote.patch
-		enable_feature MJR_WIIMOTE src/osd/sdl/sdl.mak
+		epatch "${FILESDIR}"/${MY_CONF_PN}${MY_PV}-lightgun-xinput.patch
+		enable_feature USE_XINPUT src/osd/sdl/sdl.mak
 	fi
 
 	epatch \
 			"${FILESDIR}"/${P}-makefile.patch \
-			"${FILESDIR}"/${P}-no-opengl.patch
+			"${FILESDIR}"/${P}-no-opengl.patch \
+			"${FILESDIR}"/${P}-7z.patch
 
 	# Don't compile zlib and expat
-	einfo "Disabling embedded libraries: zlib and expat"
-	disable_feature BUILD_ZLIB
+	einfo "Disabling embedded libraries: expat, flac, jpeg, zlib"
 	disable_feature BUILD_EXPAT
+	disable_feature BUILD_FLAC
+	disable_feature BUILD_JPEG
+	disable_feature BUILD_ZLIB
 
 	if use amd64; then
 		einfo "Enabling 64-bit support"
@@ -109,12 +115,9 @@ src_prepare() {
 src_compile() {
 	emake \
 		NAME="${PN}" \
-		OPT_FLAGS='-DINI_PATH=\"\$$HOME/.'${PN}'\;'"${GAMES_SYSCONFDIR}/${PN}"'\"' \
+		OPT_FLAGS='-DINI_PATH=\"\$$HOME/.'${PN}'\;'"${GAMES_SYSCONFDIR}/${PN}"'\"'" ${CXXFLAGS}" \
+		CC="${CXX}" \
 		all || die
-#	emake \
-#		NAME="${PN}" \
-#		OPT_FLAGS='-DINI_PATH=\"\$$HOME/.'${PN}'\;'"${GAMES_SYSCONFDIR}/${PN}"'\"'" ${CXXFLAGS}" \
-#		CC="${CXX}" \
 }
 
 src_install() {
