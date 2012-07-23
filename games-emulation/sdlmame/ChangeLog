@@ -1,6 +1,10 @@
 # ChangeLog for games-emulation/sdlmame
 # Copyright 1999-2012 Gentoo Foundation; Distributed under the GPL v2
-# $Header: /var/cvsroot/gentoo-x86/games-emulation/sdlmame/ChangeLog,v 1.57 2012/01/04 18:00:15 phajdan.jr Exp $
+# $Header: $
+
+  23 Jul 2012; Markus Rathgeb <maggu2810@gmail.com> sdlmame-0146_p3.ebuild:
+  version bump.
+  XInput (WiiMote lightgun) support.
 
   04 Jan 2012; Pawel Hajdan jr <phajdan.jr@gentoo.org> sdlmame-0.144.ebuild:
   x86 stable wrt bug #395457
