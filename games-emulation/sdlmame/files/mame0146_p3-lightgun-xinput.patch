@@ -19,7 +19,7 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
  #include <ctype.h>
  #include <stddef.h>
  
-+#if (MJR_WIIMOTE)
++#if (USE_XINPUT)
 +// for xinput
 +#include <X11/Xlib.h>
 +#include <X11/extensions/XInput.h>
@@ -33,7 +33,7 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
  #define MAX_POV				4
  #define MAX_DEVMAP_ENTRIES	16
  
-+#if (MJR_WIIMOTE)
++#if (USE_XINPUT)
 +//For xinput
 +#define INVALID_EVENT_TYPE     -1
 +static int           motion_type = INVALID_EVENT_TYPE;
@@ -52,7 +52,7 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
  	INT32 balls[MAX_AXES];
  };
  
-+#if (MJR_WIIMOTE)
++#if (USE_XINPUT)
 +// state information for a lightgun
 +typedef struct _lightgun_state lightgun_state;
 +struct _lightgun_state
@@ -72,7 +72,7 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
  		keyboard_state		keyboard;
  		mouse_state		mouse;
  		joystick_state		joystick;
-+#if (MJR_WIIMOTE)
++#if (USE_XINPUT)
 +        lightgun_state          lightgun;
 +#endif
  	};
@@ -83,7 +83,7 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
  static device_map_t mouse_map;
  static device_map_t keyboard_map;
 -
-+#if (MJR_WIIMOTE)
++#if (USE_XINPUT)
 +static device_map_t lightgun_map;
 +Display *XDisplay;
 +#endif
@@ -94,7 +94,7 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
  }
  #endif
  
-+#if (MJR_WIIMOTE)
++#if (USE_XINPUT)
 +//============================================================
 +//  lightgun helpers: copy-past from xinfo
 +//============================================================
@@ -271,7 +271,7 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
 +                a = (XAxisInfoPtr) ((char *) v + sizeof (XValuatorInfo));
 +                for (j=0; j<v->num_axes; j++, a++) {
 +                if (j==0) {
-+#if (MJR_DEBUG)
++#if (USE_XINPUT_DEBUG)
 +                    fprintf(stderr, "For index %d: Set minx=%d, maxx=%d\n",
 +                            index,
 +                            a->min_value, a->max_value);
@@ -280,7 +280,7 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
 +                    devinfo->lightgun.minx=a->min_value;
 +                }
 +                if (j==1) {
-+#if (MJR_DEBUG)
++#if (USE_XINPUT_DEBUG)
 +                    fprintf(stderr, "For index %d: Set miny=%d, maxy=%d\n",
 +                            index,
 +                            a->min_value, a->max_value);
@@ -320,7 +320,7 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
  	// register the mice
  	sdlinput_register_mice(machine);
  
-+#if (MJR_WIIMOTE)
++#if (USE_XINPUT)
 +    // register the lightguns
 +    sdlinput_register_lightguns(machine);
 +#endif
@@ -333,7 +333,7 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
  	device_list_reset_devices(mouse_list);
  	device_list_reset_devices(joystick_list);
 -
-+#if (MJR_WIIMOTE)
++#if (USE_XINPUT)
 +    device_list_reset_devices(lightgun_list);
 +#endif
  }
@@ -343,7 +343,7 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
  		return sdl_window_list;
  }
  
-+#if (MJR_WIIMOTE)
++#if (USE_XINPUT)
 +device_info *get_lightgun_info_for_deviceid(XID deviceid) {
 +    device_info *devinfo;
 +    int index;
@@ -387,7 +387,7 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
 +
 +    out:
 +
-+#if (MJR_DEBUG)
++#if (USE_XINPUT_DEBUG)
 +    fprintf(stderr, "raw: %d, rawmin: %d, rawmax: %d, center: %d, rv: %d, ABS_MIN: %d, ABS_MAX: %d\n",
 +            raw, rawmin, rawmax, center, rv, INPUT_ABSOLUTE_MIN, INPUT_ABSOLUTE_MAX);
 +#endif
@@ -402,7 +402,7 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
  	int					loc_event_buf_count;
  	int bufp;
  
-+#if (MJR_WIIMOTE)
++#if (USE_XINPUT)
 +    XEvent xevent;
 +#endif
 +
@@ -413,7 +413,7 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
  		devinfo->mouse.lY = 0;
  	}
  
-+#if (MJR_WIIMOTE)
++#if (USE_XINPUT)
 +    //Get XInput events
 +    while (XPending(XDisplay)!=0)
 +    {
@@ -422,7 +422,7 @@ diff -Naur a/src/osd/sdl/input.c b/src/osd/sdl/input.c
 +        {
 +            XDeviceMotionEvent *motion = (XDeviceMotionEvent *) &xevent;
 +
-+#if (MJR_DEBUG)
++#if (USE_XINPUT_DEBUG)
 +            /*
 +             * print a lot of debug informations of the motion event(s).
 +             */
@@ -519,7 +519,7 @@ diff -Naur a/src/osd/sdl/osdsdl.h b/src/osd/sdl/osdsdl.h
  #define SDLOPTION_JOYINDEX				"joy_idx"
  #define SDLOPTION_KEYBINDEX				"keyb_idx"
  #define SDLOPTION_MOUSEINDEX			"mouse_index"
-+#if (MJR_WIIMOTE)
++#if (USE_XINPUT)
 +#define SDLOPTION_LIGHTGUNINDEX         "lightgun_index"
 +#endif
  
@@ -532,7 +532,7 @@ diff -Naur a/src/osd/sdl/sdlmain.c b/src/osd/sdl/sdlmain.c
  	{ SDLOPTION_JOYINDEX "8",                SDLOPTVAL_AUTO, OPTION_STRING,         "name of joystick mapped to joystick #8" },
  	{ SDLOPTION_SIXAXIS,			         "0",	 OPTION_BOOLEAN,    "Use special handling for PS3 Sixaxis controllers" },
  
-+#if (MJR_WIIMOTE)
++#if (USE_XINPUT)
 +    // lightgun mapping
 +    { NULL,                                  NULL,   OPTION_HEADER,     "SDL LIGHTGUN MAPPING" },
 +    { SDLOPTION_LIGHTGUNINDEX "1",           SDLOPTVAL_AUTO, OPTION_STRING,         "name of lightgun mapped to lightgun #1" },
@@ -559,7 +559,7 @@ diff -Naur a/src/osd/sdl/sdl.mak b/src/osd/sdl/sdl.mak
 +# using WiiMote or other XInput devices as lightgun.
 +# The option NO_X11 must be disabled, to support this feature.
 +
-+# MJR_WIIMOTE = 1
++# USE_XINPUT = 1
 +
  # uncomment and adapt next line to link against specific GL-Library
  # this will also add a rpath to the executable
@@ -568,10 +568,10 @@ diff -Naur a/src/osd/sdl/sdl.mak b/src/osd/sdl/sdl.mak
  DEFS += -DSDLMAME_X11
  LIBS += -lX11 -lXinerama
  
-+ifeq ($(MJR_WIIMOTE),1)
-+DEFS += -DMJR_WIIMOTE=1
++ifeq ($(USE_XINPUT),1)
++DEFS += -DUSE_XINPUT=1
 +LIBS += -lXext -lXi
-+endif # MJR_WIIMOTE
++endif # USE_XINPUT
 +
  # the new debugger relies on GTK+ in addition to the base SDLMAME needs
  # Non-X11 builds can not use the debugger
@@ -583,7 +583,7 @@ diff -Naur a/src/osd/sdl/window.c b/src/osd/sdl/window.c
  
  static void sdlwindow_update_cursor_state(running_machine &machine, sdl_window_info *window)
  {
-+#if (MJR_WIIMOTE)
++#if (USE_XINPUT)
 +    // Hack for wii-lightguns:
 +    // they stop working with a grabbed mouse;
 +    // even a ShowCursor(SDL_DISABLE) already does this.

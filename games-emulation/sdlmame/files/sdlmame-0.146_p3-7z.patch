@@ -1,0 +1,41 @@
+Author: Markus Rathgeb <maggu2810@gmail.com>
+
+Enable support building the bundled 7z library with a C++ compiler.
+
+The MAME developer added a LZMA decompressing function, that allowed to pass in
+the properties directly. They added not a separate declaration to the LzmaDec
+header file but using instead a declaration in the source file that are using
+that function. This declaration states, that the function is a C function.
+If the bundled 7z library is compiled with a C++ compiler, there is no place
+where we tell the compiler, that this function should be a C function.
+This will result in a unresolved symbol while linking using chdcodec.
+
+
+diff -Naur a/src/lib/lib7z/LzmaDec.h b/src/lib/lib7z/LzmaDec.h
+--- a/src/lib/lib7z/LzmaDec.h	2012-02-19 17:23:24.000000000 +0100
++++ b/src/lib/lib7z/LzmaDec.h	2012-07-22 22:17:26.780232402 +0200
+@@ -224,6 +224,11 @@
+     const Byte *propData, unsigned propSize, ELzmaFinishMode finishMode,
+     ELzmaStatus *status, ISzAlloc *alloc);
+ 
++/*
++ * Why isn't there an interface to pass in the properties directly????
++ */
++SRes LzmaDec_Allocate_MAME(CLzmaDec *p, const CLzmaProps *propNew, ISzAlloc *alloc);
++
+ #ifdef __cplusplus
+ }
+ #endif
+diff -Naur a/src/lib/util/chdcodec.c b/src/lib/util/chdcodec.c
+--- a/src/lib/util/chdcodec.c	2012-07-22 22:14:50.440227918 +0200
++++ b/src/lib/util/chdcodec.c	2012-07-22 22:18:00.949233358 +0200
+@@ -47,9 +47,6 @@
+ #include "lib7z/LzmaDec.h"
+ #include <new>
+ 
+-// function that should exist but doesn't in the official release
+-extern "C" SRes LzmaDec_Allocate_MAME(CLzmaDec *p, const CLzmaProps *propNew, ISzAlloc *alloc);
+-
+ 
+ //**************************************************************************
+ //  GLOBAL VARIABLES
