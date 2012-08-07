@@ -42,13 +42,12 @@ RDEPEND=">=media-libs/glew-1.5
 	x11-libs/libXxf86vm"
 DEPEND="${RDEPEND}
 	dev-util/cmake
-	dev-util/pkgconfig
+	virtual/pkgconfig
 	media-gfx/nvidia-cg-toolkit"
 
 src_prepare() {
 	epatch "${FILESDIR}/linking_cg_cggl.patch"
-	epatch "${FILESDIR}/std_c++0x_typeof.patch"
-	cmake-utils_src_prepare
+#cmake-utils_src_prepare
 }
 src_configure() {
 	# Configure cmake
