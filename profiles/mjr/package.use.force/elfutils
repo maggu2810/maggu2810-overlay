@@ -1,0 +1,2 @@
+#required by sys-devel/prelink-20120628, required by sys-devel/prelink (argument)
+>=dev-libs/elfutils-0.154-r1 static-libs
