@@ -1,4 +1,4 @@
-dev-util/qt-creator doc autotools bineditor bookmarks cmake fakevim perforce qtscript rss valgrind
+dev-util/qt-creator doc android autotools bineditor bookmarks cmake fakevim perforce qtscript rss valgrind
 
 x11-libs/qt-assistant doc
 x11-libs/qt-core doc
