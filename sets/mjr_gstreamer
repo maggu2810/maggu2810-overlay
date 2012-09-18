@@ -29,7 +29,6 @@ media-plugins/gst-plugins-mimic
 media-plugins/gst-plugins-modplug
 media-plugins/gst-plugins-mpeg2dec
 media-plugins/gst-plugins-musepack
-media-plugins/gst-plugins-mythtv
 media-plugins/gst-plugins-neon
 media-plugins/gst-plugins-ogg
 media-plugins/gst-plugins-oss
