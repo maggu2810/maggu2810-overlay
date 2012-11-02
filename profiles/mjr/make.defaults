@@ -196,7 +196,7 @@ USE="${USE} amarok fame ffmpeg gstreamer jingle lame mjpeg mplayer phonon shorte
 USE="${USE} amr amrnb amrwb opencore-amr"
 USE="${USE} a52 aac aacplus aften asf dirac divx dts dv faac faad flac gsm"
 USE="${USE} mad matroska mod mp2 mp3 mp4 midi mpeg mpegts musepack nut"
-USE="${USE} ogg ogm pcm quicktime real realmedia schroedinger speex theora twolame"
+USE="${USE} ogg ogm opus pcm quicktime real realmedia schroedinger speex theora twolame"
 USE="${USE} vorbis vpx win32codecs wma wmp x264 xvid" 
 
 # others
