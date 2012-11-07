@@ -116,10 +116,20 @@ USE="${USE} ipod joystick logitech-mouse wiimote"
 
 USE="${USE} blas lapack"
 
+
+#
+# VIRTUALIZATION STUFF
+#
+
+USE="${USE} kvm qemu"
+
+
 #
 # VCS - version control system(s)
 #
+
 USE="${USE} cvs git mercurial subversion"
+
 
 # the following USE-Flags must be sorted
 USE="${USE} \
