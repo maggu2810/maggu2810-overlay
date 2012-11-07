@@ -22,7 +22,8 @@ KEYWORDS="~x86 ~amd64"
 IUSE=""
 
 DEPEND="app-misc/xwiimote
-		x11-base/xorg-server[udev]"
+		x11-base/xorg-server[udev]
+		>=x11-misc/util-macros-1.8"
 
 RDEPEND="${DEPEND}"
 
