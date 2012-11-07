@@ -37,6 +37,7 @@ USE="${USE} cdr bluray dvd dvdr vcd"
 # THREADS
 #
 #
+
 USE="${USE} nptl nptlonly threads threadsafe"
 
 
@@ -115,10 +116,20 @@ USE="${USE} ipod joystick logitech-mouse wiimote"
 
 USE="${USE} blas lapack"
 
+
+#
+# VIRTUALIZATION STUFF
+#
+
+USE="${USE} kvm qemu"
+
+
 #
 # VCS - version control system(s)
 #
+
 USE="${USE} cvs git mercurial subversion"
+
 
 # the following USE-Flags must be sorted
 USE="${USE} \
@@ -188,6 +199,7 @@ USE="${USE} video videos"
 USE="${USE} g3dvl vaapi vdpau xv xvmc"
 USE="${USE} xv xvmc"
 USE="${USE} amarok fame ffmpeg gstreamer jingle lame mjpeg mplayer phonon shorten soundtouch sox telepathy wavpack"
+USE="${USE} farstream" # framework for audio/video conversations (instant messaging) (old name: farsight)
 
 # removed because of 1.1.x and 1.2.x incompatibility of xine-lib
 #USE="${USE} xine"
