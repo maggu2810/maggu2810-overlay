@@ -122,6 +122,7 @@ USE="${USE} blas lapack"
 #
 
 USE="${USE} kvm qemu"
+USE="${USE} spice"
 
 
 #
