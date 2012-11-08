@@ -21,13 +21,6 @@ dev-lang/mono moonlight
 net-analyzer/wireshark gtk
 
 
-#**************************************************************
-#                ARE YOU SURE YOU WANT TO BUILD WITHOUT GTK?
-# BECAUSE mplayerplug-in WITHOUT GTK TAKES AWAY FUNCITIONALITY
-#**************************************************************
-www-plugins/mplayerplug-in gtk
-
-
 # this is needed by gimp
 app-text/poppler-bindings gtk
 
@@ -45,3 +38,6 @@ net-im/pidgin gtk
 
 # GUI
 sys-apps/systemd gtk
+
+#required by gnome-extra/gnome-contacts-3.4.1, required by net-im/empathy-3.4.2.3[gnome], required by @preserved-rebuild (argument)
+>=dev-libs/folks-0.6.9 eds
