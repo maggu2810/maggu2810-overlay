@@ -1,25 +1,37 @@
-app-shells/gentoo-bashcomp
+#app-shells/gentoo-bashcomp
 
 #sys-devel/crossdev
 #sys-devel/crossdev-wrappers
 
-app-text/docbook-sgml
+#app-text/docbook-sgml
+
+# tool for automating interactive applications (ptxdist needs this)
 dev-tcltk/expect
 
 # mkseries-dev of socketcan
-dev-util/quilt
+#dev-util/quilt
 
-dev-embedded/u-boot-tools
+#dev-embedded/u-boot-tools
 
-net-print/poster
+#net-print/poster
 
-sys-apps/fakeroot-ng
-sys-apps/fakeroot
+#sys-apps/fakeroot-ng
+#sys-apps/fakeroot
 
-app-misc/ckermit
+#app-misc/ckermit
+
+# a good application for serial communication
 net-dialup/minicom
 
-net-ftp/tftp-hpa
+#net-ftp/tftp-hpa
 
+# prever using elfutils instead of libelf
 #dev-libs/libelf
-dev-libs/elfutils
+#dev-libs/elfutils
+
+# A small XML parsing library
+dev-libs/mini-xml
+
+# A simple logging library
+dev-libs/log4c
+
