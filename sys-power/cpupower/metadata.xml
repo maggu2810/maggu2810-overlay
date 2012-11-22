@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE pkgmetadata SYSTEM "http://www.gentoo.org/dtd/metadata.dtd">
+<pkgmetadata>
+<herd>no-herd</herd>
+<maintainer>
+  <email>matej@laitl.cz</email>
+  <name>Matěj Laitl</name>
+</maintainer>
+<longdescription lang="en">
+  A replacement of cpufrequtils that is included in the Linux kernel sources
+  since v3.1; cpupower (formerly cpupowerutils) adds additional readouts and
+  knobs such as monitoring of idle states, turbo states, energy/performance
+  policy setting and other features found on newer AMD and Intel CPUs.
+</longdescription>
+<use>
+  <flag name='benchmark'>
+    Provide also a tool that can be used to benchmark kernel cpufreq subsystem
+  </flag>
+</use>
+</pkgmetadata>

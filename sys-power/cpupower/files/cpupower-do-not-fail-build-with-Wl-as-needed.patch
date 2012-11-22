@@ -1,0 +1,25 @@
+From 60e0ca76c13e8b95dab4895090098dba15b7f687 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Mat=C4=9Bj=20Laitl?= <matej@laitl.cz>
+Date: Tue, 23 Aug 2011 15:18:57 +0200
+Subject: [PATCH] cpupower: do not fail build with -Wl,--as-needed
+
+---
+ tools/power/cpupower/Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/tools/power/cpupower/Makefile b/tools/power/cpupower/Makefile
+index 94c2cf0..189d823 100644
+--- a/tools/power/cpupower/Makefile
++++ b/tools/power/cpupower/Makefile
+@@ -192,7 +192,7 @@ $(UTIL_OBJS): $(UTIL_HEADERS)
+ 
+ cpupower: $(UTIL_OBJS) libcpupower.so.$(LIB_MAJ)
+ 	$(ECHO) "  CC      " $@
+-	$(QUIET) $(CC) $(CFLAGS) $(LDFLAGS) -lcpupower -lrt -lpci -L. -o $@ $(UTIL_OBJS)
++	$(QUIET) $(CC) $(CFLAGS) $(LDFLAGS) $(UTIL_OBJS) -L. -lcpupower -lrt -lpci -o $@
+ 	$(QUIET) $(STRIPCMD) $@
+ 
+ po/$(PACKAGE).pot: $(UTIL_SRC)
+-- 
+1.7.4.5
+
