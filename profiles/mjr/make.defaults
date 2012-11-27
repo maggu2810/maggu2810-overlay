@@ -207,9 +207,9 @@ USE="${USE} farstream" # framework for audio/video conversations (instant messag
 
 # support codecs, container
 USE="${USE} amr amrnb amrwb opencore-amr"
-USE="${USE} a52 aac aacplus aften asf dirac divx dts dv faac faad flac gsm"
+USE="${USE} a52 aac aacplus aften asf dirac divx dts dv faac faad flac g726 g729 gsm"
 USE="${USE} mad matroska mod mp2 mp3 mp4 midi mpeg mpegts musepack nut"
-USE="${USE} ogg ogm opus pcm quicktime real realmedia schroedinger speex theora twolame"
+USE="${USE} ogg ogm opus pcm quicktime real realmedia schroedinger silk speex theora twolame"
 USE="${USE} vorbis vpx win32codecs wma wmp x264 xvid" 
 
 # others
