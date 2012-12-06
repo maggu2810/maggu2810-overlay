@@ -1,2 +1,2 @@
-sys-apps/systemd acl
+sys-apps/systemd acl cryptsetup kmod pam
 sys-apps/systemd-units basic desktop server
