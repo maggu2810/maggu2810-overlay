@@ -7,9 +7,11 @@ EAPI=3
 inherit games cmake-utils
 
 MY_PN="${PN}-linux"
+MY_PV="${PV/_rc/rc}"
+MY_P="${MY_PN}-${MY_PV}"
 DESCRIPTION="The new Blobby Volley, a volley-game with colorful blobs"
-HOMEPAGE="http://blobby.sourceforge.net"
-SRC_URI="mirror://sourceforge/blobby/${MY_PN}-${PV}.tar.gz"
+HOMEPAGE="http://blobby.sourceforge.net/"
+SRC_URI="mirror://sourceforge/blobby/${MY_PN}-${MY_PV}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
@@ -21,7 +23,12 @@ RDEPEND="virtual/opengl
 	dev-games/physfs"
 DEPEND="${RDEPEND}"
 
-S="${WORKDIR}/blobby-beta-${PV}"
+S="${WORKDIR}/blobby-${MY_PV}"
+
+src_prepare()
+{
+	epatch "${FILESDIR}/${P}.patch"
+}
 
 src_install() {
 	cmake-utils_src_install
