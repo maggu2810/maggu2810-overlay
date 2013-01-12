@@ -1,0 +1,12 @@
+diff -Naur blobby-1.0rc3.orig/src/CrossCorrelation.h blobby-1.0rc3/src/CrossCorrelation.h
+--- blobby-1.0rc3.orig/src/CrossCorrelation.h	2012-10-26 11:16:44.000000000 +0200
++++ blobby-1.0rc3/src/CrossCorrelation.h	2013-01-12 11:45:10.071529343 +0100
+@@ -19,6 +19,8 @@
+ 
+ #pragma once
+ 
++#include <cassert>
++
+ typedef float(*timeWeightFunction)(float pdt);
+ inline float constantWeightFunction(float )
+ {
