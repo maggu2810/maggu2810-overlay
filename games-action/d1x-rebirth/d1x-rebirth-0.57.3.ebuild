@@ -52,7 +52,6 @@ src_prepare() {
 		patch -p0 < "${WORKDIR}"/d1datapt/descent.hog.diff descent.hog
 		patch -p0 < "${WORKDIR}"/d1datapt/descent.pig.diff descent.pig
 	fi
-	epatch "${FILESDIR}"/${P}-underlink.patch
 }
 
 src_compile() {
