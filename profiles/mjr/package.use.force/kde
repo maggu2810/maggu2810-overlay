@@ -4,3 +4,6 @@ sys-libs/zlib minizip
 # app-arch/p7zip-9.20.1-r1
 # kde? ( wxwidgets )
 app-arch/p7zip wxwidgets
+
+#required by kde-base/pykde4-4.9.5, required by kde-base/system-config-printer-kde-4.9.5, required by kde-base/kdeadmin-meta-4.9.5[cups], required by @mjr_kde, required by @selected, required by @world (argument)
+>=dev-python/PyQt4-4.9.6-r1 script

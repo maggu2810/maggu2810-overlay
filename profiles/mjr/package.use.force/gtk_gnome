@@ -41,3 +41,6 @@ sys-apps/systemd gtk
 
 #required by gnome-extra/gnome-contacts-3.4.1, required by net-im/empathy-3.4.2.3[gnome], required by @preserved-rebuild (argument)
 >=dev-libs/folks-0.6.9 eds
+
+#required by gnome-base/gnome-shell-3.6.2-r1[i18n], required by gnome-base/gnome-light-3.6.2[gnome-shell], required by gnome-base/gnome-light (argument)
+>=app-i18n/ibus-1.4.99.20121006 dconf
