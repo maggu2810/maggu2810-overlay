@@ -2,9 +2,15 @@
 # Copyright 1999-2011 Gentoo Foundation; Distributed under the GPL v2
 # $Header: /var/cvsroot/gentoo-x86/games-action/d1x-rebirth/ChangeLog,v 1.6 2011/06/20 09:20:19 tupone Exp $
 
+*d1x-rebirth-0.57.3 (12 Jan 2013)
+
+  12 Jan 2013; Markus Rathgeb <maggu2810@gmail.com>
+  +d1x-rebirth-0.57.3.ebuild:
+  version bump
+
 *d1x-rebirth-0.57.1 (24 Oct 2011)
 
-  24 Oct 2011; Markus Rathgeb <maggu2810@googlemail.com> d1x-rebirth-0.57.1.ebuild,
+  24 Oct 2011; Markus Rathgeb <maggu2810@googlemail.com>
   +d1x-rebirth-0.57.1.ebuild,
   +files/d1x-rebirth-0.57.1-underlink.patch:
   Imported from official gentoo portage tree and bumped and edited to v0.57.1
