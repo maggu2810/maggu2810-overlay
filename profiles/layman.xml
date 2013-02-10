@@ -28,7 +28,7 @@
         <feed>https://github.com/canek-pelaez/gentoo-systemd-only/commits/master</feed>
     </repo>
 </repositories>
-
+<!--
 <layman>
 	<overlay
 		type = "svn"
@@ -250,3 +250,4 @@
     </overlay>
 
 </layman>
+-->
