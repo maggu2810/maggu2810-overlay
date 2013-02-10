@@ -233,4 +233,15 @@
         </description>
     </overlay>
 
+    <overlay
+        type = "git"
+        src  = "git://github.com/canek-pelaez/gentoo-systemd-only.git"
+        contact = "canek@ciencias.unam.mx"
+        status  = "unofficial"
+        name = "gentoo-systemd-only">
+        <link>http://xochitl.matem.unam.mx/~canek/gentoo-systemd-only/</link>
+        <description>
+            This overlay is an experiment to see how difficult it is to remove OpenRC from a Gentoo system, so it runs only with systemd. I will try to keep the overlay in sync with the portage tree until the listed bugs are fixed and the new ebuilds (or similar alternatives) are accepted.
+        </description>
+    </overlay>
 </layman>
