@@ -1,2 +1,7 @@
 # Add less (so we can use it as pager) to the base packages
 *sys-apps/less
+
+*sys-apps/kmod
+
+-*sys-apps/net-tools
+*sys-apps/iproute2
