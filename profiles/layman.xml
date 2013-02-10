@@ -1,19 +1,35 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE repositories SYSTEM "/dtd/repositories.dtd">
+<repositories xmlns="" version="1.0">
+    <repo quality="experimental" status="unofficial">
+        <name><![CDATA[maggu2810-overlay]]></name>
+        <description><![CDATA[maggu2810's Gentoo portage overlay.]]></description>
+        <homepage>http://github.com/maggu2810/maggu2810-overlay</homepage>
+        <owner>
+            <email>maggu2810@web.de</email>
+            <name><![CDATA[Markus Rathgeb]]></name>
+        </owner>
+        <source type="git">git://github.com/maggu2810/maggu2810-overlay.git</source>
+        <source type="git">http://github.com/maggu2810/maggu2810-overlay.git</source>
+        <feed>http://github.com/feeds/maggu2810/commits/maggu2810-overlay/master</feed>
+    </repo>
+
+    <repo quality="experimental" status="unofficial">
+        <name><![CDATA[gentoo-systemd-only]]></name>
+        <description><![CDATA[Gentoo overlay to only have systemd as init system.]]></description>
+        <homepage>https://github.com/canek-pelaez/gentoo-systemd-only/</homepage>
+        <owner>
+            <email>canek@ciencias.unam.mx</email>
+            <name><![CDATA[Canek Peláez Valdés]]></name>
+        </owner>
+        <source type="git">git://github.com/canek-pelaez/gentoo-systemd-only.git</source>
+        <source type="git">https://github.com/canek-pelaez/gentoo-systemd-only.git</source>
+        <source type="git">git+ssh://git@github.com:canek-pelaez/gentoo-systemd-only.git</source>
+        <feed>https://github.com/canek-pelaez/gentoo-systemd-only/commits/master</feed>
+    </repo>
+</repositories>
+
 <layman>
-
-  <repo quality="experimental" status="unofficial">
-    <name><![CDATA[maggu2810-overlay]]></name>
-    <description><![CDATA[maggu2810's Gentoo portage overlay.]]></description>
-    <homepage>http://github.com/maggu2810/maggu2810-overlay</homepage>
-    <owner>
-      <email>maggu2810@web.de</email>
-      <name><![CDATA[Markus Rathgeb]]></name>
-    </owner>
-    <source type="git">git://github.com/maggu2810/maggu2810-overlay.git</source>
-    <source type="git">http://github.com/maggu2810/maggu2810-overlay.git</source>
-    <feed>http://github.com/feeds/maggu2810/commits/maggu2810-overlay/master</feed>
-  </repo>
-
 	<overlay
 		type = "svn"
 		src  = "http://opensvn.csie.org/darknrg_gentoo_overlay/"
@@ -233,15 +249,4 @@
         </description>
     </overlay>
 
-    <overlay
-        type = "git"
-        src  = "git://github.com/canek-pelaez/gentoo-systemd-only.git"
-        contact = "canek@ciencias.unam.mx"
-        status  = "unofficial"
-        name = "gentoo-systemd-only">
-        <link>http://xochitl.matem.unam.mx/~canek/gentoo-systemd-only/</link>
-        <description>
-            This overlay is an experiment to see how difficult it is to remove OpenRC from a Gentoo system, so it runs only with systemd. I will try to keep the overlay in sync with the portage tree until the listed bugs are fixed and the new ebuilds (or similar alternatives) are accepted.
-        </description>
-    </overlay>
 </layman>
