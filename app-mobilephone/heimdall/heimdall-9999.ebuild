@@ -27,7 +27,16 @@ DEPEND="$RDEPEND
 		dev-util/pkgconfig"
 
 src_prepare() {
-	rm -r libusb-1.0 || die "Can't delete libusb sources"
+	local LIBUSB_DIR=""
+	if [ -d libusb-1.0 ]; then
+		if [ -n "${LIBUSB_DIR}" ]; then die "Multiple libusb sources."; fi
+		LIBUSB_DIR=libusb-1.0
+	elif [ -d libusbx-1.0 ]; then
+		if [ -n "${LIBUSB_DIR}" ]; then die "Multiple libusb sources."; fi
+		LIBUSB_DIR=libusbx-1.0
+	fi
+	if [ -z "${LIBUSB_DIR}" ]; then die "Bundled libusb sources not found."; fi
+	rm -r "${LIBUSB_DIR}" || die "Can't delete libusb sources"
 	edos2unix "${S}"/${PN}-frontend/${PN}-frontend.pro
 	edos2unix "${S}"/${PN}/Makefile.am
 	sed -e 's:/usr/local:/usr:g' -i "${S}"/${PN}-frontend/${PN}-frontend.pro \
