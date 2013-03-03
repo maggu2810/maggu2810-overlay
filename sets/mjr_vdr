@@ -3,6 +3,7 @@ media-plugins/vdr-epgsearch
 media-plugins/vdr-osdteletext
 media-plugins/vdr-remote
 media-plugins/vdr-streamdev
+media-plugins/vdr-vnsiserver
 media-plugins/vdr-xineliboutput
 media-tv/linuxtv-dvb-apps
 media-tv/w_scan
