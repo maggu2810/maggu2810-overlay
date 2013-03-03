@@ -1,9 +1,1 @@
-dev-util/qt-creator doc android autotools bineditor bookmarks cmake fakevim perforce qtscript rss valgrind
-
-x11-libs/qt-assistant doc
-x11-libs/qt-core doc
-
-x11-libs/qt-core private-headers
-x11-libs/qt-declarative private-headers
-x11-libs/qt-gui private-headers
-x11-libs/qt-script private-headers
+dev-qt/qt-creator doc android autotools bineditor bookmarks cmake fakevim perforce qtscript rss valgrind
