@@ -142,7 +142,7 @@ USE="${USE} \
      gd gimp gmedia gphoto2 graphviz gs \
      idn ieee1394 imagemagick imlib inkjar \
      lcms libnotify libshout logrotate \
-     mime mono musicbrainz \
+     mime musicbrainz \
      nsplugin \
      ofr \
      pcmcia postscript pdf plotutils ppds \
