@@ -20,7 +20,7 @@ KEYWORDS="~x86 ~amd64"
 
 IUSE="qt4"
 
-RDEPEND="qt4? ( x11-libs/qt-core x11-libs/qt-gui )
+RDEPEND="qt4? ( dev-qt/qtcore dev-qt/qtgui )
 		 >dev-libs/libusb-1.0"
 
 DEPEND="$RDEPEND
