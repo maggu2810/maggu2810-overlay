@@ -1,2 +1,10 @@
 sys-apps/systemd
 sys-apps/systemd-units
+
+sys-apps/systemd-sysv-utils
+sys-apps/sysvinit-tools
+sys-apps/systemd-baselayout
+
+#!sys-apps/openrc
+#!sys-apps/baselayout
+#!sys-apps/sysvinit
