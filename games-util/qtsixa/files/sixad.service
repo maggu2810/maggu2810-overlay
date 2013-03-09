@@ -1,0 +1,10 @@
+[Unit]
+Description=sixad - Sixaxis Daemon
+Conflicts=bluetooth.service
+
+[Service]
+ExecStart=/usr/sbin/sixad-bin 0 0 0
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
