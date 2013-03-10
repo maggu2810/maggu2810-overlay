@@ -1,1 +1,6 @@
 net-misc/networkmanager consolekit
+
+sys-auth/polkit -systemd
+sys-power/upower -systemd
+sys-fs/udisks -systemd
+media-sound/pulseaudio -systemd
