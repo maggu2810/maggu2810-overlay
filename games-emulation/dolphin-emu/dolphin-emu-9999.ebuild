@@ -45,10 +45,10 @@ DEPEND="${RDEPEND}
 	virtual/pkgconfig
 	media-gfx/nvidia-cg-toolkit"
 
-src_prepare() {
-	epatch "${FILESDIR}/linking_cg_cggl.patch"
+#src_prepare() {
+#	epatch "${FILESDIR}/linking_cg_cggl.patch"
 #cmake-utils_src_prepare
-}
+#}
 src_configure() {
 	# Configure cmake
 	mycmakeargs="
