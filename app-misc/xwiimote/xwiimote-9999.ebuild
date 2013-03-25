@@ -21,8 +21,8 @@ KEYWORDS="~x86 ~amd64"
 
 IUSE=""
 
-DEPEND="sys-fs/udev
-		sys-libs/ncurses"
+DEPEND="sys-libs/ncurses
+		virtual/udev"
 
 RDEPEND="${DEPEND}"
 
