@@ -1,0 +1,14 @@
+Add missing includes for ressource limits.
+
+Signed-off-by: Markus Rathgeb <maggu2810@gmail.com>
+
+--- noad-0.7.3.org/main.cpp	2013-03-29 09:37:01.729941489 +0100
++++ noad-0.7.3/main.cpp	2013-03-29 09:39:29.898948554 +0100
+@@ -22,6 +22,7 @@
+ 
+ #include <stdlib.h>
+ #include <time.h>
++#include <sys/resource.h>
+ #include <sys/wait.h>
+ #include <signal.h>
+ #include <execinfo.h>
