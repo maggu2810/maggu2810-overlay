@@ -4,7 +4,7 @@
 
 EAPI=5
 
-PYTHON_COMPAT=( python2_5 python2_6 python2_7 )
+PYTHON_COMPAT=( python2_7 )
 inherit eutils python-single-r1 systemd
 
 MY_P="QtSixA-${PV}"
@@ -32,6 +32,10 @@ RDEPEND="${DEPEND}
 
 S="${WORKDIR}/${MY_P}"
 
+src_prepare() {
+	epatch "${FILESDIR}"/fix-missing-includes.diff
+}
+
 src_compile() {
 	use qt4 && emake -C qtsixa
 	emake -C utils WANT_JACK=$(use jack && echo true)
@@ -46,6 +50,8 @@ src_install() {
 	use doc && dodoc INSTALL manual.pdf README TODO
 
 	if use qt4; then
+		python_fix_shebang "${D}"/usr/bin/sixad-lq
+		python_fix_shebang "${D}"/usr/bin/sixad-notify
 		python_fix_shebang "${D}"/usr/share/qtsixa/gui
 		python_optimize "${D}"/usr/share/qtsixa/gui
 	fi
