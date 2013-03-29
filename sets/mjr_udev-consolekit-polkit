@@ -3,7 +3,7 @@ sys-fs/udisks
 sys-power/upower
 sys-auth/polkit
 sys-auth/consolekit
-sys-fs/udev
+virtual/udev
 sys-fs/cryptsetup
 
 #
