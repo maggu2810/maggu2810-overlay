@@ -56,7 +56,7 @@ USE="${USE} apache2 cgi php tidy"
 
 USE="${USE} css curl curlwrappers dhcp ftp httpnet network networking nfs samba webdav"
 
-#USE="${USE} ldap openldap"
+USE="${USE} -ldap -openldap"
 
 USE="${USE} howl-compat mdnsresponder-compat"
 
