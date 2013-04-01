@@ -59,4 +59,10 @@ src_install() {
 	rm "${D}etc/init.d/sixad" || die # TODO: Write a Gentoo version.
 
 	systemd_dounit "${FILESDIR}"/sixad.service
+
+	elog "Solve conflicts:"
+	elog "Do not forget to disable the input plugin of your bluetooth daemon."
+	elog "You could disable the plugin by adding the following line to the"
+	elog "configuration file of the bluetooth daemon (/etc/bluetooth/main.conf):"
+	elog "DisablePlugins = input"
 }

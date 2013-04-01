@@ -1,6 +1,7 @@
 [Unit]
 Description=sixad - Sixaxis Daemon
-Conflicts=bluetooth.service
+# It does not conflict, if the input plugin is disabled.
+#Conflicts=bluetooth.service
 
 [Service]
 ExecStart=/usr/sbin/sixad-bin 0 0 0
