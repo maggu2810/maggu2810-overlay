@@ -5,7 +5,7 @@
 EAPI=5
 
 PYTHON_COMPAT=( python2_7 )
-inherit eutils python-single-r1 systemd
+inherit eutils python-single-r1 systemd udev
 
 MY_P="QtSixA-${PV}"
 DESCRIPTION="Sixaxis Joystick Manager"
@@ -59,6 +59,15 @@ src_install() {
 	rm "${D}etc/init.d/sixad" || die # TODO: Write a Gentoo version.
 
 	systemd_dounit "${FILESDIR}"/sixad.service
+
+	udev_dorules "${FILESDIR}"/97-sixpair.rules
+}
+
+pkg_postinst() {
+	udevadm control --reload-rules
+
+	einfo "Requirements:"
+	einfo "Ensure that the uinput module is loaded."
 
 	einfo "Solve conflicts:"
 	einfo "Do not forget to disable the input plugin of your bluetooth daemon."
