@@ -33,7 +33,9 @@ RDEPEND="${DEPEND}
 S="${WORKDIR}/${MY_P}"
 
 src_prepare() {
-	epatch "${FILESDIR}"/fix-missing-includes.diff
+	epatch "${FILESDIR}"/qtsixa-1.5.1-fix-missing-includes.patch
+
+	sed -i -e s/exec\ python/exec\ "${EPYTHON}"/g qtsixa/qtsixa
 }
 
 src_compile() {
