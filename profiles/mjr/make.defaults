@@ -270,7 +270,9 @@ USE="${USE} qt qt3support qt4 qt-dbus qt-webkit"
 #
 
 # 3D, graphic acceleration, ...
-USE="${USE} aiglx cairo dri gbm gles gles2 glitz libkms opencl opengl openvg sdl xinerama xrandr"
+USE="${USE} aiglx cairo dri gbm gles gles2 glitz libkms opengl openvg sdl xinerama xrandr"
+# opencl needs nvidia or fglrx (closed source) driver
+#USE="${USE} opencl"
 
 # others
 USE="${USE} X xcomposite xorg xosd xscreensaver"
