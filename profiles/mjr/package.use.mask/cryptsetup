@@ -1,1 +1,1 @@
-sys-fs/cryptsetup static
+sys-fs/cryptsetup static openssl
