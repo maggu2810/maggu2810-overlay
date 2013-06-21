@@ -33,3 +33,7 @@ app-crypt/dirmngr
 kde-base/svgpart
 media-plugins/kipi-plugins
 
+#
+# So we can disable the file indexing in "system settings, desktop search"
+#
+kde-base/nepomuk
