@@ -35,3 +35,5 @@ dev-libs/mini-xml
 # A simple logging library
 dev-libs/log4c
 
+# Fast compression / decompression
+dev-libs/lzo
