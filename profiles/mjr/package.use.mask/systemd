@@ -1,6 +1,11 @@
-net-misc/networkmanager consolekit
 
 sys-auth/polkit -systemd
 sys-power/upower -systemd
 sys-fs/udisks -systemd
 media-sound/pulseaudio -systemd
+
+#
+# Use systemd instead of consolekit
+#
+net-misc/networkmanager -systemd consolekit
+kde-base/kdm -systemd consolekit
