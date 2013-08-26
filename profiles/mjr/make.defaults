@@ -192,6 +192,8 @@ USE="${USE} crypt cryptsetup libgcrypt loop-aes otr openssl ssl"
 # MULTIMEDIA, IMAGE
 #
 
+USE="${USE} multimedia"
+
 # support engines, framework...
 USE="${USE} -arts -esd -oss"
 USE="${USE} alsa pulseaudio"
@@ -262,7 +264,7 @@ USE="${USE} -handbook -nepomuk -semantic-desktop"
 #
 # Qt stuff
 #
-USE="${USE} qt qt3support qt4 qt-dbus qt-webkit"
+USE="${USE} qt qt3support qt4 qt-dbus qt-webkit qml"
 
 
 #
