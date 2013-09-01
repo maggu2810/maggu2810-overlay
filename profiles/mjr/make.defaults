@@ -134,7 +134,7 @@ USE="${USE} cvs git mercurial subversion"
 
 # the following USE-Flags must be sorted
 USE="${USE} \
-     accessibility acl \
+     acl \
      bash-completion \
      chroot chm cjk cxx \
      dvi djvu \
