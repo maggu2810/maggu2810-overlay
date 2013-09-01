@@ -1,0 +1,8 @@
+# We need the serial console, but BRLTTY remove this (needs further inspection).
+# Aug 28 10:51:12 pc88 brltty[6613]: BRLTTY 4.5 rev Unversioned directory [http://mielke.cc/brltty/]
+# Aug 28 10:51:12 pc88 brltty[6614]: Linux Screen Driver:
+# Aug 28 10:51:12 pc88 brltty[6614]: BrlAPI Server: release 0.6.0
+# Aug 28 10:51:12 pc88 kernel: usb 4-1.1.3.7: usbfs: interface 0 claimed by ftdi_sio while 'brltty' sets config #1
+# Aug 28 10:51:12 pc88 brltty[6614]: USB configuration set error 16: Device or resource busy.
+# Aug 28 10:51:12 pc88 brltty[6614]: USB interface in use: 0 (ftdi_sio)
+app-accessibility/brltty
