@@ -1,0 +1,14 @@
+--- CMakeLists.txt.org	2013-09-11 23:11:54.454761345 +0200
++++ CMakeLists.txt	2013-09-11 23:13:15.832765226 +0200
+@@ -147,7 +147,10 @@
+   enable_testing()
+ endif(WITH_TESTS)
+ 
+-set(QT_REQUIRED_MODULES QtCore QtGui QtTest)
++set(QT_REQUIRED_MODULES QtCore QtGui)
++if(WITH_TESTS)
++    set(QT_REQUIRED_MODULES ${QT_REQUIRED_MODULES} QtTest)
++endif()
+ if(UNIX AND NOT APPLE)
+   set(QT_REQUIRED_MODULES ${QT_REQUIRED_MODULES} QtDBus)
+ endif()
