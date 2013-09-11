@@ -34,8 +34,12 @@ USE="${USE} cdr bluray dvd dvdr vcd"
 
 
 #
-# THREADS
+# Some language specific stuff.
 #
+USE="${USE} c++0x"
+
+#
+# THREADS
 #
 
 USE="${USE} nptl nptlonly threads threadsafe"
