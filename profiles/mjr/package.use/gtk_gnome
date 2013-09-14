@@ -1,1 +1,2 @@
 app-office/libreoffice-bin -gnome
+x11-misc/lightdm -gtk
