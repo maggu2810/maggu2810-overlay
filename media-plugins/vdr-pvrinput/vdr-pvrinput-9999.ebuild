@@ -12,7 +12,7 @@ MY_P="${PN}-${MY_PV}"
 if [[ ${PV} == "9999" ]] ; then
 		EGIT_REPO_URI="git://projects.vdr-developer.org/vdr-plugin-pvrinput.git"
 		EGIT_PROJECT="pvrinput"
-		inherit git
+		inherit git-2
 		KEYWORDS=""
 		DEPEND=">=media-video/vdr-1.7.13"
 else
