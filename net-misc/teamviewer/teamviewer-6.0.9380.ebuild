@@ -1,27 +1,30 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI=3
+EAPI=5
 
 inherit eutils
 
+MV=${PV/\.*} # Major version
+MY_PN=${PN}${MV}
 MY_FILENAME="${P}.tar.gz"
 
-DESCRIPTION="the All-In-One Solution for Remote Access and Support over the
-Internet"
+DESCRIPTION="All-In-One Solution for Remote Access and Support over the Internet"
 HOMEPAGE="http://www.teamviewer.com"
 SRC_URI="http://www.teamviewer.com/download/${PN}_linux.tar.gz -> ${MY_FILENAME}"
 
 LICENSE="TeamViewer"
-SLOT="0"
-KEYWORDS="~amd64 x86"
+SLOT=${MV}
+KEYWORDS="~amd64 ~x86"
 IUSE=""
 
 RESTRICT="fetch mirror strip"
 
 DEPEND="app-emulation/wine"
 RDEPEND="${DEPEND}"
+
+S=${WORKDIR}/teamviewer${MV}
 
 pkg_nofetch() {
 	local FILE="${FILESDIR}/${MY_FILENAME}"
@@ -39,20 +42,20 @@ pkg_setup() {
 
 src_install() {
 	insinto /opt/teamviewer/ || die
-	doins teamviewer6/.wine/drive_c/Program\ Files/TeamViewer/Version6/* ||
+	doins .wine/drive_c/Program\ Files/TeamViewer/Version6/* ||
 		die
-	echo "#!/bin/bash" > teamviewer || die
-	echo "/usr/bin/wine /opt/teamviewer/TeamViewer.exe" >> teamviewer || die
+	echo "#!/bin/bash" > "${MY_PN}" || die
+	echo "/usr/bin/wine /opt/teamviewer/TeamViewer.exe" >> "${MY_PN}" || die
 	insinto /usr/bin || die
-	dobin teamviewer || die
+	dobin "${MY_PN}" || die
 
 	local res
 	for res in 48; do
 		insinto /usr/share/icons/hicolor/${res}x${res}/apps
-		doins teamviewer6/.tvscript/teamviewer.png || die
+		doins .tvscript/teamviewer.png || die
 	done
 
-	dodoc teamviewer6/linux_FAQ_{EN,DE}.txt || die
+	dodoc linux_FAQ_{EN,DE}.txt || die
 
-	make_desktop_entry ${PN} TeamViewer ${PN}
+	make_desktop_entry ${MY_PN} TeamViewer ${MY_PN}
 }
