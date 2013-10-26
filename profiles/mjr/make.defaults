@@ -135,6 +135,11 @@ USE="${USE} spice"
 
 USE="${USE} cvs git mercurial subversion"
 
+#
+# Support for book formats
+#
+
+USE="${USE} ebook epub postscript pdf"
 
 # the following USE-Flags must be sorted
 USE="${USE} \
@@ -149,7 +154,7 @@ USE="${USE} \
      mime musicbrainz \
      nsplugin \
      ofr \
-     pcmcia postscript pdf plotutils ppds \
+     pcmcia plotutils ppds \
      spell srt stream streamripper \
      xattr xcb xml \
      "
