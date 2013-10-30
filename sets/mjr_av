@@ -7,6 +7,9 @@ media-video/lsdvd
 media-video/mkvtoolnix
 media-video/mplayer
 media-video/transcode
-media-video/vcdgear
+
+# 32 bit binary package only (so no no-multilib support)
+#media-video/vcdgear
+
 media-video/vlc
 media-video/vobcopy
