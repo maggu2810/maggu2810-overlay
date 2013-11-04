@@ -12,7 +12,7 @@ kde-base/kdesdk-meta
 kde-base/kdeutils-meta
 kde-misc/kde-gtk-config
 kde-misc/kdiff3
-kde-misc/kio-upnp-ms
+#kde-misc/kio-upnp-ms
 kde-misc/krename
 kde-misc/krusader
 
