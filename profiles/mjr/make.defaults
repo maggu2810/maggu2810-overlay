@@ -93,7 +93,7 @@ USE="${USE} icu nls unicode userlocales"
 # SERVICES AND SOME SUPPORT STUFF
 #
 
-USE="${USE} acpi -apm consolekit dbus -hal pam policykit udev udisks upower"
+USE="${USE} acpi -apm dbus -hal pam policykit udev udisks upower"
 USE="${USE} device-mapper lvm"
 USE="${USE} networkmanager"
 
