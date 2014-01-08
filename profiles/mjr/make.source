@@ -1,0 +1,15 @@
+#
+# This file could me sources by the local make.conf.
+# Use this as long as we do not find a way to set this stuff
+# by the make.defaults from the profile.
+#
+# E.g. set the ruby target in make.defaults will not disable
+# the other ruby targets. Set the ruby target in make.conf (local)
+# will disable all not set targets.
+#
+
+RUBY_TARGETS="ruby21"
+
+PYTHON_SINGLE_TARGET="python2_7"
+PYTHON_TARGETS="python2_7 python3_3"
+USE_PYTHON="2.7 3.3"
