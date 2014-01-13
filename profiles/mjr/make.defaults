@@ -305,7 +305,7 @@ USE="${USE} X xcomposite xorg xosd xscreensaver"
 #GENTOO_MIRRORS="http://pandemonium.tiscali.de/pub/gentoo/ ftp://pandemonium.tiscali.de/pub/gentoo/"
 SYNC="rsync://rsync.europe.gentoo.org/gentoo-portage"
 
-APACHE2_MODULES="actions alias auth_basic auth_digest authn_anon authn_dbd authn_dbm authn_default authn_file authz_dbm authz_default authz_groupfile authz_host authz_owner authz_user autoindex cache dav dav_fs dav_lock dbd deflate dir disk_cache env expires ext_filter file_cache filter headers ident imagemap include info log_config logio mem_cache mime mime_magic negotiation proxy proxy_ajp proxy_balancer proxy_connect proxy_http rewrite setenvif so speling status unique_id userdir usertrack vhost_alias"
+APACHE2_MODULES="access_compat actions alias auth_basic auth_digest authn_anon authn_dbd authn_dbm authn_default authn_file authz_dbm authz_default authz_groupfile authz_host authz_owner authz_user autoindex cache dav dav_fs dav_lock dbd deflate dir disk_cache env expires ext_filter file_cache filter headers ident imagemap include info log_config logio mem_cache mime mime_magic negotiation proxy proxy_ajp proxy_balancer proxy_connect proxy_http rewrite setenvif so speling status unique_id userdir usertrack vhost_alias"
 APACHE2_MPMS="worker"
 
 #SANE_BACKENDS="the_name_of_your_backend_goes_here"
