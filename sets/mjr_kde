@@ -16,8 +16,8 @@ kde-misc/kdiff3
 kde-misc/krename
 kde-misc/krusader
 
-#kde-misc/networkmanagement
-kde-misc/plasma-nm
+kde-misc/networkmanagement
+#kde-misc/plasma-nm
 
 media-gfx/icoutils         # dolphin: For .exe file preview support
 media-sound/amarok
