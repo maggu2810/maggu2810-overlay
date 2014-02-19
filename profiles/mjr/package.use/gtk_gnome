@@ -1,2 +1,8 @@
 app-office/libreoffice-bin -gnome
 x11-misc/lightdm -gtk
+
+# required by gnome-base/gnome-control-center-3.10.2
+# required by gnome-base/gnome-shell-3.10.3
+# required by gnome-base/gnome-light-3.10.0[gnome-shell]
+# required by gnome-base/gnome-light (argument)
+>=net-misc/networkmanager-0.9.8.8 modemmanager
