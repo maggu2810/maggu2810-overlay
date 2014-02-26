@@ -1,2 +1,22 @@
 gnome-base/gnome
-gnome-extra/cinnamon
+
+# Gconf - XML based database (backend system). the older one.
+# Dconf - BLOB based database (backend system). the newer one.
+# Gsettings - CLI tool to edit settings. looks like it works only with Dconf (although i saw somewhere that it might work with Gconf).
+
+# GConf is obsolete.
+# It is the older GNOME 2.x configuration API and system, and has been replaced by DConf/GSettings in newer versions.
+# However, some applications still use it.
+
+# Dconf is a data store designed for storing configuration.
+# It is the replacement for Gconf, which was used for the same purpose.
+# Eventually, no programs should depend on Gconf any more.
+
+# GSettings is a GLib implementation of DConf, which stores its data in a binary database.
+# The gsettings command line tool is simply a tool to access or modify settings via the GSettings API, in the same way that the older gconftool command line tool is for GConf.
+# Gsettings is a development library used to read and write to a configuration store backend. On Linux, it uses Dconf, but on Windows, it uses the registry, and on OS X, it uses a native data store.
+# Application developers and end-users are recommended to use Gsettings, not Dconf directly.
+
+#gnome-extra/gconf-editor
+gnome-extra/gnome-tweak-tool
+#gnome-extra/gnome-shell-extensions

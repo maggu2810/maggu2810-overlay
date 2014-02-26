@@ -1,8 +1,16 @@
+gnome-base/gnome classic -extras
+
 app-office/libreoffice-bin -gnome
-x11-misc/lightdm -gtk
 
 # required by gnome-base/gnome-control-center-3.10.2
 # required by gnome-base/gnome-shell-3.10.3
 # required by gnome-base/gnome-light-3.10.0[gnome-shell]
 # required by gnome-base/gnome-light (argument)
 >=net-misc/networkmanager-0.9.8.8 modemmanager
+
+# required by dev-libs/folks-0.9.6
+# # required by net-im/empathy-3.10.3
+# # required by gnome-base/gnome-core-apps-3.10.0
+# # required by gnome-base/gnome-3.10.0
+# # required by gnome-base/gnome (argument)
+>=gnome-extra/evolution-data-server-3.10.4 vala
