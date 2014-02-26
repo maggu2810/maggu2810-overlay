@@ -242,7 +242,6 @@ USE="${USE} lastfm"
 #
 # Gtk, Gnome stuff
 #
-#
 
 USE="${USE} gnome gnome-keyring gtk gtk2 gtk3"
 
@@ -258,15 +257,16 @@ USE="${USE} -wxwindows"
 # TCL/TK stuff
 #
 
-USE="${USE} tcl tcltk tk"
+#USE="${USE} tcl tcltk tk"
 
 
 #
 # KDE stuff
 #
 
-USE="${USE} kde kipi konqueror"
-USE="${USE} plasma webkit"
+#USE="${USE} kde kipi konqueror"
+#USE="${USE} plasma"
+USE="${USE} webkit"
 USE="${USE} -handbook -nepomuk -semantic-desktop"
 
 
