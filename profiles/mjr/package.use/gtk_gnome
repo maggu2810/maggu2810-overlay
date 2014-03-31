@@ -1,7 +1,5 @@
 gnome-base/gnome classic -extras
 
-app-office/libreoffice-bin -gnome
-
 # required by gnome-base/gnome-control-center-3.10.2
 # required by gnome-base/gnome-shell-3.10.3
 # required by gnome-base/gnome-light-3.10.0[gnome-shell]
@@ -14,3 +12,11 @@ app-office/libreoffice-bin -gnome
 # # required by gnome-base/gnome-3.10.0
 # # required by gnome-base/gnome (argument)
 >=gnome-extra/evolution-data-server-3.10.4 vala
+
+# required by app-crypt/seahorse-3.10.2-r1
+# required by gnome-base/gnome-core-apps-3.10.0
+# required by gnome-base/gnome-3.10.0
+# required by @mjr_gnome
+# required by @selected
+# required by @world (argument)
+>=app-crypt/gcr-3.10.1 vala
