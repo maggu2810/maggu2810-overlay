@@ -5,8 +5,10 @@ media-video/avidemux
 media-video/ffmpeg
 media-video/lsdvd
 media-video/mkvtoolnix
+media-video/mpgtx
 media-video/mplayer
 media-video/transcode
+media-video/ttcut
 
 # 32 bit binary package only (so no no-multilib support)
 #media-video/vcdgear
