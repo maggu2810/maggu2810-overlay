@@ -273,8 +273,8 @@ USE="${USE} -handbook -nepomuk -semantic-desktop"
 #
 # Qt stuff
 #
-USE="${USE} qt qt3support qt4 qt-dbus qt-webkit qml"
-
+USE="${USE} qt qt4 qt-dbus qt-webkit qml"
+USE="${USE} -qt3support"
 
 #
 # Graphic
