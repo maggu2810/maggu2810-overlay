@@ -2,8 +2,12 @@
 <virtual/jdk-1.6
 <dev-java/eclipse-ecj-3.6
 <dev-java/ant-eclipse-ecj-3.6
-dev-java/ecj-gcj
-dev-java/gcj-jdk
+
+# Do not mask GCJ stuff, to allow (initial) building of icedtea,
+# without another java installed.
+# icedtea-bin is here masked, so we need GCJ.
+#dev-java/ecj-gcj
+#dev-java/gcj-jdk
 
 dev-java/sun-jdk
 dev-java/sun-jre-bin
