@@ -1,2 +1,0 @@
-#required by app-emulation/virt-manager-0.9.4[spice], required by @installed (argument)
->=net-misc/spice-gtk-0.14 gtk3
