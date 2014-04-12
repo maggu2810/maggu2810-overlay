@@ -305,6 +305,8 @@ src_prepare() {
 			|| die "Failed to fix heimdal crypt library reference"
 	fi
 
+	epatch "${FILESDIR}/${P}_w_systemd-212.patch"
+
 	#Add user patches #357637
 	epatch_user
 

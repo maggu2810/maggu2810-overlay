@@ -1,0 +1,62 @@
+diff -Naur php-5.5.10.orig/configure php-5.5.10/configure
+--- php-5.5.10.orig/configure	2014-04-12 10:45:20.166239935 +0200
++++ php-5.5.10/configure	2014-04-12 10:46:19.398244066 +0200
+@@ -12679,13 +12679,13 @@
+ 
+ 
+   if test "$PHP_FPM_SYSTEMD" != "no" ; then
+-    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for sd_notify in -lsystemd-daemon" >&5
+-$as_echo_n "checking for sd_notify in -lsystemd-daemon... " >&6; }
++    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for sd_notify in -lsystemd" >&5
++$as_echo_n "checking for sd_notify in -lsystemd... " >&6; }
+ if ${ac_cv_lib_systemd_daemon_sd_notify+:} false; then :
+   $as_echo_n "(cached) " >&6
+ else
+   ac_check_lib_save_LIBS=$LIBS
+-LIBS="-lsystemd-daemon  $LIBS"
++LIBS="-lsystemd  $LIBS"
+ cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+ /* end confdefs.h.  */
+ 
+@@ -12716,7 +12716,7 @@
+ { $as_echo "$as_me:${as_lineno-$LINENO}: result: $ac_cv_lib_systemd_daemon_sd_notify" >&5
+ $as_echo "$ac_cv_lib_systemd_daemon_sd_notify" >&6; }
+ if test "x$ac_cv_lib_systemd_daemon_sd_notify" = xyes; then :
+-  SYSTEMD_LIBS="-lsystemd-daemon"
++  SYSTEMD_LIBS="-lsystemd"
+ fi
+ 
+     for ac_header in systemd/sd-daemon.h
+@@ -12742,10 +12742,10 @@
+       PHP_FPM_SD_FILES="fpm/fpm_systemd.c"
+ 
+ 
+-  case systemd-daemon in
++  case systemd in
+   c|c_r|pthread*) ;;
+   *)
+-      LIBS="-lsystemd-daemon $LIBS"
++      LIBS="-lsystemd $LIBS"
+    ;;
+   esac
+ 
+diff -Naur php-5.5.10.orig/sapi/fpm/config.m4 php-5.5.10/sapi/fpm/config.m4
+--- php-5.5.10.orig/sapi/fpm/config.m4	2014-03-05 11:18:00.000000000 +0100
++++ php-5.5.10/sapi/fpm/config.m4	2014-04-12 10:46:19.401244066 +0200
+@@ -567,14 +567,14 @@
+   [  --with-fpm-systemd      Activate systemd integration], no, no)
+ 
+   if test "$PHP_FPM_SYSTEMD" != "no" ; then
+-    AC_CHECK_LIB(systemd-daemon, sd_notify, SYSTEMD_LIBS="-lsystemd-daemon")
++    AC_CHECK_LIB(systemd, sd_notify, SYSTEMD_LIBS="-lsystemd")
+     AC_CHECK_HEADERS(systemd/sd-daemon.h, [HAVE_SD_DAEMON_H="yes"], [HAVE_SD_DAEMON_H="no"])
+     if test $HAVE_SD_DAEMON_H = "no" || test -z "${SYSTEMD_LIBS}"; then
+       AC_MSG_ERROR([Your system does not support systemd.])
+     else
+       AC_DEFINE(HAVE_SYSTEMD, 1, [FPM use systemd integration])
+       PHP_FPM_SD_FILES="fpm/fpm_systemd.c"
+-      PHP_ADD_LIBRARY(systemd-daemon)
++      PHP_ADD_LIBRARY(systemd)
+       php_fpm_systemd=notify
+     fi
+   else
