@@ -1,0 +1,12 @@
+diff -Naur a/ozwcp.cpp b/ozwcp.cpp
+--- a/ozwcp.cpp	2014-04-24 14:15:15.733738860 +0200
++++ b/ozwcp.cpp	2014-04-24 14:25:00.676779657 +0200
+@@ -752,7 +752,7 @@
+ {
+   int32 i;
+   extern char *optarg;
+-  long webport;
++  uint16 webport;
+   char *ptr;
+ 
+   while ((i = getopt(argc, argv, "dp:")) != EOF)
