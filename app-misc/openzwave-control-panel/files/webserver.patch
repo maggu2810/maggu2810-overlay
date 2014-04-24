@@ -1,0 +1,31 @@
+--- webserver.cpp	2012-08-30 14:17:45.000000000 +0200
++++ webserver.cpp	2012-08-30 14:33:22.000000000 +0200
+@@ -491,9 +491,9 @@
+   pollElement->SetAttribute("cmode", cmode);
+   pollElement->SetAttribute("save", needsave);
+   bcnt = logbytes;
+-  if (stat("./OZW_Log.txt", &buf) != -1 &&
++  if (stat("/var/log/OZW_Log.txt", &buf) != -1 &&
+       buf.st_size > bcnt &&
+-      (fp = fopen("./OZW_Log.txt", "r")) != NULL) {
++      (fp = fopen("/var/log/OZW_Log.txt", "r")) != NULL) {
+     if (fseek(fp, bcnt, SEEK_SET) != -1) {
+       logread = fread(logbuffer, 1, logbufsz, fp);
+       while (logread > 0 && logbuffer[--logread] != '\n')
+@@ -755,13 +755,13 @@
+   if (strcmp(method, MHD_HTTP_METHOD_GET) == 0) {
+     if (strcmp(url, "/") == 0 ||
+ 	strcmp(url, "/index.html") == 0)
+-      ret = web_send_file(conn, "cp.html", MHD_HTTP_OK, false);
++      ret = web_send_file(conn, "/usr/share/openzwave-control-panel/cp.html", MHD_HTTP_OK, false);
+     else if (strcmp(url, "/scenes.html") == 0)
+       ret = web_send_file(conn, "scenes.html", MHD_HTTP_OK, false);
+     else if (strcmp(url, "/cp.js") == 0)
+-      ret = web_send_file(conn, "cp.js", MHD_HTTP_OK, false);
++      ret = web_send_file(conn, "/usr/share/openzwave-control-panel/cp.js", MHD_HTTP_OK, false);
+     else if (strcmp(url, "/favicon.png") == 0)
+-      ret = web_send_file(conn, "openzwavetinyicon.png", MHD_HTTP_OK, false);
++      ret = web_send_file(conn, "/usr/share/openzwave-control-panel/openzwavetinyicon.png", MHD_HTTP_OK, false);
+     else if (strcmp(url, "/poll.xml") == 0 && (devname != NULL || usb))
+       ret = SendPollResponse(conn);
+     else
