@@ -12,7 +12,7 @@ ESVN_REPO_URI="http://openzwave-control-panel.googlecode.com/svn/trunk/"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS=""
 IUSE=""
 
 DEPEND="net-libs/libmicrohttpd[messages]
