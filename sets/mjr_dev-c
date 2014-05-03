@@ -1,3 +1,4 @@
 dev-util/valgrind
 dev-util/ddd
-
+dev-util/lcov
+app-doc/doxygen
