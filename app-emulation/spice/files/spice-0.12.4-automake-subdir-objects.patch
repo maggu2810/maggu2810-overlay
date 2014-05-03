@@ -1,0 +1,12 @@
+diff -Naur spice-0.12.4.orig/spice-common/configure.ac spice-0.12.4/spice-common/configure.ac
+--- spice-0.12.4.orig/spice-common/configure.ac	2013-07-17 17:33:51.000000000 +0200
++++ spice-0.12.4/spice-common/configure.ac	2014-04-07 19:56:34.191390149 +0200
+@@ -13,7 +13,7 @@
+ m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
+ 
+ # Checks for programs
+-AM_INIT_AUTOMAKE([1.11 dist-xz no-dist-gzip tar-ustar foreign -Wall -Werror])
++AM_INIT_AUTOMAKE([1.11 dist-xz no-dist-gzip tar-ustar foreign -Wall -Werror subdir-objects])
+ AM_MAINTAINER_MODE
+ AM_SILENT_RULES([yes])
+ LT_INIT
