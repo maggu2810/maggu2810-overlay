@@ -1,7 +1,8 @@
 net-analyzer/iptraf-ng
 net-analyzer/nethogs
-net-dns/avahi
+
 net-dns/dnsmasq
+
 #net-analyzer/arptools
 net-analyzer/dsniff
 net-analyzer/netcat6
@@ -9,8 +10,15 @@ net-analyzer/nmap
 net-analyzer/sslsniff
 net-analyzer/wireshark
 net-dns/bind-tools
-net-firewall/iptables
+
+#net-firewall/iptables
+net-firewall/nftables
+
 net-misc/dhcpcd
+
 net-misc/jwhois
-net-misc/ntp
+
+#net-misc/ntp
+
+net-dns/avahi
 sys-auth/nss-mdns
