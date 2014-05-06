@@ -22,7 +22,7 @@ DEPEND="dev-libs/libxml2"
 RDEPEND="${DEPEND}"
 
 src_prepare() {
-	epatch "${FILESDIR}"/get-rid-of-tinyxml.patch
+	epatch "${FILESDIR}"/get-rid-of-bundled-tinyxml.patch
 }
 
 src_compile() {
