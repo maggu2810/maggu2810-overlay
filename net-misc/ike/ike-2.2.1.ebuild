@@ -19,7 +19,7 @@ IUSE="ldap nat qt4"
 
 COMMON_DEPEND="dev-libs/libedit
 	dev-libs/openssl
-	qt4? ( x11-libs/qt-core )
+	qt4? ( dev-qt/qtcore )
 	ldap? ( net-nds/openldap )"
 DEPEND="${COMMON_DEPEND}
 	dev-util/cmake
