@@ -33,12 +33,13 @@ GNUTLS := #-lgnutls
 #LIBZWAVE := $(wildcard $(OPENZWAVE)/cpp/lib/linux/*.a)
 LIBZWAVE := -lopenzwave
 LIBUSB := -ludev
+LIBTINYXML := -ltinyxml
 
 # for Mac OS X comment out above 2 lines and uncomment next 2 lines
 #LIBZWAVE := $(wildcard $(OPENZWAVE)/cpp/lib/mac/*.a)
 #LIBUSB := -framework IOKit -framework CoreFoundation
 
-LIBS := $(LIBZWAVE) $(GNUTLS) $(LIBMICROHTTPD) -lpthread $(LIBUSB)
+LIBS := $(LIBZWAVE) $(GNUTLS) $(LIBMICROHTTPD) -lpthread $(LIBUSB) $(LIBTINYXML)
 
 %.o : %.cpp
 	$(CXX) $(CFLAGS) $(INCLUDES) -o $@ $<

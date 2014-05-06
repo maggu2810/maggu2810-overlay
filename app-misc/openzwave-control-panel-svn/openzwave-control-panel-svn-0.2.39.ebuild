@@ -24,13 +24,16 @@ DEPEND="net-libs/libmicrohttpd[messages]
 	dev-libs/open-zwave-svn"
 RDEPEND="${DEPEND}"
 
-src_compile() {
+src_prepare() {
 	cp "${FILESDIR}"/Makefile "${S}"
 	epatch "${FILESDIR}"/webserver.patch
 	epatch "${FILESDIR}"/ozwcp.patch
 	epatch "${FILESDIR}"/ozwcp-random-port-fix.patch
-	emake || die
 }
+
+#src_compile() {
+#	emake || die
+#}
 
 src_install() {
 	dodir /usr/share/${MY_PN}
