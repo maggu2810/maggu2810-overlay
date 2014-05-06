@@ -228,7 +228,7 @@ USE="${USE} aalib ass audiofile cdaudio cdda cddax cddb cdio cdparanoia"
 USE="${USE} daap dvb dvdread dvdnav encode frei0r"
 USE="${USE} ladspa libass libsamplerate mikmod openal osc pvr"
 USE="${USE} sndfile sound timidity vcdinfo vcdx vhook"
-USE="${USE} live mp4live rtmp rtsp"
+USE="${USE} live mtp mp4live rtmp rtsp"
 USE="${USE} id3tag taglib tagwriting"
 USE="${USE} exif gif jpeg jpeg2k mng openexr png apng pnm svg tiff webgl webm webp wmf xmp xpm"
 
