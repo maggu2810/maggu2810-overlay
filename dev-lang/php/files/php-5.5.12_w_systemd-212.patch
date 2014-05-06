@@ -1,0 +1,20 @@
+diff -Naur a/sapi/fpm/config.m4 b/sapi/fpm/config.m4
+--- a/sapi/fpm/config.m4	2014-04-01 14:32:03.000000000 +0200
++++ b/sapi/fpm/config.m4	2014-04-12 11:19:56.846384773 +0200
+@@ -567,14 +567,14 @@
+   [  --with-fpm-systemd      Activate systemd integration], no, no)
+ 
+   if test "$PHP_FPM_SYSTEMD" != "no" ; then
+-    AC_CHECK_LIB(systemd-daemon, sd_notify, SYSTEMD_LIBS="-lsystemd-daemon")
++    AC_CHECK_LIB(systemd, sd_notify, SYSTEMD_LIBS="-lsystemd")
+     AC_CHECK_HEADERS(systemd/sd-daemon.h, [HAVE_SD_DAEMON_H="yes"], [HAVE_SD_DAEMON_H="no"])
+     if test $HAVE_SD_DAEMON_H = "no" || test -z "${SYSTEMD_LIBS}"; then
+       AC_MSG_ERROR([Your system does not support systemd.])
+     else
+       AC_DEFINE(HAVE_SYSTEMD, 1, [FPM use systemd integration])
+       PHP_FPM_SD_FILES="fpm/fpm_systemd.c"
+-      PHP_ADD_LIBRARY(systemd-daemon)
++      PHP_ADD_LIBRARY(systemd)
+       php_fpm_systemd=notify
+     fi
+   else
