@@ -1,0 +1,52 @@
+--- ozwcp.cpp.orig	2014-05-07 16:10:24.920387971 +0200
++++ ozwcp.cpp	2014-05-07 16:10:29.440387879 +0200
+@@ -55,6 +55,8 @@
+ #include "ozwcp.h"
+ #include "webserver.h"
+ 
++#define CFG_POSTFIX "/.config/openzwave-control-panel/"
++
+ using namespace OpenZWave;
+ 
+ static Webserver *wserver;
+@@ -754,6 +756,10 @@
+   extern char *optarg;
+   uint16 webport;
+   char *ptr;
++  char *home;
++  char *cfgdir;
++  char *cfgdirp;
++  size_t tmplen;
+ 
+   while ((i = getopt(argc, argv, "dp:")) != EOF)
+     switch (i) {
+@@ -774,7 +780,28 @@
+   for (i = 0; i < MAX_NODES; i++)
+     nodes[i] = NULL;
+ 
+-  Options::Create("./config/", "", "--SaveConfiguration=true --DumpTriggerLevel=0");
++  home = getenv("HOME"); /* Fetch home directory from environment. */
++  tmplen = 0;
++  if (home != NULL)
++    tmplen += strlen(home);
++  tmplen += strlen(CFG_POSTFIX);
++  tmplen += 1; /* Include '\0'-termination */
++  cfgdir = (char*)malloc(tmplen);
++  if (cfgdir == NULL)
++  {
++    fprintf(stderr, "Not enough memory for configuration directory string.\n");
++    exit(1);
++  }
++  cfgdirp = cfgdir;
++  if (home != NULL)
++  {
++    strcpy(cfgdirp, home);
++    cfgdirp += strlen(home);
++  }
++  strcpy(cfgdirp, CFG_POSTFIX);
++
++  Options::Create(cfgdir, "", "--SaveConfiguration=true --DumpTriggerLevel=0");
++  free(cfgdir);
+   Options::Get()->Lock();
+ 
+   Manager::Create();

@@ -27,7 +27,7 @@ RDEPEND="${DEPEND}"
 src_prepare() {
 	cp "${FILESDIR}"/Makefile "${S}"
 	epatch "${FILESDIR}"/webserver.patch
-	epatch "${FILESDIR}"/ozwcp.patch
+	epatch "${FILESDIR}"/ozwcp-configuration-directory.patch
 	epatch "${FILESDIR}"/ozwcp-random-port-fix.patch
 }
 
