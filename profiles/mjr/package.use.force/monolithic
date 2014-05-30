@@ -11,9 +11,6 @@ net-im/skype qt-static
 net-misc/aria2 metalink
 
 
-app-editors/vim vim-with-x
-
-
 app-misc/screen multiuser
 dev-games/cegui devil
 sys-apps/hal laptop disk-partition
