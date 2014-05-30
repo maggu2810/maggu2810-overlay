@@ -1,5 +1,5 @@
 #
-# This file could me sources by the local make.conf.
+# This file could be sourced by the local make.conf.
 # Use this as long as we do not find a way to set this stuff
 # by the make.defaults from the profile.
 #
