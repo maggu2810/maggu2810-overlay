@@ -1,6 +1,10 @@
 # Add less (so we can use it as pager) to the base packages
 *sys-apps/less
 
+# Use vim as system editor
+-*app-editors/nano
+*app-editors/vim
+
 *sys-apps/kmod
 
 -*sys-apps/net-tools
