@@ -20,3 +20,13 @@ gnome-base/gnome
 #gnome-extra/gconf-editor
 gnome-extra/gnome-tweak-tool
 #gnome-extra/gnome-shell-extensions
+
+# diff / merge utility
+dev-util/meld
+
+# archive manager
+@mjr_archive
+app-arch/file-roller
+
+# calculator
+sci-calculators/qalculate-gtk
