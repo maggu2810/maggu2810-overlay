@@ -13,5 +13,5 @@ media-video/ttcut
 # 32 bit binary package only (so no no-multilib support)
 #media-video/vcdgear
 
-media-video/vlc
+#media-video/vlc
 media-video/vobcopy
