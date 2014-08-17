@@ -1,0 +1,5 @@
+www-apps/owncloud curl sqlite mysql vhosts
+
+# required by www-apps/owncloud-6.0.4
+# required by owncloud (argument)
+>=dev-lang/php-5.5.14:5.5 xmlwriter
