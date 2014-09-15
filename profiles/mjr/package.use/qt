@@ -1,0 +1,14 @@
+# required by dev-qt/qtcore-5.3.1::qt
+# required by dev-qt/qtcore (argument)
+>=dev-libs/libpcre-8.35 pcre16
+
+# required by dev-qt/designer-5.3.1::qt[webkit]
+# required by dev-qt/designer (argument)
+dev-qt/qtwebkit:5 widgets
+
+dev-qt/designer declarative
+dev-qt/qtquick1 designer
+
+dev-db/mariadb extraengine xml
+
+sys-apps/util-linux abi_x86_32
