@@ -20,3 +20,12 @@ gnome-base/gnome classic -extras
 # required by @selected
 # required by @world (argument)
 >=app-crypt/gcr-3.10.1 vala
+
+# required by media-plugins/grilo-plugins-0.2.12
+# required by media-video/totem-3.12.1
+# required by gnome-base/gnome-core-apps-3.12.0
+# required by gnome-base/gnome-3.10.0
+# required by @mjr_gnome
+# required by @selected
+# required by @world (argument)
+>=media-libs/grilo-0.2.10 playlist
