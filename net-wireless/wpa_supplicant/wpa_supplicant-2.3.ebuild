@@ -230,7 +230,7 @@ src_configure() {
 
 src_compile() {
 	einfo "Building wpa_supplicant"
-	emake V=1
+	emake V=1 BINDIR=/usr/sbin
 
 	if use wimax; then
 		emake -C ../src/eap_peer clean
@@ -289,8 +289,7 @@ src_install() {
 	fi
 
 	# systemd stuff
-	systemd_dounit "${FILESDIR}"/wpa_supplicant.service
-	systemd_newunit "${FILESDIR}"/wpa_supplicant_at.service 'wpa_supplicant@.service'
+	systemd_dounit systemd/*.service
 }
 
 pkg_postinst() {
