@@ -16,7 +16,7 @@ EGIT_PROJECT="Heimdall"
 
 LICENSE="MIT"
 SLOT="0"
-KEYWORDS="~x86 ~amd64"
+KEYWORDS=""
 
 IUSE="qt4"
 
