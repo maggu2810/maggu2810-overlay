@@ -1,2 +1,0 @@
-# at-most-one-of ( alsa pulseaudio )
->=dev-qt/qtmultimedia-5.0.0 alsa
