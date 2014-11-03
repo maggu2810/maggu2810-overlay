@@ -1,4 +1,3 @@
-sys-apps/systemd acl cryptsetup elfutils kmod pam
 sys-apps/systemd-units basic desktop server
 
 dev-lang/php fpm
