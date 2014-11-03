@@ -22,3 +22,7 @@ net-misc/jwhois
 
 net-dns/avahi
 sys-auth/nss-mdns
+
+sys-apps/ethtool
+net-wireless/iw
+net-wireless/rfkill
