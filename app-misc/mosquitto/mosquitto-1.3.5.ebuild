@@ -36,7 +36,6 @@ pkg_setup() {
 src_prepare() {
 	if use python; then
 		python_copy_sources lib/python
-		python_src_prepare
 	fi
 
 	# Don't automatically build Python module
