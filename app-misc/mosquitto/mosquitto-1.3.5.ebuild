@@ -1,11 +1,10 @@
-# Copyright 1999-2010 Gentoo Foundation
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
 EAPI="5"
-PYTHON_COMPAT=( python{2_7,3_2,3_3} )
 
-inherit eutils user systemd flag-o-matic multilib python-r1
+inherit eutils cmake-utils user systemd flag-o-matic multilib
 
 DESCRIPTION="An Open Source MQTT v3 Broker"
 HOMEPAGE="http://mosquitto.org/"
@@ -20,12 +19,10 @@ fi
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="bridge examples +persistence python ssl tcpd"
-REQUIRED_USE="python? ( ${PYTHON_REQUIRED_USE} )"
+IUSE="bridge examples +persistence ssl tcpd threads"
 
 RDEPEND="tcpd? ( sys-apps/tcp-wrappers )
-		ssl? ( >=dev-libs/openssl-1.0.0 )
-		python? ( ${PYTHON_DEPS} )"
+		ssl? ( >=dev-libs/openssl-1.0.0 )"
 DEPEND="${RDEPEND}
 	net-dns/c-ares"
 
@@ -34,12 +31,14 @@ pkg_setup() {
 }
 
 src_prepare() {
-	if use python; then
-		python_copy_sources lib/python
-	fi
+	epatch "${FILESDIR}"/mosquitto-link.patch
+
+	# Must not call ldconfig on install
+	# install(CODE "EXEC_PROGRAM(/sbin/ldconfig)")
+	find -type f -name "CMakeLists.txt" -exec sed s:/sbin/ldconfig:true:g -i '{}' \;
 
 	# Don't automatically build Python module
-	sed -i "s:\$(MAKE) -C python:#:g" lib/Makefile || die
+	#sed -i "s:\$(MAKE) -C python:#:g" lib/Makefile || die
 
 	if use persistence; then
 		sed -i "s:^#autosave_interval:autosave_interval:" mosquitto.conf || die
@@ -50,53 +49,36 @@ src_prepare() {
 }
 
 src_configure() {
-	local LIBDIR=$(get_libdir)
-	makeopts="LIB_SUFFIX=${LIBDIR:3}"
-	if use bridge ; then
-		makeopts="${makeopts} WITH_BRIDGE=yes"
-	else
-		makeopts="${makeopts} WITH_BRIDGE=no"
-	fi
-	if use persistence ; then
-		makeopts="${makeopts} WITH_PERSISTENCE=yes"
-	else
-		makeopts="${makeopts} WITH_PERSISTENCE=no"
-	fi
-	if use ssl ; then
-		makeopts="${makeopts} WITH_TLS=yes"
-	else
-		makeopts="${makeopts} WITH_TLS=no"
-	fi
-	if use tcpd ; then
-		makeopts="${makeopts} WITH_WRAP=yes"
-	else
-		makeopts="${makeopts} WITH_WRAP=no"
-	fi
-	einfo "${makeopts}"
-}
+	local mycmakeargs=(
+		"$(cmake-utils_use bridge INC_BRIDGE_SUPPORT)"
+		"-DINC_MEMTRACK=ON"
 
-src_compile() {
-	emake || die
+		"$(cmake-utils_use_use tcpd LIBWRAP)"
+
+		"$(cmake-utils_use_with persistence PERSISTENCE)"
+		"-DWITH_SRC=ON"
+		"-DWITH_SYS_TREE=ON"
+		"$(cmake-utils_use_with threads THREADING)"
+		"$(cmake-utils_use_with ssl TLS)"
+		"$(cmake-utils_use_with ssl TLS_PSK)"
+	)
+
+	cmake-utils_src_configure
 }
 
 src_install() {
-	emake install ${makeopts} DESTDIR="${D}" prefix=/usr || die "Install failed"
+	cmake-utils_src_install
+
 	dodir /var/lib/mosquitto
 	dodoc readme.txt ChangeLog.txt || die "dodoc failed"
 	doinitd "${FILESDIR}"/mosquitto
 
-	# Note: wait for mod_systemd to be included in the next release,
-	# then apache2.4.service can be used and systemd support controlled
-	# through --enable-systemd
 	systemd_newunit "${FILESDIR}/mosquitto.service" "mosquitto.service"
 
 	if use examples; then
 		docompress -x "/usr/share/doc/${PF}/examples"
 		insinto "/usr/share/doc/${PF}/examples"
 		doins -r examples/*
-		if use python; then
-			doins lib/python/sub.py
-		fi
 	fi
 }
 
