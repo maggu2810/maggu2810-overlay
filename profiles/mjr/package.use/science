@@ -1,0 +1,7 @@
+sci-libs/blas-reference int64
+sci-libs/lapack-reference int64
+sci-libs/openblas int64
+virtual/blas int64
+virtual/cblas int64
+virtual/lapack int64
+
