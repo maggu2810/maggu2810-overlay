@@ -1,0 +1,2 @@
+app-admin/eselect-php apache2
+dev-lang/php apache2 cgi tidy
