@@ -11,7 +11,7 @@
 *sys-apps/iproute2
 
 *sys-apps/systemd
-*sys-apps/systemd-sysv-utils
+#*sys-apps/systemd-sysv-utils
 *sys-apps/gentoo-systemd-integration
 
 -*sys-apps/openrc

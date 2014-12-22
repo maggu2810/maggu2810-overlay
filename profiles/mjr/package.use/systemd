@@ -1,1 +1,1 @@
-sys-apps/systemd acl cryptsetup elfutils kmod pam sysv-utils terminal xkb
+sys-apps/systemd acl cryptsetup elfutils kmod pam terminal xkb
