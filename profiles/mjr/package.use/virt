@@ -1,1 +1,9 @@
 app-emulation/libvirt virt-network
+
+# required by app-emulation/libvirt-1.2.9-r1[virt-network]
+# required by dev-python/libvirt-python-1.2.9
+# required by app-emulation/virt-manager-1.1.0
+# required by @selected
+# required by @world (argument)
+>=net-dns/dnsmasq-2.72 script
+
