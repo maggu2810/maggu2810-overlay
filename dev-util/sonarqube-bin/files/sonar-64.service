@@ -1,0 +1,24 @@
+[Unit]
+Description=A code quality management platform.
+After=network.target
+
+[Service]
+User=sonar
+#Type=forking
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=sonar
+ExecStart=/opt/sonar/bin/linux-x86-64/./wrapper /opt/sonar/bin/linux-x86-64/../../conf/wrapper.conf wrapper.syslog.ident=SonarQube wrapper.pidfile=/opt/sonar/bin/linux-x86-64/./SonarQube.pid wrapper.daemonize=FALSE
+#ExecStart=/opt/sonar/bin/linux-x86-64/sonar.sh start
+#ExecStop=/opt/sonar/bin/linux-x86-64/sonar.sh stop
+PIDFile=/opt/sonar/run/SonarQube.pid
+OOMScoreAdjust=-1000
+LimitCPU=infinity
+LimitFSIZE=infinity
+LimitDATA=infinity
+LimitCORE=0
+LimitAS=infinity
+LimitLOCKS=infinity
+
+[Install]
+WantedBy=multi-user.target
