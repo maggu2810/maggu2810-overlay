@@ -54,13 +54,10 @@ USE="${USE} bluetooth irda irmc wifi"
 #
 # APACHE, HTML, NETWORKING ...
 #
-#
-
-USE="${USE} apache2 cgi php tidy"
 
 USE="${USE} css curl curlwrappers dhcp ftp httpnet network networking nfs samba webdav"
 
-USE="${USE} -ldap -openldap"
+#USE="${USE} -ldap -openldap"
 
 USE="${USE} howl-compat mdnsresponder-compat"
 
