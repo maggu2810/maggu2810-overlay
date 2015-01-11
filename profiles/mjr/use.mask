@@ -1,3 +1,8 @@
 openrc
 -systemd
 -systemd-units
+
+# ATM I do not want to support stuff that needs such an old Qt version.
+# If something is using still Qt3 stuff of the Qt4 framework, the project
+# seems not be be actively maintained / developed.
+qt3support
