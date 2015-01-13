@@ -4,7 +4,7 @@
 
 EAPI="5"
 
-inherit eutils
+inherit eutils autotools
 
 DESCRIPTION="The Umiquious Amiga Emulator"
 HOMEPAGE="http://www.amigaemulator.org/"
@@ -31,8 +31,11 @@ src_prepare() {
 	epatch "${FILESDIR}"/${PN}-0.8.25-allow_spaces_in_zip_filenames.diff
 	epatch "${FILESDIR}"/${PN}-0.8.25-struct_uae_wrong_fields_name.diff
 	epatch "${FILESDIR}"/${PN}-0.8.26-uae_reset_args.diff
+	epatch "${FILESDIR}"/${PN}-0.8.26-underlinking.patch
 
 	cp "${FILESDIR}"/sdlgfx.h "${S}"/src || die
+
+	eautoreconf
 }
 
 src_configure() {
@@ -62,7 +65,7 @@ src_install() {
 
 pkg_postinst() {
 	elog
-	elog "Upstream recomends using SDL graphics (with an environment variable)"
+	elog "Upstream recommends using SDL graphics (with an environment variable)"
 	elog "SDL_VIDEO_X11_XRANDR=1 for fullscreen support."
 	echo
 }
