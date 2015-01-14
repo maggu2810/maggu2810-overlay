@@ -176,7 +176,7 @@ USE="${USE} python python3"
 # DATABASE STUFF
 #
 
-USE="${USE} sql sqlite sqlite3"
+USE="${USE} mysql sql sqlite sqlite3"
 
 
 #
