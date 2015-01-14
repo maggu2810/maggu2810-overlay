@@ -1,28 +1,45 @@
-# MAME
+############
+### MAME ###
+############
 games-emulation/sdlmame
-games-emulation/qmc2
+#games-emulation/qmc2
 
-# NES
+###########
+### NES ###
+###########
 games-emulation/gfceux
 
-# SNES
+############
+### SNES ###
+############
+# zsnes is using x86 assembly and so it needs emul libs
 #games-emulation/zsnes
 games-emulation/snes9x
 
-# DOS
+###########
+### DOS ###
+###########
 games-emulation/dosbox
 
-# Gamecube and Wii emulator
+#################################
+### Gamecube and Wii emulator ###
+#################################
 games-emulation/dolphin-emu
 #app-misc/cwiid
 
-# Amiga
+#############
+### Amiga ###
+#############
 app-emulation/uae
 
-# N64
+###########
+### N64 ###
+###########
 games-emulation/mupen64plus
 
-# Sega x, y, z
+####################
+### Sega x, y, z ###
+####################
 # gens is better, but do not work on amd64
 #games-emulation/gens
 games-emulation/generator
