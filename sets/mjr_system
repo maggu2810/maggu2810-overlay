@@ -1,6 +1,7 @@
 dev-util/strace
 sys-devel/gdb
 dev-util/debugedit
+sys-apps/pciutils
 sys-apps/usbutils
 app-misc/mc
 app-misc/screen
