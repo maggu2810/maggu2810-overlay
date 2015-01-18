@@ -1,6 +1,11 @@
 # ChangeLog for media-libs/gexiv2
-# Copyright 1999-2014 Gentoo Foundation; Distributed under the GPL v2
+# Copyright 1999-2015 Gentoo Foundation; Distributed under the GPL v2
 # $Header: /var/cvsroot/gentoo-x86/media-libs/gexiv2/ChangeLog,v 1.28 2014/11/29 13:34:33 pacho Exp $
+
+*gexiv2-0.10.2 (18 Jan 2015)
+
+  18 Jan 2015; Markus Rathgeb <maggu2810@gmail.com> +gexiv2-0.10.2.ebuild:
+  Non-maintainer version bump
 
   29 Nov 2014; Pacho Ramos <pacho@gentoo.org> gexiv2-0.6.1.ebuild:
   Support python 3.4
