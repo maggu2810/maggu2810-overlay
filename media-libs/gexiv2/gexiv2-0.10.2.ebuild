@@ -1,18 +1,18 @@
-# Copyright 1999-2014 Gentoo Foundation
+# Copyright 1999-2015 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/media-libs/gexiv2/gexiv2-0.6.1.ebuild,v 1.10 2014/11/29 13:34:33 pacho Exp $
+# $Header: $
 
 EAPI=5
 
 PYTHON_COMPAT=( python{2_6,2_7,3_2,3_3,3_4} )
 
-inherit eutils multilib python-r1 toolchain-funcs versionator
+inherit eutils multilib python-r1 versionator
 
 MY_PV=$(get_version_component_range 1-2)
 
 DESCRIPTION="GObject-based wrapper around the Exiv2 library"
-HOMEPAGE="http://trac.yorba.org/wiki/gexiv2/"
-SRC_URI="http://www.yorba.org/download/${PN}/${MY_PV}/lib${PN}_${PV}.tar.xz"
+HOMEPAGE="https://wiki.gnome.org/Projects/gexiv2"
+SRC_URI="https://download.gnome.org/sources/${PN}/${MY_PV}/${P}.tar.xz"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
@@ -27,18 +27,10 @@ RDEPEND="${PYTHON_DEPS}
 DEPEND="${RDEPEND}
 	virtual/pkgconfig"
 
-S=${WORKDIR}/lib${P}
-
-src_prepare() {
-	tc-export CXX
-	sed -e 's:CFLAGS:CXXFLAGS:g' -i Makefile || die
-}
-
 src_configure() {
-	./configure \
-		--prefix=/usr \
-		$(use_enable introspection) \
-		|| die
+	econf \
+		$(use_enable introspection)
+		$(use_enable static-libs static)
 }
 
 src_install() {
@@ -47,6 +39,4 @@ src_install() {
 
 	python_moduleinto gi/overrides/
 	python_foreach_impl python_domodule GExiv2.py
-
-	use static-libs || find "${D}" \( -name '*.a' -or -name '*.la' \) -delete
 }
