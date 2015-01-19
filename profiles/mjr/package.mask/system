@@ -1,0 +1,5 @@
+# obsolete by: sys-apps/systemd
+sys-apps/openrc
+
+# obsolete by: app-shells/bash-completion
+app-admin/eselect-bashcomp

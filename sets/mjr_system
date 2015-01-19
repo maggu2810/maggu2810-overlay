@@ -1,3 +1,4 @@
+app-shells/bash-completion
 dev-util/strace
 sys-devel/gdb
 dev-util/debugedit
