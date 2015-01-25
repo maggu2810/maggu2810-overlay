@@ -2,6 +2,12 @@
 # Copyright 1999-2015 Gentoo Foundation; Distributed under the GPL v2
 # $Header: /var/cvsroot/gentoo-x86/gnome-extra/gnome-commander/ChangeLog,v 1.5 2014/11/03 09:34:27 ago Exp $
 
+*gnome-commander-1.4.5 (25 Jan 2015)
+
+  25 Jan 2015; Markus Rathgeb <maggu2810@gmail.com>
+  +gnome-commander-1.4.5.ebuild:
+  bump version
+
 *gnome-commander-1.4.4 (20 Jan 2015)
 
   20 Jan 2015; <maggu2810@gmail.com> +gnome-commander-1.4.4.ebuild:
