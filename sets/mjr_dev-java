@@ -1,7 +1,4 @@
-dev-java/icedtea
-dev-java/ant
+dev-java/icedtea-bin
+#dev-java/ant
 
-# It seem that netbeans 7.1 includes already maven support
-#dev-java/maven-bin
-
-#dev-util/netbeans
+dev-java/maven-bin
