@@ -1,1 +1,9 @@
-sys-apps/systemd acl cryptsetup elfutils kmod pam terminal xkb
+sys-apps/systemd acl cryptsetup elfutils gcrypt importd kmod nat pam terminal xkb
+
+#The following USE changes are necessary to proceed:
+#(see "package.use" in the portage(5) man page for more details)
+## required by sys-apps/systemd-219-r1::gentoo[terminal]
+## required by sys-auth/pambase-20150213::gentoo
+## required by sys-apps/shadow-4.2.1-r1::gentoo[pam]
+## required by sys-apps/shadow (argument)
+>=media-fonts/unifont-7.0.06 utils
