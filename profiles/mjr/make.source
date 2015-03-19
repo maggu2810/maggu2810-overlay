@@ -8,7 +8,7 @@
 # will disable all not set targets.
 #
 
-RUBY_TARGETS="ruby21"
+#RUBY_TARGETS="ruby21"
 
 PYTHON_SINGLE_TARGET="python2_7"
 PYTHON_TARGETS="python2_7 python3_3"
