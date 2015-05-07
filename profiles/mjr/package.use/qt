@@ -1,0 +1,5 @@
+# required by dev-qt/qtcore-5.4.1::gentoo
+# required by dev-qt/qtx11extras-5.4.1::gentoo
+# required by media-video/vlc-2.2.1::gentoo[qt5]
+# required by vlc (argument)
+>=dev-libs/libpcre-8.37 pcre16
