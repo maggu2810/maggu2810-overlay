@@ -30,7 +30,7 @@ USE="${USE} bitmap-fonts fontconfig freetype freetype2 truetype truetype-fonts t
 # CD, DVD, Blu-Ray
 #
 
-USE="${USE} cdr bluray dvd dvdr vcd"
+USE="${USE} cdr bluray bdplus dvd dvdr vcd"
 
 
 #
@@ -207,7 +207,8 @@ USE="${USE} libv4l libv4l2 v4l v4l2"
 USE="${USE} video videos"
 USE="${USE} g3dvl vaapi vdpau xv xvmc"
 USE="${USE} xv xvmc"
-USE="${USE} amarok fame ffmpeg gstreamer jingle lame mjpeg mplayer phonon shorten soundtouch sox telepathy wavpack"
+USE="${USE} amarok fame gstreamer jingle lame mjpeg mplayer phonon shorten soundtouch sox telepathy wavpack"
+USE="${USE} ffmpeg -libav"
 USE="${USE} farstream" # framework for audio/video conversations (instant messaging) (old name: farsight)
 
 # removed because of 1.1.x and 1.2.x incompatibility of xine-lib
@@ -218,7 +219,7 @@ USE="${USE} amr amrnb amrwb opencore-amr"
 USE="${USE} a52 aac aacplus aften asf dirac divx dts dv faac faad flac g726 g729 gsm"
 USE="${USE} mad matroska mod mp2 mp3 mp4 midi mpeg mpegts musepack nut"
 USE="${USE} ogg ogm opus pcm quicktime real realmedia schroedinger silk speex theora twolame"
-USE="${USE} vorbis vpx win32codecs wma wmp x264 xvid" 
+USE="${USE} vorbis vpx win32codecs wma wmp x264 x265 xvid"
 
 # others
 USE="${USE} aalib ass audiofile cdaudio cdda cddax cddb cdio cdparanoia"
@@ -270,7 +271,7 @@ USE="${USE} -handbook -nepomuk -semantic-desktop"
 #
 # Qt stuff
 #
-USE="${USE} qt qt4 qt-dbus qt-webkit qml"
+USE="${USE} qt qt4 qt5 qt-dbus qt-webkit qml"
 
 #
 # Graphic
