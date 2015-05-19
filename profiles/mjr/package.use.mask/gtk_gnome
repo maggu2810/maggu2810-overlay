@@ -1,2 +1,0 @@
-net-analyzer/wireshark -gtk3 gtk2 qt4
-media-libs/libmediaart qt4

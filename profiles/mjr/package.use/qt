@@ -1,5 +1,17 @@
+media-video/vlc -qt4 qt5
+net-analyzer/wireshark gtk3 -qt4 -qt5
+dev-util/cmake -qt4 qt5
+media-libs/libmediaart gtk -qt4 -qt5
+
 # required by dev-qt/qtcore-5.4.1::gentoo
-# required by dev-qt/qtx11extras-5.4.1::gentoo
-# required by media-video/vlc-2.2.1::gentoo[qt5]
-# required by vlc (argument)
->=dev-libs/libpcre-8.37 pcre16
+# required by dev-qt/qtwidgets-5.4.1::gentoo
+# required by media-video/vlc-2.2.0::gentoo[qt5]
+# required by @selected
+# required by @world (argument)
+>=dev-libs/libpcre-8.36 pcre16
+
+# required by net-analyzer/wireshark-1.12.4::gentoo[qt5]
+# required by @mjr_net-utils
+# required by @selected
+# required by @world (argument)
+>=dev-qt/qtgui-5.4.1-r1 accessibility

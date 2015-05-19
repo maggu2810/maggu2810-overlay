@@ -17,10 +17,6 @@ dev-dotnet/mono-addins gtk
 dev-lang/mono moonlight
 
 
-# because there is only a gtk frontend and no qt lets build this (besser than none)
-net-analyzer/wireshark gtk3 -gtk2 -qt4
-
-
 # this is needed by gimp
 app-text/poppler-bindings gtk
 
