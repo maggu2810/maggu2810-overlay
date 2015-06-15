@@ -2,9 +2,9 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/media-plugins/vdr-pvrinput/vdr-pvrinput-2010.04.03_rc1.ebuild,v 1.2 2010/04/11 14:00:16 hd_brummy Exp $
 
-EAPI="2"
+EAPI="5"
 
-inherit vdr-plugin eutils versionator
+inherit vdr-plugin-2 eutils versionator
 
 MY_PV=$(replace_all_version_separators '-')
 MY_P="${PN}-${MY_PV}"
