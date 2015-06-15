@@ -1,0 +1,15 @@
+# This fonts are a suggestion of
+# /usr/share/doc/google-chrome-43.0.2357.125_p1/README.gentoo.bz2
+media-fonts/arphicfonts
+media-fonts/bitstream-cyberbit
+media-fonts/droid
+media-fonts/ipamonafont
+media-fonts/ja-ipafonts
+media-fonts/takao-fonts
+media-fonts/wqy-microhei
+media-fonts/wqy-zenhei
+
+# added myself
+media-fonts/corefonts
+media-fonts/croscorefonts
+media-fonts/liberation-fonts
