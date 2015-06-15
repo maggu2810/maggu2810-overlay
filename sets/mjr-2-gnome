@@ -25,7 +25,7 @@ gnome-extra/gnome-tweak-tool
 dev-util/meld
 
 # archive manager
-@mjr_archive
+@mjr-2-archive
 app-arch/file-roller
 
 # calculator

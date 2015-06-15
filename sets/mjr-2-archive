@@ -1,4 +1,5 @@
 app-arch/arj
+app-arch/cabextract
 app-arch/cpio
 app-arch/dpkg
 app-arch/ipkg-utils
