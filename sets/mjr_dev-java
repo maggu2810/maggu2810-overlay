@@ -1,4 +1,4 @@
-dev-java/icedtea-bin
-#dev-java/ant
-
+#dev-java/icedtea-bin
+dev-java/oracle-jdk-bin:1.8
+dev-java/ant
 dev-java/maven-bin
