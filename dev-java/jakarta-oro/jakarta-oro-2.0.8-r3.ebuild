@@ -10,7 +10,7 @@ inherit java-pkg-2 java-ant-2
 
 DESCRIPTION="A set of text-processing Java classes"
 HOMEPAGE="http://jakarta.apache.org/oro/index.html"
-SRC_URI="mirror://apache/jakarta/oro/source/${P}.tar.gz"
+SRC_URI="http://archive.apache.org/dist/jakarta/oro/${P}.tar.gz"
 
 LICENSE="Apache-1.1"
 SLOT="2.0"
