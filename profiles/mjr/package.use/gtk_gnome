@@ -1,31 +1,3 @@
-gnome-base/gnome classic -extras
-
-# required by gnome-base/gnome-control-center-3.10.2
-# required by gnome-base/gnome-shell-3.10.3
-# required by gnome-base/gnome-light-3.10.0[gnome-shell]
-# required by gnome-base/gnome-light (argument)
->=net-misc/networkmanager-0.9.8.8 modemmanager
-
-# required by dev-libs/folks-0.9.6
-# # required by net-im/empathy-3.10.3
-# # required by gnome-base/gnome-core-apps-3.10.0
-# # required by gnome-base/gnome-3.10.0
-# # required by gnome-base/gnome (argument)
->=gnome-extra/evolution-data-server-3.10.4 vala
-
-# required by app-crypt/seahorse-3.10.2-r1
-# required by gnome-base/gnome-core-apps-3.10.0
-# required by gnome-base/gnome-3.10.0
-# required by @mjr_gnome
-# required by @selected
-# required by @world (argument)
->=app-crypt/gcr-3.10.1 vala
-
-# required by media-plugins/grilo-plugins-0.2.12
-# required by media-video/totem-3.12.1
-# required by gnome-base/gnome-core-apps-3.12.0
-# required by gnome-base/gnome-3.10.0
-# required by @mjr_gnome
-# required by @selected
-# required by @world (argument)
->=media-libs/grilo-0.2.10 playlist
+gnome-base/gnome classic extras
+gnome-base/gnome-extra-apps -games -share -shotwell -tracker
+gnome-base/nautilus sendto
