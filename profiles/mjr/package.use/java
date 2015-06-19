@@ -1,1 +1,26 @@
 dev-java/oracle-jdk-bin source
+
+#
+# Compile error with JDK 8
+#
+# https://bugs.gentoo.org/show_bug.cgi?id=508056
+# dev-java/commons-collections-3.2.1::gentoo
+#[ebuild   R    ] dev-java/ant-apache-bsf-1.9.2::gentoo  USE="python* -javascript -tcl" 0 KiB
+#[ebuild   R    ]  dev-java/bsf-2.4.0-r1:2.3::gentoo  USE="python* -doc -examples -javascript -source -tcl" 0 KiB
+#[ebuild  N     ]   dev-java/jython-2.2.1-r2::gentoo  USE="mysql readline -doc -examples -oracle -postgres -servletapi -source" 0 KiB
+#[ebuild  N     ]    dev-java/jdbc-mysql-5.1.26::gentoo  USE="-c3p0 -log4j -source" 0 KiB
+#[ebuild  N     ]     dev-java/ant-contrib-1.0_beta3-r1::gentoo  USE="-doc -source" 0 KiB
+#[ebuild  N     ]      dev-java/ant-ivy-1.4.1-r1::gentoo  USE="-doc -examples -source {-test}" 0 KiB
+#[ebuild  N     ]       dev-java/commons-vfs-1.0::gentoo  USE="-doc -source" 0 KiB
+#[ebuild  N     ]        dev-java/commons-collections-3.2.1::gentoo  USE="-doc -source {-test} -test-framework" 0 KiB
+#
+# https://bugs.gentoo.org/show_bug.cgi?id=508056
+# dev-java/xml-xmlbeans-1.0.4_pre20041217-r1:1::gentoo
+#[ebuild   R    ] dev-java/ant-apache-bsf-1.9.2::gentoo  USE="javascript* -python -tcl" 0 KiB
+#[ebuild   R    ]  dev-java/bsf-2.4.0-r1:2.3::gentoo  USE="javascript* -doc -examples -python -source -tcl" 0 KiB
+#[ebuild  N     ]   dev-java/rhino-1.7.2-r2:1.6::gentoo  USE="-doc -examples -source" 0 KiB
+#[ebuild  N     ]    dev-java/xml-xmlbeans-1.0.4_pre20041217-r1:1::gentoo  USE="-doc -source" 0 KiB
+#
+=dev-java/ant-apache-bsf-1.9.2 -javascript -python
+=dev-java/bsf-2.4.0-r1:2.3 -javascript -python
+
