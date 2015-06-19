@@ -16,7 +16,8 @@ ACCEPT_LICENSE="*"
 # INSTANT MESSENGER
 #
 
-USE="${USE} aim icq jabber msn oscar yahoo"
+USE="${USE} jabber xmpp"
+#USE="${USE} aim icq msn oscar yahoo"
 
 
 #
@@ -42,7 +43,9 @@ USE="${USE} c++0x"
 # THREADS
 #
 
-USE="${USE} nptl nptlonly threads threadsafe"
+USE="${USE} nptl nptlonly threadsafe"
+# Do not force thread support if it is not enabled default
+#USE="${USE} threads"
 
 
 #
@@ -67,9 +70,9 @@ USE="${USE} avahi bonjour upnp zeroconf l7filter"
 #
 # MOBILE PHONE
 #
-#
 
 USE="${USE} gnokii obex sms"
+USE="${USE} android ios"
 
 
 #
@@ -92,7 +95,8 @@ USE="${USE} icu nls unicode userlocales"
 
 USE="${USE} acpi -apm dbus -hal pam policykit udev udisks upower"
 USE="${USE} device-mapper lvm"
-USE="${USE} networkmanager"
+# Let's use systemd-networkd instead.
+USE="${USE} -networkmanager"
 
 #
 # PERIPHAL DEVICES
@@ -236,6 +240,11 @@ USE="${USE} mbrola"
 # online content
 USE="${USE} lastfm"
 
+#
+# indexer, semantic-desktop, etc.
+#
+
+USE="${USE} -nepomuk -semantic-desktop -tracker"
 
 #
 # Gtk, Gnome stuff
@@ -265,7 +274,7 @@ USE="${USE} -wxwindows"
 #USE="${USE} kde kipi konqueror"
 #USE="${USE} plasma"
 USE="${USE} webkit"
-USE="${USE} -handbook -nepomuk -semantic-desktop"
+USE="${USE} -handbook"
 
 
 #
