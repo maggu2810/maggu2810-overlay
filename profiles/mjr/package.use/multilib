@@ -1,0 +1,5 @@
+# no multilib for the nvidia drivers
+x11-drivers/nvidia-drivers -multilib
+
+# necessary for aapt (android build tool)
+sys-libs/zlib abi_x86_32
