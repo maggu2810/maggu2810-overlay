@@ -12,4 +12,6 @@ media-fonts/wqy-zenhei
 # added myself
 media-fonts/corefonts
 media-fonts/croscorefonts
+media-fonts/dejavu
 media-fonts/liberation-fonts
+media-fonts/ttf-bitstream-vera
