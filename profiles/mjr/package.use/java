@@ -21,6 +21,8 @@ dev-java/oracle-jdk-bin source
 #[ebuild  N     ]   dev-java/rhino-1.7.2-r2:1.6::gentoo  USE="-doc -examples -source" 0 KiB
 #[ebuild  N     ]    dev-java/xml-xmlbeans-1.0.4_pre20041217-r1:1::gentoo  USE="-doc -source" 0 KiB
 #
-=dev-java/ant-apache-bsf-1.9.2 -javascript -python
-=dev-java/bsf-2.4.0-r1:2.3 -javascript -python
+#=dev-java/ant-apache-bsf-1.9.2 -javascript -python
+dev-java/ant-apache-bsf -javascript -python
+#=dev-java/bsf-2.4.0-r1:2.3 -javascript -python
+dev-java/bsf -javascript -python
 
