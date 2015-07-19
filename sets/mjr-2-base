@@ -4,7 +4,6 @@ sys-apps/pciutils
 sys-apps/usbutils
 app-misc/mc
 app-misc/screen
-sys-boot/grub:2
 sys-kernel/gentoo-sources
 sys-process/htop
 sys-process/lsof
