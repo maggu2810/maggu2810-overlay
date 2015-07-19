@@ -7,7 +7,7 @@ net-dns/dnsmasq
 net-analyzer/dsniff
 net-analyzer/netcat6
 net-analyzer/nmap
-net-analyzer/sslsniff
+#net-analyzer/sslsniff
 net-analyzer/wireshark
 net-dns/bind-tools
 
@@ -22,7 +22,3 @@ net-misc/jwhois
 
 net-dns/avahi
 sys-auth/nss-mdns
-
-sys-apps/ethtool
-net-wireless/iw
-net-wireless/rfkill
