@@ -1,9 +1,8 @@
 app-admin/testdisk
-#sys-block/gpart
+sys-block/gpart
 sys-fs/btrfs-progs
 sys-fs/dosfstools
 sys-fs/mtd-utils
 sys-fs/multipath-tools
 sys-fs/ntfs3g
 #sys-fs/ntfsprogs
-
