@@ -30,3 +30,7 @@ app-arch/file-roller
 
 # calculator
 sci-calculators/qalculate-gtk
+
+# Use LightDM because of corrently better display setup for HiDPI
+x11-misc/lightdm
+x11-misc/lightdm-gtk-greeter
