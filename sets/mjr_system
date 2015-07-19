@@ -1,12 +1,4 @@
 app-shells/bash-completion
 dev-util/strace
 sys-devel/gdb
-dev-util/debugedit
-sys-apps/pciutils
-sys-apps/usbutils
-app-misc/mc
-app-misc/screen
 app-portage/layman
-sys-boot/grub:2
-sys-kernel/gentoo-sources
-sys-process/htop
