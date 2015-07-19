@@ -1,4 +1,4 @@
-sys-apps/systemd acl cryptsetup elfutils gcrypt importd kmod nat pam terminal xkb
+sys-apps/systemd acl cryptsetup elfutils gcrypt gnuefi importd kmod nat pam terminal xkb
 
 #The following USE changes are necessary to proceed:
 #(see "package.use" in the portage(5) man page for more details)
