@@ -69,6 +69,7 @@ RDEPEND="
 	qt5? (
 		dev-qt/qtgui:5
 		dev-qt/qttest:5
+		dev-qt/qtconcurrent:5
 		opengl? ( dev-qt/qtopengl:5 )
 	)
 	threads? ( dev-cpp/tbb )
