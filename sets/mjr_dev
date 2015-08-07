@@ -1,6 +1,0 @@
-dev-util/strace
-
-sys-devel/gdb
-
-# see "man 5 make.conf" feature "installsources"
-dev-util/debugedit

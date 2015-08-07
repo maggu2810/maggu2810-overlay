@@ -1,4 +1,19 @@
-dev-util/valgrind
+#app-doc/doxygen
+
+# see "man 5 make.conf" feature "installsources"
+dev-util/debugedit
+
 dev-util/ddd
+
 dev-util/lcov
-app-doc/doxygen
+
+dev-util/strace
+
+dev-util/valgrind
+
+sys-devel/clang
+
+sys-devel/gcc
+
+sys-devel/gdb
+
