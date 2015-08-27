@@ -32,7 +32,16 @@ src_configure() {
 
 src_compile() {
 	#See nini in Debian for info
-	gmcs	${DEBUG} \
+	local MCS_BIN
+	if [ -e /usr/bin/dmcs ]; then
+		MCS_BIN="/usr/bin/dmcs"
+	elif [ -e /usr/bin/gmcs ]; then
+		MCS_BIN="/usr/bin/gmcs"
+	else
+		die "Missing (unknown) C# compiler."
+	fi
+	"${MCS_BIN}" \
+		${DEBUG} \
 		-nowarn:1616 \
 		-target:library \
 		-out:Nini.dll \
