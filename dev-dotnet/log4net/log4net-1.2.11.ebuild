@@ -22,7 +22,15 @@ RDEPEND=">=dev-lang/mono-2.0"
 DEPEND="${RDEPEND}"
 
 src_compile() {
-	/usr/bin/gmcs \
+	local MCS_BIN
+	if [ -e /usr/bin/dmcs ]; then
+		MCS_BIN="/usr/bin/dmcs"
+	elif [ -e /usr/bin/gmcs ]; then
+		MCS_BIN="/usr/bin/gmcs"
+	else
+		die "Missing (unknown) C# compiler."
+	fi
+	"${MCS_BIN}" \
 		-t:library \
 		-out:log4net.dll \
 		-keyfile:"${DISTDIR}"/log4net.snk \
