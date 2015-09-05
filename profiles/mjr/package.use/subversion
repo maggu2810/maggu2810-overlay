@@ -1,0 +1,5 @@
+# https://bugs.gentoo.org/show_bug.cgi?id=559470
+=dev-vcs/subversion-1.9.1 -java
+
+# dev-vcs/subversion[-dso,perl] required by (dev-vcs/git-2.5.1:0/0::gentoo, installed)
+dev-vcs/subversion -dso perl
