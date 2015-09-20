@@ -12,7 +12,6 @@ HOMEPAGE="http://www.displaylink.com/downloads/ubuntu.php"
 
 SRC_URI="http://downloads.displaylink.com/publicsoftware/DisplayLink-Ubuntu-${PV}.zip"
 
-
 LICENSE="closed"
 
 SLOT="0"
@@ -24,14 +23,34 @@ DEPEND="app-admin/chrpath"
 RDEPEND="virtual/libusb:1
 	x11-video/evdi"
 
-# Use the variable of the normal install script.
-# Perhaps we should use '/opt/...' for binary stuff.
-# Let's check this later...
-# ATM I do not know if the executable require that location.
-DST_COREDIR="/usr/lib/displaylink"
-DST_DLM_BASENAME="DisplayLinkManager"
+DL_COREDIR="/opt/displaylink"
+DLM_DIR="${DL_COREDIR}/manager"
+DLM_BASE="DisplayLinkManager"
+DLM_PATH="${DLM_DIR}/${DLM_BASE}"
 
-QA_PREBUILT="${DST_COREDIR}/${DST_DLM_BASENAME}"
+QA_PREBUILT="${DLM_PATH}"
+
+TMPDIR="${WORKDIR}/tmp"
+
+rpl_envs() {
+	local SRC_FILE="${1}"; shift
+
+	local BASENAME="$(basename "${SRC_FILE}")"
+	local DST_FILE="${TMPDIR}/${BASENAME}"
+
+	cp "${SRC_FILE}" "${DST_FILE}" || die "Copy temp file failed"
+
+	sed 's:$DL_COREDIR:'"${DL_COREDIR}"':g' -i "${DST_FILE}"
+	sed 's:$DLM_DIR:'"${DLM_DIR}"':g' -i "${DST_FILE}"
+	sed 's:$DLM_BASE:'"${DLM_BASE}"':g' -i "${DST_FILE}"
+	sed 's:$DLM_PATH:'"${DLM_PATH}"':g' -i "${DST_FILE}"
+	echo "${DST_FILE}"
+}
+
+src_prepare() {
+	mkdir -p "${TMPDIR}"
+	default
+}
 
 src_unpack() {
 	default
@@ -41,20 +60,27 @@ src_unpack() {
 src_install() {
 	case "${ARCH}" in
 		amd64) DLM="${S}/x64/DisplayLinkManager";;
-		x86)   DLM="${S}/x86/DisplayLinkManager";;
+		x90)   DLM="${S}/x86/DisplayLinkManager";;
 		*) die "invalid ARCH (${ARCH})";;
 	esac
 
 	# Remove DT_RPATH
 	chrpath -d "${DLM}"
-	exeinto "${DST_COREDIR}"
-	newexe "${DLM}" "${DST_DLM_BASENAME}"
+	exeinto "${DLM_DIR}"
+	newexe "${DLM}" "${DLM_BASE}"
 
-	insinto "${DST_COREDIR}"
+	insinto "${DLM_DIR}"
 	doins "${S}/"*.spkg
 	doins "${S}/LICENSE"
 
-	systemd_dounit "${FILESDIR}"/displaylink.service
+	local FILE
+	FILE="$(rpl_envs "${FILESDIR}"/displaylink.service)"
+	systemd_dounit "${FILE}"
+
+	local SYSTEMD_SLEEP="$(systemd_get_utildir)/system-sleep"
+	FILE="$(rpl_envs "${FILESDIR}"/displaylink.sh)"
+	exeinto "${SYSTEMD_SLEEP}"
+	doexe "${FILE}"
 
 	udev_dorules "${FILESDIR}"/99-displaylink.rules
 }
