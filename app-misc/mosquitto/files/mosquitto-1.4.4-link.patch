@@ -1,0 +1,11 @@
+--- mosquitto-1.4.4/src/CMakeLists.txt	2015-09-16 23:54:44.000000000 +0200
++++ mosquitto-1.4.4/src/CMakeLists.txt	2015-10-13 17:43:55.751060385 +0200
+@@ -113,7 +113,7 @@
+ 	if (APPLE)
+ 		set_target_properties(mosquitto PROPERTIES LINK_FLAGS "-Wl,-exported_symbols_list -Wl,${mosquitto_SOURCE_DIR}/src/linker-macosx.syms")
+ 	else (APPLE)
+-		set_target_properties(mosquitto PROPERTIES LINK_FLAGS "-Wl,-dynamic-list=${mosquitto_SOURCE_DIR}/src/linker.syms")
++		#set_target_properties(mosquitto PROPERTIES LINK_FLAGS "-Wl,-dynamic-list=${mosquitto_SOURCE_DIR}/src/linker.syms")
+ 	endif (APPLE)
+ endif (UNIX)
+ 
