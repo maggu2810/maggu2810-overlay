@@ -25,4 +25,3 @@ dev-java/oracle-jdk-bin source
 dev-java/ant-apache-bsf -javascript -python
 #=dev-java/bsf-2.4.0-r1:2.3 -javascript -python
 dev-java/bsf -javascript -python
-
