@@ -1,7 +1,9 @@
 # Favour Qt5 in front of Qt4
+app-crypt/pinentry -qt4 qt5
 dev-util/cmake -qt4 qt5
 media-libs/opencv -qt4 qt5
 media-video/vlc -qt4 qt5
+net-wireless/wpa_supplicant -qt4 qt5
 
 # Use GTK instead of Qt
 net-analyzer/wireshark gtk3 -qt4 -qt5
@@ -19,3 +21,8 @@ media-libs/libmediaart gtk -qt4 -qt5
 # required by @selected
 # required by @world (argument)
 >=dev-qt/qtgui-5.4.1-r1 accessibility
+
+# needed by: net-misc/dropbox-3.6.8::gentoo[X]
+# dev-qt/qtwebkit-5.4.2::gentoo
+# at-most-one-of ( gstreamer gstreamer010 multimedia )
+>=dev-qt/qtwebkit-5.4.0 -gstreamer -gstreamer010 multimedia
