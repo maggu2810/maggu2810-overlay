@@ -1,0 +1,20 @@
+#media-libs/libdvdcss
+media-sound/audacity
+media-sound/pavucontrol
+#media-sound/picard
+#media-video/avidemux
+#media-video/ffmpeg
+#media-video/lsdvd
+#media-video/makemkv
+#media-video/mkvtoolnix
+#media-video/mpgtx
+#media-video/mplayer
+media-video/mpv
+#media-video/transcode
+#media-video/ttcut
+
+# 32 bit binary package only (so no no-multilib support)
+#media-video/vcdgear
+
+#media-video/vlc
+#media-video/vobcopy
