@@ -21,7 +21,7 @@ KEYWORDS="~amd64 ~x86"
 DEPEND="app-admin/chrpath"
 
 RDEPEND="virtual/libusb:1
-	x11-video/evdi"
+	x11-drivers/evdi"
 
 DL_COREDIR="/opt/displaylink"
 DLM_DIR="${DL_COREDIR}/manager"
