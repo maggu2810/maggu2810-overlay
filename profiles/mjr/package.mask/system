@@ -3,3 +3,4 @@ sys-apps/openrc
 
 # obsolete by: app-shells/bash-completion
 app-admin/eselect-bashcomp
+app-eselect/eselect-bashcomp
