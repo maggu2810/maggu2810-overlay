@@ -11,11 +11,6 @@ x11-drivers/nvidia-drivers gtk
 =net-libs/libsoup-2.26.2 gnome
 media-libs/libcanberra gtk
 
-# nedded by dev-util/monofrbrlop
-dev-dotnet/mono-addins gtk
-
-dev-lang/mono moonlight
-
 
 # this is needed by gimp
 app-text/poppler-bindings gtk
