@@ -1,12 +1,12 @@
-# Favour Qt5 in front of Qt4
+# Favour Qt5 in front of Qt4 (or others)
 app-crypt/pinentry -qt4 qt5
 dev-util/cmake -qt4 qt5
 media-libs/opencv -qt4 qt5
 media-video/vlc -qt4 qt5
+net-analyzer/wireshark -gtk -gtk3 -qt4 qt5
 net-wireless/wpa_supplicant -qt4 qt5
 
 # Use GTK instead of Qt
-net-analyzer/wireshark gtk3 -qt4 -qt5
 media-libs/libmediaart gtk -qt4 -qt5
 
 # required by dev-qt/qtcore-5.4.1::gentoo
