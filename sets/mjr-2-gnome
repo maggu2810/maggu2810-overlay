@@ -1,5 +1,8 @@
 gnome-base/gnome
 
+# Receive files over bluetooth
+gnome-extra/gnome-user-share
+
 # Gconf - XML based database (backend system). the older one.
 # Dconf - BLOB based database (backend system). the newer one.
 # Gsettings - CLI tool to edit settings. looks like it works only with Dconf (although i saw somewhere that it might work with Gconf).
