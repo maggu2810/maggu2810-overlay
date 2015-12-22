@@ -2,6 +2,3 @@
 kde-base/kdesdk-kioslaves subversion
 
 net-libs/glib-networking libproxy
-
-# We would like to use plasma-nm instead of kde-misc/networkmanagement
-=kde-base/solid-runtime-4.11.2:4 networkmanager
