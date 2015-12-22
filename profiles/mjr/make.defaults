@@ -95,8 +95,6 @@ USE="${USE} icu nls unicode userlocales"
 
 USE="${USE} acpi -apm dbus -hal pam policykit udev udisks upower"
 USE="${USE} device-mapper lvm"
-# Let's use systemd-networkd instead.
-USE="${USE} -networkmanager"
 
 #
 # PERIPHAL DEVICES
@@ -177,13 +175,6 @@ USE="${USE} java javascript"
 
 # Python
 USE="${USE} python python3"
-
-
-#
-# DATABASE STUFF
-#
-
-USE="${USE} mysql sql sqlite sqlite3"
 
 
 #

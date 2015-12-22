@@ -10,6 +10,12 @@
 
 #RUBY_TARGETS="ruby21"
 
-PYTHON_SINGLE_TARGET="python2_7"
-PYTHON_TARGETS="python2_7 python3_4"
-USE_PYTHON="2.7 3.4"
+#PYTHON_SINGLE_TARGET="python2_7"
+#PYTHON_TARGETS="python2_7 python3_4"
+#USE_PYTHON="2.7 3.4"
+
+#
+# DATABASE STUFF
+#
+USE="${USE} mysql sql sqlite sqlite3"
+
