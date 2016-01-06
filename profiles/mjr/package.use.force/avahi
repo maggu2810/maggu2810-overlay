@@ -1,9 +1,3 @@
-# @mjr_udev-consolekit-polkit -> gnome-base/gvfs -> sys-apps/gnome-disk-utility ->
-# --
-#required by sys-apps/gnome-disk-utility-3.0.2[avahi], required by gnome-base/gvfs-1.8.2-r1, required by gnome-base/libgnome-2.32.1, required by gnome-base/libbonoboui-2.24.5, required by gnome-base/libgnomeui-2.24.5, required by dev-dotnet/gnome-sharp-2.24.2, required by dev-dotnet/gconf-sharp-2.24.2, required by dev-util/mono-tools-2.10, required by @mjr_dev-mono, required by @selected, required by @world (argument)
-# >=net-dns/avahi-0.6.30-r1 gtk3
-net-dns/avahi gtk3
-
 # required by networkmanager
 net-dns/avahi autoipd
 
