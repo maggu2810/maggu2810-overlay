@@ -1,1 +1,1 @@
-net-wireless/bluez examples hid2hci test-programs old-daemons attrib mcap pnat
+net-wireless/bluez extra-tools test-programs
