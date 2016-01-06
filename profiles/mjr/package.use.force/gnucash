@@ -1,7 +1,0 @@
-app-office/gnucash chipcard hbci ofx postgres quotes sqlite webkit
-
-x11-libs/goffice gnome
-gnome-extra/libgsf gnome
-net-libs/aqbanking gtk
-sys-libs/gwenhywfar gtk
-dev-db/libdbi-drivers postgres
