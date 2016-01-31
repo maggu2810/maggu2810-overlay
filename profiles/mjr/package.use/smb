@@ -1,4 +1,4 @@
 # caps-ng: http://forums.gentoo.org/viewtopic-p-7078950.html
 net-fs/cifs-utils caps-ng acl ads creds caps caps-ng upcall
 
-net-fs/samba winbind
+net-fs/samba client winbind
