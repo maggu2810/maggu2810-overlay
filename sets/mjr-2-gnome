@@ -1,5 +1,7 @@
 gnome-base/gnome
 
+app-editors/gedit-plugins
+
 # Receive files over bluetooth
 gnome-extra/gnome-user-share
 
