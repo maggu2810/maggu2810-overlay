@@ -14,4 +14,7 @@ x11-apps/xdriinfo
 x11-apps/xvinfo
 x11-apps/xwininfo
 
+x11-misc/xdotool
+x11-misc/xsel
+
 x11-terms/xterm
