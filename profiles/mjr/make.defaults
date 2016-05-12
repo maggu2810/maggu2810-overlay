@@ -313,7 +313,6 @@ APACHE2_MPMS="prefork"
 PORTAGE_ELOG_CLASSES="warn error info log qa"
 PORTAGE_ELOG_SYSTEM="echo save"
 
-INPUT_DEVICES="${INPUT_DEVICES} evdev"
 LIRC_DEVICES="${LIRC_DEVICES} devinput"
 
 ###
