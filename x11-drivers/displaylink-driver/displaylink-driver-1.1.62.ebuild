@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI=5
+EAPI=6
 
 inherit eutils systemd udev
 
@@ -10,7 +10,9 @@ DESCRIPTION="DisplayLink USB Graphics Software"
 
 HOMEPAGE="http://www.displaylink.com/downloads/ubuntu.php"
 
-SRC_URI="http://downloads.displaylink.com/publicsoftware/DisplayLink-Ubuntu-${PV}.zip"
+#http://assets.displaylink.com/live/downloads/software/f607_DisplayLink%20USB%20Graphics%20Software%20for%20Ubuntu%20${PV}.zip
+#SRC_URI="http://downloads.displaylink.com/publicsoftware/DisplayLink-Ubuntu-${PV}.zip"
+SRC_URI="http://www.displaylink.com/downloads/file?id=607 -> ${P}.zip"
 
 LICENSE="closed"
 
@@ -21,7 +23,7 @@ KEYWORDS="~amd64 ~x86"
 DEPEND="app-admin/chrpath"
 
 RDEPEND="virtual/libusb:1
-	x11-drivers/evdi"
+	<x11-drivers/evdi-2015"
 
 DL_COREDIR="/opt/displaylink"
 DLM_DIR="${DL_COREDIR}/manager"

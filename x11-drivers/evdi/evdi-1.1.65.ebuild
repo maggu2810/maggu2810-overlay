@@ -10,7 +10,7 @@ DESCRIPTION="Extensible Virtual Display Interface"
 HOMEPAGE="https://github.com/DisplayLink/evdi"
 #SRC_URI="ftp://foo.example.org/${P}.tar.gz"
 EGIT_REPO_URI="git://github.com/DisplayLink/evdi.git"
-EGIT_COMMIT=a378a15708bd1fe219aa35a6c4c0f80b5eca7d3c
+EGIT_COMMIT="v${PV}"
 
 LICENSE="GPL-2"
 
