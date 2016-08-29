@@ -1,0 +1,6 @@
+# Package for Eclipse SmartHome development
+
+# For NPM
+net-libs/nodejs
+# https://docs.npmjs.com/getting-started/fixing-npm-permissions#option-2-change-npms-default-directory-to-another-directory
+# npm install --global gulp-cli
