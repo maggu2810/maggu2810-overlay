@@ -14,6 +14,8 @@
 #PYTHON_TARGETS="python2_7 python3_4"
 #USE_PYTHON="2.7 3.4"
 
+CURL_SSL="nss"
+
 PYTHON_TARGETS="python2_7 python3_5"
 PYTHON_SINGLE_TARGET="python3_5"
 
