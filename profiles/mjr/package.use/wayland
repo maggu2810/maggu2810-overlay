@@ -1,2 +1,0 @@
-# webgl? ( exactly-one-of ( gles2 opengl ) )
-net-libs/webkit-gtk -gles2
