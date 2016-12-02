@@ -1,3 +1,7 @@
+#  The following REQUIRED_USE flag constraints are unsatisfied:
+#      pam? ( !static )
+sys-apps/busybox -pam
+
 # include the minizip library for quick and dirty zip extraction
 # Needed by some applications, e.g.
 # - games-emulation/mupen64plus-1.5-r2
