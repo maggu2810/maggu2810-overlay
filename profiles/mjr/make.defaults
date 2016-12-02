@@ -79,7 +79,7 @@ USE="${USE} android ios"
 # FILESYSTEMS
 #
 
-USE="${USE} fuse ntfs sysfs" # reiserfs
+USE="${USE} btrfs fuse ntfs sysfs" # reiserfs
 
 
 #
