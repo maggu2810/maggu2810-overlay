@@ -2,8 +2,15 @@
 media-sound/audacity
 media-sound/pavucontrol
 #media-sound/picard
+media-sound/shntool
 #media-video/avidemux
-#media-video/ffmpeg
+
+# Used by MediathekView
+media-video/ffmpeg
+
+# Used by MediathekView
+media-video/flvstreamer
+
 #media-video/lsdvd
 #media-video/makemkv
 #media-video/mkvtoolnix
@@ -16,5 +23,8 @@ media-video/mpv
 # 32 bit binary package only (so no no-multilib support)
 #media-video/vcdgear
 
-#media-video/vlc
+# Used by MediathekView
+media-video/vlc
+
 #media-video/vobcopy
+
