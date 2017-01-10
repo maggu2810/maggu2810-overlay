@@ -7,6 +7,7 @@ media-video/vlc -qt4 qt5
 net-analyzer/wireshark -gtk -gtk3 -qt4 qt5
 net-misc/owncloud-client -qt4 qt5
 net-wireless/wpa_supplicant -qt4 qt5
+x11-libs/qscintilla -qt4 qt5
 
 # Use GTK instead of Qt
 media-libs/libmediaart gtk -qt4 -qt5
