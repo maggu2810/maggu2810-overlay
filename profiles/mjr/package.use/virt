@@ -7,3 +7,8 @@ app-emulation/libvirt virt-network
 # required by @world (argument)
 >=net-dns/dnsmasq-2.72 script
 
+# required by app-emulation/virt-manager-1.4.0-r2::gentoo[gtk]
+# required by app-emulation/virt-manager (argument)
+>=net-misc/spice-gtk-0.33-r1 usbredir
+
+app-emulation/qemu usbredir
