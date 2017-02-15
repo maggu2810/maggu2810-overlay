@@ -29,3 +29,9 @@ media-libs/libmediaart gtk -qt4 -qt5
 # dev-qt/qtwebkit-5.4.2::gentoo
 # at-most-one-of ( gstreamer gstreamer010 multimedia )
 >=dev-qt/qtwebkit-5.4.0 -gstreamer -gstreamer010 multimedia
+
+# required by dev-qt/qtwebkit-5.7.1::gentoo[multimedia]
+# required by net-misc/dropbox-19.3.11::gentoo[X]
+# required by gnome-extra/nautilus-dropbox-1.6.2::gentoo
+# required by gnome-extra/nautilus-dropbox (argument)
+>=dev-qt/qtmultimedia-5.7.1 widgets
