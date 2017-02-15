@@ -58,7 +58,7 @@ USE="${USE} bluetooth irda irmc"
 # APACHE, HTML, NETWORKING ...
 #
 
-USE="${USE} css curl curlwrappers dhcp ftp httpnet network networking nfs samba webdav"
+USE="${USE} css curl curlwrappers dhcp ftp httpnet network networking networkmanager nfs samba webdav"
 
 #USE="${USE} -ldap -openldap"
 
