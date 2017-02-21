@@ -1,0 +1,13 @@
+net-im/gajim
+
+# https://dev.gajim.org/gajim/gajim-plugins/wikis/OmemoGajimPlugin
+# layman -a flow
+# We don't use the gajim-omemo ebuild becuase it needs some time until it is bumped.
+# Let's install the necessary dependencies and install the plugin using the Plugin Manager.
+dev-python/python-axolotl
+dev-python/qrcode
+
+# https://dev.gajim.org/gajim/gajim-plugins/wikis/UrlImagePreviewPlugin#installation
+# https://dev.gajim.org/gajim/gajim-plugins/wikis/HttpUploadPlugin
+dev-python/cryptography
+
