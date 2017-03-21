@@ -1,0 +1,3 @@
+# Most packages uses "egl" in compination with "wayland"
+# "egl" and "gles" mostly blocks the other one.
+>=media-libs/libsdl2-2.0.5 gles
