@@ -17,7 +17,7 @@ HOMEPAGE="https://github.com/ibus/ibus/wiki"
 LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86 ~x86-fbsd"
-IUSE="deprecated gconf gtk +gtk3 +introspection nls +python test vala wayland +X"
+IUSE="deprecated gconf gtk +gtk3 +introspection nls +python test +vala wayland +X"
 REQUIRED_USE="
 	|| ( gtk gtk3 X )
 	deprecated? ( python )
@@ -140,6 +140,7 @@ src_configure() {
 		$(use_enable vala) \
 		$(use_enable wayland) \
 		${python_conf}
+	use vala && emake -C tools maintainer-clean-generic
 }
 
 src_test() {
