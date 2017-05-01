@@ -37,3 +37,7 @@ media-libs/libmediaart gtk -qt4 -qt5
 # required by gnome-extra/nautilus-dropbox-1.6.2::gentoo
 # required by gnome-extra/nautilus-dropbox (argument)
 >=dev-qt/qtmultimedia-5.7.1 widgets
+
+# If we need PyQt4 disable all not necessary needed function.
+# Tools should migrate to PyQt5
+dev-python/PyQt4 -dbus -declarative -multimedia -opengl -phonon -script -svg -webkit
