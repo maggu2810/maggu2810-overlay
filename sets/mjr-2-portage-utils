@@ -1,5 +1,9 @@
 app-portage/eix
 app-portage/elogv
-app-portage/gentoolkit
-app-portage/gentoolkit-dev
+
+# At the time of writing gentoolkit and gentoolkit-dev could not be installed at the same time.
+# Deactivate both temporarily
+#app-portage/gentoolkit
+#app-portage/gentoolkit-dev
+
 app-portage/layman
