@@ -12,3 +12,11 @@ app-emulation/libvirt virt-network
 >=net-misc/spice-gtk-0.33-r1 usbredir
 
 app-emulation/qemu usbredir
+
+# If we want to use febootstrap or yum, we need:
+# * lua support for rpm.
+#   rpmlib(BuiltinLuaScripts)
+# * caps support for rpm
+#   rpmlib(FileCaps)
+app-arch/rpm caps lua
+
