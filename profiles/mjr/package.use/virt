@@ -11,7 +11,15 @@ app-emulation/libvirt virt-network
 # required by app-emulation/virt-manager (argument)
 >=net-misc/spice-gtk-0.33-r1 usbredir
 
-app-emulation/qemu usbredir
+
+app-emulation/qemu static-user usbredir
+
+# Necessary because of 'static-user' flag for qemu
+>=dev-libs/glib-2.52.3 static-libs
+>=dev-libs/libpcre-8.41 static-libs
+>=sys-libs/zlib-1.2.11 static-libs
+>=sys-apps/attr-2.4.47-r2 static-libs
+
 
 # If we want to use febootstrap or yum, we need:
 # * lua support for rpm.
