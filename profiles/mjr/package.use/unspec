@@ -1,1 +1,4 @@
 net-wireless/wpa_supplicant wps
+
+# geography feature for gramps
+app-misc/gramps geo
