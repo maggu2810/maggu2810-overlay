@@ -2,3 +2,6 @@ net-wireless/wpa_supplicant wps
 
 # geography feature for gramps
 app-misc/gramps geo
+
+# 3.3.0 does not work without contrib, contrib deactivate dnn and dnn uses a wrong protobuf version
+media-libs/opencv contrib
