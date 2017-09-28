@@ -1,4 +1,4 @@
-dev-java/oracle-jdk-bin source javafx
+dev-java/oracle-jdk-bin source javafx jce
 
 #
 # Compile error with JDK 8
