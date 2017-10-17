@@ -7,3 +7,8 @@ sys-apps/busybox -pam
 # - games-emulation/mupen64plus-1.5-r2
 sys-libs/zlib minizip
 
+# required by dev-qt/qtcore-5.9.2::gentoo
+# required by dev-qt/qtdeclarative-5.9.2::gentoo
+# required by dev-qt/qtwebkit-5.9.1::gentoo[qml]
+# required by dev-qt/qtwebkit (argument)
+>=dev-libs/libpcre2-10.30 pcre16
