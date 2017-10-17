@@ -1,6 +1,6 @@
 app-misc/tracker gstreamer -ffmpeg
 
 gnome-base/gnome classic -extras
-gnome-base/gnome-extra-apps -games -share -shotwell -tracker
+gnome-base/gnome-extra-apps -games -share -shotwell
 gnome-base/gvfs afp archive bluray fuse gnome-online-accounts google http libsecret nfs udev
 gnome-base/nautilus sendto

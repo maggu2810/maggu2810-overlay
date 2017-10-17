@@ -238,7 +238,7 @@ USE="${USE} lastfm"
 # indexer, semantic-desktop, etc.
 #
 
-USE="${USE} -nepomuk -semantic-desktop -tracker"
+USE="${USE} -nepomuk -semantic-desktop"
 
 #
 # Gtk, Gnome stuff
