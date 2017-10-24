@@ -1,4 +1,8 @@
 net-wireless/iw
-net-wireless/rfkill
+
+# net-wireless/rfkill: >=sys-apps/util-linux-2.31_rc1 also provides rfkill
+# https://gitweb.gentoo.org/repo/gentoo.git/commit/?id=e8526888ced1f604c05c1020a087cdf87bbe727c
+#net-wireless/rfkill
+
 net-wireless/wireless-tools
 net-wireless/wpa_supplicant
