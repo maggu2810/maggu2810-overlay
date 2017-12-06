@@ -8,6 +8,20 @@
 #                                                                        -
 # ------------------------------------------------------------------------
 
+#
+# TODO:
+# - Remove implicit dependencies (all packages of @system set)
+# - Check if there is any documentation available on required versions of dependencies
+# - Find out new download URI -> dl.tvcdn.de?
+# - Probably symlink for teamviewerd to /opt/bin, change initscript to use this symlink
+# - Check if licenses changed
+# - Check if TeamViewer actually need all files/folders of tv_bin (e.g. desktop)
+# - Add support for x86
+#
+# BUG:
+# - system tray icon not displayed (empty space only)
+#
+
 EAPI=6
 
 # Import eutils (required for newicon, make_desktop_entry)
@@ -26,7 +40,8 @@ MY_AN="TeamViewer"
 DESCRIPTION="All-In-One Solution for Remote Access and Support over the Internet"
 HOMEPAGE="https://www.teamviewer.com"
 #SRC_URI="https://download.teamviewer.com/download/version_${MY_MV}x/${MY_PN}_${PV}_amd64.tar.xz"
-SRC_URI="https://download.teamviewer.com/download/linux/teamviewer_amd64.tar.xz"
+#SRC_URI="https://download.teamviewer.com/download/linux/teamviewer_amd64.tar.xz"
+SRC_URI="https://dl.tvcdn.de/download/linux/version_${MY_MV}x/${MY_PN}_${PV}_amd64.tar.xz"
 SLOT=0
 KEYWORDS="-* ~amd64"
 RESTRICT="bindist mirror"
@@ -98,7 +113,7 @@ src_prepare() {
 
 	# Change user local share folder name from 'teamviewer13' to 'teamviewer'
 	# TODO: ~/.local/share/teamviewer13/logfiles still gets created
-	#sed -i 's/teamviewer13/teamviewer/g' tv_bin/script/tvw_config || die
+	sed -i 's/teamviewer13/teamviewer/g' tv_bin/script/tvw_config || die
 }
 
 
@@ -131,6 +146,17 @@ src_install() {
 	for doc in $(find doc -type f); do
 		dodoc $doc
 	done
+
+	# Install dbus services
+	# TODO: is there a better way than hard-coded paths for this?
+	insinto /usr/share/dbus-1/services
+	doins tv_bin/script/com.teamviewer.TeamViewer.service
+	doins tv_bin/script/com.teamviewer.TeamViewer.Desktop.service
+
+	# Install polkit policy
+	# TODO: is there a better way than hard-coded paths for this?
+	insinto /usr/share/polkit-1/actions
+	doins tv_bin/script/com.teamviewer.TeamViewer.policy
 
 	# Create directory and symlink for global config
 	keepdir /etc/${MY_PN}
