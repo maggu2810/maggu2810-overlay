@@ -287,7 +287,7 @@ USE="${USE} egl wayland"
 # opencl needs nvidia or fglrx (closed source) driver
 #USE="${USE} opencl"
 
-# others
+# X
 USE="${USE} X xcomposite xorg xosd xscreensaver"
 
 #
