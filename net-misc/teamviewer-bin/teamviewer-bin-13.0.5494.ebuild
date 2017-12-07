@@ -10,16 +10,20 @@
 
 #
 # TODO:
-# - Remove implicit dependencies (all packages of @system set)
-# - Check if there is any documentation available on required versions of dependencies
-# - Find out new download URI -> dl.tvcdn.de?
-# - Probably symlink for teamviewerd to /opt/bin, change initscript to use this symlink
-# - Check if licenses changed
-# - Check if TeamViewer actually need all files/folders of tv_bin (e.g. desktop)
 # - Add support for x86
+# - Check if there is any documentation available on required versions of dependencies
+#   (maybe check RPM/DEB packages?)
 #
-# BUG:
-# - system tray icon not displayed (empty space only)
+# DONE:
+# - Find out new download URI
+#   -> 'dl.tvcdn.de' according to TV devs
+# - Check if licenses changed
+#   -> TeamViewer, MIT
+# - Check if TeamViewer actually needs all files/folders of tv_bin (e.g. desktop)
+#   -> yes, according to TV devs
+# - Remove implicit dependencies (https://devmanual.gentoo.org/general-concepts/dependencies/index.html)
+# - BUG: system tray icon not displayed (empty space only)
+#   -> icons have to be named "TeamViewer.png" (not teamviewer)
 #
 
 EAPI=6
@@ -46,24 +50,17 @@ SLOT=0
 KEYWORDS="-* ~amd64"
 RESTRICT="bindist mirror"
 
-# Licenses (TeamViewer, Wine/QTWebKit, xdg-utils, D-Bus)
-LICENSE="TeamViewer LGPL-2.1 MIT || ( AFL-2.1 GPL-2 )"
+# Licenses (TeamViewer, xdg-utils)
+LICENSE="TeamViewer MIT"
 
 # Required dependencies (provided by 'tv-setup checklibs' from archive)
 RDEPEND="
-	app-arch/bzip2
 	app-arch/snappy
 	dev-db/sqlite
 	dev-libs/double-conversion
-	dev-libs/expat
-	dev-libs/glib
 	dev-libs/icu
 	dev-libs/leveldb
 	dev-libs/libbsd
-	dev-libs/libpcre
-	dev-libs/libxml2
-	dev-libs/libxslt
-	dev-libs/openssl
 	dev-qt/qtcore
 	dev-qt/qtdbus
 	dev-qt/qtdeclarative
@@ -81,9 +78,6 @@ RDEPEND="
 	media-libs/libpng
 	media-libs/mesa
 	sys-apps/dbus
-	sys-devel/gcc
-	sys-libs/glibc
-	sys-libs/zlib
 	x11-libs/libX11
 	x11-libs/libXau
 	x11-libs/libXcomposite
@@ -97,6 +91,21 @@ RDEPEND="
 	x11-libs/libxcb
 	x11-libs/libxshmfence
 "
+
+# Omitted implicit dependencies (generated using 'emerge -ep --nodeps @system' within untouched stage3 tarball chroot)
+#RDEPEND="
+#	app-arch/bzip2
+#	dev-libs/expat
+#	dev-libs/glib
+#	dev-libs/libpcre
+#	dev-libs/libxml2
+#	dev-libs/libxslt
+#	dev-libs/openssl
+#	sys-devel/gcc
+#	sys-libs/glibc
+#	sys-libs/zlib
+#"
+
 
 # Silence QA messages
 QA_PREBUILT="opt/${MY_PN}/*"
@@ -113,7 +122,8 @@ src_prepare() {
 
 	# Change user local share folder name from 'teamviewer13' to 'teamviewer'
 	# TODO: ~/.local/share/teamviewer13/logfiles still gets created
-	sed -i 's/teamviewer13/teamviewer/g' tv_bin/script/tvw_config || die
+	# NOTE: not officially supported and discouraged by TeamViewer devs
+	#sed -i 's/teamviewer13/teamviewer/g' tv_bin/script/tvw_config || die
 }
 
 
@@ -142,11 +152,6 @@ src_install() {
 	newinitd ${FILESDIR}/${MY_PN}d.init ${MY_PN}d
 	#newconfd ${FILESDIR}/${MY_PN}d.conf ${MY_PN}d
 
-	# Install documents
-	for doc in $(find doc -type f); do
-		dodoc $doc
-	done
-
 	# Install dbus services
 	# TODO: is there a better way than hard-coded paths for this?
 	insinto /usr/share/dbus-1/services
@@ -172,11 +177,17 @@ src_install() {
 
 	# Install application icons
 	for size in 16 24 32 48 256; do
-		newicon -s $size tv_bin/desktop/${MY_PN}_$size.png ${MY_PN}.png
+		#newicon -s $size tv_bin/desktop/${MY_PN}_$size.png ${MY_PN}.png
+		newicon -s $size tv_bin/desktop/${MY_PN}_$size.png ${MY_AN}.png
+	done
+
+	# Install documents
+	for doc in $(find doc -type f); do
+		dodoc $doc
 	done
 
 	# Create application menu entry
-	make_desktop_entry ${MY_PN} "${MY_AN}" ${MY_PN}
+	make_desktop_entry ${MY_PN} ${MY_AN} ${MY_PN}
 
 }
 
