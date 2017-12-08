@@ -4,3 +4,8 @@ gnome-base/gnome classic -extras
 gnome-base/gnome-extra-apps -games -share -shotwell
 gnome-base/gvfs afp archive bluray fuse gnome-online-accounts google http libsecret nfs udev
 gnome-base/nautilus sendto
+
+
+# Disable webkit support for non gtk3 slot (keep it for e.g. 3.0-gtk3)
+x11-libs/wxGTK:2.8 -webkit
+x11-libs/wxGTK:3.0 -webkit
