@@ -16,7 +16,7 @@ ACCEPT_LICENSE="*"
 # INSTANT MESSENGER
 #
 
-USE="${USE} jabber xmpp"
+USE="${USE} xmpp"
 #USE="${USE} aim icq msn oscar yahoo"
 
 
@@ -24,7 +24,7 @@ USE="${USE} jabber xmpp"
 # FONTS
 #
 
-USE="${USE} bitmap-fonts fontconfig freetype freetype2 truetype truetype-fonts type1-fonts"
+USE="${USE} fontconfig truetype"
 
 
 #
@@ -43,7 +43,7 @@ USE="${USE} c++0x"
 # THREADS
 #
 
-USE="${USE} nptl nptlonly threadsafe"
+USE="${USE} nptl threadsafe"
 # Do not force thread support if it is not enabled default
 #USE="${USE} threads"
 
@@ -52,26 +52,26 @@ USE="${USE} nptl nptlonly threadsafe"
 # OVER THE AIR AND NETWORKING STUFF
 #
 
-USE="${USE} bluetooth irda irmc"
+USE="${USE} bluetooth irda"
 
 #
 # APACHE, HTML, NETWORKING ...
 #
 
-USE="${USE} css curl curlwrappers dhcp ftp httpnet network networking networkmanager nfs samba webdav"
+USE="${USE} css curl dhcp ftp network networking networkmanager nfs samba webdav"
 
 #USE="${USE} -ldap -openldap"
 
 USE="${USE} howl-compat mdnsresponder-compat"
 
-USE="${USE} avahi bonjour upnp zeroconf l7filter"
+USE="${USE} avahi upnp zeroconf"
 
 
 #
 # MOBILE PHONE
 #
 
-USE="${USE} gnokii obex sms"
+USE="${USE} obex sms"
 USE="${USE} android ios"
 
 
@@ -79,21 +79,21 @@ USE="${USE} android ios"
 # FILESYSTEMS
 #
 
-USE="${USE} btrfs fuse ntfs sysfs" # reiserfs
+USE="${USE} btrfs fuse ntfs" # reiserfs
 
 
 #
 # LANGUAGE AND CODING STUFF
 #
 
-USE="${USE} icu nls unicode userlocales"
+USE="${USE} icu nls unicode"
 
 
 #
 # SERVICES AND SOME SUPPORT STUFF
 #
 
-USE="${USE} acpi -apm dbus -hal pam policykit udev udisks upower"
+USE="${USE} acpi -apm dbus pam policykit udev udisks upower"
 USE="${USE} device-mapper lvm"
 
 #
@@ -104,7 +104,7 @@ USE="${USE} usb"
 USE="${USE} lirc"
 
 # printing support (deactivate xprint, because from time to time there are built errors when it is set)
-USE="${USE} cups -xprint"
+USE="${USE} cups"
 
 # scanner
 USE="${USE} ocr scanner"
@@ -113,7 +113,7 @@ USE="${USE} ocr scanner"
 USE="${USE} ipod"
 
 # Input systems
-USE="${USE} joystick logitech-mouse wiimote"
+USE="${USE} joystick wiimote"
 
 
 #
@@ -150,14 +150,13 @@ USE="${USE} \
      chroot chm cjk cxx \
      dvi djvu \
      fam festival flash fmod \
-     gd gimp gmedia gphoto2 graphviz gs \
+     gd gimp gphoto2 graphviz \
      idn imagemagick imlib inkjar \
-     lcms libnotify libshout logrotate \
+     lcms libnotify logrotate \
      mime musicbrainz \
      nsplugin \
-     ofr \
      pcmcia plotutils ppds \
-     spell srt stream streamripper \
+     spell srt stream \
      xattr xcb xml \
      "
 
@@ -174,14 +173,14 @@ USE="${USE} kpathsea latex" #tetex
 USE="${USE} java javascript"
 
 # Python
-USE="${USE} python python3"
+USE="${USE} python"
 
 
 #
 # [DE]COMPRESS
 #
 
-USE="${USE} 7zip bzip2 lzma lzo rar zip zlib"
+USE="${USE} bzip2 lzma lzo rar zip zlib"
 
 
 #
@@ -189,7 +188,7 @@ USE="${USE} 7zip bzip2 lzma lzo rar zip zlib"
 # Do not use gnutls. because there are packages where we mast choose between gnutls XOR nss.
 # Do not force nss usage. nss will be used instead of openssl for some packages.
 #
-USE="${USE} crypt cryptsetup libgcrypt loop-aes otr openssl ssl"
+USE="${USE} crypt cryptsetup otr openssl ssl"
 
 
 #
@@ -199,13 +198,13 @@ USE="${USE} crypt cryptsetup libgcrypt loop-aes otr openssl ssl"
 USE="${USE} multimedia"
 
 # support engines, framework...
-USE="${USE} -arts -esd -oss"
+USE="${USE} -oss"
 USE="${USE} alsa pulseaudio"
-USE="${USE} libv4l libv4l2 v4l v4l2"
+USE="${USE} libv4l v4l v4l2"
 USE="${USE} video videos"
-USE="${USE} g3dvl vaapi vdpau xv xvmc"
+USE="${USE} vaapi vdpau xv xvmc"
 USE="${USE} xv xvmc"
-USE="${USE} amarok fame gstreamer jingle lame mjpeg mplayer phonon shorten soundtouch sox telepathy wavpack"
+USE="${USE} gstreamer jingle lame mjpeg mplayer phonon shorten soundtouch sox telepathy wavpack"
 USE="${USE} ffmpeg -libav"
 USE="${USE} farstream" # framework for audio/video conversations (instant messaging) (old name: farsight)
 
@@ -213,20 +212,20 @@ USE="${USE} farstream" # framework for audio/video conversations (instant messag
 #USE="${USE} xine"
 
 # support codecs, container
-USE="${USE} amr amrnb amrwb opencore-amr"
-USE="${USE} a52 aac aacplus aften asf dirac divx dts dv faac faad flac g726 g729 gsm"
-USE="${USE} mad matroska mod mp2 mp3 mp4 midi mpeg mpegts musepack nut"
-USE="${USE} ogg ogm opus pcm quicktime real realmedia schroedinger silk theora twolame"
-USE="${USE} vorbis vpx win32codecs wma wmp x264 x265 xvid"
+USE="${USE} amr amrnb"
+USE="${USE} a52 aac aacplus aften asf dts dv faac faad flac g726 g729 gsm"
+USE="${USE} mad matroska mod mp3 mp4 midi mpeg musepack nut"
+USE="${USE} ogg ogm opus pcm quicktime schroedinger silk theora twolame"
+USE="${USE} vorbis vpx wma x264 x265 xvid"
 
 # others
-USE="${USE} aalib ass audiofile cdaudio cdda cddax cddb cdio cdparanoia"
-USE="${USE} daap dvb dvdread dvdnav encode frei0r"
+USE="${USE} aalib audiofile cdda cddb cdio cdparanoia"
+USE="${USE} daap dvb dvdnav encode frei0r"
 USE="${USE} ladspa libass mikmod osc pvr"
-USE="${USE} sndfile sound timidity upnp-av vcdinfo vhook"
-USE="${USE} live mtp mp4live rtmp rtsp"
-USE="${USE} id3tag taglib tagwriting"
-USE="${USE} exif gif jpeg jpeg2k mng openexr png apng pnm svg tiff webgl webm webp wmf xmp xpm"
+USE="${USE} sndfile sound timidity upnp-av"
+USE="${USE} live mtp rtmp rtsp"
+USE="${USE} id3tag taglib"
+USE="${USE} exif gif jpeg jpeg2k mng openexr png apng pnm svg tiff webgl webp wmf xmp xpm"
 
 # text to speach
 USE="${USE} mbrola"
@@ -238,20 +237,13 @@ USE="${USE} lastfm"
 # indexer, semantic-desktop, etc.
 #
 
-USE="${USE} -nepomuk -semantic-desktop"
+USE="${USE} -semantic-desktop"
 
 #
 # Gtk, Gnome stuff
 #
 
 USE="${USE} gnome gnome-keyring gtk gtk2 gtk3"
-
-
-#
-# Wx stuff
-# 
-
-USE="${USE} -wxwindows"
 
 
 #
@@ -274,14 +266,14 @@ USE="${USE} -handbook"
 #
 # Qt stuff
 #
-USE="${USE} qt qt4 qt5 qt-dbus qt-webkit qml"
+USE="${USE} qt4 qt5 qml"
 
 #
 # Graphic
 #
 
 # 3D, graphic acceleration, ...
-USE="${USE} aiglx cairo dri drm gbm glitz libkms opengl openvg sdl xinerama xrandr"
+USE="${USE} cairo dri drm gbm libkms opengl openvg sdl xinerama xrandr"
 USE="${USE} egl wayland"
 #USE="${USE} gles gles2"
 # opencl needs nvidia or fglrx (closed source) driver
