@@ -278,7 +278,7 @@ USE="${USE} egl wayland"
 #USE="${USE} opencl"
 
 # X
-USE="${USE} X xcomposite xorg xosd xscreensaver"
+USE="${USE} X xcomposite xosd xscreensaver"
 
 #
 # Framebuffer
