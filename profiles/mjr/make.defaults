@@ -62,8 +62,6 @@ USE="${USE} css curl dhcp ftp network networking networkmanager nfs samba webdav
 
 #USE="${USE} -ldap -openldap"
 
-USE="${USE} howl-compat mdnsresponder-compat"
-
 USE="${USE} avahi upnp zeroconf"
 
 
