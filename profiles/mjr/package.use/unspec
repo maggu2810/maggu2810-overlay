@@ -1,4 +1,4 @@
-net-wireless/wpa_supplicant wps
+net-wireless/wpa_supplicant ap eap-sim hs2-0 p2p ssl tdls uncommon-eap-types wimax wps
 
 # geography feature for gramps
 app-misc/gramps geo
