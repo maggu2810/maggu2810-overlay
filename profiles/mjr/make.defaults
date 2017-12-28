@@ -148,14 +148,13 @@ USE="${USE} \
      chroot chm cjk cxx \
      dvi djvu \
      fam festival flash fmod \
-     gd gimp gphoto2 graphviz \
+     gd gphoto2 graphviz \
      idn imagemagick imlib inkjar \
-     lcms libnotify logrotate \
+     libnotify logrotate \
      mime musicbrainz \
-     nsplugin \
      pcmcia plotutils ppds \
      spell srt stream \
-     xattr xcb xml \
+     xattr xml \
      "
 
 #
@@ -200,8 +199,6 @@ USE="${USE} -oss"
 USE="${USE} alsa pulseaudio"
 USE="${USE} libv4l v4l v4l2"
 USE="${USE} video videos"
-USE="${USE} vaapi vdpau xv xvmc"
-USE="${USE} xv xvmc"
 USE="${USE} gstreamer jingle lame mjpeg mplayer phonon shorten soundtouch sox telepathy wavpack"
 USE="${USE} ffmpeg -libav"
 USE="${USE} farstream" # framework for audio/video conversations (instant messaging) (old name: farsight)
@@ -241,7 +238,7 @@ USE="${USE} -semantic-desktop"
 # Gtk, Gnome stuff
 #
 
-USE="${USE} gnome gnome-keyring gtk gtk2 gtk3"
+USE="${USE} gnome gnome-keyring gtk gtk3"
 
 
 #
@@ -271,14 +268,16 @@ USE="${USE} qt4 qt5 qml"
 #
 
 # 3D, graphic acceleration, ...
-USE="${USE} cairo dri drm gbm libkms opengl openvg sdl xinerama xrandr"
+USE="${USE} cairo dri drm libkms openvg sdl2" # gbm
+USE="${USE} -opengl -sdl"
 USE="${USE} egl wayland"
-#USE="${USE} gles gles2"
+USE="${USE} gles gles2"
 # opencl needs nvidia or fglrx (closed source) driver
 #USE="${USE} opencl"
 
 # X
-USE="${USE} X xcomposite"
+#USE="${USE} -X -xcb -xcomposite -xft -xinerama -xosd -xrandr -xscreensaver -xv -xvmc"
+USE="${USE} -X"
 
 #
 # Framebuffer

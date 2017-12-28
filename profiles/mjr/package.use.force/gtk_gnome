@@ -6,12 +6,6 @@ gnome-base/gvfs gnome
 x11-drivers/nvidia-drivers gtk
 
 
-# this is needed by gnome-control-center
-# dependency required by "net-im/empathy-2.26.2" [ebuild]
-=net-libs/libsoup-2.26.2 gnome
-media-libs/libcanberra gtk
-
-
 # this is needed by gimp
 app-text/poppler-bindings gtk
 

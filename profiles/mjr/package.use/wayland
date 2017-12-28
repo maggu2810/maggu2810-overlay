@@ -3,3 +3,48 @@
 >=media-libs/libsdl2-2.0.5 gles
 
 x11-base/xorg-server xephyr xnest xorg
+
+dev-libs/weston -X -xwayland
+
+app-misc/lirc -X -gtk
+app-accessibility/at-spi2-core -X
+app-text/ghostscript-gpl -X
+app-text/texlive-core -X
+games-emulation/retroarch -X -xv
+gnome-extra/gnome-system-monitor -X
+media-libs/gst-plugins-bad -X -opengl gles2
+media-libs/libquicktime -X -opengl
+media-video/mpv -X -xv -lcms
+x11-libs/libva -X -opengl
+
+app-emulation/qemu -sdl -sdl2
+games-emulation/retroarch -sdl opengl
+
+#
+# Package that still needs support for X
+#
+dev-cpp/cairomm X
+dev-cpp/gtkmm X
+media-libs/clutter X
+media-libs/clutter-gst X
+media-libs/clutter-gtk X
+media-libs/libepoxy X
+x11-libs/cairo X
+x11-libs/gtk+ X
+
+# dependency of audacity
+x11-libs/wxGTK:3.0 X
+
+x11-libs/libxkbcommon X
+
+# requirement for gnome session
+sys-apps/dbus X
+
+#  (media-libs/gst-plugins-base-1.12.3:1.0/1.0::gentoo, ebuild scheduled for merge) conflicts with
+#    >=media-libs/gst-plugins-base-1.4:1.0[introspection,ogg,pango,theora,vorbis,X] required by (media-video/cheese-3.24.0:0/8::gentoo, installed)
+#                                                                                ^
+#    >=media-libs/gst-plugins-base-1.12.3:1.0[X,abi_x86_64(-)] required by (media-plugins/gst-plugins-v4l2-1.12.3:1.0/1.0::gentoo, installed)
+media-libs/gst-plugins-base X
+
+# Requirement for net-libs/webkit-gtk-2.19.3:4/37::gnome-next with USE flag webgl
+x11-libs/cairo opengl

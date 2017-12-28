@@ -1,1 +1,5 @@
 sys-apps/openrc-0.19.1
+
+# Caribou is a RDEPEND of gnome-shell
+# Caribou depends on GTK 2
+app-accessibility/caribou-0.4.21

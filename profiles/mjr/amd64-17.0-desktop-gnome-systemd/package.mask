@@ -1,0 +1,5 @@
+x11-libs/gtk+:2
+dev-cpp/gtkmm:2.4
+dev-python/pygtk:2
+x11-libs/wxGTK:2.8
+x11-libs/wxGTK:3.0

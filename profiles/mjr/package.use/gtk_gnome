@@ -5,7 +5,54 @@ gnome-base/gnome-extra-apps -games -share -shotwell
 gnome-base/gvfs afp archive bluray fuse gnome-online-accounts google http libsecret nfs udev
 gnome-base/nautilus sendto
 
+#
+# Flags that needs GTK 2
+#
 
 # Disable webkit support for non gtk3 slot (keep it for e.g. 3.0-gtk3)
 x11-libs/wxGTK:2.8 -webkit
 x11-libs/wxGTK:3.0 -webkit
+
+# pdf needs >=x11-libs/gtk+-2.12:2
+app-misc/tracker -pdf
+
+# Needs currently wxGTK:3.0 (not 3.0-gtk3)
+app-arch/p7zip -wxwidgets
+
+# pygtk currently needs GTK 2
+net-libs/gtk-vnc -python
+app-emulation/virt-manager -gtk
+
+#
+# If GTK 2 and GTK 3 is supported use GTK 3 only
+#
+
+app-emulation/qemu gtk -gtk2
+
+# "gnome" needs "gtk", "eds" needs "gnome"
+app-office/libreoffice -eds -gnome -gtk gtk3
+
+net-dns/avahi -gtk gtk3
+media-libs/libcanberra -gtk gtk3
+
+#
+# gtk flag forces GTK 2
+#
+
+media-video/mjpegtools -gtk
+media-sound/mp3info -gtk
+app-crypt/pinentry -gtk qt5
+media-libs/libquicktime -gtk
+media-libs/opencv -gtk qt5
+media-gfx/graphviz -gtk
+media-gfx/fontforge -gtk
+net-dialup/ppp -gtk
+
+# uses gtk 2 or 3
+app-text/ghostscript-gpl -gtk
+
+#
+# Disable gtk2 explicit
+#
+
+app-i18n/ibus -gtk2
