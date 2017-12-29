@@ -15,14 +15,14 @@ LICENSE="LGPL-2.1"
 SLOT="0"
 KEYWORDS="~alpha amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc x86"
 
-IUSE=""
+IUSE="gtk2"
 REQUIRED_USE="${PYTHON_REQUIRED_USE}"
 
 COMMON_DEPEND="
 	app-accessibility/at-spi2-core
 	>=dev-python/pygobject-2.90.3:3[${PYTHON_USEDEP}]
 	>=x11-libs/gtk+-3:3[introspection]
-	x11-libs/gtk+:2
+	gtk2? ( x11-libs/gtk+:2 )
 	>=dev-libs/gobject-introspection-0.10.7:=
 	dev-libs/libgee:0.8
 	dev-libs/libxml2
@@ -66,12 +66,16 @@ src_prepare() {
 }
 
 src_configure() {
+	MY_OPTS="--disable-docs"
+	MY_OPTS="${MY_OPTS} --disable-static"
+	MY_OPTS="${MY_OPTS} --enable-gtk3-module"
+	if use gtk2 ; then
+		MY_OPTS="${MY_OPTS} --enable-gtk2-module"
+	else
+		MY_OPTS="${MY_OPTS} --disable-gtk2-module"
+	fi
 	ECONF_SOURCE="${S}" python_foreach_impl run_in_build_dir \
-		gnome2_src_configure \
-			--disable-docs \
-			--disable-static \
-			--enable-gtk3-module \
-			--enable-gtk2-module \
+		gnome2_src_configure ${MY_OPTS} \
 			VALAC=$(type -P true)
 	# vala is not needed for tarball builds, but configure checks for it...
 }
