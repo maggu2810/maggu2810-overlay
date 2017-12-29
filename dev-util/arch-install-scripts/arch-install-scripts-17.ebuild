@@ -13,7 +13,8 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 
 DEPEND=""
-RDEPEND="${DEPEND}"
+RDEPEND="${DEPEND}
+	sys-apps/pacman"
 
 src_install() {
 	emake DESTDIR="${D}" PREFIX=/usr install
