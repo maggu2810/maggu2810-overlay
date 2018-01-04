@@ -24,7 +24,7 @@ RDEPEND=">=app-arch/zip-2.3
 	>=media-libs/libsndfile-1.0.0
 	=media-libs/portaudio-19*
 	media-libs/soxr
-	x11-libs/wxGTK:3.0[X]
+	x11-libs/wxGTK:3.0-gtk3[X]
 	alsa? ( media-libs/alsa-lib )
 	ffmpeg? ( libav? ( media-video/libav:= )
 		!libav? ( >=media-video/ffmpeg-1.2:= ) )
@@ -50,7 +50,7 @@ REQUIRED_USE="soundtouch? ( midi )"
 S="${WORKDIR}/${MY_P}-rc3"
 
 src_configure() {
-	local WX_GTK_VER="3.0"
+	local WX_GTK_VER="3.0-gtk3"
 	need-wxwidgets unicode
 
 	# * always use system libraries if possible
