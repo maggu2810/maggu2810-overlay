@@ -1,0 +1,10 @@
+games-emulation/snes9x gtk netplay
+
+# include the minizip library for quick and dirty zip extraction
+# Needed by some applications, e.g.
+# - games-emulation/mupen64plus-1.5-r2
+sys-libs/zlib minizip
+
+games-emulation/retroarch -X -xv
+games-emulation/retroarch -sdl opengl
+

@@ -261,7 +261,7 @@ USE="${USE} -handbook"
 #
 # Qt stuff
 #
-USE="${USE} qt4 qt5 qml"
+USE="${USE} -qt4 qt5 qml"
 
 #
 # Graphic

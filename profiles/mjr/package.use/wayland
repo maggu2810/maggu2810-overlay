@@ -10,7 +10,6 @@ app-misc/lirc -X -gtk
 app-accessibility/at-spi2-core -X
 app-text/ghostscript-gpl -X
 app-text/texlive-core -X
-games-emulation/retroarch -X -xv
 gnome-extra/gnome-system-monitor -X
 media-libs/gst-plugins-bad -X -opengl gles2
 media-libs/libquicktime -X -opengl
@@ -18,7 +17,6 @@ media-video/mpv -X -xv -lcms
 x11-libs/libva -X -opengl
 
 app-emulation/qemu -sdl -sdl2
-games-emulation/retroarch -sdl opengl
 
 #
 # Package that still needs support for X
@@ -32,8 +30,8 @@ media-libs/libepoxy X
 x11-libs/cairo X
 x11-libs/gtk+ X
 
-# dependency of audacity
-x11-libs/wxGTK:3.0 X
+# because of audacity
+x11-libs/wxGTK:3.0-gtk3 X
 
 x11-libs/libxkbcommon X
 

@@ -2,11 +2,6 @@
 #      pam? ( !static )
 sys-apps/busybox -pam
 
-# include the minizip library for quick and dirty zip extraction
-# Needed by some applications, e.g.
-# - games-emulation/mupen64plus-1.5-r2
-sys-libs/zlib minizip
-
 # required by dev-qt/qtcore-5.9.2::gentoo
 # required by dev-qt/qtdeclarative-5.9.2::gentoo
 # required by dev-qt/qtwebkit-5.9.1::gentoo[qml]

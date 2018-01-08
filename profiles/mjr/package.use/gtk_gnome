@@ -9,9 +9,10 @@ gnome-base/nautilus sendto
 # Flags that needs GTK 2
 #
 
-# Disable webkit support for non gtk3 slot (keep it for e.g. 3.0-gtk3)
+# Disable webkit support because it depends on GTK+2
 x11-libs/wxGTK:2.8 -webkit
 x11-libs/wxGTK:3.0 -webkit
+x11-libs/wxGTK:3.0-gtk3 -webkit
 
 # pdf needs >=x11-libs/gtk+-2.12:2
 app-misc/tracker -pdf
