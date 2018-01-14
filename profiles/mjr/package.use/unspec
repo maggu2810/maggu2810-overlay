@@ -7,3 +7,6 @@ app-misc/gramps geo
 media-libs/opencv contrib
 
 sys-apps/fwupd dell elf uefi
+
+# Remote Desktop Client
+net-misc/remmina rdp
