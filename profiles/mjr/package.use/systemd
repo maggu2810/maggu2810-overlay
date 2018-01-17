@@ -7,3 +7,9 @@ sys-apps/systemd acl cryptsetup elfutils gcrypt gnuefi importd kmod nat pam term
 ## required by sys-apps/shadow-4.2.1-r1::gentoo[pam]
 ## required by sys-apps/shadow (argument)
 >=media-fonts/unifont-7.0.06 utils
+
+# Allow compatibility with user-session semantics for session bus under systemd
+net-wireless/bluez user-session
+# Enable user-session semantics for session bus under systemd
+sys-apps/dbus user-session
+
