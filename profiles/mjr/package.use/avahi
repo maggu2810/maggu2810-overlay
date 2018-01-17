@@ -1,0 +1,14 @@
+# required by networkmanager
+net-dns/avahi autoipd
+
+# for a working avahi-discover utility
+net-dns/avahi utils
+
+# required by kde-frameworks/kdnssd-5.42.0::gentoo[zeroconf]
+# required by kde-apps/kio-extras-17.12.1::gentoo
+# required by kde-plasma/plasma-workspace-5.11.5::gentoo
+# required by kde-plasma/plasma-desktop-5.11.5::gentoo
+# required by kde-plasma/plasma-meta-5.11.5::gentoo
+# required by kde-apps/kdebase-meta-17.12.1::gentoo
+# required by kde-apps/kdebase-meta (argument)
+>=net-dns/avahi-0.7 mdnsresponder-compat
