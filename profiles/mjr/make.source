@@ -19,7 +19,7 @@ CURL_SSL="nss"
 PYTHON_TARGETS="python2_7 python3_5"
 PYTHON_SINGLE_TARGET="python3_5"
 
-RUBY_TARGETS="ruby23 ruby24"
+RUBY_TARGETS="ruby23 ruby24 ruby25"
 
 INPUT_DEVICES="libinput"
 USE="${USE} libinput"
