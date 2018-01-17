@@ -46,3 +46,10 @@ media-libs/gst-plugins-base X
 
 # Requirement for net-libs/webkit-gtk-2.19.3:4/37::gnome-next with USE flag webgl
 x11-libs/cairo opengl
+
+# KDE
+<media-video/vlc-3 -aalib -qt5 -X
+kde-frameworks/kdelibs4support X
+kde-frameworks/kwindowsystem X
+kde-plasma/kinfocenter opengl -gles2
+kde-plasma/plasma-desktop -gtk3
