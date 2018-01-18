@@ -4,17 +4,13 @@
 
 x11-base/xorg-server xephyr xnest xorg
 
-dev-libs/weston -X -xwayland
+dev-libs/weston -xwayland
 
-app-misc/lirc -X -gtk
-app-accessibility/at-spi2-core -X
-app-text/ghostscript-gpl -X
-app-text/texlive-core -X
-gnome-extra/gnome-system-monitor -X
-media-libs/gst-plugins-bad -X -opengl gles2
-media-libs/libquicktime -X -opengl
-media-video/mpv -X -xv -lcms
-x11-libs/libva -X -opengl
+app-misc/lirc -gtk
+media-libs/gst-plugins-bad -opengl gles2
+media-libs/libquicktime -opengl
+media-video/mpv -xv -lcms
+x11-libs/libva -opengl
 
 app-emulation/qemu -sdl -sdl2
 
@@ -48,7 +44,7 @@ media-libs/gst-plugins-base X
 x11-libs/cairo opengl
 
 # KDE
-<media-video/vlc-3 -aalib -qt5 -X
+<media-video/vlc-3 -aalib -qt5
 kde-frameworks/kdelibs4support X
 kde-frameworks/kwindowsystem X
 kde-plasma/kinfocenter opengl -gles2
