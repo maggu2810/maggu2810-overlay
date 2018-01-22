@@ -22,7 +22,7 @@ gnome-extra/gnome-shell-extensions
 gnome-extra/gnome-system-monitor
 gnome-extra/nm-applet
 gnome-extra/zenity
-
+x11-terms/gnome-terminal
 
 app-editors/gedit-plugins
 
