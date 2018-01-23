@@ -1,3 +1,9 @@
 net-misc/networkmanager bluetooth connection-sharing modemmanager ppp wifi
 
 >=gnome-base/gnome-control-center-3.18.2 networkmanager
+
+# required by net-vpn/libreswan-3.22::gentoo
+# required by net-misc/networkmanager-l2tp-1.2.8::maggu2810-overlay
+# required by networkmanager-l2tp (argument)
+>=dev-libs/nss-3.35 utils
+
