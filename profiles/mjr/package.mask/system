@@ -1,5 +1,7 @@
 # obsolete by: sys-apps/systemd
+sys-apps/sysvinit
 sys-apps/openrc
+net-misc/netifrc
 
 # obsolete by: app-shells/bash-completion
 app-admin/eselect-bashcomp
