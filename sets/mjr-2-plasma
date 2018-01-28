@@ -1,0 +1,13 @@
+kde-plasma/plasma-meta
+
+kde-apps/konsole
+
+kde-misc/krusader
+kde-misc/kdiff3
+kde-misc/krename
+
+kde-misc/kdeconnect
+# Optional dependency: net-fs/sshfs (for 'remote filesystem browser' plugin)
+net-fs/sshfs
+
+kde-apps/konqueror

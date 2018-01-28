@@ -2,7 +2,7 @@
 # "egl" and "gles" mostly blocks the other one.
 >=media-libs/libsdl2-2.0.5 gles
 
-x11-base/xorg-server xephyr xnest xorg
+x11-base/xorg-server kdrive xephyr xnest xorg
 
 dev-libs/weston -xwayland
 
@@ -44,8 +44,20 @@ media-libs/gst-plugins-base X
 x11-libs/cairo opengl
 
 # KDE
+media-libs/phonon -vlc
 <media-video/vlc-3 -aalib -qt5
 kde-frameworks/kdelibs4support X
 kde-frameworks/kwindowsystem X
 kde-plasma/kinfocenter opengl -gles2
 kde-plasma/plasma-desktop -gtk3
+
+# gtk 2 is pulled in by "kde-plasma/kde-gtk-config-5.11.5::gentoo" that is pulled in by "kde-plasma/plasma-meta-5.11.5::gentoo[gtk]"
+# gtk 2 is pulled in by "kde-plasma/kde-gtk-config-5.11.5::gentoo" that is pulled in by "kde-plasma/systemsettings-5.11.5::gentoo[gtk]"
+kde-plasma/systemsettings -gtk
+kde-plasma/plasma-meta -gtk
+
+# kde flag needs wxwidget support
+app-arch/p7zip -kde 
+
+# kde frontend of libreoffice needs Qt4
+app-office/libreoffice -kde
