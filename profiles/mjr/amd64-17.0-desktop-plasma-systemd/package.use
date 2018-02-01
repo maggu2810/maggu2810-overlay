@@ -1,0 +1,3 @@
+net-misc/networkmanager-pptp -gtk
+net-misc/networkmanager-vpnc -gtk
+sys-apps/flatpak -gtk

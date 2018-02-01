@@ -8,6 +8,6 @@ sys-apps/busybox -pam
 # required by dev-qt/qtwebkit (argument)
 >=dev-libs/libpcre2-10.30 pcre16
 
-net-analyzer/nmap gtk lua ssl ncat ndiff nmap-update nping
+net-analyzer/nmap lua ssl ncat ndiff nmap-update nping
 # Needed by nmap
 dev-lang/python sqlite

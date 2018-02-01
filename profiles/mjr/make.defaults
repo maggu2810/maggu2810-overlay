@@ -235,13 +235,6 @@ USE="${USE} lastfm"
 USE="${USE} -semantic-desktop"
 
 #
-# Gtk, Gnome stuff
-#
-
-USE="${USE} gnome gnome-keyring gtk gtk3"
-
-
-#
 # TCL/TK stuff
 #
 
