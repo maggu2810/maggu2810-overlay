@@ -23,6 +23,7 @@ gnome-extra/gnome-system-monitor
 gnome-extra/nm-applet
 gnome-extra/zenity
 media-gfx/eog
+media-sound/pavucontrol
 x11-terms/gnome-terminal
 
 app-editors/gedit-plugins

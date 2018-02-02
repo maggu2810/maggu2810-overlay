@@ -3,7 +3,6 @@
 # As it needs (in the dependency chain) GTK 2, we move this to a container
 #media-sound/audacity
 
-media-sound/pavucontrol
 media-sound/shntool
 #media-video/avidemux
 

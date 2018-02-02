@@ -1,3 +1,13 @@
 net-misc/networkmanager-pptp -gtk
 net-misc/networkmanager-vpnc -gtk
 sys-apps/flatpak -gtk
+net-libs/glib-networking -gnome
+dev-qt/qtwidgets -gtk
+media-libs/gst-plugins-bad -gtk
+net-dns/avahi -gtk3
+sys-auth/polkit -gtk
+media-sound/pulseaudio -gtk
+media-libs/libcanberra -gtk3
+app-emulation/qemu- -gtk
+net-libs/gssdp -gtk
+

@@ -1,4 +1,5 @@
 kde-plasma/plasma-meta
+kde-plasma/plasma-pa
 
 kde-apps/kate
 kde-apps/konsole
@@ -12,3 +13,15 @@ kde-misc/kdeconnect
 net-fs/sshfs
 
 kde-apps/konqueror
+#For bookmarks support, install keditbookmarks:
+kde-apps/keditbookmarks
+#If you want to use konqueror as a filemanager, install the dolphin kpart:
+#kde-apps/dolphin
+#For konqueror to view SVGs, install the svg kpart:
+kde-apps/svgpart
+
+net-irc/konversation
+
+app-office/calligra
+
+media-gfx/krita
