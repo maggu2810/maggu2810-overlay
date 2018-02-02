@@ -145,7 +145,7 @@ USE="${USE} ebook epub postscript pdf"
 USE="${USE} \
      acl \
      bash-completion \
-     chroot chm cjk cxx \
+     chroot chm cjk \
      dvi djvu \
      fam festival flash fmod \
      gd gphoto2 graphviz \
@@ -185,7 +185,7 @@ USE="${USE} bzip2 lzma lzo rar zip zlib"
 # Do not use gnutls. because there are packages where we mast choose between gnutls XOR nss.
 # Do not force nss usage. nss will be used instead of openssl for some packages.
 #
-USE="${USE} crypt cryptsetup otr openssl ssl"
+USE="${USE} crypt cryptsetup otr ssl"
 
 
 #

@@ -1,9 +1,0 @@
-# required by app-office/akonadi-server-1.10.2-r1[qt4]
-# required by kde-base/kdepimlibs-4.11.0
-# required by kde-base/pykde4-4.11.0
-# required by kde-base/superkaramba-4.11.0[python]
-# required by kde-base/kdeutils-meta-4.11.0
-# required by @mjr_kde
-# required by @selected
-# required by @world (argument)
->=dev-qt/qtsql-4.8.5 mysql
