@@ -1,2 +1,0 @@
-# To build ldapc++ library you must emerge openldap with sasl support
-net-nds/openldap sasl

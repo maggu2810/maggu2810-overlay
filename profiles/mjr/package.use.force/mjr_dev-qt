@@ -1,4 +1,0 @@
-dev-qt/qt-creator doc android autotools bineditor bookmarks cmake fakevim perforce qtscript rss valgrind
-
-#required by dev-qt/qt-creator-2.6.2, required by @mjr_dev-qt, required by @selected, required by @world (argument)
->=dev-qt/qthelp-4.8.4 doc

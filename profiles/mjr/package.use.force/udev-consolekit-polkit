@@ -1,4 +1,0 @@
-gnome-base/gvfs gdu
-sys-block/parted device-mapper
-sys-fs/udev extras gudev hwdb keymap
-virtual/udev gudev hwdb keymap

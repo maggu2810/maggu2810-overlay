@@ -1,4 +1,0 @@
-sys-apps/systemd-units basic desktop server
-
-dev-lang/php fpm
-app-admin/eselect-php fpm

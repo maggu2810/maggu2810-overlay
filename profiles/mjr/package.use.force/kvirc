@@ -1,3 +1,0 @@
-# * ERROR: net-irc/kvirc-4.0_pre3831 failed:
-# *   USE="theora" requires USE="dcc_video"
-net-irc/kvirc dcc_video
