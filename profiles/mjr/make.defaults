@@ -281,13 +281,6 @@ USE="${USE} -X"
 
 ################################################################################
 
-#DISTDIR="/media/wd500gb_a1/distfiles"
-
-#GENTOO_MIRRORS="http://pandemonium.tiscali.de/pub/gentoo/ ftp://pandemonium.tiscali.de/pub/gentoo/ http://ftp-stud.fht-esslingen.de/pub/Mirrors/gentoo/ ftp://ftp-stud.fht-esslingen.de/pub/Mirrors/gentoo/"
-#GENTOO_MIRRORS="http://ftp-stud.fht-esslingen.de/pub/Mirrors/gentoo/ ftp://ftp-stud.fht-esslingen.de/pub/Mirrors/gentoo/"
-#GENTOO_MIRRORS="http://pandemonium.tiscali.de/pub/gentoo/ ftp://pandemonium.tiscali.de/pub/gentoo/"
-SYNC="rsync://rsync.europe.gentoo.org/gentoo-portage"
-
 APACHE2_MODULES="${APACHE2_MODULES} access_compat actions alias auth_basic auth_digest authn_anon authn_dbd authn_dbm authn_default authn_file authz_dbd authz_dbm authz_default authz_groupfile authz_host authz_owner authz_user autoindex cache dav dav_fs dav_lock dbd deflate dir disk_cache env expires ext_filter file_cache filter headers ident imagemap include info log_config logio mem_cache mime mime_magic negotiation proxy proxy_ajp proxy_balancer proxy_connect proxy_fcgi proxy_ftp proxy_html proxy_http proxy_scgi proxy_wstunnel rewrite setenvif slotmem_shm so speling status unique_id userdir usertrack vhost_alias xml2enc"
 APACHE2_MPMS="prefork"
 
@@ -302,7 +295,3 @@ LIRC_DEVICES="${LIRC_DEVICES} devinput"
 
 LIBREOFFICE_EXTENSIONS="${LIBREOFFICE_EXTENSIONS} pdfimport"
 
-#####
-
-# for revdep-rebuild
-SEARCH_DIRS_MASK="/usr/lib/gcc/i686-pc-linux-uclibc /usr/lib/zattoo /usr/share/zattoo_player"
