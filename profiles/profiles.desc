@@ -1,0 +1,11 @@
+#############################################
+# This is a list of valid profiles for each architecture.  This file is used by
+# repoman when doing a repoman scan or repoman full.
+# DO NOT ADD PROFILES WITH A "die" or "exit" IN THEM OR IT KILLS REPOMAN
+#
+#layout:
+#arch		profile_directory					status
+
+amd64		mjr/amd64-17.0-desktop-gnome-systemd			stable
+amd64		mjr/amd64-17.0-desktop-plasma-systemd			stable
+amd64		mjr/							stable
