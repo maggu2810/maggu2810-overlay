@@ -66,6 +66,12 @@ USE="${USE} avahi upnp zeroconf"
 
 
 #
+# DATABASE STUFF
+#
+#USE="${USE} mysql sql sqlite sqlite3"
+
+
+#
 # MOBILE PHONE
 #
 
@@ -291,7 +297,16 @@ PORTAGE_ELOG_SYSTEM="echo save"
 
 LIRC_DEVICES="${LIRC_DEVICES} devinput"
 
-###
-
 LIBREOFFICE_EXTENSIONS="${LIBREOFFICE_EXTENSIONS} pdfimport"
+
+################################################################################
+
+PYTHON_TARGETS="python2_7 python3_5"
+PYTHON_SINGLE_TARGET="python3_5"
+#USE_PYTHON="2.7 3.5"
+
+RUBY_TARGETS="ruby23 ruby24 ruby25"
+
+INPUT_DEVICES="libinput"
+USE="${USE} libinput"
 

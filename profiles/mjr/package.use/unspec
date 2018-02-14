@@ -10,3 +10,6 @@ sys-apps/fwupd dell elf uefi
 
 # Remote Desktop Client
 net-misc/remmina rdp
+
+# If nss is enabled CURL_SSL needs to be changed from openssl (default) to nss
+net-libs/liboauth -nss
