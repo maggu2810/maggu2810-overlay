@@ -6,7 +6,6 @@ x11-base/xorg-server kdrive xephyr xnest xorg
 
 dev-libs/weston -xwayland
 
-app-misc/lirc -gtk
 media-libs/gst-plugins-bad -opengl gles2
 media-libs/libquicktime -opengl
 media-video/mpv -xv -lcms

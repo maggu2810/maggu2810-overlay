@@ -1,1 +1,2 @@
-USE="${USE} gnome gnome-keyring gtk gtk3"
+USE=""
+USE="${USE} gnome gnome-keyring gtk3"
