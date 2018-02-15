@@ -1,9 +1,18 @@
 net-wireless/wpa_supplicant ap eap-sim hs2-0 p2p ssl tdls uncommon-eap-types wimax wps
 
+#
 # geography feature for gramps
+#
 app-misc/gramps geo
+# required by app-misc/gramps-4.2.5::gentoo[exif]
+# required by @selected
+# required by @world (argument)
+>=media-libs/gexiv2-0.10.8 introspection
 
+
+#
 # 3.3.0 does not work without contrib, contrib deactivate dnn and dnn uses a wrong protobuf version
+#
 media-libs/opencv contrib
 
 sys-apps/fwupd dell elf uefi
