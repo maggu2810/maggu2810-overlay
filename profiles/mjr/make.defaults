@@ -138,12 +138,6 @@ USE="${USE} spice"
 
 
 #
-# VCS - version control system(s)
-#
-
-USE="${USE} cvs git mercurial subversion"
-
-#
 # Support for book formats
 #
 
@@ -151,35 +145,17 @@ USE="${USE} ebook epub postscript pdf"
 
 # the following USE-Flags must be sorted
 USE="${USE} \
-     acl \
+     acl xattr\
      bash-completion \
-     chroot chm cjk \
-     dvi djvu \
-     fam festival flash fmod \
-     gd gphoto2 graphviz \
-     idn imagemagick imlib inkjar \
-     libnotify logrotate \
+     cjk idn \
+     libnotify \
      mime musicbrainz \
-     pcmcia plotutils ppds \
-     spell srt stream \
-     xattr xml \
      "
 
 #
 # TEX
 #
 USE="${USE} kpathsea latex" #tetex
-
-#
-# LANGUAGE BINDINGS: etc.
-#
-
-# Java
-USE="${USE} java javascript"
-
-# Python
-USE="${USE} python"
-
 
 #
 # [DE]COMPRESS
