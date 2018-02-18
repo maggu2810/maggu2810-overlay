@@ -1,3 +1,0 @@
-# required by gnome-extra/gnome-calculator-3.27.90::gnome-next
-# required by gnome-extra/gnome-calculator (argument)
->=x11-libs/gtksourceview-3.24.6 vala

@@ -1,0 +1,15 @@
+# required by gnome-extra/gnome-calculator-3.27.90::gnome-next
+# required by gnome-extra/gnome-calculator (argument)
+>=x11-libs/gtksourceview-3.24.6 vala
+
+
+# required by gnome-extra/gnome-boxes-3.24.0::gentoo
+# required by gnome-extra/gnome-boxes (argument)
+>=app-emulation/spice-0.14.0 smartcard
+# required by gnome-extra/gnome-boxes-3.24.0::gentoo
+# required by gnome-extra/gnome-boxes (argument)
+>=net-misc/spice-gtk-0.34-r1 smartcard
+# required by gnome-extra/gnome-boxes-3.24.0::gentoo
+# required by gnome-extra/gnome-boxes (argument)
+>=app-emulation/qemu-2.11.0 smartcard
+

@@ -1,4 +1,4 @@
 app-admin/eselect-php apache2
-dev-lang/php apache2 cgi mysql pdo tidy
+dev-lang/php apache2 cgi gd mysql pdo tidy
 
 dev-libs/apr-util -berkdb -gdbm -mysqls -odbc -postgres -sqlite
