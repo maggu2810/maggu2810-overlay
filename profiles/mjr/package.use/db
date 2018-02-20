@@ -1,3 +1,0 @@
-# embedded is needed by amarok
-# xml now needs extraengine
-dev-db/mariadb embedded extraengine xml
