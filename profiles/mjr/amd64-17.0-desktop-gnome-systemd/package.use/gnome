@@ -13,3 +13,11 @@
 # required by gnome-extra/gnome-boxes (argument)
 >=app-emulation/qemu-2.11.0 smartcard
 
+
+# We mask gnome-extra/sushi-3.24.0 as this would bring nautilus-3.24 into the chain.
+# To break that cycle
+#   required by gnome-base/nautilus-3.28.0-r1::gnome-next[previewer]
+#   required by app-text/evince-3.28.0::gnome-next[nautilus]
+# Unmask: =gnome-extra/sushi-3.24.0
+# We disable the 'previewer' USE flag temporary
+gnome-base/nautilus -previewer
