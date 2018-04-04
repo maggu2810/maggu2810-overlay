@@ -27,6 +27,7 @@ media-sound/pavucontrol
 x11-terms/gnome-terminal
 
 app-editors/gedit-plugins
+app-text/evince
 
 # Receive files over bluetooth
 gnome-extra/gnome-user-share
