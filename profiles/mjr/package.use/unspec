@@ -18,7 +18,14 @@ media-libs/opencv contrib
 sys-apps/fwupd dell elf uefi
 
 # Remote Desktop Client
-net-misc/remmina rdp
+net-libs/libvncserver gcrypt
+net-misc/remmina rdp spice ssh vnc
 
 # If nss is enabled CURL_SSL needs to be changed from openssl (default) to nss
 net-libs/liboauth -nss
+
+# OwnCloud client: disable nautilus flag. It needs stuff from 3.24 and should not be selected without Gnome at all.
+net-misc/owncloud-client -nautilus
+
+# Let's use the browser support of KeePassXC
+app-admin/keepassxc browser
