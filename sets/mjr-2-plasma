@@ -4,10 +4,11 @@ kde-plasma/plasma-pa
 kde-apps/gwenview
 kde-apps/kate
 kde-apps/konsole
-
-kde-misc/krusader
+kde-apps/print-manager
 kde-misc/kdiff3
 kde-misc/krename
+kde-misc/krusader
+kde-misc/skanlite
 
 kde-misc/kdeconnect
 # Optional dependency: net-fs/sshfs (for 'remote filesystem browser' plugin)
