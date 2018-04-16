@@ -3,7 +3,7 @@ dev-java/oracle-jdk-bin source jce
 # javafx needs gtk+:2
 dev-java/oracle-jdk-bin:1.8 -javafx
 
-dev-java/oracle-jdk-bin:9 javafx gtk3
+dev-java/oracle-jdk-bin:9 javafx gtk3 gentoo-vm
 
 
 #
