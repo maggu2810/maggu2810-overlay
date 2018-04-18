@@ -1,11 +1,15 @@
 kde-plasma/plasma-meta
 kde-plasma/plasma-pa
 
+
+kde-apps/ark
 kde-apps/dolphin
 kde-apps/dolphin-plugins
 kde-apps/gwenview
 kde-apps/kate
+kde-apps/kleopatra
 kde-apps/konsole
+kde-apps/kwalletmanager
 kde-apps/okteta
 kde-apps/okular
 kde-apps/print-manager
@@ -13,6 +17,7 @@ kde-misc/kdiff3
 kde-misc/krename
 kde-misc/krusader
 kde-misc/skanlite
+kde-plasma/kwallet-pam
 
 kde-misc/kdeconnect
 # Optional dependency: net-fs/sshfs (for 'remote filesystem browser' plugin)
