@@ -107,7 +107,6 @@ USE="${USE} device-mapper lvm"
 #
 
 USE="${USE} usb"
-USE="${USE} lirc"
 
 # printing support (deactivate xprint, because from time to time there are built errors when it is set)
 USE="${USE} cups"
