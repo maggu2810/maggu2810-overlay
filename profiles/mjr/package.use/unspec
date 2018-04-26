@@ -33,3 +33,5 @@ app-admin/keepassxc browser
 # Does not work without X USE flag
 net-misc/dropbox X
 x11-libs/pango X
+
+www-client/chromium widevine
