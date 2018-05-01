@@ -8,6 +8,7 @@ kde-apps/dolphin-plugins
 kde-apps/gwenview
 kde-apps/kate
 kde-apps/kleopatra
+kde-apps/konqueror
 kde-apps/konsole
 kde-apps/kwalletmanager
 kde-apps/okteta
@@ -24,16 +25,28 @@ kde-misc/kdeconnect
 # Optional dependency: net-fs/sshfs (for 'remote filesystem browser' plugin)
 net-fs/sshfs
 
-kde-apps/konqueror
-#For bookmarks support, install keditbookmarks:
+###
+# Konqueror
+# For bookmarks support, install keditbookmarks:
+# For konqueror to view SVGs, install the svg kpart:
 kde-apps/keditbookmarks
-#If you want to use konqueror as a filemanager, install the dolphin kpart:
-#kde-apps/dolphin
-#For konqueror to view SVGs, install the svg kpart:
 kde-apps/svgpart
+###
+
+###
+# ark
+# For handling rar archives, install app-arch/unar
+# For handling 7-Zip archives, install app-arch/p7zip
+# For handling lrz archives, install app-arch/lrzip
+#app-arch/unar
+app-arch/p7zip
+#app-arch/lrzip
+###
 
 net-irc/konversation
 
 app-office/calligra
 
 media-gfx/krita
+
+# For GTK+3 applications legacy-systray support, please install dev-libs/libappindicator:3
