@@ -30,6 +30,8 @@ net-misc/owncloud-client -nautilus
 # Let's use the browser support of KeePassXC
 app-admin/keepassxc browser
 
+dev-util/kdevelop okteta
+
 # Does not work without X USE flag
 net-misc/dropbox X
 x11-libs/pango X
