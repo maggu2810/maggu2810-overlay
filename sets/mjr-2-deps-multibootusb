@@ -1,0 +1,7 @@
+# https://github.com/aguslr/multibootusb
+# https://mbusb.aguslr.com/
+# https://mbusb.aguslr.com/install.html#adding-to-existing-usb-drive
+
+# makeUSB.sh
+sys-boot/grub:2
+sys-apps/gptfdisk
