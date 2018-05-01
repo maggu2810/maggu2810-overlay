@@ -17,3 +17,9 @@ sys-devel/gcc
 
 sys-devel/gdb
 
+# kdevelop
+# For static C/C++ code analysis support, please install dev-util/cppcheck
+# For heap memory profiling support, please install dev-util/heaptrack
+#dev-util/kdevelop
+#dev-util/cppcheck
+#dev-util/heaptrack
