@@ -1,0 +1,6 @@
+sys-libs/libselinux
+
+# Used by e.g.
+# AppImageUpdate
+# appimageupdatetool
+app-crypt/p11-kit
