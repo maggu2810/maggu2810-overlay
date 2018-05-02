@@ -32,6 +32,12 @@ app-admin/keepassxc browser
 
 dev-util/kdevelop okteta
 
+# >=dev-qt/qtwebkit-5.9:5[printsupport] required by (dev-python/PyQt5-5.10.1:0/0::gentoo, installed)
+dev-qt/qtwebkit printsupport
+
+# >=sys-libs/tdb-1.3.15[python,abi_x86_64(-)] required by (sys-libs/ldb-1.3.2:0/1.3.2::gentoo, installed)
+sys-libs/tdb python
+
 # Does not work without X USE flag
 net-misc/dropbox X
 x11-libs/pango X
