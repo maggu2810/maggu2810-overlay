@@ -1,3 +1,5 @@
+net-misc/networkmanager-openconnect -gtk
+net-misc/networkmanager-openvpn -gtk
 net-misc/networkmanager-pptp -gtk
 net-misc/networkmanager-vpnc -gtk
 sys-apps/flatpak -gtk
@@ -8,6 +10,6 @@ net-dns/avahi -gtk3
 sys-auth/polkit -gtk
 media-sound/pulseaudio -gtk
 media-libs/libcanberra -gtk3
-app-emulation/qemu- -gtk
+app-emulation/qemu -gtk
 net-libs/gssdp -gtk
 
