@@ -230,7 +230,6 @@ USE="${USE} -semantic-desktop"
 
 #USE="${USE} kde kipi konqueror"
 #USE="${USE} plasma"
-USE="${USE} webkit"
 USE="${USE} -handbook"
 
 
