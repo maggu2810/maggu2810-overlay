@@ -7,3 +7,5 @@ app-portage/gentoolkit
 #app-portage/gentoolkit-dev
 
 app-portage/layman
+
+app-portage/repoman
