@@ -20,10 +20,6 @@ app-misc/tracker -pdf
 # Needs currently wxGTK:3.0 (not 3.0-gtk3)
 app-arch/p7zip -wxwidgets
 
-# pygtk currently needs GTK 2
-net-libs/gtk-vnc -python
-app-emulation/virt-manager -gtk
-
 #
 # If GTK 2 and GTK 3 is supported use GTK 3 only
 #
