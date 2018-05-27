@@ -49,3 +49,6 @@ www-client/chromium widevine
 
 # mpv: [ffmpeg] https protocol not found, recompile FFmpeg with openssl, gnutls or securetransport enabled.
 media-video/ffmpeg openssl
+# for pulseaudio-dlns
+media-video/ffmpeg fdk
+
