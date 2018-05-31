@@ -152,11 +152,6 @@ USE="${USE} \
      "
 
 #
-# TEX
-#
-USE="${USE} kpathsea latex" #tetex
-
-#
 # [DE]COMPRESS
 #
 
