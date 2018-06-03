@@ -12,6 +12,3 @@ net-analyzer/nmap lua ssl ncat ndiff nmap-update nping
 # Needed by nmap
 dev-lang/python sqlite
 
-# required by sys-libs/ldb-1.3.3::gentoo
-# required by sys-libs/ldb (argument)
->=sys-libs/tevent-0.9.36 python
