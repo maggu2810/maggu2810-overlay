@@ -18,7 +18,6 @@ x11-libs/cairo opengl
 
 # KDE
 media-libs/phonon -vlc
-<media-video/vlc-3 -aalib -qt5
 kde-plasma/kinfocenter opengl -gles2
 kde-plasma/plasma-desktop -gtk3
 
