@@ -29,3 +29,9 @@ kde-plasma/plasma-meta -gtk
 # kde flag needs wxwidget support
 app-arch/p7zip -kde
 
+# A lot of programs rely on GTK+:3 with X support:
+# * android-studio
+# * Google Chrome
+# gtk+:3[X] requires cairo[X]
+x11-libs/gtk+:3 X
+>=x11-libs/cairo-1.14.12 X
