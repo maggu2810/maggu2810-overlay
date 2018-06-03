@@ -13,3 +13,21 @@ media-libs/libcanberra -gtk3
 app-emulation/qemu -gtk
 net-libs/gssdp -gtk
 
+
+#
+# X vs. Wayland
+#
+
+# >=kde-frameworks/kwindowsystem-5.43.0:5[X] required by (kde-plasma/kwin-5.12.5:5/5::gentoo, installed)
+# >=kde-frameworks/kwindowsystem-5.46:5[X] required by (kde-frameworks/kglobalaccel-5.46.0:5/5.46::gentoo, installed)
+>=kde-frameworks/kwindowsystem-5.46:5 X
+
+# media-libs/libepoxy[X] required by (x11-base/xorg-server-1.19.5-r2:0/1.19.5::gentoo, installed)
+media-libs/libepoxy X
+
+# >=x11-libs/libxkbcommon-0.4.1[X] required by (dev-qt/qtgui-5.11.0_rc2:5/5.11::gentoo, installed)
+>=x11-libs/libxkbcommon-0.4.1 X
+
+# >=kde-frameworks/kdelibs4support-5.43.0:5[X] required by (kde-plasma/khotkeys-5.12.5:5/5::gentoo, installed)
+>=kde-frameworks/kdelibs4support-5.43.0:5 X
+

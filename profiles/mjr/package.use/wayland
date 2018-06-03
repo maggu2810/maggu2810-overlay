@@ -13,40 +13,12 @@ x11-libs/libva -opengl
 
 app-emulation/qemu -sdl -sdl2
 
-#
-# Package that still needs support for X
-#
-dev-cpp/cairomm X
-dev-cpp/gtkmm X
-media-libs/clutter X
-media-libs/clutter-gst X
-media-libs/clutter-gtk X
-media-libs/libepoxy X
-x11-libs/cairo X
-x11-libs/gtk+ X
-
-# because of audacity
-x11-libs/wxGTK:3.0-gtk3 X
-
-x11-libs/libxkbcommon X
-
-# requirement for gnome session
-sys-apps/dbus X
-
-#  (media-libs/gst-plugins-base-1.12.3:1.0/1.0::gentoo, ebuild scheduled for merge) conflicts with
-#    >=media-libs/gst-plugins-base-1.4:1.0[introspection,ogg,pango,theora,vorbis,X] required by (media-video/cheese-3.24.0:0/8::gentoo, installed)
-#                                                                                ^
-#    >=media-libs/gst-plugins-base-1.12.3:1.0[X,abi_x86_64(-)] required by (media-plugins/gst-plugins-v4l2-1.12.3:1.0/1.0::gentoo, installed)
-media-libs/gst-plugins-base X
-
 # Requirement for net-libs/webkit-gtk-2.19.3:4/37::gnome-next with USE flag webgl
 x11-libs/cairo opengl
 
 # KDE
 media-libs/phonon -vlc
 <media-video/vlc-3 -aalib -qt5
-kde-frameworks/kdelibs4support X
-kde-frameworks/kwindowsystem X
 kde-plasma/kinfocenter opengl -gles2
 kde-plasma/plasma-desktop -gtk3
 
