@@ -28,7 +28,5 @@ kde-plasma/systemsettings -gtk
 kde-plasma/plasma-meta -gtk
 
 # kde flag needs wxwidget support
-app-arch/p7zip -kde 
+app-arch/p7zip -kde
 
-# kde frontend of libreoffice needs Qt4
-app-office/libreoffice -kde
