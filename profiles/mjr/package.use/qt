@@ -44,3 +44,7 @@ media-libs/libmediaart gtk -qt4 -qt5
 # If we need PyQt4 disable all not necessary needed function.
 # Tools should migrate to PyQt5
 dev-python/PyQt4 -dbus -declarative -multimedia -opengl -phonon -script -svg -webkit
+
+# We should not use QtWebKit anymore
+# but it seems still be necessary for plasma-meta which brings libksysguard into the game that currently depends on QtWebKit
+dev-qt/qtwebkit -debug -geolocation -gles2 -gstreamer -jit -multimedia -opengl -orientation -printsupport -qml -test -webchannel -webp
