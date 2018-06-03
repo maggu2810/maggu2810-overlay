@@ -7,4 +7,3 @@ openrc
 # seems not be be actively maintained / developed.
 qt3support
 
--input_devices_libinput
