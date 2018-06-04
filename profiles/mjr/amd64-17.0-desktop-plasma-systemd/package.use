@@ -13,6 +13,8 @@ media-libs/libcanberra -gtk3
 app-emulation/qemu -gtk
 net-libs/gssdp -gtk
 
+# The "kde" USE flag requires the 'gtk' USE flag (app-office/libreoffice-6.0.4.2::gentoo)
+app-office/libreoffice gtk
 
 #
 # X vs. Wayland

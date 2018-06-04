@@ -26,9 +26,6 @@ app-arch/p7zip -wxwidgets
 
 app-emulation/qemu gtk -gtk2
 
-# "gnome" needs "gtk", "eds" needs "gnome"
-app-office/libreoffice -eds -gnome -gtk gtk3
-
 net-dns/avahi -gtk gtk3
 media-libs/libcanberra -gtk gtk3
 
