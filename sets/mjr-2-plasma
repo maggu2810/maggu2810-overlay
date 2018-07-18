@@ -13,7 +13,6 @@ kde-apps/konsole
 kde-apps/krdc
 kde-apps/ksystemlog
 kde-apps/kwalletmanager
-kde-apps/okteta
 kde-apps/okular
 kde-apps/print-manager
 kde-apps/spectacle
@@ -47,6 +46,7 @@ app-arch/p7zip
 
 net-irc/konversation
 
+app-editors/okteta
 app-office/calligra
 
 media-gfx/krita
