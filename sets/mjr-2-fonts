@@ -1,17 +1,31 @@
 # This fonts are a suggestion of
 # /usr/share/doc/google-chrome-43.0.2357.125_p1/README.gentoo.bz2
-media-fonts/arphicfonts
-media-fonts/bitstream-cyberbit
-media-fonts/droid
-media-fonts/ipamonafont
-media-fonts/ja-ipafonts
-media-fonts/takao-fonts
-media-fonts/wqy-microhei
-media-fonts/wqy-zenhei
+#imedia-fonts/arphicfonts
+#media-fonts/bitstream-cyberbit
+#media-fonts/droid
+#media-fonts/ipamonafont
+#media-fonts/ja-ipafonts
+#media-fonts/takao-fonts
+#media-fonts/wqy-microhei
+#media-fonts/wqy-zenhei
 
 # added myself
-media-fonts/corefonts
-media-fonts/croscorefonts
-media-fonts/dejavu
+#media-fonts/corefonts
+#media-fonts/croscorefonts
+#media-fonts/dejavu
+#media-fonts/liberation-fonts
+#media-fonts/ttf-bitstream-vera
+
+# Another recommendations
+# https://wiki.gentoo.org/wiki/Fontconfig#Picking_fonts
 media-fonts/liberation-fonts
-media-fonts/ttf-bitstream-vera
+media-fonts/libertine
+media-fonts/noto
+media-fonts/dejavu
+media-fonts/droid
+media-fonts/sil-gentium
+media-fonts/ubuntu-font-family
+media-fonts/urw-fonts
+media-fonts/corefonts
+media-fonts/unifont
+
