@@ -49,3 +49,6 @@ media-video/ffmpeg openssl
 # for pulseaudio-dlns
 media-video/ffmpeg fdk
 
+# Necessary to build avahi
+# https://bugs.gentoo.org/576076
+dev-lang/perl ithreads
