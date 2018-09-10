@@ -35,3 +35,7 @@ app-arch/p7zip -kde
 # gtk+:3[X] requires cairo[X]
 x11-libs/gtk+:3 X
 >=x11-libs/cairo-1.14.12 X
+
+# As long as Wayland (KDE) is not stable enough we need some X support (e.g. to play videos on X)
+media-video/mpv X opengl
+
