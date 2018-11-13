@@ -4,7 +4,8 @@
 
 x11-base/xorg-server kdrive xephyr xnest xorg
 
-dev-libs/weston -xwayland
+# weston-3.0.0: build fails if USE-flag "rdp" is enabled ("screen-sharing" depends on "rdp")
+dev-libs/weston xwayland -X editor
 
 media-libs/gst-plugins-bad -opengl gles2
 media-libs/libquicktime -opengl
@@ -28,6 +29,9 @@ kde-plasma/plasma-meta -gtk
 
 # kde flag needs wxwidget support
 app-arch/p7zip -kde
+
+# curl flag needs X flag
+app-text/mupdf -curl
 
 # A lot of programs rely on GTK+:3 with X support:
 # * android-studio
