@@ -1,0 +1,13 @@
+diff -Naur a/Makefile.am b/Makefile.am
+--- a/Makefile.am	2018-11-22 10:57:20.816165803 +0100
++++ b/Makefile.am	2018-11-22 11:03:24.968691068 +0100
+@@ -180,7 +180,9 @@
+ 
+ ###############################################################################
+ 
++if WITH_GNOME
+ plugin_LTLIBRARIES += properties/libnm-vpn-plugin-l2tp-editor.la
++endif
+ 
+ properties_libnm_vpn_plugin_l2tp_editor_la_SOURCES = \
+ 	$(editor_sources)
