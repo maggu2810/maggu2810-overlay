@@ -33,3 +33,8 @@ media-libs/libepoxy X
 # >=kde-frameworks/kdelibs4support-5.43.0:5[X] required by (kde-plasma/khotkeys-5.12.5:5/5::gentoo, installed)
 >=kde-frameworks/kdelibs4support-5.43.0:5 X
 
+# required by kde-apps/krdc-18.08.3::gentoo[rdp]
+# required by @mjr-2-plasma
+# required by @selected
+# required by @world (argument)
+>=net-misc/freerdp-2.0.0_rc4 X
