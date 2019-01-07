@@ -1,4 +1,4 @@
-net-misc/networkmanager bluetooth connection-sharing modemmanager ppp wifi
+net-misc/networkmanager bluetooth connection-sharing iwd modemmanager ppp wifi
 
 >=gnome-base/gnome-control-center-3.18.2 networkmanager
 
