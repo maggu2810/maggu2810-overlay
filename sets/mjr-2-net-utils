@@ -3,8 +3,12 @@ net-analyzer/nethogs
 
 net-dns/dnsmasq
 
+# Replaced by dsniff
 #net-analyzer/arptools
-net-analyzer/dsniff
+
+# Currently (2018-01-06) there are build errors.
+#net-analyzer/dsniff
+
 net-analyzer/netcat6
 net-analyzer/nmap
 #net-analyzer/sslsniff
