@@ -9,7 +9,6 @@ media-libs/gst-plugins-bad -gtk
 net-dns/avahi -gtk3
 sys-auth/polkit -gtk
 media-sound/pulseaudio -gtk
-media-libs/libcanberra -gtk3
 app-emulation/qemu -gtk
 net-libs/gssdp -gtk
 
