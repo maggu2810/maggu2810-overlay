@@ -52,3 +52,12 @@ media-video/ffmpeg fdk
 # Necessary to build avahi
 # https://bugs.gentoo.org/576076
 dev-lang/perl ithreads
+
+
+# required by www-client/firefox-65.0.1-r1::gentoo[system-libvpx]
+# required by www-client/firefox (argument)
+media-libs/libvpx postproc
+# required by www-client/firefox-65.0.1-r1::gentoo[system-sqlite]
+# required by www-client/firefox (argument)
+dev-db/sqlite secure-delete
+
