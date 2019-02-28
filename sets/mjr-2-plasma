@@ -52,3 +52,10 @@ app-editors/okteta
 media-gfx/krita
 
 # For GTK+3 applications legacy-systray support, please install dev-libs/libappindicator:3
+
+#
+# GTK
+#
+kde-plasma/kde-gtk-config
+kde-plasma/breeze-gtk
+
