@@ -9,7 +9,10 @@ net-dns/dnsmasq
 # Currently (2018-01-06) there are build errors.
 #net-analyzer/dsniff
 
-net-analyzer/netcat6
+#net-analyzer/netcat
+#net-analyzer/openbsd-netcat
+net-misc/socat
+
 net-analyzer/nmap
 #net-analyzer/sslsniff
 net-analyzer/wireshark
