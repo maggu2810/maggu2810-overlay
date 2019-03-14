@@ -1,7 +1,7 @@
 net-misc/networkmanager-openconnect -gtk
 net-misc/networkmanager-openvpn -gtk
-net-misc/networkmanager-pptp -gtk
-net-misc/networkmanager-vpnc -gtk
+net-vpn/networkmanager-pptp -gtk
+net-vpn/networkmanager-vpnc -gtk
 sys-apps/flatpak -gtk
 net-libs/glib-networking -gnome
 dev-qt/qtwidgets -gtk
