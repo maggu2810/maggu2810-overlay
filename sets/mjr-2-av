@@ -17,7 +17,11 @@ media-video/flvstreamer
 #media-video/mkvtoolnix
 #media-video/mpgtx
 #media-video/mplayer
+
 media-video/mpv
+# URL support for mpv
+net-misc/youtube-dl
+
 #media-video/transcode
 #media-video/ttcut
 
