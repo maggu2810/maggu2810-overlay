@@ -1,5 +1,5 @@
-net-misc/networkmanager-openconnect -gtk
-net-misc/networkmanager-openvpn -gtk
+net-vpn/networkmanager-openconnect -gtk
+net-vpn/networkmanager-openvpn -gtk
 net-vpn/networkmanager-pptp -gtk
 net-vpn/networkmanager-vpnc -gtk
 sys-apps/flatpak -gtk
