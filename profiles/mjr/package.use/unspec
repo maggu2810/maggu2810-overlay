@@ -31,7 +31,7 @@ net-libs/liboauth -nss
 net-misc/owncloud-client -nautilus
 
 # Let's use the browser support of KeePassXC
-app-admin/keepassxc browser
+app-admin/keepassxc browser keeshare
 
 dev-util/kdevelop okteta
 
