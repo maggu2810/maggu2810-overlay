@@ -1,0 +1,29 @@
+From bcd0a876f7bf52642330410812a6b7100cdeda91 Mon Sep 17 00:00:00 2001
+From: zzndb <emRiCg2@gmail.com>
+Date: Wed, 12 Jun 2019 17:14:08 +0800
+Subject: [PATCH] Fix a spell mistake
+
+After commented default portable option in `app/meson.build` get some
+error and then find this. :)
+
+Signed-off-by: Romain Vimont <rom@rom1v.com>
+---
+ app/src/server.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/app/src/server.c b/app/src/server.c
+index d0599be..d59394f 100644
+--- a/app/src/server.c
++++ b/app/src/server.c
+@@ -15,7 +15,7 @@
+ #define SOCKET_NAME "scrcpy"
+ #define SERVER_FILENAME "scrcpy-server.jar"
+ 
+-#define DEFAULT_SERVER_PATH PREFIX "/share/scrcpy/" SERVER_FLENAME
++#define DEFAULT_SERVER_PATH PREFIX "/share/scrcpy/" SERVER_FILENAME
+ #define DEVICE_SERVER_PATH "/data/local/tmp/" SERVER_FILENAME
+ 
+ static const char *
+-- 
+2.21.0
+
