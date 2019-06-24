@@ -1,0 +1,26 @@
+From 53310a925a495f61d42dd90faa0a0748074d63c5 Mon Sep 17 00:00:00 2001
+From: Romain Vimont <rom@rom1v.com>
+Date: Wed, 12 Jun 2019 11:26:23 +0200
+Subject: [PATCH] Disable portable build by default
+
+The default value of a boolean meson option is true. We want
+non-portable build by default.
+---
+ meson_options.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/meson_options.txt b/meson_options.txt
+index a443ccb..354dfe6 100644
+--- a/meson_options.txt
++++ b/meson_options.txt
+@@ -3,6 +3,6 @@ option('build_server', type: 'boolean', value: true, description: 'Build the ser
+ option('crossbuild_windows', type: 'boolean', value: false, description: 'Build for Windows from Linux')
+ option('windows_noconsole', type: 'boolean', value: false, description: 'Disable console on Windows (pass -mwindows flag)')
+ option('prebuilt_server', type: 'string', description: 'Path of the prebuilt server')
+-option('portable', type: 'boolean', description: 'Use scrcpy-server.jar from the same directory as the scrcpy executable')
++option('portable', type: 'boolean', value: false, description: 'Use scrcpy-server.jar from the same directory as the scrcpy executable')
+ option('skip_frames', type: 'boolean', value: true, description: 'Always display the most recent frame')
+ option('hidpi_support', type: 'boolean', value: true, description: 'Enable High DPI support')
+-- 
+2.21.0
+

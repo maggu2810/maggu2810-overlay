@@ -35,6 +35,12 @@ DEPEND="${COMMON_DEPEND}"
 RDEPEND="${COMMON_DEPEND}"
 PDEPEND=""
 
+# Only required for 1.9
+PATCHES=(
+	"${FILESDIR}"/${PV}-portable.patch
+	"${FILESDIR}"/${PV}-spelling.patch
+)
+
 src_configure() {
 	local emesonargs=(
 		-Db_lto=true
