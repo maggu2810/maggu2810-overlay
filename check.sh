@@ -44,3 +44,4 @@ for pkg in `find -mindepth 2 -maxdepth 2 -type d -not -name ".svn" -printf "%P\n
 		done
 	fi
 done
+
