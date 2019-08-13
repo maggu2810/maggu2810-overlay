@@ -7,3 +7,6 @@ net-misc/networkmanager bluetooth connection-sharing iwd modemmanager ppp wifi
 # required by networkmanager-l2tp (argument)
 >=dev-libs/nss-3.35 utils
 
+# required by: net-vpn/networkmanager-l2tp-1.2.12::gentoo
+net-dialup/ppp eap-tls
+
