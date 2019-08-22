@@ -175,6 +175,7 @@ USE="${USE} multimedia"
 # support engines, framework...
 USE="${USE} -oss"
 USE="${USE} alsa pulseaudio"
+USE="${USE} pipewire"
 USE="${USE} libv4l v4l v4l2"
 USE="${USE} video videos"
 USE="${USE} gstreamer jingle lame mjpeg mplayer phonon shorten soundtouch sox telepathy wavpack"
