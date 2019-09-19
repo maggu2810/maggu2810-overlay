@@ -1,2 +1,4 @@
-net-wireless/broadcom-sta
+# I changed the internal network adapter
+#net-wireless/broadcom-sta
+
 sys-power/thermald
