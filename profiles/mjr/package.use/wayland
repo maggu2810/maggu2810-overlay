@@ -5,7 +5,7 @@
 x11-base/xorg-server kdrive xephyr xnest xorg
 
 # weston-3.0.0: build fails if USE-flag "rdp" is enabled ("screen-sharing" depends on "rdp")
-dev-libs/weston xwayland -X editor
+dev-libs/weston -X editor # xwayland
 
 media-libs/gst-plugins-bad -opengl gles2
 media-libs/libquicktime -opengl
