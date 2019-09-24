@@ -5,17 +5,14 @@
 x11-base/xorg-server kdrive xephyr xnest xorg
 
 # weston-3.0.0: build fails if USE-flag "rdp" is enabled ("screen-sharing" depends on "rdp")
-dev-libs/weston -X editor # xwayland
+dev-libs/weston -X editor xwayland
 
 media-libs/gst-plugins-bad -opengl gles2
 media-libs/libquicktime -opengl
 media-video/mpv -xv -lcms
 x11-libs/libva -opengl
 
-app-emulation/qemu -sdl -sdl2
-
-# Requirement for net-libs/webkit-gtk-2.19.3:4/37::gnome-next with USE flag webgl
-x11-libs/cairo opengl
+app-emulation/qemu -sdl
 
 # KDE
 media-libs/phonon -vlc
@@ -30,15 +27,15 @@ kde-plasma/plasma-meta -gtk
 # kde flag needs wxwidget support
 app-arch/p7zip -kde
 
-# curl flag needs X flag
-app-text/mupdf -curl
-
 # A lot of programs rely on GTK+:3 with X support:
 # * android-studio
 # * Google Chrome
 # gtk+:3[X] requires cairo[X]
 x11-libs/gtk+:3 X
 >=x11-libs/cairo-1.14.12 X
+
+# Necessary for recent xorg-server
+>=media-libs/mesa-19.2.0_rc3 X
 
 # As long as Wayland (KDE) is not stable enough we need some X support (e.g. to play videos on X)
 media-video/mpv X opengl
