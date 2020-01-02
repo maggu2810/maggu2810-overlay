@@ -187,10 +187,11 @@ USE="${USE} farstream" # framework for audio/video conversations (instant messag
 
 # support codecs, container
 USE="${USE} amr amrnb"
-USE="${USE} a52 aac aacplus aften asf dts dv faac faad flac g726 g729 gsm"
+USE="${USE} a52 aac aacplus aften asf dts faac faad flac g726 g729 gsm"
 USE="${USE} mad matroska mod mp3 mp4 midi mpeg musepack nut"
 USE="${USE} ogg ogm opus pcm quicktime schroedinger silk theora twolame"
 USE="${USE} vorbis vpx wma x264 x265 xvid"
+# removed "dv" as libdv added dependency to SDL 1 (no Wayland support)
 
 # others
 USE="${USE} aalib audiofile cdda cddb cdio cdparanoia"
