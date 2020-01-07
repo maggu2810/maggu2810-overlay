@@ -1,3 +1,5 @@
+app-misc/mc sftp
+
 net-wireless/wpa_supplicant ap eap-sim hs2-0 p2p ssl tdls uncommon-eap-types wimax wps
 
 #
