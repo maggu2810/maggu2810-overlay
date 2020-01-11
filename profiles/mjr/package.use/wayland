@@ -40,3 +40,4 @@ x11-libs/gtk+:3 X
 # As long as Wayland (KDE) is not stable enough we need some X support (e.g. to play videos on X)
 media-video/mpv X opengl
 
+net-libs/webkit-gtk gles2-only
