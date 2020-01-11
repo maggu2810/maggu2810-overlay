@@ -8,5 +8,5 @@ sys-fs/multipath-tools
 sys-fs/ntfs3g
 #sys-fs/ntfsprogs
 
-sys-fs/fuse-exfat
-sys-fs/exfat-utils
+#sys-fs/fuse-exfat
+#sys-fs/exfat-utils
