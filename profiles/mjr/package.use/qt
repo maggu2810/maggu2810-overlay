@@ -21,11 +21,7 @@ media-libs/libmediaart gtk -qt4 -qt5
 # required by @world (argument)
 >=dev-libs/libpcre-8.36 pcre16
 
-# required by net-analyzer/wireshark-1.12.4::gentoo[qt5]
-# required by @mjr_net-utils
-# required by @selected
-# required by @world (argument)
->=dev-qt/qtgui-5.4.1-r1 accessibility
+>=dev-qt/qtgui-5.4.1-r1 accessibility eglfs X
 
 # needed by: net-misc/dropbox-3.6.8::gentoo[X]
 # dev-qt/qtwebkit-5.4.2::gentoo
