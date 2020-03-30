@@ -274,7 +274,7 @@ LIBREOFFICE_EXTENSIONS="${LIBREOFFICE_EXTENSIONS} pdfimport"
 
 ################################################################################
 
-RUBY_TARGETS="-ruby23 -ruby24 -ruby25 ruby26"
+RUBY_TARGETS="-ruby23 -ruby24 -ruby25 -ruby26 ruby27"
 
 INPUT_DEVICES="libinput"
 USE="${USE} libinput"
